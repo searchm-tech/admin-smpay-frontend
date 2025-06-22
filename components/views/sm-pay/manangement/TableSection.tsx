@@ -55,6 +55,7 @@ const TableSection = ({
   loadingData,
   dataSource,
 }: TableSectionProps) => {
+  console.log("dataSource", dataSource);
   const router = useRouter();
 
   const [openDialog, setOpenDialog] = useState<ActionButton | null>(null);
@@ -140,20 +141,9 @@ const TableSection = ({
     },
     {
       title: "광고주 로그인 ID",
-      dataIndex: "userId",
+      dataIndex: "advertiserLoginId",
       align: "center",
       sorter: true,
-      render: (text: string, record: TSmPayData) => (
-        <LinkTextButton
-          onClick={() => {
-            router.push(
-              `/sm-pay/management/apply-detail/${record.advertiserId}`
-            );
-          }}
-        >
-          {text}
-        </LinkTextButton>
-      ),
     },
     {
       title: ColumnTooltip.status,
@@ -175,9 +165,7 @@ const TableSection = ({
             {availableActions.includes("view") && (
               <Button
                 variant="greenOutline"
-                onClick={() =>
-                  handleMoveDetailPage(record.advertiserCustomerId)
-                }
+                onClick={() => handleMoveDetailPage(record.advertiserId)}
               >
                 조회
               </Button>

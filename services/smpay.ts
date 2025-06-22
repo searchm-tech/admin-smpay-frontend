@@ -10,11 +10,13 @@ import {
   RequestSmPayAdvertiserDetailPut,
   RequestSmPayAdvertiserStatIndicator,
   RequestSmPayAdvertiserStatus,
+  RequestSmPayDetail,
   RequestSmPayWrite,
   ResponseSmPayAdvertiserApply,
   ResponseSmPayAdvertiserDetail,
   ResponseSmPayAdvertiserStatIndicator,
   ResponseSmPayAdvertiserStatus,
+  ResponseSmPayDetail,
   ResponseSmPayStatusCount,
 } from "@/types/api/smpay";
 
@@ -220,6 +222,31 @@ export const postSmPay = async ({
     const response = await post<null>(
       `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/form`,
       params
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+/**
+ * 광고주 smPay 신청 이력 상세 조회(SAG026) api
+ * 화면 > SM Pay 신청 상세
+ */
+
+export const getSmPayDetail = async ({
+  user,
+  advertiserId,
+  formId,
+}: RequestSmPayDetail): Promise<ResponseSmPayDetail> => {
+  const { agentId, userId } = user;
+
+  try {
+    const response = await get<ResponseSmPayDetail>(
+      `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/form/${formId}`
     );
     return response;
   } catch (error) {

@@ -41,6 +41,7 @@ const IndicatorsJudementSection = ({
     }
   }, [advertiserStatIndicator, handleStatIndicator]);
 
+  console.log("advertiserStatIndicator", advertiserStatIndicator);
   return (
     <section>
       {isModalOpen && (
