@@ -13,6 +13,7 @@ type Props = {
 };
 
 const AdvertiserSection = ({ advertiserDetail }: Props) => {
+  console.log("advertiserDetail", advertiserDetail);
   return (
     <section className="w-full">
       <div className="flex items-center gap-4 py-4">

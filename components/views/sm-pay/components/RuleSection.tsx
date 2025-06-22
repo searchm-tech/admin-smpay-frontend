@@ -23,7 +23,7 @@ import type { RuleInfo } from "@/types/sm-pay";
 type RuleSectionProps = {
   id: string;
   type: "show" | "write";
-  ruleInfo?: RuleInfo;
+  ruleInfo?: RuleInfo | null;
   handleRuleInfoChange?: (value: RuleInfo) => void;
 };
 const RuleSection = ({

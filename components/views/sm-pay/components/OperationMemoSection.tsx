@@ -13,10 +13,11 @@ import { TOOLTIP_CONTENT } from "@/constants/hover";
 
 type Props = {
   type?: "show" | "write";
+  text?: string;
 };
 
-const OperationMemoSection = ({ type }: Props) => {
-  const [memo, setMemo] = useState("");
+const OperationMemoSection = ({ type, text }: Props) => {
+  const [memo, setMemo] = useState(text || "");
   return (
     <section>
       <div className="flex items-center gap-2 py-4">
@@ -39,7 +40,7 @@ const OperationMemoSection = ({ type }: Props) => {
         />
       )}
 
-      {type === "show" && <MemoBox text="<p>운영 검토 시 참고용 메모</p>" />}
+      {type === "show" && <MemoBox text={`<p><${text}/p>`} />}
     </section>
   );
 };
