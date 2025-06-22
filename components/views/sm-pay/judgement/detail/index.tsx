@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/composite/modal-components";
@@ -25,6 +25,7 @@ import {
   useSmPaySubmitDetail,
   useSmPayStatusUpdate,
   useSmPayAdvertiserDetail,
+  useSmPayRead,
 } from "@/hooks/queries/sm-pay";
 
 import { SmPayAdvertiserStatusLabel, STATUS_LABELS } from "@/constants/status";
@@ -44,7 +45,6 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
   const [isReject, setIsReject] = useState(false);
   const [isRestart, setIsRestart] = useState(false);
   const [isSimulation, setIsSimulation] = useState(false);
-  const { data: response, isPending } = useSmPaySubmitDetail(id);
 
   const { data: advertiserDetail, isPending: isLoadingAdvertiserDetail } =
     useSmPayAdvertiserDetail(Number(id));
@@ -55,30 +55,21 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
     },
   });
 
-  const advertiserData: AdvertiserData | null = response?.data
-    ? {
-        id: response.data.id,
-        name: response.data.advertiserName,
-        customerId: response.data.customerId,
-        loginId: response.data.loginId,
-        advertiserName: response.data.advertiserName,
-        status: "AVAILABLE",
-        updatedAt: response.data.updatedAt,
-        businessName: response.data.businessName,
-        businessNumber: response.data.businessNumber,
-        businessOwnerName: response.data.businessOwnerName,
-        businessOwnerPhone: response.data.businessOwnerPhone,
-        businessOwnerEmail: response.data.businessOwnerEmail,
-      }
-    : null;
+  const { mutate: patchRead } = useSmPayRead();
 
   const handleOpenRejectModal = () => {
     setIsReject(true);
   };
 
+  useEffect(() => {
+    if (id && advertiserDetail) {
+      patchRead({ advertiserId: Number(id), isReviewerRead: true });
+    }
+  }, [advertiserDetail, id]);
+
   return (
     <div>
-      {(isPending || isUpdating) && <LoadingUI />}
+      {(isLoadingAdvertiserDetail || isUpdating) && <LoadingUI />}
       {isApproved && (
         <ApproveModal
           onClose={() => setIsApproved(false)}
