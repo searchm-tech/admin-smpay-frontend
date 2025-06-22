@@ -147,7 +147,7 @@ const TableSection = ({
         <LinkTextButton
           onClick={() => {
             router.push(
-              `/sm-pay/management/apply-detail/${record.advertiserCustomerId}`
+              `/sm-pay/management/apply-detail/${record.advertiserId}`
             );
           }}
         >

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CircleCheckBig, X } from "lucide-react";
 import {
   DescriptionItem,
@@ -18,19 +18,28 @@ import {
 } from "@/hooks/queries/sm-pay";
 import type { DailyStat } from "@/types/smpay";
 import LoadingUI from "@/components/common/Loading";
+import { ResponseSmPayAdvertiserStatIndicator } from "@/types/api/smpay";
 
 type Props = {
   advertiserId: number;
+  handleStatIndicator?: (data: ResponseSmPayAdvertiserStatIndicator) => void;
 };
 
-const IndicatorsJudementSection = ({ advertiserId }: Props) => {
+const IndicatorsJudementSection = ({
+  advertiserId,
+  handleStatIndicator,
+}: Props) => {
   console.log(advertiserId);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { data: advertiserStatIndicator } =
     useSmPayAdvertiserStatIndicator(advertiserId);
 
-  console.log("advertiserStatIndicator", advertiserStatIndicator);
+  useEffect(() => {
+    if (advertiserStatIndicator && handleStatIndicator) {
+      handleStatIndicator(advertiserStatIndicator);
+    }
+  }, [advertiserStatIndicator, handleStatIndicator]);
 
   return (
     <section>
