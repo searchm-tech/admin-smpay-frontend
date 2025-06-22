@@ -91,10 +91,4 @@ export type PrePaymentSchedule = {
   minChargeLimit: number; // 1; -> 일 최소 충전 한도 값은 없으므로 0으로 해도 되는지
 };
 
-const test = {
-  operationPeriod: 1,
-  dailyAverageRoas: 1.0,
-  monthlyConvAmt: 1000.0,
-  dailySalesAmt: 100.0,
-  recommendRoas: 0.8,
-};
+

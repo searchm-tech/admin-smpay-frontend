@@ -10,12 +10,14 @@ import {
   RequestSmPayAdvertiserDetailPut,
   RequestSmPayAdvertiserStatIndicator,
   RequestSmPayAdvertiserStatus,
+  RequestSmPayApplyList,
   RequestSmPayDetail,
   RequestSmPayWrite,
   ResponseSmPayAdvertiserApply,
   ResponseSmPayAdvertiserDetail,
   ResponseSmPayAdvertiserStatIndicator,
   ResponseSmPayAdvertiserStatus,
+  ResponseSmPayApplyInfo,
   ResponseSmPayDetail,
   ResponseSmPayStatusCount,
 } from "@/types/api/smpay";
@@ -248,6 +250,30 @@ export const getSmPayDetail = async ({
     const response = await get<ResponseSmPayDetail>(
       `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/form/${formId}`
     );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+/**
+ * 광고주 smPay 신청 이력 리스트 조회(SAG025)
+ *
+ */
+export const getSmPayApplyList = async ({
+  user,
+  advertiserId,
+}: RequestSmPayApplyList): Promise<ResponseSmPayApplyInfo[]> => {
+  const { agentId, userId } = user;
+
+  try {
+    const response = await get<ResponseSmPayApplyInfo[]>(
+      `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/apply-form-list?`
+    );
+
     return response;
   } catch (error) {
     if (error instanceof ApiError) {
