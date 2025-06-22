@@ -25,7 +25,10 @@ import {
   useSmPayWrite,
 } from "@/hooks/queries/sm-pay";
 import { ChargeRule, PrePaymentSchedule, StatIndicator } from "@/types/smpay";
-import { SmPayWriteParams } from "@/types/api/smpay";
+import {
+  ResponseSmPayAdvertiserStatIndicator,
+  SmPayWriteParams,
+} from "@/types/api/smpay";
 
 type ViewWrieProps = {
   selectedAdNum: number | null;
@@ -54,6 +57,8 @@ const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
     firstCharge: 0,
     maxCharge: 0,
   });
+  const [statIndicatorInfo, setStatIndicatorInfo] =
+    useState<ResponseSmPayAdvertiserStatIndicator | null>(null);
   const [reviewerMemo, setReviewerMemo] = useState("");
 
   const [isSimulation, setIsSimulation] = useState(false);
@@ -102,15 +107,15 @@ const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
     const prePaymentSchedule: PrePaymentSchedule = {
       initialAmount: scheduleInfo.firstCharge,
       maxChargeLimit: scheduleInfo.maxCharge,
-      minChargeLimit: 0,
+      minChargeLimit: 10000,
     };
 
     const statIndicator: StatIndicator = {
-      operationPeriod: 0,
-      dailyAverageRoas: 0, //1.0;
-      monthlyConvAmt: 0, //1.0;
-      dailySalesAmt: 0, //1.0;
-      recommendRoasPercent: 0, // 1.0;
+      operationPeriod: statIndicatorInfo?.operationPeriod || 0,
+      dailyAverageRoas: statIndicatorInfo?.dailyAverageRoas || 0, //1.0;
+      monthlyConvAmt: statIndicatorInfo?.monthlyConvAmt || 0, //1.0;
+      dailySalesAmt: statIndicatorInfo?.dailySalesAmt || 0, //1.0;
+      recommendRoasPercent: statIndicatorInfo?.recommendRoas || 0, // 1.0;
     };
 
     const params: SmPayWriteParams = {
@@ -161,7 +166,10 @@ const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
 
         <AdvertiserSection advertiserDetail={advertiserDetail || null} />
 
-        <IndicatorsJudementSection advertiserId={selectedAdNum as number} />
+        <IndicatorsJudementSection
+          advertiserId={selectedAdNum as number}
+          handleStatIndicator={(data) => setStatIndicatorInfo(data)}
+        />
       </div>
 
       <RuleSection

@@ -41,6 +41,7 @@ export type SmPayAdvertiserStautsOrderType =
 
 // SMPay 관리 > 광고주 상태 데이터 DTO
 export type SmPayAdvertiserStatusDto = {
+  advertiserId: number;
   userId: number;
   userName: string;
   advertiserCustomerId: number;
