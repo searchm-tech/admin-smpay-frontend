@@ -1,6 +1,6 @@
 // 광고주 smPay 신청 관리 리스트 조회(SAG022)
 
-import { ApiError, get, post, put } from "@/lib/api";
+import { ApiError, get, patch, post, put } from "@/lib/api";
 import { buildQueryParams } from "@/lib/utils";
 import { RequestAgentUser } from "@/types/api/common";
 import {
@@ -12,6 +12,7 @@ import {
   RequestSmPayAdvertiserStatus,
   RequestSmPayApplyList,
   RequestSmPayDetail,
+  RequestSmPayRead,
   RequestSmPayWrite,
   ResponseSmPayAdvertiserApply,
   ResponseSmPayAdvertiserDetail,
@@ -320,6 +321,30 @@ export const getSmPayAuditList = async ({
       ...response,
       content,
     };
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+/**
+ * 광고주 심사 목록 읽음, 미읽음 상태 변경 (최상위 그룹장 전용)(SAG031)
+ * 화면 : SM Pay 심사 상세
+ */
+export const patchSmPayRead = async ({
+  user,
+  advertiserId,
+  isReviewerRead,
+}: RequestSmPayRead): Promise<null> => {
+  const { agentId, userId } = user;
+
+  try {
+    const response = await patch<null>(
+      `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/alarm?isReviewerRead=${isReviewerRead}`
+    );
+    return response;
   } catch (error) {
     if (error instanceof ApiError) {
       throw error;

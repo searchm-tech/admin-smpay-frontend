@@ -216,3 +216,9 @@ export type ResponseSmPayAudit = ResponseWithPagination & {
     no: number;
   })[];
 };
+
+export type RequestSmPayRead = {
+  user: RequestAgentUser;
+  advertiserId: number;
+  isReviewerRead: boolean;
+};
