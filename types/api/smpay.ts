@@ -5,6 +5,7 @@ import {
   SmPayAdvertiserApplyStatus,
   SmPayAdvertiserStatusDto,
   SmPayAdvertiserStautsOrderType,
+  SmPayAuditDto,
   StatIndicator,
 } from "@/types/smpay";
 
@@ -207,4 +208,11 @@ export type ResponseSmPayApplyInfo = {
   approvalMemo: string; // "운영자 메모";
   registerDt: null;
   updateDt: null;
+};
+
+// SM-Pay 심사 > 요청 목록 리스트
+export type ResponseSmPayAudit = ResponseWithPagination & {
+  content: (SmPayAuditDto & {
+    no: number;
+  })[];
 };

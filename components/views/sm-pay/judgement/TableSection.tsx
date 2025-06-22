@@ -14,68 +14,69 @@ import type { SmPayJudgementData } from "@/types/sm-pay";
 import type { TableProps } from "antd";
 
 import { StopInfoModal } from "../manangement/dialog";
+import { TableParams } from "@/types/table";
+import { SmPayAdvertiserStautsOrderType, SmPayAuditDto } from "@/types/smpay";
+import { FilterValue } from "antd/es/table/interface";
 
 type PropsTableSection = {
-  dataSource: SmPayJudgementData[];
-  loading: boolean;
-  pagination: {
-    current: number;
-    pageSize: number;
-    total: number;
-  };
-  onTableChange: TableProps<SmPayJudgementData & { id: number }>["onChange"];
+  tableParams: TableParams;
+  setTableParams: (params: TableParams) => void;
+  total: number;
+  loadingData: boolean;
+  dataSource: SmPayAuditDto[];
 };
 
 const TableSection = ({
+  tableParams,
+  setTableParams,
+  total,
+  loadingData,
   dataSource,
-  loading,
-  pagination,
-  onTableChange,
 }: PropsTableSection) => {
   const router = useRouter();
 
   const [stopModalId, setStopModalId] = useState<string>("");
 
-  const columns: ColumnsType<SmPayJudgementData & { id: number }> = [
+  const columns: ColumnsType<SmPayAuditDto> = [
     {
       title: "No",
-      dataIndex: "no",
-      key: "no",
+      dataIndex: "id",
+      key: "id",
       width: 70,
       sorter: true,
     },
-    {
-      title: "대행사명",
-      dataIndex: "agencyName",
-      key: "agencyName",
-      sorter: true,
-      align: "center",
-    },
-    {
-      title: "담당자명",
-      dataIndex: "departmentName",
-      key: "departmentName",
-      sorter: true,
-      align: "center",
-    },
+    // {
+    //   title: "대행사명",
+    //   dataIndex: "agencyName",
+    //   key: "agencyName",
+    //   sorter: true,
+    //   align: "center",
+    // },
+    // {
+    //   title: "담당자명",
+    //   dataIndex: "departmentName",
+    //   key: "departmentName",
+    //   sorter: true,
+    //   align: "center",
+    // },
     {
       title: "CUSTOMER ID",
-      dataIndex: "customerId",
-      key: "customerId",
+      dataIndex: "advertiserCustomerId",
+      key: "advertiserCustomerId",
       sorter: true,
       align: "center",
     },
     {
       title: "광고주 로그인 ID",
-      dataIndex: "advertiserId",
-      key: "advertiserId",
+      dataIndex: "advertiserLoginId",
+      key: "advertiserLoginId",
       align: "center",
       sorter: true,
     },
     {
       title: "광고주 닉네임",
-      dataIndex: "nickname",
-      key: "nickname",
+      dataIndex: "advertiserNickname",
+      key: "advertiserNickname",
       align: "center",
       sorter: true,
     },
@@ -88,28 +89,30 @@ const TableSection = ({
       render: (text, record) => (
         <div className="flex items-center justify-center gap-2">
           <LinkTextButton
-            onClick={() => router.push(`/sm-pay/judgement/${record.id}`)}
+            onClick={() =>
+              router.push(`/sm-pay/judgement/${record.advertiserId}`)
+            }
           >
             {text}
           </LinkTextButton>
-          {record.advertiserStatus === "new" && <Badge label="new" />}
+          {!record.isReviewerRead && <Badge label="new" />}
         </div>
       ),
     },
     {
       title: "상태",
-      dataIndex: "status",
-      key: "status",
+      dataIndex: "advertiserType",
+      key: "advertiserType",
       align: "center",
       sorter: true,
-      render: (status: string, record: SmPayJudgementData) => {
-        return <span>{status}</span>;
-      },
+      // render: (status: string, record: SmPayJudgementData) => {
+      //   return <span>{status}</span>;
+      // },
     },
     {
       title: "최종 수정 일시",
-      dataIndex: "updatedAt",
-      key: "updatedAt",
+      dataIndex: "registerOrUpdateDt",
+      key: "registerOrUpdateDt",
       align: "center",
       sorter: true,
       render: (date) => {
@@ -117,6 +120,44 @@ const TableSection = ({
       },
     },
   ];
+
+  const handleTableChange: TableProps<SmPayAuditDto>["onChange"] = (
+    pagination,
+    filters,
+    sorter
+  ) => {
+    let orderType: SmPayAdvertiserStautsOrderType = "ADVERTISER_REGISTER_DESC"; // 기본값
+
+    if (sorter && !Array.isArray(sorter) && sorter.field && sorter.order) {
+      const field = sorter.field as string;
+      const order = sorter.order === "ascend" ? "ASC" : "DESC";
+
+      const fieldMap: Record<string, string> = {
+        no: "ADVERTISER_REGISTER",
+        advertiserName: "ADVERTISER_NAME",
+        advertiserCustomerId: "ADVERTISER_CUSTOMER_ID",
+        userId: "ADVERTISER_ID",
+        advertiserType: "ADVERTISER_STATUS",
+        descriptionRegisterDt: "ADVERTISER_REGISTER",
+      };
+
+      const mappedField = fieldMap[field];
+
+      if (mappedField) {
+        orderType = `${mappedField}_${order}` as SmPayAdvertiserStautsOrderType;
+      }
+    }
+
+    setTableParams({
+      ...tableParams,
+      pagination: {
+        current: pagination.current ?? 1,
+        pageSize: pagination.pageSize ?? 10,
+      },
+      filters: filters as Record<string, FilterValue>,
+      orderType: orderType,
+    });
+  };
 
   return (
     <section>
@@ -128,12 +169,17 @@ const TableSection = ({
           onConfirm={() => router.push(`/sm-pay/judgement/${stopModalId}`)}
         />
       )}
-      <Table<SmPayJudgementData & { id: number }>
+      <Table<SmPayAuditDto>
         columns={columns}
         dataSource={dataSource}
-        loading={loading}
-        pagination={pagination}
-        onChange={onTableChange}
+        loading={loadingData}
+        pagination={{
+          ...tableParams.pagination,
+          total,
+          position: ["bottomCenter"],
+          showSizeChanger: true,
+        }}
+        onChange={handleTableChange}
       />
     </section>
   );
