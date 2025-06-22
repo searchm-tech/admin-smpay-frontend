@@ -41,6 +41,7 @@ import type {
   SmPayWriteParams,
   ResponseSmPayDetail,
   ResponseSmPayApplyInfo,
+  ResponseSmPayAudit,
 } from "@/types/api/smpay";
 
 import { useAuthQuery } from "../useAuthQuery";
@@ -56,6 +57,7 @@ import {
   postSmPay,
   getSmPayDetail,
   getSmPayApplyList,
+  getSmPayAuditList,
 } from "@/services/smpay";
 import type { DailyStat } from "@/types/smpay";
 
@@ -262,7 +264,7 @@ export const useSmPayWrite = (
 // 광고주 smPay 신청 이력 상세 조회(SAG026) query
 export const useSmPayDetail = (advertiserId: number, formId: number) => {
   return useAuthQuery<ResponseSmPayDetail>({
-    queryKey: ["/smpay/advertiser-daily-stat", advertiserId],
+    queryKey: ["/smpay/detail", advertiserId],
     queryFn: (user: RequestAgentUser) =>
       getSmPayDetail({ user, advertiserId, formId }),
   });
@@ -271,8 +273,17 @@ export const useSmPayDetail = (advertiserId: number, formId: number) => {
 // 광고주 smPay 신청 이력 리스트 조회(SAG025) query
 export const useSmPayApplyList = (advertiserId: number) => {
   return useAuthQuery<ResponseSmPayApplyInfo[]>({
-    queryKey: ["/smpay/advertiser-daily-stat", advertiserId],
+    queryKey: ["/smpay/apply-list", advertiserId],
     queryFn: (user: RequestAgentUser) =>
       getSmPayApplyList({ user, advertiserId }),
+  });
+};
+
+// 광고주 심사 관리 리스트 조회(최상위 그룹장 전용)(SAG030) query
+export const useSmPayAuditList = (params: QueryParams) => {
+  return useAuthQuery<ResponseSmPayAudit>({
+    queryKey: ["/smpay/audit-list", params],
+    queryFn: (user: RequestAgentUser) =>
+      getSmPayAuditList({ user, queryParams: params }),
   });
 };

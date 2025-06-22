@@ -24,9 +24,10 @@ import { RejectDialog } from "@/components/views/sm-pay/manangement/dialog";
 import {
   useSmPaySubmitDetail,
   useSmPayStatusUpdate,
+  useSmPayAdvertiserDetail,
 } from "@/hooks/queries/sm-pay";
 
-import { STATUS_LABELS } from "@/constants/status";
+import { SmPayAdvertiserStatusLabel, STATUS_LABELS } from "@/constants/status";
 
 import type { AdvertiserData } from "@/types/adveriser";
 
@@ -37,12 +38,16 @@ type SmPayJudgementDetailViewProps = {
 const status = "reject";
 
 const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
+  console.log("id", id);
   const [isApproved, setIsApproved] = useState(false);
   const [isRejectSend, setIsRejectSend] = useState(false);
   const [isReject, setIsReject] = useState(false);
   const [isRestart, setIsRestart] = useState(false);
   const [isSimulation, setIsSimulation] = useState(false);
   const { data: response, isPending } = useSmPaySubmitDetail(id);
+
+  const { data: advertiserDetail, isPending: isLoadingAdvertiserDetail } =
+    useSmPayAdvertiserDetail(Number(id));
 
   const { mutate: updateStatus, isPending: isUpdating } = useSmPayStatusUpdate({
     onSuccess: () => {
@@ -116,12 +121,15 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
         onClick={handleOpenRejectModal}
       />
       <AdvertiseStatusSection
-        isHistory
-        status={response.data ? STATUS_LABELS[response.data.status] : ""}
+        status={
+          advertiserDetail?.status
+            ? SmPayAdvertiserStatusLabel[advertiserDetail?.status]
+            : ""
+        }
       />
-      <AdvertiserSection advertiserDetail={null} />
+      <AdvertiserSection advertiserDetail={advertiserDetail || null} />
 
-      <IndicatorsJudementSection advertiserId={advertiserData?.id || 0} />
+      <IndicatorsJudementSection advertiserId={Number(id)} />
 
       <RuleSection id={"1"} type="show" />
       <ScheduleSection type="show" />

@@ -18,6 +18,7 @@ import {
   ResponseSmPayAdvertiserStatIndicator,
   ResponseSmPayAdvertiserStatus,
   ResponseSmPayApplyInfo,
+  ResponseSmPayAudit,
   ResponseSmPayDetail,
   ResponseSmPayStatusCount,
 } from "@/types/api/smpay";
@@ -275,6 +276,50 @@ export const getSmPayApplyList = async ({
     );
 
     return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+/**
+ * 광고주 심사 관리 리스트 조회(최상위 그룹장 전용)(SAG030)
+ * - 화면 : [최상위 그룹장] > 심사 요청 목록
+ */
+export const getSmPayAuditList = async ({
+  user,
+  queryParams,
+}: RequestSmPayAdvertiserStatus): Promise<ResponseSmPayAudit> => {
+  const { agentId, userId } = user;
+  const paramsResult = buildQueryParams({
+    page: queryParams.page,
+    size: queryParams.size,
+    keyword: queryParams.keyword,
+    orderType: queryParams.orderType,
+  });
+
+  try {
+    const response = await get<ResponseSmPayAudit>(
+      `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/audit/list?${paramsResult}`
+    );
+
+    const { page, size, orderType } = queryParams;
+
+    let content = response.content.map((item, index) => ({
+      ...item,
+      no: (page - 1) * size + index + 1,
+    }));
+
+    if (orderType === "NO_ASC") {
+      content = content.reverse();
+    }
+
+    return {
+      ...response,
+      content,
+    };
   } catch (error) {
     if (error instanceof ApiError) {
       throw error;

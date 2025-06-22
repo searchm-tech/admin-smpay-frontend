@@ -91,4 +91,16 @@ export type PrePaymentSchedule = {
   minChargeLimit: number; // 1; -> 일 최소 충전 한도 값은 없으므로 0으로 해도 되는지
 };
 
-
+// SMPay 심사 > 요청 목록 DTO
+export type SmPayAuditDto = {
+  advertiserId: number;
+  userId: number;
+  userName: string;
+  advertiserCustomerId: number;
+  advertiserLoginId: string;
+  advertiserName: string;
+  advertiserType: SmPayAdvertiserApplyStatus;
+  registerOrUpdateDt: string;
+  isApprovalRead: boolean;
+  isReviewerRead: boolean;
+};
