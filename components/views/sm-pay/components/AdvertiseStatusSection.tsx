@@ -11,18 +11,29 @@ import { LabelBullet } from "@/components/composite/label-bullet";
 import { Modal } from "@/components/composite/modal-components";
 import Table from "@/components/composite/table";
 import { LinkTextButton } from "@/components/composite/button-components";
+import { useSmPayApplyList } from "@/hooks/queries/sm-pay";
+import { ResponseSmPayApplyInfo } from "@/types/api/smpay";
+import { TableProps } from "antd";
 
 type Props = {
   status: string;
   isHistory?: boolean;
+  advertiserId?: number;
 };
 
-const AdvertiseStatusSection = ({ status, isHistory = false }: Props) => {
+const AdvertiseStatusSection = ({
+  status,
+  isHistory = false,
+  advertiserId,
+}: Props) => {
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
   return (
     <section>
       {isHistoryModalOpen && (
-        <HistoryModal onClose={() => setIsHistoryModalOpen(false)} />
+        <HistoryModal
+          onClose={() => setIsHistoryModalOpen(false)}
+          advertiserId={advertiserId}
+        />
       )}
       <div className="flex items-center gap-4 py-4">
         <LabelBullet labelClassName="text-base font-bold">
@@ -48,34 +59,28 @@ export default AdvertiseStatusSection;
 
 type HistoryModalProps = {
   onClose: () => void;
+  advertiserId?: number;
 };
-const HistoryModal = ({ onClose }: HistoryModalProps) => {
+const HistoryModal = ({ onClose, advertiserId }: HistoryModalProps) => {
   const router = useRouter();
-  const columns = [
+
+  const { data: dataSource } = useSmPayApplyList(advertiserId || 0);
+  const columns: TableProps<ResponseSmPayApplyInfo>["columns"] = [
     {
-      title: "No",
-      dataIndex: "id",
-      key: "id",
+      title: "광고주 신청서 ID",
+      dataIndex: "advertiserFormId",
+      key: "advertiserFormId",
+    },
+
+    {
+      title: "광고주 대표자명",
+      dataIndex: "advertiserRepresentativeName",
+      key: "advertiserRepresentativeName",
     },
     {
-      title: "담당자",
-      dataIndex: "manager",
-      key: "manager",
-    },
-    {
-      title: "CUSTOMER ID",
-      dataIndex: "customerId",
-      key: "customerId",
-    },
-    {
-      title: "광고주 로그인 ID",
-      dataIndex: "advertiserName",
-      key: "advertiserName",
-    },
-    {
-      title: "광고주 닉네임",
-      dataIndex: "nickname",
-      key: "nickname",
+      title: "advertiserNickname",
+      dataIndex: "advertiserNickname",
+      key: "광고주 닉네임",
     },
     {
       title: "광고주명",
@@ -91,8 +96,8 @@ const HistoryModal = ({ onClose }: HistoryModalProps) => {
     },
     {
       title: "최종 상태",
-      dataIndex: "status",
-      key: "status",
+      dataIndex: "advertiserStatus",
+      key: "advertiserStatus",
     },
     {
       title: "최종 수정 일시",
@@ -109,36 +114,8 @@ const HistoryModal = ({ onClose }: HistoryModalProps) => {
       cancelDisabled
     >
       <div className="w-[85vw] overflow-y-auto">
-        <Table
-          dataSource={[
-            {
-              id: 1,
-              manager: "김철수",
-              customerId: "1234567890",
-              advertiserName: "광고주명",
-              nickname: "광고주닉네임",
-              status: "승인",
-              updatedAt: "2021-01-01",
-            },
-            {
-              id: 2,
-              manager: "김철수",
-              customerId: "1234567890",
-              advertiserName: "광고주명",
-              nickname: "광고주닉네임",
-              status: "승인",
-              updatedAt: "2021-01-01",
-            },
-            {
-              id: 3,
-              manager: "김철수",
-              customerId: "1234567890",
-              advertiserName: "광고주명",
-              nickname: "광고주닉네임",
-              status: "승인",
-              updatedAt: "2021-01-01",
-            },
-          ]}
+        <Table<ResponseSmPayApplyInfo>
+          dataSource={dataSource}
           columns={columns}
         />
       </div>

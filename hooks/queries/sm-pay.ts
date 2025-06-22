@@ -40,6 +40,7 @@ import type {
   ResponseSmPayAdvertiserStatIndicator,
   SmPayWriteParams,
   ResponseSmPayDetail,
+  ResponseSmPayApplyInfo,
 } from "@/types/api/smpay";
 
 import { useAuthQuery } from "../useAuthQuery";
@@ -54,6 +55,7 @@ import {
   getSmPayAdvertiserDailyStat,
   postSmPay,
   getSmPayDetail,
+  getSmPayApplyList,
 } from "@/services/smpay";
 import type { DailyStat } from "@/types/smpay";
 
@@ -263,5 +265,14 @@ export const useSmPayDetail = (advertiserId: number, formId: number) => {
     queryKey: ["/smpay/advertiser-daily-stat", advertiserId],
     queryFn: (user: RequestAgentUser) =>
       getSmPayDetail({ user, advertiserId, formId }),
+  });
+};
+
+// 광고주 smPay 신청 이력 리스트 조회(SAG025) query
+export const useSmPayApplyList = (advertiserId: number) => {
+  return useAuthQuery<ResponseSmPayApplyInfo[]>({
+    queryKey: ["/smpay/advertiser-daily-stat", advertiserId],
+    queryFn: (user: RequestAgentUser) =>
+      getSmPayApplyList({ user, advertiserId }),
   });
 };
