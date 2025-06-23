@@ -88,6 +88,8 @@ const TableSection = ({
       sorter: true,
       render: (text, record) => (
         <div className="flex items-center justify-center gap-2">
+          {!record.isReviewerRead && <Badge label="new" />}
+
           <LinkTextButton
             onClick={() =>
               router.push(`/sm-pay/judgement/${record.advertiserId}`)
@@ -95,7 +97,6 @@ const TableSection = ({
           >
             {text}
           </LinkTextButton>
-          {!record.isReviewerRead && <Badge label="new" />}
         </div>
       ),
     },
@@ -105,9 +106,6 @@ const TableSection = ({
       key: "advertiserType",
       align: "center",
       sorter: true,
-      // render: (status: string, record: SmPayJudgementData) => {
-      //   return <span>{status}</span>;
-      // },
     },
     {
       title: "최종 수정 일시",
@@ -115,9 +113,7 @@ const TableSection = ({
       key: "registerOrUpdateDt",
       align: "center",
       sorter: true,
-      render: (date) => {
-        return <span>{formatDate(date)}</span>;
-      },
+      render: (date) => formatDate(date),
     },
   ];
 

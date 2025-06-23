@@ -7,13 +7,8 @@ import { ConfirmDialog } from "@/components/composite/modal-components";
 
 import LoadingUI from "@/components/common/Loading";
 
-import RuleSection from "@/components/views/sm-pay/components/RuleSection";
 import OperationMemoSection from "@/components/views/sm-pay/components/OperationMemoSection";
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
-import ScheduleSection from "@/components/views/sm-pay/components/ScheduleSection";
-import AdvertiseStatusSection from "@/components/views/sm-pay/components/AdvertiseStatusSection";
-import AdvertiserSection from "@/components/views/sm-pay/components/AdvertiserSection";
-import IndicatorsJudementSection from "@/components/views/sm-pay/components/IndicatorsJudementSection";
 import AdvertiserSimulationModal from "@/components/views/sm-pay/components/AdvertiserSimulationModal";
 import GuidSection from "@/components/views/sm-pay/components/GuideSection";
 
@@ -26,11 +21,16 @@ import {
   useSmPayStatusUpdate,
   useSmPayAdvertiserDetail,
   useSmPayRead,
+  useSmPayDetail,
 } from "@/hooks/queries/sm-pay";
 
-import { SmPayAdvertiserStatusLabel, STATUS_LABELS } from "@/constants/status";
+import AdvertiserInfoSection from "../../components/AdvertiserInfoSection";
+import StatIndicatorSection from "../../components/StatIndicatorSection";
+import RuleSection2 from "../../components/RuleSection2";
+import ScheduleSection2 from "../../components/ScheduleSection2";
 
 import type { AdvertiserData } from "@/types/adveriser";
+import type { ChargeRule } from "@/types/smpay";
 
 type SmPayJudgementDetailViewProps = {
   id: string;
@@ -46,8 +46,24 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
   const [isRestart, setIsRestart] = useState(false);
   const [isSimulation, setIsSimulation] = useState(false);
 
-  const { data: advertiserDetail, isPending: isLoadingAdvertiserDetail } =
-    useSmPayAdvertiserDetail(Number(id));
+  const [upChargeRule, setUpChargeRule] = useState<ChargeRule>({
+    standardRoasPercent: 0,
+    rangeType: "UP",
+    boundType: "FIXED_AMOUNT",
+    changePercentOrValue: 0,
+  });
+
+  const [downChargeRule, setDownChargeRule] = useState<ChargeRule>({
+    standardRoasPercent: 0,
+    rangeType: "DOWN",
+    boundType: "FIXED_AMOUNT",
+    changePercentOrValue: 0,
+  });
+
+  const { data: smpayInfo, isPending: loading } = useSmPayDetail(
+    Number(id),
+    Number(0)
+  );
 
   const { mutate: updateStatus, isPending: isUpdating } = useSmPayStatusUpdate({
     onSuccess: () => {
@@ -62,14 +78,51 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
   };
 
   useEffect(() => {
-    if (id && advertiserDetail) {
+    if (id && smpayInfo) {
       patchRead({ advertiserId: Number(id), isReviewerRead: true });
     }
-  }, [advertiserDetail, id]);
+
+    if (smpayInfo) {
+      const { advertiserStandardRoasPercent, chargeRules } = smpayInfo;
+
+      const findUpChargeRule = chargeRules.find(
+        (rule) => rule.rangeType === "UP"
+      );
+      const findDownChargeRule = chargeRules.find(
+        (rule) => rule.rangeType === "DOWN"
+      );
+
+      if (findUpChargeRule) {
+        setUpChargeRule({
+          ...findUpChargeRule,
+          standardRoasPercent: advertiserStandardRoasPercent,
+        });
+      }
+      if (findDownChargeRule) {
+        setDownChargeRule({
+          ...findDownChargeRule,
+          standardRoasPercent: advertiserStandardRoasPercent,
+        });
+      }
+    }
+  }, [smpayInfo, id]);
+
+  const prePaymentSchedule = {
+    initialAmount: smpayInfo?.initialAmount || 0,
+    maxChargeLimit: smpayInfo?.maxChargeLimit || 0,
+    minChargeLimit: smpayInfo?.minChargeLimit || 0,
+  };
+
+  const statIndicator = {
+    operationPeriod: smpayInfo?.advertiserOperationPeriod || 0,
+    dailyAverageRoas: smpayInfo?.advertiserDailyAverageRoas || 0,
+    monthlyConvAmt: smpayInfo?.advertiserMonthlyConvAmt || 0,
+    dailySalesAmt: smpayInfo?.advertiserDailySalesAmt || 0,
+    recommendRoas: smpayInfo?.advertiserRecommendRoasPercent || 0,
+  };
 
   return (
     <div>
-      {(isLoadingAdvertiserDetail || isUpdating) && <LoadingUI />}
       {isApproved && (
         <ApproveModal
           onClose={() => setIsApproved(false)}
@@ -108,26 +161,28 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
       )}
 
       <GuidSection
-        viewType="master-judgement"
-        onClick={handleOpenRejectModal}
-      />
-      <AdvertiseStatusSection
-        status={
-          advertiserDetail?.status
-            ? SmPayAdvertiserStatusLabel[advertiserDetail?.status]
-            : ""
+        viewType={
+          smpayInfo?.advertiserStatus === "OPERATION_REJECT"
+            ? "reject"
+            : "master-judgement"
         }
       />
-      <AdvertiserSection advertiserDetail={advertiserDetail || null} />
 
-      <IndicatorsJudementSection advertiserId={Number(id)} />
+      <AdvertiserInfoSection advertiserId={Number(id)} isHistory />
 
-      <RuleSection type="show" />
-      <ScheduleSection type="show" />
+      <StatIndicatorSection
+        advertiserId={Number(id)}
+        statIndicator={statIndicator}
+      />
 
-      <JudgementMemoSection type="show" />
-
-      <OperationMemoSection type="write" />
+      <RuleSection2
+        type="show"
+        upChargeRule={upChargeRule}
+        downChargeRule={downChargeRule}
+      />
+      <ScheduleSection2 type="show" prePaymentSchedule={prePaymentSchedule} />
+      <JudgementMemoSection type="show" text={smpayInfo?.reviewerMemo || ""} />
+      <OperationMemoSection type="write" text={smpayInfo?.approvalMemo || ""} />
 
       {status === "reject" && (
         <div className="flex justify-center gap-4 py-5">

@@ -76,12 +76,6 @@ export interface SmPayStopInfoResponse {
   success: boolean;
 }
 
-export interface SmPayJudgementDataResponse {
-  data: SmPayJudgementData[];
-  total: number;
-  success: boolean;
-}
-
 /**
  * api Response Type
  */

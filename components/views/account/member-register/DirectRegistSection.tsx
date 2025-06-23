@@ -210,11 +210,11 @@ const DirectRegistSection = ({ user }: TViewProps) => {
       // 시스템 관리자 일 경우, 최상위 그룹장 직접 등록
       const data: RequestAgencyGroupMasterDirect = {
         userType: "AGENCY_GROUP_MASTER",
+        agentId: Number(selectedAgency.agentId),
         name,
         emailAddress: `${emailId}@${selectedAgency?.domainName}`,
         password,
         phoneNumber: phone,
-        agentId: Number(selectedAgency?.agentId),
       };
       mutateAddGroupMasterDirect(data);
     }

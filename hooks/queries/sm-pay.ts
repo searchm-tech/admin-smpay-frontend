@@ -6,7 +6,6 @@ import {
 
 import {
   fetchSmPayData,
-  getSmPayJudgementData,
   getSmPayRejectReason,
   getSmPayStatus,
   getSmPayStopInfo,
@@ -19,7 +18,6 @@ import type {
   TableParams,
   SmPayResponse,
   SmPaySubmitDetailResponse,
-  SmPayJudgementDataResponse,
   SmPayStopInfoResponse,
   SmPayStatusResponse,
 } from "@/services/types";
@@ -129,13 +127,6 @@ export const useSmPayStatusUpdate = (
   });
 };
 
-export const useSmPayJudgementData = (params: TableParams) => {
-  return useQuery<SmPayJudgementDataResponse>({
-    queryKey: ["/smpay/judgement-data", params],
-    queryFn: () => getSmPayJudgementData(params),
-  });
-};
-
 // ------------- 실제 react-query -----------
 
 // 광고주 상태 갯수 조회(SAG020) query
@@ -238,9 +229,10 @@ export const useSmPayWrite = (
 // 광고주 smPay 신청 이력 상세 조회(SAG026) query
 export const useSmPayDetail = (advertiserId: number, formId: number) => {
   return useAuthQuery<SmPayDetailDto>({
-    queryKey: ["/smpay/detail", advertiserId],
+    queryKey: ["/smpay/detail", advertiserId, formId],
     queryFn: (user: RequestAgentUser) =>
       getSmPayDetail({ user, advertiserId, formId }),
+    enabled: !!advertiserId && !!formId && !isNaN(formId),
   });
 };
 
