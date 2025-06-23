@@ -1,4 +1,4 @@
-export type SmPayAdvertiserApplyStatus =
+export type SmPayAdvertiserStatus =
   | "UNSYNC_ADVERTISER"
   | "APPLICABLE"
   | "WAIT_REVIEW"
@@ -22,7 +22,7 @@ export type SmPayAdvertiserApplyDto = {
   advertiserLoginId: string;
   advertiserNickName: number;
   advertiserName: string;
-  advertiserType: SmPayAdvertiserApplyStatus;
+  advertiserType: SmPayAdvertiserStatus;
   registerOrUpdateDt: string;
 };
 
@@ -47,7 +47,7 @@ export type SmPayAdvertiserStatusDto = {
   advertiserCustomerId: number;
   advertiserLoginId: string;
   advertiserName: string;
-  advertiserType: SmPayAdvertiserApplyStatus;
+  advertiserType: SmPayAdvertiserStatus;
   description: string;
   descriptionRegisterDt: string;
   registerOrUpdateDt: string;
@@ -99,7 +99,7 @@ export type SmPayAuditDto = {
   advertiserCustomerId: number;
   advertiserLoginId: string;
   advertiserName: string;
-  advertiserType: SmPayAdvertiserApplyStatus;
+  advertiserType: SmPayAdvertiserStatus;
   registerOrUpdateDt: string;
   isApprovalRead: boolean;
   isReviewerRead: boolean;

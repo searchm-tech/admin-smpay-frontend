@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -31,14 +33,12 @@ import {
 } from "@/types/api/smpay";
 
 type ViewWrieProps = {
-  selectedAdNum: number | null;
-  onSubmit: () => void;
-  onCancel: () => void;
+  id: number;
 };
 
-const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
+const SMPayMasterApplyWriteForm = ({ id }: ViewWrieProps) => {
   const { data: advertiserDetail, isPending: isLoadingAdvertiserDetail } =
-    useSmPayAdvertiserDetail(selectedAdNum ? selectedAdNum : 0);
+    useSmPayAdvertiserDetail(id);
 
   const [writeModal, setWriteModal] = useState<ApplyWriteModalStatus | null>(
     null
@@ -79,7 +79,7 @@ const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
     // 동의 요청 완료
     if (writeModal === "send-success") {
       setWriteModal(null);
-      onSubmit();
+      //   onSubmit();
       return;
     }
   };
@@ -125,7 +125,7 @@ const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
       reviewerMemo,
     };
     mutateSendAdAgree({
-      advertiserId: selectedAdNum || 0,
+      advertiserId: id,
       params,
     });
   };
@@ -167,7 +167,7 @@ const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
         <AdvertiserSection advertiserDetail={advertiserDetail || null} />
 
         <IndicatorsJudementSection
-          advertiserId={selectedAdNum as number}
+          advertiserId={id}
           handleStatIndicator={(data) => setStatIndicatorInfo(data)}
         />
       </div>
@@ -198,7 +198,7 @@ const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
         <Button className="w-[150px]" onClick={handleSendAdAgree}>
           광고주 동의 요청 발송
         </Button>
-        <Button variant="cancel" className="w-[150px]" onClick={onCancel}>
+        <Button variant="cancel" className="w-[150px]" onClick={() => {}}>
           취소
         </Button>
       </div>
@@ -206,4 +206,4 @@ const ViewWrite = ({ onSubmit, onCancel, selectedAdNum }: ViewWrieProps) => {
   );
 };
 
-export default ViewWrite;
+export default SMPayMasterApplyWriteForm;

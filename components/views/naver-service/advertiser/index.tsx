@@ -4,11 +4,11 @@ import { useState } from "react";
 import SearchSection from "./SearchSection";
 import TableSection from "./TableSection";
 import { AdvertiserGuideSection } from "../GuideSection";
-import { defaultTableParams } from "../constants";
 
 import { Separator } from "@/components/ui/separator";
 
 import { useQueryAdvertiserList } from "@/hooks/queries/advertiser";
+import { defaultTableParams } from "../constants";
 
 import type { TableParams } from "@/types/table";
 import type { AdvertiserOrderType } from "@/types/adveriser";
@@ -27,21 +27,30 @@ const AdvertiserView = ({ user }: { user?: UserWithUniqueCode }) => {
   const [tableParams, setTableParams] =
     useState<TableParamsAdvertiser>(defaultTableParams);
 
-  const {
-    data: dataSource,
-    isPending: isLoadingAgencys,
-    refetch,
-  } = useQueryAdvertiserList({
-    page: tableParams.pagination?.current || 1,
-    size: tableParams.pagination?.pageSize || 10,
-    keyword: search,
-    orderType: tableParams.sortField as AdvertiserOrderType,
-    agentId: session?.user.agentId,
-    userId: session?.user.userId,
-  });
+  const { data: dataSource, isPending: isLoadingAgencys } =
+    useQueryAdvertiserList({
+      page: tableParams.pagination?.current || 1,
+      size: tableParams.pagination?.pageSize || 10,
+      keyword: search,
+      orderType: tableParams.sortField as AdvertiserOrderType,
+      agentId: session?.user.agentId,
+      userId: session?.user.userId,
+    });
 
   const handleSearch = (keyword: string) => {
     setSearch(keyword);
+    setTableParams({
+      ...tableParams,
+      pagination: {
+        ...tableParams.pagination,
+        current: 1,
+        pageSize: 10,
+      },
+    });
+  };
+
+  const handleReset = () => {
+    setSearch("");
     setTableParams({
       ...tableParams,
       pagination: {
@@ -63,7 +72,7 @@ const AdvertiserView = ({ user }: { user?: UserWithUniqueCode }) => {
         tableParams={tableParams}
         setTableParams={setTableParams}
         total={dataSource?.totalCount || 0}
-        refetch={refetch}
+        refetch={handleReset}
       />
 
       <Separator className="my-4 mt-12 mx-auto" variant="dotted" />

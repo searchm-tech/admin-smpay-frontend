@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState, type KeyboardEvent } from "react";
 
 import { SearchBox } from "@/components/common/Box";
 import { Button } from "@/components/ui/button";
@@ -8,54 +9,42 @@ import { Radio } from "@/components/composite/radio-component";
 import Table from "@/components/composite/table";
 import { SearchInput } from "@/components/composite/input-components";
 import { LabelBullet } from "@/components/composite/label-bullet";
+import { ConfirmDialog } from "@/components/composite/modal-components";
 
-import EditModal from "./EditModal";
-import CreateModal from "./RegisterModal";
+import ModalEdit from "./ModalEdit";
+import ModalCreate from "./ModalCreate";
 
 import { ColumnTooltip } from "@/constants/table";
+import { ADVERTISER_STATUS_MAP } from "@/constants/status";
 import { useSmPayAdvertiserApplyList } from "@/hooks/queries/sm-pay";
 
 import { cn } from "@/lib/utils";
 
-import type { TableProps } from "antd";
-import type { TableParams } from "@/types/table";
+import type { TableParams, TableProps, FilterValue } from "@/types/table";
 import type {
-  SmPayAdvertiserApplyStatus,
+  SmPayAdvertiserStatus,
   SmPayAdvertiserApplyDto as TAdvertiser,
 } from "@/types/smpay";
+import type { AdvertiserOrderType } from "@/types/adveriser";
+import { type ModalInfo, defaultTable } from "./constants";
 
-type ViewListProps = {
-  onCancel: () => void;
-  onSubmit: (id: number) => void;
-};
-
-const defaultTableParams = {
-  pagination: {
-    current: 1,
-    pageSize: 10,
-    total: 0,
-  },
-  sortField: "ADVERTISER_REGISTER_DESC",
-};
-
-const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
+const ViewList = () => {
+  const router = useRouter();
   const [search, setSearch] = useState<string>("");
-  const [searchKeyword, setSearchKeyword] = useState<string>("");
-  const [tableParams, setTableParams] =
-    useState<TableParams>(defaultTableParams);
+  const [keyword, setKeyword] = useState<string>("");
+  const [tableParams, setTableParams] = useState<TableParams>(defaultTable);
 
-  const { data: advertiserApplyRes } = useSmPayAdvertiserApplyList({
+  const [selected, setSelected] = useState<number | null>(null);
+  const [modalInfo, setModalInfo] = useState<ModalInfo | null>(null);
+
+  const [isError, setIsError] = useState(false);
+
+  const { data: advertiserApplyRes, isPending } = useSmPayAdvertiserApplyList({
     page: tableParams.pagination?.current || 1,
     size: tableParams.pagination?.pageSize || 10,
-    keyword: searchKeyword,
-    orderType: tableParams.sortField as SmPayAdvertiserApplyStatus,
+    orderType: tableParams.sortField as SmPayAdvertiserStatus,
+    keyword,
   });
-
-  const [selectedRowKey, setSelectedRowKey] = useState<string | number | null>(
-    null
-  );
-  const [editData, setEditData] = useState<TAdvertiser | null>(null);
-  const [registData, setRegistData] = useState<TAdvertiser | null>(null);
 
   const columns: TableProps<TAdvertiser>["columns"] = [
     {
@@ -71,10 +60,17 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
       sorter: true,
     },
     {
-      title: "광고주명",
+      title: "광고주 닉네임",
       dataIndex: "advertiserNickName",
       align: "center",
       sorter: true,
+    },
+    {
+      title: "광고주명",
+      dataIndex: "advertiserName",
+      align: "center",
+      sorter: true,
+      render: (value) => value || "-",
     },
     {
       title: ColumnTooltip.info_change,
@@ -84,11 +80,25 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
       render: (_, record) => {
         if (!record.advertiserName) {
           return (
-            <Button onClick={() => setRegistData(record)}>정보 등록</Button>
+            <Button
+              onClick={() => {
+                setModalInfo({
+                  type: "create",
+                  advertiserId: record.advertiserId,
+                });
+              }}
+            >
+              정보 등록
+            </Button>
           );
         }
         return (
-          <Button variant="cancel" onClick={() => setEditData(record)}>
+          <Button
+            variant="cancel"
+            onClick={() => {
+              setModalInfo({ type: "edit", advertiserId: record.advertiserId });
+            }}
+          >
             정보 변경
           </Button>
         );
@@ -98,8 +108,8 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
       title: ColumnTooltip.status,
       dataIndex: "advertiserType",
       align: "center",
-      render: (type: SmPayAdvertiserApplyStatus) => {
-        return ADVERTISER_STATUS_MAP[type as SmPayAdvertiserApplyStatus];
+      render: (type: SmPayAdvertiserStatus) => {
+        return ADVERTISER_STATUS_MAP[type as SmPayAdvertiserStatus];
       },
       sorter: true,
     },
@@ -112,8 +122,8 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
   ];
 
   const handleSearch = () => {
-    setSearchKeyword(search);
-    setSelectedRowKey(null);
+    setKeyword(search);
+    setSelected(null);
     setTableParams((prev) => ({
       ...prev,
       pagination: {
@@ -125,28 +135,94 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
     }));
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleTableChange: TableProps<TAdvertiser>["onChange"] = (
+    pagination,
+    filters,
+    sorter
+  ) => {
+    let sortField: AdvertiserOrderType = "ADVERTISER_REGISTER_DESC"; // 기본값
+
+    if (sorter && !Array.isArray(sorter) && sorter.field && sorter.order) {
+      const field = sorter.field as string;
+      const order = sorter.order === "ascend" ? "ASC" : "DESC";
+
+      // field 이름을 API에서 요구하는 형식으로 변환
+      const fieldMap: Record<string, string> = {
+        advertiserId: "ADVERTISER_ID",
+        advertiserLoginId: "ADVERTISER_LOGIN_ID",
+        advertiserNickName: "ADVERTISER_NICKNAME",
+        advertiserName: "ADVERTISER_NAME",
+        advertiserType: "ADVERTISER_TYPE",
+        registerOrUpdateDt: "ADVERTISER_REGISTER_TIME",
+      };
+
+      const mappedField = fieldMap[field];
+
+      if (mappedField) {
+        sortField = `${mappedField}_${order}` as AdvertiserOrderType;
+      }
+    }
+
+    setTableParams({
+      pagination: {
+        current: pagination.current ?? 1,
+        pageSize: pagination.pageSize ?? 10,
+      },
+      filters: filters as Record<string, FilterValue>,
+      keyword: tableParams.keyword, // 기존 keyword 유지
+      sortOrder: undefined, // TAgencyOrder를 사용하므로 불필요
+      sortField: sortField,
+    });
+  };
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       handleSearch();
     }
   };
 
+  const handleWrite = () => {
+    if (!selected) {
+      return;
+    }
+
+    const findAdvertiser = advertiserApplyRes?.content.find(
+      (item) => item.advertiserId === selected
+    );
+
+    if (findAdvertiser && !findAdvertiser.advertiserName) {
+      setIsError(true);
+      return;
+    }
+    router.push(
+      `/sm-pay/management/apply-write/${findAdvertiser?.advertiserId}`
+    );
+  };
+
   return (
-    <section className="mt-4">
-      {editData && (
-        <EditModal
-          onClose={() => setEditData(null)}
-          advertiserId={editData.advertiserId}
+    <section>
+      {isError && (
+        <ConfirmDialog
+          open
+          content="광고주 정보를 등록해주세요."
+          onClose={() => setIsError(false)}
+          onConfirm={() => setIsError(false)}
         />
       )}
-      {registData && (
-        <CreateModal
-          onClose={() => setRegistData(null)}
-          onConfirm={() => {
-            setRegistData(null);
-            handleSearch();
-          }}
-          advertiserId={registData.advertiserId}
+      {modalInfo?.type === "edit" && (
+        <ModalEdit
+          refetch={handleSearch}
+          onConfirm={() => setModalInfo(null)}
+          onClose={() => setModalInfo(null)}
+          advertiserId={modalInfo.advertiserId}
+        />
+      )}
+      {modalInfo?.type === "create" && (
+        <ModalCreate
+          refetch={handleSearch}
+          onClose={() => setModalInfo(null)}
+          onConfirm={() => setModalInfo(null)}
+          advertiserId={modalInfo.advertiserId}
         />
       )}
       <div>
@@ -173,23 +249,28 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
           rowKey={(record) => record.advertiserId}
           columns={columns}
           dataSource={advertiserApplyRes?.content ?? []}
-          total={advertiserApplyRes?.totalCount ?? 0}
-          loading={false}
+          pagination={{
+            current: tableParams.pagination?.current || 1,
+            pageSize: tableParams.pagination?.pageSize || 10,
+            total: advertiserApplyRes?.totalCount ?? 0,
+          }}
+          loading={isPending}
+          onChange={handleTableChange}
           rowSelection={{
             type: "radio",
-            onChange: (selectedRowKeys) =>
-              setSelectedRowKey(selectedRowKeys[0] as number),
+            columnWidth: 50,
+            columnTitle: "No",
+            onChange: (selected) => setSelected(selected[0] as number),
             getCheckboxProps: (record) => ({
               disabled: isRowDisabled(record),
             }),
-            columnWidth: 50,
-            columnTitle: "No",
+
             renderCell: (_, record) => {
               return (
                 <Radio
-                  checked={selectedRowKey === record.advertiserId}
+                  checked={selected === record.advertiserId}
                   disabled={isRowDisabled(record)}
-                  onClick={() => setSelectedRowKey(record.advertiserId)}
+                  onClick={() => setSelected(record.advertiserId)}
                 />
               );
             },
@@ -203,12 +284,16 @@ const ViewList = ({ onCancel, onSubmit }: ViewListProps) => {
       <div className="flex justify-center gap-4 py-5">
         <Button
           className="w-[150px]"
-          onClick={() => onSubmit?.(selectedRowKey as number)}
-          disabled={!selectedRowKey}
+          disabled={!selected}
+          onClick={handleWrite}
         >
           신청
         </Button>
-        <Button variant="cancel" className="w-[150px]" onClick={onCancel}>
+        <Button
+          variant="cancel"
+          className="w-[150px]"
+          onClick={() => router.push("/sm-pay/management")}
+        >
           취소
         </Button>
       </div>
@@ -220,22 +305,4 @@ export default ViewList;
 
 const isRowDisabled = (record: TAdvertiser) => {
   return record.advertiserType !== "APPLICABLE";
-};
-
-export const ADVERTISER_STATUS_MAP = {
-  UNSYNC_ADVERTISER: "광고주 비동기화",
-  APPLICABLE: "신청 가능",
-  WAIT_REVIEW: "심사 대기",
-  REJECT: "심사 반려",
-  OPERATION_REVIEW: "운영 검토 대기",
-  OPERATION_REJECT: "운영 검토 거절",
-  OPERATION_REVIEW_SUCCESS: "운영 검토 완료",
-  ADVERTISER_AGREE_WAIT: "광고주 동의 대기",
-  ADVERTISER_AGREE_TIME_EXPIRE: "광고주 동의 기한 만료",
-  CANCEL: "신청 취소",
-  REGISTER_WITHDRAW_ACCOUNT_FAIL: "출금 계좌 등록 실패",
-  OPERATION: "운영중",
-  PAUSE: "일시중지",
-  TERMINATE_WAIT: "해지 대기",
-  TERMINATE: "해지",
 };
