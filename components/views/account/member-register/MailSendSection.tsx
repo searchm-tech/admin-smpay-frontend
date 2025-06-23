@@ -187,8 +187,8 @@ const MailSendSection = ({ user }: TViewProps) => {
       }
 
       const params: RequestGroupMasterInvite = {
-        agentId: Number(selectedAgency),
         userType: "AGENCY_GROUP_MASTER", // user.type,
+        agentId: Number(selectedAgency.agentId),
         name,
         emailAddress: `${emailId}@${selectedAgency.domainName}`,
       };
@@ -206,6 +206,10 @@ const MailSendSection = ({ user }: TViewProps) => {
       setSelectedAgency(findAgency);
     }
   };
+
+  console.log("agencyInfo", agencyInfo);
+  console.log("selectedAgency", selectedAgency);
+  console.log("agencyList", agencyList);
 
   return (
     <section className="py-4">

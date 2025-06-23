@@ -6,8 +6,6 @@ import TableSection from "./TableSection";
 import SearchSection from "./SearchSection";
 import GuidSection from "@/components/views/sm-pay/components/GuideSection";
 
-import { useSmPayJudgementData } from "@/hooks/queries/sm-pay";
-
 import type { TableProps } from "antd";
 import type { SmPayJudgementData } from "@/types/sm-pay";
 
@@ -39,23 +37,11 @@ const SmPayAdminOverviewView = () => {
     setSortOrder(undefined);
   };
 
-  const { data: judgementData, isPending: loadingTable } =
-    useSmPayJudgementData({
-      pagination: { current: page, pageSize },
-      sort:
-        sortField && sortOrder
-          ? { field: sortField, order: sortOrder }
-          : undefined,
-      filters: {
-        search: search ? [search] : [""],
-      },
-    });
-
   return (
     <div>
       <GuidSection viewType="smpay-guide" />
       <SearchSection onSearch={handleSearch} />
-      <TableSection
+      {/* <TableSection
         dataSource={judgementData?.data || []}
         loading={loadingTable}
         pagination={{
@@ -64,7 +50,7 @@ const SmPayAdminOverviewView = () => {
           total: judgementData?.total || 0,
         }}
         onTableChange={handleTableChange}
-      />
+      /> */}
     </div>
   );
 };
