@@ -6,7 +6,6 @@ import {
   SmPayAdvertiserStatusDto,
   SmPayAdvertiserStautsOrderType,
   SmPayAuditDto,
-  StatIndicator,
 } from "@/types/smpay";
 
 import { RequestAgentUser, ResponseWithPagination } from "./common";
@@ -79,7 +78,7 @@ export type WithAdvertiserId = {
 };
 
 // 광고주 detail 조회(SAG024) response type
-export type ResponseSmPayAdvertiserDetail = {
+export type AdvertiserDetailDto = {
   advertiserId: number;
   userId: number;
   customerId: number;
@@ -109,6 +108,7 @@ export type PutSmPayAdvertiserDetail = {
 };
 
 // 광고주 성과 기반 참고용 심사 지표 조회(28일)(SAG028) response type
+// TODO : 제거 예정
 export type ResponseSmPayAdvertiserStatIndicator = {
   operationPeriod: number; // 운영 기간
   dailyAverageRoas: number; // 일별 평균 ROAS 1.0,
@@ -118,16 +118,25 @@ export type ResponseSmPayAdvertiserStatIndicator = {
 };
 
 // 광고주 smPay 등록(SAG029) request type
-export interface RequestSmPayWrite extends WithAdvertiserId {
-  params: SmPayWriteParams;
-}
+export type StatIndicatorParams = {
+  operationPeriod: number; //  1;
+  dailyAverageRoas: number; //1.0;
+  monthlyConvAmt: number; //1.0;
+  dailySalesAmt: number; //1.0;
+  recommendRoasPercent: number; // 1.0;
+};
 
 export type SmPayWriteParams = {
-  statIndicator: StatIndicator;
+  statIndicator: StatIndicatorParams;
   chargeRule: ChargeRule[];
   prePaymentSchedule: PrePaymentSchedule;
   reviewerMemo: string;
 };
+
+// 광고주 smPay 등록(SAG029) request type
+export interface RequestSmPayWrite extends WithAdvertiserId {
+  params: SmPayWriteParams;
+}
 
 // 광고주 smPay 신청 이력 상세 조회(SAG026) response type
 export type ResponseSmPayDetail = {

@@ -1,8 +1,4 @@
-import type {
-  ActionButton,
-  SmPayJudgementStatus,
-  SmPayStatus,
-} from "@/types/sm-pay";
+import type { ActionButton, SmPayStatus } from "@/types/sm-pay";
 import type { SmPayAdvertiserStatus } from "@/types/smpay";
 
 export const SM_PAY_STATUS_LIST: { label: string; value: string }[] = [
@@ -72,15 +68,6 @@ export const STATUS_LABELS: Record<SmPayStatus, string> = {
   APPLICATION_CANCELLED: "신청 취소",
   WITHDRAWAL_ACCOUNT_REGISTRATION_FAILED: "출금계좌 등록 실패",
   OPERATING: "운영 중",
-};
-
-export const JUDGEMENT_STATUS_MAP: Record<SmPayJudgementStatus, string> = {
-  REVIEW_REQUEST: "심사 요청",
-  APPROVED: "승인",
-  REJECTED: "반려",
-  SUSPENDED: "일시중지",
-  TERMINATED: "해지",
-  TERMINATION_IN_PROGRESS: "해지 신청 진행",
 };
 
 export const MEMBER_TYPE_OPTS = [

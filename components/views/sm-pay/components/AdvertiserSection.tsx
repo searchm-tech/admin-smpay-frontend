@@ -5,13 +5,15 @@ import {
 import { LabelBullet } from "@/components/composite/label-bullet";
 import { Label } from "@/components/ui/label";
 
-import type { ResponseSmPayAdvertiserDetail } from "@/types/api/smpay";
+import type { AdvertiserDetailDto } from "@/types/api/smpay";
 
 import { formatBusinessNumber, formatPhoneNumber } from "@/utils/format";
+
 type Props = {
-  advertiserDetail: ResponseSmPayAdvertiserDetail | null;
+  advertiserDetail: AdvertiserDetailDto | null;
 };
 
+// TODO : 제거 예정
 const AdvertiserSection = ({ advertiserDetail }: Props) => {
   console.log("advertiserDetail", advertiserDetail);
   return (

@@ -4,6 +4,7 @@ import { ApiError, get, patch, post, put } from "@/lib/api";
 import { buildQueryParams } from "@/lib/utils";
 import { RequestAgentUser } from "@/types/api/common";
 import {
+  AdvertiserDetailDto,
   RequestSmPayAdvertiserApply,
   RequestSmPayAdvertiserDetailPut,
   RequestSmPayAdvertiserStatus,
@@ -11,7 +12,6 @@ import {
   RequestSmPayRead,
   RequestSmPayWrite,
   ResponseSmPayAdvertiserApply,
-  ResponseSmPayAdvertiserDetail,
   ResponseSmPayAdvertiserStatIndicator,
   ResponseSmPayAdvertiserStatus,
   ResponseSmPayApplyInfo,
@@ -126,11 +126,11 @@ export const getSmPayAdvertiserApplyList = async ({
 export const getSmPayAdvertiserDetail = async ({
   user,
   advertiserId,
-}: WithAdvertiserId): Promise<ResponseSmPayAdvertiserDetail> => {
+}: WithAdvertiserId): Promise<AdvertiserDetailDto> => {
   const { agentId, userId } = user;
 
   try {
-    const response = await get<ResponseSmPayAdvertiserDetail>(
+    const response = await get<AdvertiserDetailDto>(
       `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/details`
     );
     return response;
@@ -198,7 +198,10 @@ export const getSmPayAdvertiserDailyStat = async ({
     const response = await get<DailyStat[]>(
       `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/daily-stat`
     );
-    return response;
+    return response?.map((item, index) => ({
+      ...item,
+      id: index + 1,
+    }));
   } catch (error) {
     if (error instanceof ApiError) {
       throw error;

@@ -113,10 +113,10 @@ export const Modal = ({
           </AlertDialogTitle>
         </AlertDialogHeader>
 
-        <div className={cn("px-8 py-4", contentClassName)}>{children}</div>
+        <div className={cn("px-8", contentClassName)}>{children}</div>
 
         {!footerDisabled && (
-          <AlertDialogFooter className="py-4">
+          <AlertDialogFooter className="pb-4">
             {!cancelDisabled && (
               <AlertDialogCancel
                 className="min-w-[150px] min-h-[35px]"

@@ -1,35 +1,15 @@
-import { JUDGEMENT_STATUS_MAP } from "@/constants/status";
-import {
-  mockData,
-  mockScheduleInfo,
-  mockSmPayJudgementData,
-} from "./mock/sm-pay";
+import { mockData, mockSmPayJudgementData } from "./mock/sm-pay";
 import type {
   TableParams,
   SmPayResponse,
-  SmPayScheduleInfoResponse,
   SmPayStatusResponse,
   SmPaySubmitDetailResponse,
   SmPayRejectReasonResponse,
   SmPayJudgementDataResponse,
   SmPayStopInfoResponse,
-  SmPayJudgementStatusResponse,
 } from "./types";
-import type {
-  BooleanResponse,
-  RuleInfo,
-  ScheduleInfo,
-  SmPayJudgementStatus,
-  SmPayStatus,
-} from "@/types/sm-pay";
-import { ApiError, get } from "@/lib/api";
-import {
-  RequestSmPayAdvertiserStatus,
-  ResponseSmPayAdvertiserStatus,
-  ResponseSmPayStatusCount,
-} from "@/types/api/smpay";
-import { RequestAgentUser } from "@/types/api/common";
-import { buildQueryParams } from "@/lib/utils";
+
+import type { BooleanResponse, SmPayStatus } from "@/types/sm-pay";
 
 export const fetchSmPayData = async (
   params: TableParams
@@ -232,29 +212,6 @@ export const getSmPaySubmitDetail = async (
   };
 };
 
-export const updateSmPayScheduleInfo = async (
-  id: string,
-  data: ScheduleInfo
-): Promise<SmPayScheduleInfoResponse> => {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  const numId = parseInt(id, 10);
-  const updatedData = mockScheduleInfo.map((item) => {
-    if (item.id === numId) {
-      return { ...item, ...data };
-    }
-    return item;
-  });
-
-  const findData = updatedData.find((item) => item.id === numId);
-
-  if (!findData) {
-    return { data: null, success: false };
-  }
-
-  return { data: findData, success: true };
-};
-
 export const getSmPayRejectReason = async (
   id: string
 ): Promise<SmPayRejectReasonResponse> => {
@@ -382,38 +339,3 @@ export const getSmPayJudgementData = async (
     success: true,
   };
 };
-
-export const getSmPayJudgementStatus =
-  async (): Promise<SmPayJudgementStatusResponse> => {
-    // 상태별 카운트 계산 (영문 기준)
-    const statusCounts = mockSmPayJudgementData.reduce((acc, item) => {
-      const statusEng = item.status as SmPayJudgementStatus;
-      if (statusEng) {
-        acc[statusEng] = (acc[statusEng] || 0) + 1;
-      }
-      return acc;
-    }, {} as Record<SmPayJudgementStatus, number>);
-
-    // 전체 카운트
-    const totalCount = mockSmPayJudgementData.length;
-
-    // 결과 배열 생성
-    const data = [
-      { status: "ALL" as SmPayJudgementStatus, count: totalCount },
-      ...Object.entries(statusCounts).map(([status, count]) => ({
-        status: status as SmPayJudgementStatus,
-        count,
-      })),
-    ];
-
-    return {
-      data: data.map((item) => ({
-        ...item,
-        label:
-          JUDGEMENT_STATUS_MAP[item.status as SmPayJudgementStatus] || "전체",
-      })),
-      success: true,
-    };
-  };
-
-// ---------- 실제 API -------------------

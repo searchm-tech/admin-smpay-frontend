@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { CircleCheckBig, X } from "lucide-react";
 
-import ModalDailyStat from "./modal/ModalDailyStat";
+import LoadingUI from "@/components/common/Loading";
 
 import {
   DescriptionItem,
@@ -12,34 +12,26 @@ import { LabelBullet } from "@/components/composite/label-bullet";
 import { TooltipHover } from "@/components/composite/tooltip-components";
 import { TOOLTIP_CONTENT } from "@/constants/hover";
 import { Button } from "@/components/ui/button";
+import { Modal } from "@/components/composite/modal-components";
+import Table from "@/components/composite/table";
 
-import { useSmPayAdvertiserStatIndicator } from "@/hooks/queries/sm-pay";
-import { ResponseSmPayAdvertiserStatIndicator } from "@/types/api/smpay";
+import { useSmPayAdvertiserDailyStat } from "@/hooks/queries/sm-pay";
+
+import type { TableProps } from "antd";
+import type { DailyStat, SmPayStatIndicator } from "@/types/smpay";
 
 type Props = {
   advertiserId: number;
-  handleStatIndicator?: (data: ResponseSmPayAdvertiserStatIndicator) => void;
+  statIndicator?: SmPayStatIndicator | null;
 };
 
-const IndicatorsJudementSection = ({
-  advertiserId,
-  handleStatIndicator,
-}: Props) => {
+const StatIndicatorSection = ({ advertiserId, statIndicator }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const { data: advertiserStatIndicator } =
-    useSmPayAdvertiserStatIndicator(advertiserId);
-
-  useEffect(() => {
-    if (advertiserStatIndicator && handleStatIndicator) {
-      handleStatIndicator(advertiserStatIndicator);
-    }
-  }, [advertiserStatIndicator, handleStatIndicator]);
 
   return (
     <section>
       {isModalOpen && (
-        <ModalDailyStat
+        <TableModal
           open={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           advertiserId={advertiserId}
@@ -93,12 +85,12 @@ const IndicatorsJudementSection = ({
           styles={incongruityStyle}
           label={
             <span className="font-bold">
-              {advertiserStatIndicator?.operationPeriod || 0}개월
+              {statIndicator?.operationPeriod || 0}개월
             </span>
           }
         >
-          {advertiserStatIndicator?.operationPeriod &&
-          advertiserStatIndicator?.operationPeriod >= 3 ? (
+          {statIndicator?.operationPeriod &&
+          statIndicator?.operationPeriod >= 3 ? (
             <CircleCheckBig color="#34C759" />
           ) : (
             <X color="#FF3B30" />
@@ -116,12 +108,12 @@ const IndicatorsJudementSection = ({
           styles={conformityStyle}
           label={
             <span className="font-bold">
-              {advertiserStatIndicator?.dailyAverageRoas || 0}%
+              {statIndicator?.dailyAverageRoas || 0}%
             </span>
           }
         >
-          {advertiserStatIndicator?.dailyAverageRoas &&
-          advertiserStatIndicator?.dailyAverageRoas >= 400 ? (
+          {statIndicator?.dailyAverageRoas &&
+          statIndicator?.dailyAverageRoas >= 400 ? (
             <CircleCheckBig color="#34C759" />
           ) : (
             <X color="#FF3B30" />
@@ -139,15 +131,12 @@ const IndicatorsJudementSection = ({
           styles={conformityStyle}
           label={
             <span className="font-bold">
-              {Number(
-                advertiserStatIndicator?.monthlyConvAmt || 0
-              ).toLocaleString()}
-              원
+              {Number(statIndicator?.monthlyConvAmt || 0).toLocaleString()}원
             </span>
           }
         >
-          {advertiserStatIndicator?.monthlyConvAmt &&
-          advertiserStatIndicator?.monthlyConvAmt >= 3000000 ? (
+          {statIndicator?.monthlyConvAmt &&
+          statIndicator?.monthlyConvAmt >= 3000000 ? (
             <CircleCheckBig color="#34C759" />
           ) : (
             <X color="#FF3B30" />
@@ -164,15 +153,12 @@ const IndicatorsJudementSection = ({
           styles={conformityStyle}
           label={
             <span className="font-bold">
-              {Number(
-                advertiserStatIndicator?.dailySalesAmt || 0
-              ).toLocaleString()}
-              원
+              {Number(statIndicator?.dailySalesAmt || 0).toLocaleString()}원
             </span>
           }
         >
-          {advertiserStatIndicator?.dailySalesAmt &&
-          advertiserStatIndicator?.dailySalesAmt >= 100000 ? (
+          {statIndicator?.dailySalesAmt &&
+          statIndicator?.dailySalesAmt >= 100000 ? (
             <CircleCheckBig color="#34C759" />
           ) : (
             <X color="#FF3B30" />
@@ -183,7 +169,7 @@ const IndicatorsJudementSection = ({
   );
 };
 
-export default IndicatorsJudementSection;
+export default StatIndicatorSection;
 
 const incongruityStyle = {
   content: { backgroundColor: "#FCECEC" },
@@ -198,3 +184,134 @@ const conformityStyle = {
 const descriptionStyle = {
   content: { backgroundColor: "rgba(0, 0, 0, 0.02)" },
 };
+
+type TableModalProps = {
+  open: boolean;
+  onClose: () => void;
+  advertiserId: number;
+};
+
+const TableModal = ({ open, onClose, advertiserId }: TableModalProps) => {
+  const { data, isPending } = useSmPayAdvertiserDailyStat(advertiserId);
+  return (
+    <Modal open={open} onClose={onClose} title="상세 지표 보기" width={1200}>
+      {isPending && <LoadingUI />}
+      <div className="w-full max-h-[70vh] overflow-y-auto">
+        <Table<DailyStat & { id: number }>
+          dataSource={data?.map((item: DailyStat, index: number) => ({
+            ...item,
+            id: index + 1,
+          }))}
+          columns={columns}
+          rowKey={(record) => record.id}
+          pagination={false}
+        />
+      </div>
+    </Modal>
+  );
+};
+
+const columns: TableProps<DailyStat & { id: number }>["columns"] = [
+  {
+    title: "NO",
+    dataIndex: "id",
+    key: "id",
+    width: 50,
+  },
+  {
+    title: "날짜",
+    dataIndex: "date",
+    key: "date",
+    width: 120,
+  },
+  {
+    title: "노출수",
+    dataIndex: "impCnt",
+    key: "impCnt",
+    align: "right",
+    render: (value: number) => value.toLocaleString(),
+    sorter: (a, b) => a.impCnt - b.impCnt,
+    width: 100,
+  },
+  {
+    title: "클릭수",
+    dataIndex: "clkCnt",
+    key: "clkCnt",
+    align: "right",
+    render: (value: number) => value.toLocaleString(),
+    sorter: (a, b) => a.clkCnt - b.clkCnt,
+    width: 100,
+  },
+  {
+    title: "클릭단가",
+    dataIndex: "cpc",
+    key: "cpc",
+    align: "right",
+    render: (value: number) => value.toLocaleString(),
+    sorter: (a, b) => a.cpc - b.cpc,
+    width: 100,
+  },
+  {
+    title: "광고비",
+    dataIndex: "salesAmt",
+    key: "salesAmt",
+    align: "right",
+    render: (value: number) => value.toLocaleString() + "원",
+    sorter: (a, b) => a.salesAmt - b.salesAmt,
+    width: 120,
+  },
+  {
+    title: "전환수",
+    dataIndex: "ccnt",
+    key: "ccnt",
+    align: "right",
+    render: (value: number) => value.toLocaleString(),
+    sorter: (a, b) => a.ccnt - b.ccnt,
+    width: 100,
+  },
+  {
+    title: "전환율",
+    dataIndex: "crto",
+    key: "crto",
+    align: "right",
+    render: (value: number) => (value * 100).toFixed(2) + "%",
+    sorter: (a, b) => a.crto - b.crto,
+    width: 100,
+  },
+  {
+    title: "전환당 비용",
+    dataIndex: "cpConv",
+    key: "cpConv",
+    align: "right",
+    render: (value: number) => value.toLocaleString(),
+    sorter: (a, b) => a.cpConv - b.cpConv,
+    width: 100,
+  },
+  {
+    title: "전환 매출",
+    dataIndex: "convAmt",
+    key: "convAmt",
+    align: "right",
+    render: (value: number) => value.toLocaleString() + "원",
+    sorter: (a, b) => a.convAmt - b.convAmt,
+    width: 120,
+  },
+  {
+    title: "ROAS",
+    dataIndex: "ror",
+    key: "ror",
+    align: "right",
+    render: (value: number) => (value * 100).toFixed(0) + "%",
+    sorter: (a, b) => a.ror - b.ror,
+    width: 80,
+  },
+  {
+    title: "평균 노출 순위",
+    dataIndex: "avgRnk",
+    key: "avgRnk",
+    align: "right",
+    render: (value: number) => value.toFixed(2),
+    sorter: (a, b) => a.avgRnk - b.avgRnk,
+    width: 120,
+  },
+];

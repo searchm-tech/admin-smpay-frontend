@@ -27,7 +27,7 @@ const SMPayManagementHistoryView = () => {
       <AccountSection smPayData={null} />
       <IndicatorsJudementSection advertiserId={0} />
 
-      <RuleSection id={"1"} type="show" />
+      <RuleSection type="show" />
 
       <ScheduleSection type="show" />
 

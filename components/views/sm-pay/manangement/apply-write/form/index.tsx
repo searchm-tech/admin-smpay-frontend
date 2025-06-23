@@ -7,58 +7,58 @@ import LoadingUI from "@/components/common/Loading";
 
 import { ConfirmDialog } from "@/components/composite/modal-components";
 
-import RuleSection from "@/components/views/sm-pay/components/RuleSection";
+import AdvertiserInfoSection from "@/components/views/sm-pay/components/AdvertiserInfoSection";
+import RuleSection from "@/components/views/sm-pay/components/RuleSection2";
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
-import AdvertiserSection from "@/components/views/sm-pay/components/AdvertiserSection";
-import ScheduleSection from "@/components/views/sm-pay/components/ScheduleSection";
-import AdvertiseStatusSection from "@/components/views/sm-pay/components/AdvertiseStatusSection";
-import IndicatorsJudementSection from "@/components/views/sm-pay/components/IndicatorsJudementSection";
 import AdvertiserSimulationModal from "@/components/views/sm-pay/components/AdvertiserSimulationModal";
+import StatIndicatorSection from "@/components/views/sm-pay/components/StatIndicatorSection";
 
-import { SmPayAdvertiserStatusLabel } from "@/constants/status";
 import {
-  ApplyWriteModal,
+  WRITE_MODAL_CONTENT,
   type ApplyWriteModalStatus,
 } from "@/constants/dialog";
 
-import type { RuleInfo, ScheduleInfo } from "@/types/sm-pay";
 import {
-  useSmPayAdvertiserDetail,
+  useSmPayAdvertiserStatIndicator,
   useSmPayWrite,
 } from "@/hooks/queries/sm-pay";
-import { ChargeRule, PrePaymentSchedule, StatIndicator } from "@/types/smpay";
-import {
-  ResponseSmPayAdvertiserStatIndicator,
-  SmPayWriteParams,
-} from "@/types/api/smpay";
+
+import type { ChargeRule, PrePaymentSchedule } from "@/types/smpay";
+import type { SmPayWriteParams, StatIndicatorParams } from "@/types/api/smpay";
+import ScheduleSection2 from "../../../components/ScheduleSection2";
 
 type ViewWrieProps = {
   id: number;
 };
 
 const SMPayMasterApplyWriteForm = ({ id }: ViewWrieProps) => {
-  const { data: advertiserDetail, isPending: isLoadingAdvertiserDetail } =
-    useSmPayAdvertiserDetail(id);
+  const { data: statIndicator } = useSmPayAdvertiserStatIndicator(id);
 
   const [writeModal, setWriteModal] = useState<ApplyWriteModalStatus | null>(
     null
   );
 
-  const [ruleInfo, setRuleInfo] = useState<RuleInfo>({
-    id: 0,
-    roas: 0,
-    increase: 0,
-    increaseType: "flat", // flat, rate
-    decrease: 0,
-    decreaseType: "flat", // flat, rate
+  const [upChargeRule, setUpChargeRule] = useState<ChargeRule>({
+    standardRoasPercent: 0,
+    rangeType: "UP",
+    boundType: "FIXED_AMOUNT",
+    changePercentOrValue: 0,
   });
-  const [scheduleInfo, setScheduleInfo] = useState<ScheduleInfo>({
-    id: 0,
-    firstCharge: 0,
-    maxCharge: 0,
+
+  const [downChargeRule, setDownChargeRule] = useState<ChargeRule>({
+    standardRoasPercent: 0,
+    rangeType: "DOWN",
+    boundType: "FIXED_AMOUNT",
+    changePercentOrValue: 0,
   });
-  const [statIndicatorInfo, setStatIndicatorInfo] =
-    useState<ResponseSmPayAdvertiserStatIndicator | null>(null);
+
+  const [prePaymentSchedule, setPrePaymentSchedule] =
+    useState<PrePaymentSchedule>({
+      initialAmount: 0,
+      maxChargeLimit: 0,
+      minChargeLimit: 100000,
+    });
+
   const [reviewerMemo, setReviewerMemo] = useState("");
 
   const [isSimulation, setIsSimulation] = useState(false);
@@ -67,83 +67,63 @@ const SMPayMasterApplyWriteForm = ({ id }: ViewWrieProps) => {
     onSuccess: () => setWriteModal("send-success"),
   });
 
-  const handleRuleInfoChange = (value: RuleInfo) => {
-    setRuleInfo({ ...ruleInfo, ...value });
-  };
-
-  const handleScheduleInfoChange = (value: ScheduleInfo) => {
-    setScheduleInfo({ ...scheduleInfo, ...value });
+  const handleScheduleChange = (value: PrePaymentSchedule) => {
+    setPrePaymentSchedule(value);
   };
 
   const handleConfrimModal = () => {
     // 동의 요청 완료
     if (writeModal === "send-success") {
       setWriteModal(null);
-      //   onSubmit();
       return;
     }
   };
 
   const handleSendAdAgree = () => {
-    // if (!ruleInfo.roas || ruleInfo.decrease || ruleInfo.increase) {
-    // }
     const chargeRules: ChargeRule[] = [
       {
-        standardRoasPercent: ruleInfo.roas,
+        standardRoasPercent: downChargeRule.standardRoasPercent,
         rangeType: "DOWN",
-        boundType:
-          ruleInfo.decreaseType === "flat" ? "FIXED_AMOUNT" : "FIXED_AMOUNT",
-        changePercentOrValue: ruleInfo.decrease,
+        boundType: downChargeRule.boundType,
+        changePercentOrValue: upChargeRule.changePercentOrValue,
       },
       {
-        standardRoasPercent: ruleInfo.roas,
+        standardRoasPercent: upChargeRule.standardRoasPercent,
         rangeType: "UP",
-        boundType:
-          ruleInfo.decreaseType === "flat" ? "FIXED_AMOUNT" : "FIXED_AMOUNT",
-        changePercentOrValue: ruleInfo.increase,
+        boundType: upChargeRule.boundType,
+        changePercentOrValue: upChargeRule.changePercentOrValue,
       },
     ];
 
-    const prePaymentSchedule: PrePaymentSchedule = {
-      initialAmount: scheduleInfo.firstCharge,
-      maxChargeLimit: scheduleInfo.maxCharge,
-      minChargeLimit: 10000,
-    };
-
-    const statIndicator: StatIndicator = {
-      operationPeriod: statIndicatorInfo?.operationPeriod || 0,
-      dailyAverageRoas: statIndicatorInfo?.dailyAverageRoas || 0, //1.0;
-      monthlyConvAmt: statIndicatorInfo?.monthlyConvAmt || 0, //1.0;
-      dailySalesAmt: statIndicatorInfo?.dailySalesAmt || 0, //1.0;
-      recommendRoasPercent: statIndicatorInfo?.recommendRoas || 0, // 1.0;
+    const statIndicatorParams: StatIndicatorParams = {
+      operationPeriod: statIndicator?.operationPeriod || 0,
+      dailyAverageRoas: statIndicator?.dailyAverageRoas || 0, //1.0;
+      monthlyConvAmt: statIndicator?.monthlyConvAmt || 0, //1.0;
+      dailySalesAmt: statIndicator?.dailySalesAmt || 0, //1.0;
+      recommendRoasPercent: statIndicator?.recommendRoas || 0, // 1.0;
     };
 
     const params: SmPayWriteParams = {
-      statIndicator,
+      statIndicator: statIndicatorParams,
       chargeRule: chargeRules,
       prePaymentSchedule,
       reviewerMemo,
     };
-    mutateSendAdAgree({
-      advertiserId: id,
-      params,
-    });
+    mutateSendAdAgree({ advertiserId: id, params });
   };
+
   const handleMemo = (value: string) => setReviewerMemo(value);
 
   return (
     <section className="mt-4">
       {loadingSend && <LoadingUI title="... 동의 요청 중" />}
-      {isLoadingAdvertiserDetail && (
-        <LoadingUI title="... 광고주 정보 조회 중" />
-      )}
 
       {writeModal && (
         <ConfirmDialog
           open
           onClose={() => setWriteModal(null)}
           onConfirm={handleConfrimModal}
-          content={ApplyWriteModal[writeModal]}
+          content={WRITE_MODAL_CONTENT[writeModal]}
           cancelDisabled={writeModal === "send-success"}
         />
       )}
@@ -155,36 +135,29 @@ const SMPayMasterApplyWriteForm = ({ id }: ViewWrieProps) => {
         />
       )}
 
-      <div className="mt-4">
-        <AdvertiseStatusSection
-          status={
-            advertiserDetail?.status
-              ? SmPayAdvertiserStatusLabel[advertiserDetail?.status]
-              : ""
-          }
-        />
+      <AdvertiserInfoSection advertiserId={id} />
 
-        <AdvertiserSection advertiserDetail={advertiserDetail || null} />
-
-        <IndicatorsJudementSection
-          advertiserId={id}
-          handleStatIndicator={(data) => setStatIndicatorInfo(data)}
-        />
-      </div>
+      <StatIndicatorSection advertiserId={id} statIndicator={statIndicator} />
 
       <RuleSection
-        id="1"
         type="write"
-        ruleInfo={ruleInfo}
-        handleRuleInfoChange={handleRuleInfoChange}
+        upChargeRule={upChargeRule}
+        downChargeRule={downChargeRule}
+        handleUpChargeRuleChange={setUpChargeRule}
+        handleDownChargeRuleChange={setDownChargeRule}
       />
 
-      <ScheduleSection
-        scheduleInfo={scheduleInfo}
+      <ScheduleSection2
         type="write"
-        handleScheduleInfoChange={handleScheduleInfoChange}
+        prePaymentSchedule={prePaymentSchedule}
+        handleScheduleChange={handleScheduleChange}
       />
-      <JudgementMemoSection type="write" handleText={handleMemo} />
+
+      <JudgementMemoSection
+        type="write"
+        handleText={handleMemo}
+        text={reviewerMemo}
+      />
 
       <div className="flex justify-center gap-4 py-5">
         <Button

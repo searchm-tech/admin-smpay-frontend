@@ -63,11 +63,6 @@ export interface SmPaySubmitDetailResponse {
   success: boolean;
 }
 
-export interface SmPayScheduleInfoResponse {
-  data: ScheduleInfo | null;
-  success: boolean;
-}
-
 export interface SmPayRejectReasonResponse {
   data: string;
   success: boolean;
@@ -84,15 +79,6 @@ export interface SmPayStopInfoResponse {
 export interface SmPayJudgementDataResponse {
   data: SmPayJudgementData[];
   total: number;
-  success: boolean;
-}
-
-export interface SmPayJudgementStatusResponse {
-  data: {
-    status: SmPayJudgementStatus;
-    label: string;
-    count: number;
-  }[];
   success: boolean;
 }
 

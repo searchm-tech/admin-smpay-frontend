@@ -1,3 +1,4 @@
+import { DailyStat } from "@/types/smpay";
 import dayjs from "dayjs";
 
 export const formatBusinessNumber = (value: string) => {
@@ -56,3 +57,30 @@ export const formatPhoneNumber = (value: string) => {
 export function formatDate(date: string) {
   return dayjs(date).format("YYYY-MM-DD HH:mm:ss");
 }
+
+// 합계 계산 함수
+export const calculateDailyTotal = (data: DailyStat[] | undefined) => {
+  if (!data || data.length === 0) return null;
+
+  // 기본 합계 계산
+  const sums = data.reduce(
+    (acc, item) => ({
+      impCnt: acc.impCnt + item.impCnt,
+      clkCnt: acc.clkCnt + item.clkCnt,
+      salesAmt: acc.salesAmt + item.salesAmt,
+      ccnt: acc.ccnt + item.ccnt,
+      convAmt: acc.convAmt + item.convAmt,
+    }),
+    { impCnt: 0, clkCnt: 0, salesAmt: 0, ccnt: 0, convAmt: 0 }
+  );
+
+  // 계산된 지표들
+  return {
+    ...sums,
+    cpc: sums.clkCnt > 0 ? sums.salesAmt / sums.clkCnt : 0,
+    crto: sums.clkCnt > 0 ? sums.ccnt / sums.clkCnt : 0,
+    cpConv: sums.ccnt > 0 ? sums.salesAmt / sums.ccnt : 0,
+    ror: sums.salesAmt > 0 ? sums.convAmt / sums.salesAmt : 0,
+    avgRnk: data.reduce((sum, item) => sum + item.avgRnk, 0) / data.length,
+  };
+};
