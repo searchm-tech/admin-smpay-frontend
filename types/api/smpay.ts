@@ -2,7 +2,7 @@ import {
   ChargeRule,
   PrePaymentSchedule,
   SmPayAdvertiserApplyDto,
-  SmPayAdvertiserApplyStatus,
+  SmPayAdvertiserStatus,
   SmPayAdvertiserStatusDto,
   SmPayAdvertiserStautsOrderType,
   SmPayAuditDto,
@@ -10,7 +10,6 @@ import {
 } from "@/types/smpay";
 
 import { RequestAgentUser, ResponseWithPagination } from "./common";
-import { SmPayAdvertiserApplyStatusLabel } from "@/constants/status";
 
 // 광고주 상태 갯수 조회(SAG020) response type
 export interface ResponseSmPayStatusCount {
@@ -56,7 +55,7 @@ export type SmPayAdvertiserApplyQuery = {
   page: number;
   size: number;
   keyword: string;
-  orderType: SmPayAdvertiserApplyStatus;
+  orderType: SmPayAdvertiserStatus;
 };
 
 // 광고주 smPay 신청 관리 리스트 조회(SAG022) request type
@@ -91,7 +90,7 @@ export type ResponseSmPayAdvertiserDetail = {
   businessRegistrationNumber: string;
   phoneNumber: string;
   emailAddress: string;
-  status: SmPayAdvertiserApplyStatus;
+  status: SmPayAdvertiserStatus;
   roleId: number;
   isLossPrivileges: boolean;
 };
@@ -151,7 +150,7 @@ export type ResponseSmPayDetail = {
   chargeRules: ChargeRule[];
   advertiserFormId: number; // 1;
   advertiserId: number; // 1;
-  advertiserStatus: SmPayAdvertiserApplyStatus;
+  advertiserStatus: SmPayAdvertiserStatus;
   advertiserName: string; // "광고주명";
   advertiserNickname: string; // "광고주 닉네임";
   advertiserRepresentativeName: string; //  "광고주 대표자명";
@@ -188,7 +187,7 @@ export type ResponseSmPayApplyInfo = {
   chargeRules: ChargeRule[];
   advertiserFormId: number; // 1;
   advertiserId: number; // 1;
-  advertiserStatus: SmPayAdvertiserApplyStatus;
+  advertiserStatus: SmPayAdvertiserStatus;
   advertiserName: string; // "광고주명";
   advertiserNickname: string; //  "광고주 닉네임";
   advertiserRepresentativeName: string; // "광고주 대표자명";

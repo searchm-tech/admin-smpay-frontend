@@ -25,7 +25,7 @@ import RejectOperationModal from "../components/RejectOperationModal";
 
 import {
   STATUS_ACTION_BUTTONS,
-  SmPayAdvertiserApplyStatusLabel,
+  SmPayAdvertiserStatusLabel,
 } from "@/constants/status";
 
 import { ColumnTooltip } from "@/constants/table";
@@ -35,7 +35,7 @@ import type { FilterValue } from "antd/es/table/interface";
 import type { ActionButton } from "@/types/sm-pay";
 import type { TableParams } from "@/types/table";
 import type {
-  SmPayAdvertiserApplyStatus,
+  SmPayAdvertiserStatus,
   SmPayAdvertiserStautsOrderType,
   SmPayAdvertiserStatusDto as TSmPayData,
 } from "@/types/smpay";
@@ -150,8 +150,8 @@ const TableSection = ({
       dataIndex: "advertiserType",
       align: "center",
       sorter: true,
-      render: (value: SmPayAdvertiserApplyStatus) => (
-        <span>{SmPayAdvertiserApplyStatusLabel(value)}</span>
+      render: (value: SmPayAdvertiserStatus) => (
+        <span>{SmPayAdvertiserStatusLabel[value]}</span>
       ),
     },
     {
