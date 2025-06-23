@@ -90,6 +90,7 @@ export type AdvertiserDetailDto = {
   status: SmPayAdvertiserStatus;
   roleId: number;
   isLossPrivileges: boolean;
+  advertiserFormId: number;
 };
 
 // 광고주 detail 등록 및 수정(SAG023) request type
@@ -137,7 +138,7 @@ export interface RequestSmPayWrite extends WithAdvertiserId {
 }
 
 export interface RequestSmPayDetail extends WithAdvertiserId {
-  formId: number;
+  formId: number | string;
 }
 
 // SM-Pay 심사 > 요청 목록 리스트

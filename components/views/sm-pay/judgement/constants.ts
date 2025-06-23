@@ -101,3 +101,13 @@ export interface SmPaySubmitData {
   status: "심사 요청" | "승인" | "반려" | "일시중지" | "해지"; // 상태
   updatedAt: string; // 최종 수정 일시
 }
+
+export const defaultParams = {
+  pagination: {
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  },
+  filters: {},
+  sortField: "ADVERTISER_CUSTOMER_ID_DESC",
+};

@@ -9,7 +9,7 @@ import GuidSection from "../components/GuideSection";
 import { useSmPayAdvertiserStatusList } from "@/hooks/queries/sm-pay";
 
 import type { TableParams } from "@/types/table";
-import { SmPayAdvertiserStautsOrderType } from "@/types/smpay";
+import type { SmPayAdvertiserStautsOrderType } from "@/types/smpay";
 
 const defaultTableParams = {
   pagination: {
