@@ -72,8 +72,8 @@ export type ResponseSmPayAdvertiserApply = {
   totalCount: number;
 };
 
-// 광고주 detail 조회(SAG024) request type
-export type RequestSmPayAdvertiserDetail = {
+// AgentUser 타입에 advertiserId 추가
+export type WithAdvertiserId = {
   user: RequestAgentUser;
   advertiserId: number;
 };
@@ -96,11 +96,9 @@ export type ResponseSmPayAdvertiserDetail = {
 };
 
 // 광고주 detail 등록 및 수정(SAG023) request type
-export type RequestSmPayAdvertiserDetailPut = {
-  user: RequestAgentUser;
-  advertiserId: number;
+export interface RequestSmPayAdvertiserDetailPut extends WithAdvertiserId {
   params: PutSmPayAdvertiserDetail;
-};
+}
 
 export type PutSmPayAdvertiserDetail = {
   name: string;
@@ -108,12 +106,6 @@ export type PutSmPayAdvertiserDetail = {
   representativeNumber: string;
   phoneNumber: string;
   email: string;
-};
-
-// 광고주 성과 기반 참고용 심사 지표 조회(28일)(SAG028) request type
-export type RequestSmPayAdvertiserStatIndicator = {
-  user: RequestAgentUser;
-  advertiserId: number;
 };
 
 // 광고주 성과 기반 참고용 심사 지표 조회(28일)(SAG028) response type
@@ -125,18 +117,10 @@ export type ResponseSmPayAdvertiserStatIndicator = {
   recommendRoas: number; // 권장 ROAS  0.8,
 };
 
-// 광고주 일 별 성과 조회(28일)(SAG027) request type
-export type RequestSmPayAdvertiserDailyStat = {
-  user: RequestAgentUser;
-  advertiserId: number;
-};
-
 // 광고주 smPay 등록(SAG029) request type
-export type RequestSmPayWrite = {
-  user: RequestAgentUser;
-  advertiserId: number;
+export interface RequestSmPayWrite extends WithAdvertiserId {
   params: SmPayWriteParams;
-};
+}
 
 export type SmPayWriteParams = {
   statIndicator: StatIndicator;
@@ -172,16 +156,9 @@ export type ResponseSmPayDetail = {
   updateDt: string; // null;
 };
 
-export type RequestSmPayDetail = {
-  user: RequestAgentUser;
-  advertiserId: number;
+export interface RequestSmPayDetail extends WithAdvertiserId {
   formId: number;
-};
-
-export type RequestSmPayApplyList = {
-  user: RequestAgentUser;
-  advertiserId: number;
-};
+}
 
 export type ResponseSmPayApplyInfo = {
   chargeRules: ChargeRule[];
@@ -216,8 +193,6 @@ export type ResponseSmPayAudit = ResponseWithPagination & {
   })[];
 };
 
-export type RequestSmPayRead = {
-  user: RequestAgentUser;
-  advertiserId: number;
+export interface RequestSmPayRead extends WithAdvertiserId {
   isReviewerRead: boolean;
-};
+}

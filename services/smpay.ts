@@ -5,12 +5,8 @@ import { buildQueryParams } from "@/lib/utils";
 import { RequestAgentUser } from "@/types/api/common";
 import {
   RequestSmPayAdvertiserApply,
-  RequestSmPayAdvertiserDailyStat,
-  RequestSmPayAdvertiserDetail,
   RequestSmPayAdvertiserDetailPut,
-  RequestSmPayAdvertiserStatIndicator,
   RequestSmPayAdvertiserStatus,
-  RequestSmPayApplyList,
   RequestSmPayDetail,
   RequestSmPayRead,
   RequestSmPayWrite,
@@ -22,6 +18,7 @@ import {
   ResponseSmPayAudit,
   ResponseSmPayDetail,
   ResponseSmPayStatusCount,
+  WithAdvertiserId,
 } from "@/types/api/smpay";
 
 import { DailyStat } from "@/types/smpay";
@@ -129,7 +126,7 @@ export const getSmPayAdvertiserApplyList = async ({
 export const getSmPayAdvertiserDetail = async ({
   user,
   advertiserId,
-}: RequestSmPayAdvertiserDetail): Promise<ResponseSmPayAdvertiserDetail> => {
+}: WithAdvertiserId): Promise<ResponseSmPayAdvertiserDetail> => {
   const { agentId, userId } = user;
 
   try {
@@ -169,7 +166,7 @@ export const putSmPayAdvertiserDetail = async ({
 export const getSmPayAdvertiserStatIndicator = async ({
   user,
   advertiserId,
-}: RequestSmPayAdvertiserStatIndicator): Promise<ResponseSmPayAdvertiserStatIndicator> => {
+}: WithAdvertiserId): Promise<ResponseSmPayAdvertiserStatIndicator> => {
   const { agentId, userId } = user;
 
   try {
@@ -194,7 +191,7 @@ export const getSmPayAdvertiserStatIndicator = async ({
 export const getSmPayAdvertiserDailyStat = async ({
   user,
   advertiserId,
-}: RequestSmPayAdvertiserDailyStat): Promise<DailyStat[]> => {
+}: WithAdvertiserId): Promise<DailyStat[]> => {
   const { agentId, userId } = user;
 
   try {
@@ -267,7 +264,7 @@ export const getSmPayDetail = async ({
 export const getSmPayApplyList = async ({
   user,
   advertiserId,
-}: RequestSmPayApplyList): Promise<ResponseSmPayApplyInfo[]> => {
+}: WithAdvertiserId): Promise<ResponseSmPayApplyInfo[]> => {
   const { agentId, userId } = user;
 
   try {
