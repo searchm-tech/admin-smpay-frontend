@@ -27,7 +27,6 @@ const SmPayApplyDetailView = ({ id }: Props) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const formId = searchParams.get("formId");
-  const originFormId = searchParams.get("orignFormId");
 
   const [isReject, setIsReject] = useState(false);
 

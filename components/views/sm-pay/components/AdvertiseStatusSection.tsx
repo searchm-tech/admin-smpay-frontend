@@ -11,9 +11,11 @@ import { LabelBullet } from "@/components/composite/label-bullet";
 import { Modal } from "@/components/composite/modal-components";
 import Table from "@/components/composite/table";
 import { LinkTextButton } from "@/components/composite/button-components";
+
 import { useSmPayApplyList } from "@/hooks/queries/sm-pay";
-import { ResponseSmPayApplyInfo } from "@/types/api/smpay";
-import { TableProps } from "antd";
+
+import type { SmPayDetailDto } from "@/types/smpay";
+import type { TableProps } from "@/types/table";
 
 type Props = {
   status: string;
@@ -66,7 +68,7 @@ const HistoryModal = ({ onClose, advertiserId }: HistoryModalProps) => {
   const router = useRouter();
 
   const { data: dataSource } = useSmPayApplyList(advertiserId || 0);
-  const columns: TableProps<ResponseSmPayApplyInfo>["columns"] = [
+  const columns: TableProps<SmPayDetailDto>["columns"] = [
     {
       title: "광고주 신청서 ID",
       dataIndex: "advertiserFormId",
@@ -115,10 +117,7 @@ const HistoryModal = ({ onClose, advertiserId }: HistoryModalProps) => {
       cancelDisabled
     >
       <div className="w-[85vw] overflow-y-auto">
-        <Table<ResponseSmPayApplyInfo>
-          dataSource={dataSource}
-          columns={columns}
-        />
+        <Table<SmPayDetailDto> dataSource={dataSource} columns={columns} />
       </div>
     </Modal>
   );
