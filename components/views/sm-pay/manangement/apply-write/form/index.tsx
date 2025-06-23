@@ -1,5 +1,5 @@
 "use client";
-
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ import RuleSection from "@/components/views/sm-pay/components/RuleSection2";
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
 import AdvertiserSimulationModal from "@/components/views/sm-pay/components/AdvertiserSimulationModal";
 import StatIndicatorSection from "@/components/views/sm-pay/components/StatIndicatorSection";
+import ScheduleSection2 from "@/components/views/sm-pay/components/ScheduleSection2";
 
 import {
   WRITE_MODAL_CONTENT,
@@ -25,13 +26,13 @@ import {
 
 import type { ChargeRule, PrePaymentSchedule } from "@/types/smpay";
 import type { SmPayWriteParams, StatIndicatorParams } from "@/types/api/smpay";
-import ScheduleSection2 from "../../../components/ScheduleSection2";
 
 type ViewWrieProps = {
   id: number;
 };
 
 const SMPayMasterApplyWriteForm = ({ id }: ViewWrieProps) => {
+  const router = useRouter();
   const { data: statIndicator } = useSmPayAdvertiserStatIndicator(id);
 
   const [writeModal, setWriteModal] = useState<ApplyWriteModalStatus | null>(
@@ -71,12 +72,9 @@ const SMPayMasterApplyWriteForm = ({ id }: ViewWrieProps) => {
     setPrePaymentSchedule(value);
   };
 
-  const handleConfrimModal = () => {
-    // 동의 요청 완료
-    if (writeModal === "send-success") {
-      setWriteModal(null);
-      return;
-    }
+  const handleClose = () => {
+    setWriteModal(null);
+    router.push("/sm-pay/management");
   };
 
   const handleSendAdAgree = () => {
@@ -121,8 +119,8 @@ const SMPayMasterApplyWriteForm = ({ id }: ViewWrieProps) => {
       {writeModal && (
         <ConfirmDialog
           open
-          onClose={() => setWriteModal(null)}
-          onConfirm={handleConfrimModal}
+          onClose={handleClose}
+          onConfirm={handleClose}
           content={WRITE_MODAL_CONTENT[writeModal]}
           cancelDisabled={writeModal === "send-success"}
         />

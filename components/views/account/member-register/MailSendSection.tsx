@@ -2,6 +2,7 @@ import { type ChangeEvent, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useSession } from "next-auth/react";
 
 import {
   DescriptionItem,
@@ -21,6 +22,7 @@ import ModalDepartment from "./ModalDepartment";
 import {
   useMutationAgencySendMail,
   useQueryAgencyAll,
+  useQueryAgencyDomainName,
 } from "@/hooks/queries/agency";
 import { useMutationAgencyUserEmailSend } from "@/hooks/queries/user";
 import { getUsersNameCheckApi } from "@/services/user";
@@ -46,8 +48,15 @@ import type {
 
 const MailSendSection = ({ user }: TViewProps) => {
   const isAdmin = getIsAdmin(user.type);
+  const { data: session } = useSession();
 
   const { data: agencyList = [] } = useQueryAgencyAll({ enabled: isAdmin });
+
+  const { data: agencyInfo } = useQueryAgencyDomainName(
+    session?.user.uniqueCode || ""
+  );
+
+  console.log("agencyInfo", agencyInfo);
 
   const { mutate: mutateGroupMasterSendMail, isPending: loadingGrpSendMail } =
     useMutationAgencySendMail({
@@ -294,18 +303,36 @@ const MailSendSection = ({ user }: TViewProps) => {
 
         <DescriptionItem label="발송될 이메일 주소 *">
           <div className="flex items-center gap-2">
-            <InputWithSuffix
-              className="max-w-[500px]"
-              placeholder={
-                selectedAgency
-                  ? "이메일 주소를 입력해주세요."
-                  : "대행사를 선택해주세요."
-              }
-              value={emailId}
-              onChange={handleEmailIdChange}
-              disabled={!selectedAgency || enableEmailId}
-              suffix={selectedAgency ? `@${selectedAgency.domainName}` : ""}
-            />
+            {isAdmin && (
+              <InputWithSuffix
+                className="max-w-[500px]"
+                placeholder={
+                  selectedAgency
+                    ? "이메일 주소를 입력해주세요."
+                    : "대행사를 선택해주세요."
+                }
+                value={emailId}
+                onChange={handleEmailIdChange}
+                disabled={!selectedAgency || enableEmailId}
+                suffix={selectedAgency ? `@${selectedAgency.domainName}` : ""}
+              />
+            )}
+            {/* TODO : 수정이 필요 */}
+            {!isAdmin && (
+              <InputWithSuffix
+                className="max-w-[500px]"
+                placeholder="이메일 주소를 입력해주세요."
+                value={emailId}
+                onChange={handleEmailIdChange}
+                disabled={enableEmailId}
+                suffix={
+                  agencyInfo
+                    ? `@${agencyInfo?.domainName}`
+                    : "현재 도메인이 없습니다."
+                }
+              />
+            )}
+
             <Button variant="outline" onClick={handleNameCheck}>
               {enableEmailId ? "중복 체크 완료" : "중복 체크"}
             </Button>
