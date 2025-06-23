@@ -56,8 +56,8 @@ export type SmPayAdvertiserStatusDto = {
 
 // 광고주 일별 통계
 export type DailyStat = {
+  id: number;
   advertiserId: number; // 광고주 UID
-
   impCnt: number; // 노출 수
   clkCnt: number; // 클릭 수
   salesAmt: number; // 광고비
@@ -69,14 +69,6 @@ export type DailyStat = {
   cpConv: number; // 전환당 비용
   ror: number; // roas
   date: string; // 날짜
-};
-
-export type StatIndicator = {
-  operationPeriod: number; //  1;
-  dailyAverageRoas: number; //1.0;
-  monthlyConvAmt: number; //1.0;
-  dailySalesAmt: number; //1.0;
-  recommendRoasPercent: number; // 1.0;
 };
 
 export type ChargeRule = {
@@ -103,4 +95,12 @@ export type SmPayAuditDto = {
   registerOrUpdateDt: string;
   isApprovalRead: boolean;
   isReviewerRead: boolean;
+};
+
+export type SmPayStatIndicator = {
+  operationPeriod: number; // 운영 기간
+  dailyAverageRoas: number; // 일별 평균 ROAS 1.0,
+  monthlyConvAmt: number; // 월별 전환액 1000.0,
+  dailySalesAmt: number; // 일별 매출액 100.0,
+  recommendRoas: number; // 권장 ROAS  0.8,
 };

@@ -77,7 +77,7 @@ const SmPayAdminOverviewDetailView = ({ id }: Props) => {
         <AdvertiserSection advertiserDetail={null} />
       </div>
 
-      <RuleSection id={id} type="show" />
+      <RuleSection type="show" />
       <ScheduleSection type="show" />
       <OperationAccountStatusSection />
 

@@ -21,6 +21,7 @@ type Props = {
   advertiserId?: number;
 };
 
+// TODO : 제거 예정
 const AdvertiseStatusSection = ({
   status,
   isHistory = false,

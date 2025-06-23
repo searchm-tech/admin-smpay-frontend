@@ -74,6 +74,7 @@ export type RuleInfo = {
   decreaseType: string;
 };
 
+// TODO : 제거 예정
 export type RuleHistory = {
   id: number;
   date: string;
@@ -84,6 +85,7 @@ export type RuleHistory = {
   decreaseType: string;
 };
 
+// TODO : 제거 예정
 export type ScheduleInfo = {
   id: number;
   firstCharge: number;

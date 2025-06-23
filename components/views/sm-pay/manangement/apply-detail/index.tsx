@@ -11,7 +11,6 @@ import JudgementMemoSection from "@/components/views/sm-pay/components/Judgement
 import AdvertiseStatusSection from "@/components/views/sm-pay/components/AdvertiseStatusSection";
 import ScheduleSection from "@/components/views/sm-pay/components/ScheduleSection";
 import AdvertiserSection from "@/components/views/sm-pay/components/AdvertiserSection";
-import AccountSection from "@/components/views/sm-pay/components/AccountSection";
 import IndicatorsJudementSection from "@/components/views/sm-pay/components/IndicatorsJudementSection";
 import GuidSection from "@/components/views/sm-pay/components/GuideSection";
 
@@ -25,9 +24,8 @@ import {
   useSmPaySubmitDetail,
 } from "@/hooks/queries/sm-pay";
 
-import type { AdvertiserData } from "@/types/adveriser";
-import { ChargeRule } from "@/types/smpay";
-import { RuleInfo, ScheduleInfo } from "@/types/sm-pay";
+import type { ChargeRule } from "@/types/smpay";
+import type { RuleInfo, ScheduleInfo } from "@/types/sm-pay";
 
 interface SmPayApplyDetailViewProps {
   id: string;
@@ -124,7 +122,7 @@ const SmPayApplyDetailView = ({ id }: SmPayApplyDetailViewProps) => {
 
       <IndicatorsJudementSection advertiserId={Number(id)} />
 
-      <RuleSection id={"1"} type="show" ruleInfo={ruleInfo} />
+      <RuleSection type="show" ruleInfo={ruleInfo} />
 
       <ScheduleSection type="show" scheduleInfo={scheduleInfo} />
 

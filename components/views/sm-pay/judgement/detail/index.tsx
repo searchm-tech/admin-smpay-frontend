@@ -122,7 +122,7 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
 
       <IndicatorsJudementSection advertiserId={Number(id)} />
 
-      <RuleSection id={"1"} type="show" />
+      <RuleSection type="show" />
       <ScheduleSection type="show" />
 
       <JudgementMemoSection type="show" />

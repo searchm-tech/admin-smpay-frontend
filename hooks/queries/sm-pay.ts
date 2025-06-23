@@ -7,12 +7,10 @@ import {
 import {
   fetchSmPayData,
   getSmPayJudgementData,
-  getSmPayJudgementStatus,
   getSmPayRejectReason,
   getSmPayStatus,
   getSmPayStopInfo,
   getSmPaySubmitDetail,
-  updateSmPayScheduleInfo,
   updateSmPayStatus,
 } from "@/services/sm-pay";
 
@@ -20,12 +18,10 @@ import type {
   SmPayRejectReasonResponse,
   TableParams,
   SmPayResponse,
-  SmPayScheduleInfoResponse,
   SmPaySubmitDetailResponse,
   SmPayJudgementDataResponse,
   SmPayStopInfoResponse,
   SmPayStatusResponse,
-  SmPayJudgementStatusResponse,
 } from "@/services/types";
 import type { ScheduleInfo, BooleanResponse } from "@/types/sm-pay";
 import type { RequestAgentUser } from "@/types/api/common";
@@ -36,13 +32,12 @@ import type {
   QueryParams,
   SmPayAdvertiserApplyQuery,
   PutSmPayAdvertiserDetail,
-  ResponseSmPayAdvertiserDetail,
-  ResponseSmPayAdvertiserStatIndicator,
   SmPayWriteParams,
   ResponseSmPayDetail,
   ResponseSmPayApplyInfo,
   ResponseSmPayAudit,
   RequestSmPayRead,
+  AdvertiserDetailDto,
 } from "@/types/api/smpay";
 
 import { useAuthQuery } from "../useAuthQuery";
@@ -61,7 +56,7 @@ import {
   getSmPayAuditList,
   patchSmPayRead,
 } from "@/services/smpay";
-import type { DailyStat } from "@/types/smpay";
+import type { DailyStat, SmPayStatIndicator } from "@/types/smpay";
 
 export const useSmPayList = (params: TableParams) => {
   return useQuery<SmPayResponse>({
@@ -88,24 +83,6 @@ export const useSmPaySubmitDetail = (id: string) => {
       data: null,
       success: false,
     },
-  });
-};
-
-type ScheduleInfoParams = {
-  id: string;
-  params: ScheduleInfo;
-};
-
-export const useSmPayScheduleInfoUpdate = (
-  options?: UseMutationOptions<
-    SmPayScheduleInfoResponse,
-    Error,
-    ScheduleInfoParams
-  >
-) => {
-  return useMutation<SmPayScheduleInfoResponse, Error, ScheduleInfoParams>({
-    mutationFn: ({ id, params }) => updateSmPayScheduleInfo(id, params),
-    ...options,
   });
 };
 
@@ -154,13 +131,6 @@ export const useSmPayJudgementData = (params: TableParams) => {
   return useQuery<SmPayJudgementDataResponse>({
     queryKey: ["/smpay/judgement-data", params],
     queryFn: () => getSmPayJudgementData(params),
-  });
-};
-
-export const useSmPayJudgementStatus = () => {
-  return useQuery<SmPayJudgementStatusResponse>({
-    queryKey: ["/smpay/judgement-status"],
-    queryFn: () => getSmPayJudgementStatus(),
   });
 };
 
@@ -217,7 +187,7 @@ export const useSmPayAdvertiserUpdate = (
 
 // 광고주 detail 조회(SAG024) query
 export const useSmPayAdvertiserDetail = (advertiserId: number) => {
-  return useAuthQuery<ResponseSmPayAdvertiserDetail>({
+  return useAuthQuery<AdvertiserDetailDto>({
     queryKey: ["/smpay/advertiser-detail", advertiserId],
     queryFn: (user: RequestAgentUser) =>
       getSmPayAdvertiserDetail({ user, advertiserId }),
@@ -226,7 +196,7 @@ export const useSmPayAdvertiserDetail = (advertiserId: number) => {
 
 // 광고주 성과 기반 참고용 심사 지표 조회(28일)(SAG028) query
 export const useSmPayAdvertiserStatIndicator = (advertiserId: number) => {
-  return useAuthQuery<ResponseSmPayAdvertiserStatIndicator>({
+  return useAuthQuery<SmPayStatIndicator>({
     queryKey: ["/smpay/advertiser-stat-indicator", advertiserId],
     queryFn: (user: RequestAgentUser) =>
       getSmPayAdvertiserStatIndicator({ user, advertiserId }),

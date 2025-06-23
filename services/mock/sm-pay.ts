@@ -73,14 +73,6 @@ export const mockData: SmPayData[] = Array.from({ length: 157 }).map(
   })
 );
 
-export const mockScheduleInfo: ScheduleInfo[] = Array.from({ length: 157 }).map(
-  (_, i) => ({
-    id: i + 1,
-    firstCharge: Math.floor(100000 + Math.random() * 900000),
-    maxCharge: Math.floor(300000 + Math.random() * 2000000),
-  })
-);
-
 export const mockSmPayJudgementData: SmPayJudgementData[] = Array.from({
   length: 157,
 }).map((_, i) => ({

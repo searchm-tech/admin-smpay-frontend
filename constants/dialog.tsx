@@ -7,7 +7,7 @@ export type ApplyWriteModalStatus =
   | "res-update"
   | "send-success";
 
-export const ApplyWriteModal = {
+export const WRITE_MODAL_CONTENT = {
   "req-update": (
     <div className="flex flex-col items-center pb-4 font-medium">
       <span>입력하신 정보로 광고주의 기본 정보가 업데이트 됩니다.</span>
