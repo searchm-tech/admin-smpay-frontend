@@ -55,7 +55,6 @@ const TableSection = ({
   loadingData,
   dataSource,
 }: TableSectionProps) => {
-  console.log("dataSource", dataSource);
   const router = useRouter();
 
   const [openDialog, setOpenDialog] = useState<ActionButton | null>(null);
@@ -111,13 +110,6 @@ const TableSection = ({
       orderType: orderType,
     });
   };
-
-  useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  }, [tableParams.pagination?.current]);
 
   const columns: TableProps<TSmPayData>["columns"] = [
     {
@@ -243,7 +235,7 @@ const TableSection = ({
     },
     {
       title: "최종 수정일시",
-      dataIndex: "descriptionRegisterDt",
+      dataIndex: "registerOrUpdateDt",
       width: 200,
       align: "center",
       sorter: true,
@@ -251,6 +243,15 @@ const TableSection = ({
         date ? dayjs(date).format("YYYY-MM-DD HH:mm") : "-",
     },
   ];
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, [tableParams.pagination?.current]);
+
+  console.log("dataSource", dataSource);
 
   return (
     <section>
@@ -352,7 +353,7 @@ const TableSection = ({
 
       <Table<TSmPayData>
         columns={columns}
-        rowKey="id"
+        rowKey="no"
         dataSource={dataSource}
         pagination={{
           ...tableParams.pagination,

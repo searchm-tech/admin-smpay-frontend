@@ -52,11 +52,10 @@ const MailSendSection = ({ user }: TViewProps) => {
 
   const { data: agencyList = [] } = useQueryAgencyAll({ enabled: isAdmin });
 
+  // TODO : 수정 필요
   const { data: agencyInfo } = useQueryAgencyDomainName(
     session?.user.uniqueCode || ""
   );
-
-  console.log("agencyInfo", agencyInfo);
 
   const { mutate: mutateGroupMasterSendMail, isPending: loadingGrpSendMail } =
     useMutationAgencySendMail({
@@ -104,7 +103,7 @@ const MailSendSection = ({ user }: TViewProps) => {
     setDepartmentNode(node);
   };
 
-  const handleNameCheck = async () => {
+  const handleEmailCheck = async () => {
     if (checkNameLoading) return;
 
     if (!emailId) {
@@ -112,9 +111,17 @@ const MailSendSection = ({ user }: TViewProps) => {
       return;
     }
 
-    if (!EMAIL_REGEX.test(`${emailId}@${selectedAgency?.domainName}`)) {
-      setDialog("check-email-regex");
-      return;
+    if (isAdmin) {
+      if (!EMAIL_REGEX.test(`${emailId}@${selectedAgency?.domainName}`)) {
+        setDialog("check-email-regex");
+        return;
+      }
+    } else {
+      console.log("agencyInfo", agencyInfo);
+      if (!EMAIL_REGEX.test(`${emailId}@${agencyInfo?.domainName}`)) {
+        setDialog("check-email-regex");
+        return;
+      }
     }
 
     try {
@@ -144,11 +151,6 @@ const MailSendSection = ({ user }: TViewProps) => {
 
     if (!enableEmailId) {
       setDialog("nameCheck");
-      return;
-    }
-
-    if (!EMAIL_REGEX.test(emailId)) {
-      setDialog("emailRegex");
       return;
     }
 
@@ -317,7 +319,7 @@ const MailSendSection = ({ user }: TViewProps) => {
                 suffix={selectedAgency ? `@${selectedAgency.domainName}` : ""}
               />
             )}
-            {/* TODO : 수정이 필요 */}
+
             {!isAdmin && (
               <InputWithSuffix
                 className="max-w-[500px]"
@@ -333,7 +335,7 @@ const MailSendSection = ({ user }: TViewProps) => {
               />
             )}
 
-            <Button variant="outline" onClick={handleNameCheck}>
+            <Button variant="outline" onClick={handleEmailCheck}>
               {enableEmailId ? "중복 체크 완료" : "중복 체크"}
             </Button>
 
