@@ -53,6 +53,7 @@ export type SmPayAdvertiserStatusDto = {
   descriptionRegisterDt: string;
   registerOrUpdateDt: string;
   isMyAdvertiser: true;
+  advertiserFormId: number;
 };
 
 // 광고주 일별 통계
@@ -104,4 +105,36 @@ export type SmPayStatIndicator = {
   monthlyConvAmt: number; // 월별 전환액 1000.0,
   dailySalesAmt: number; // 일별 매출액 100.0,
   recommendRoas: number; // 권장 ROAS  0.8,
+};
+
+//
+/**
+ * SM Pay 상세 내용
+ * - API : 광고주 smPay 신청 이력 상세 조회(SAG026) response type
+ * - API : 광고주 smPay 신청 이력 리스트 조회(SAG025)
+ */
+export type SmPayDetailDto = {
+  chargeRules: ChargeRule[];
+  advertiserFormId: number; // 1;
+  advertiserId: number; // 1;
+  advertiserStatus: SmPayAdvertiserStatus;
+  advertiserName: string; // "광고주명";
+  advertiserNickname: string; // "광고주 닉네임";
+  advertiserRepresentativeName: string; //  "광고주 대표자명";
+  advertiserPhoneNumber: string; //  "0101111111";
+  advertiserEmailAddress: string; //  "pgw111111@naver.com";
+  advertiserOperationPeriod: number; //  1;
+  advertiserDailyAverageRoas: number; // 0.01;
+  advertiserMonthlyConvAmt: number; // 0.01;
+  advertiserDailySalesAmt: number; // 0.01;
+  advertiserRecommendRoasPercent: number; // 0.01;
+  advertiserStandardRoasPercent: number; // 1;
+  advertiserRejectDescription: string; // "반려 사유";
+  initialAmount: number; // 1;
+  maxChargeLimit: number; // 1;
+  minChargeLimit: number; // 1;
+  reviewerMemo: string; // "심사자 메모";
+  approvalMemo: string; // "운영자 메모";
+  registerDt: string; //  null;
+  updateDt: string; // null;
 };

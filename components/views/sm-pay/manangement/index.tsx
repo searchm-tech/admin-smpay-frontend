@@ -49,7 +49,6 @@ const SMPayManagementView = () => {
     }));
   };
 
-  // TODO : 페이지네이션 관련 테스트 확인 필요
   const handleSearch = (keyword: string) => {
     setSearch(keyword);
     setSelectedStatus("ALL");

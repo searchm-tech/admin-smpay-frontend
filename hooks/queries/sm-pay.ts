@@ -23,7 +23,7 @@ import type {
   SmPayStopInfoResponse,
   SmPayStatusResponse,
 } from "@/services/types";
-import type { ScheduleInfo, BooleanResponse } from "@/types/sm-pay";
+import type { BooleanResponse } from "@/types/sm-pay";
 import type { RequestAgentUser } from "@/types/api/common";
 import type {
   ResponseSmPayAdvertiserStatus,
@@ -33,8 +33,6 @@ import type {
   SmPayAdvertiserApplyQuery,
   PutSmPayAdvertiserDetail,
   SmPayWriteParams,
-  ResponseSmPayDetail,
-  ResponseSmPayApplyInfo,
   ResponseSmPayAudit,
   RequestSmPayRead,
   AdvertiserDetailDto,
@@ -56,7 +54,11 @@ import {
   getSmPayAuditList,
   patchSmPayRead,
 } from "@/services/smpay";
-import type { DailyStat, SmPayStatIndicator } from "@/types/smpay";
+import type {
+  DailyStat,
+  SmPayDetailDto,
+  SmPayStatIndicator,
+} from "@/types/smpay";
 
 export const useSmPayList = (params: TableParams) => {
   return useQuery<SmPayResponse>({
@@ -235,7 +237,7 @@ export const useSmPayWrite = (
 
 // 광고주 smPay 신청 이력 상세 조회(SAG026) query
 export const useSmPayDetail = (advertiserId: number, formId: number) => {
-  return useAuthQuery<ResponseSmPayDetail>({
+  return useAuthQuery<SmPayDetailDto>({
     queryKey: ["/smpay/detail", advertiserId],
     queryFn: (user: RequestAgentUser) =>
       getSmPayDetail({ user, advertiserId, formId }),
@@ -244,7 +246,7 @@ export const useSmPayDetail = (advertiserId: number, formId: number) => {
 
 // 광고주 smPay 신청 이력 리스트 조회(SAG025) query
 export const useSmPayApplyList = (advertiserId: number) => {
-  return useAuthQuery<ResponseSmPayApplyInfo[]>({
+  return useAuthQuery<SmPayDetailDto[]>({
     queryKey: ["/smpay/apply-list", advertiserId],
     queryFn: (user: RequestAgentUser) =>
       getSmPayApplyList({ user, advertiserId }),

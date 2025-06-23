@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 
 import Table from "@/components/composite/table";
 
-import { LinkTextButton } from "@/components/composite/button-components";
+// import { LinkTextButton } from "@/components/composite/button-components";
 
 import {
   ApplyCancelDialog,
@@ -69,8 +69,10 @@ const TableSection = ({
   >(null);
   const [stopModalId, setStopModalId] = useState<number | null>(null);
 
-  const handleMoveDetailPage = (id: number) => {
-    router.push(`/sm-pay/management/apply-detail/${id}`);
+  const handleMoveDetailPage = (formId: number, advertiserId: number) => {
+    router.push(
+      `/sm-pay/management/apply-detail/${advertiserId}?formId=${formId}`
+    );
   };
 
   const handleTableChange: TableProps<TSmPayData>["onChange"] = (
@@ -157,7 +159,12 @@ const TableSection = ({
             {availableActions.includes("view") && (
               <Button
                 variant="greenOutline"
-                onClick={() => handleMoveDetailPage(record.advertiserId)}
+                onClick={() =>
+                  handleMoveDetailPage(
+                    record.advertiserFormId,
+                    record.advertiserId
+                  )
+                }
               >
                 조회
               </Button>
