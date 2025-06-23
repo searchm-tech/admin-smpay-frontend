@@ -14,14 +14,12 @@ import {
   ResponseSmPayAdvertiserApply,
   ResponseSmPayAdvertiserStatIndicator,
   ResponseSmPayAdvertiserStatus,
-  ResponseSmPayApplyInfo,
   ResponseSmPayAudit,
-  ResponseSmPayDetail,
   ResponseSmPayStatusCount,
   WithAdvertiserId,
 } from "@/types/api/smpay";
 
-import { DailyStat } from "@/types/smpay";
+import type { DailyStat, SmPayDetailDto } from "@/types/smpay";
 
 //
 
@@ -244,11 +242,11 @@ export const getSmPayDetail = async ({
   user,
   advertiserId,
   formId,
-}: RequestSmPayDetail): Promise<ResponseSmPayDetail> => {
+}: RequestSmPayDetail): Promise<SmPayDetailDto> => {
   const { agentId, userId } = user;
 
   try {
-    const response = await get<ResponseSmPayDetail>(
+    const response = await get<SmPayDetailDto>(
       `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/form/${formId}`
     );
     return response;
@@ -262,16 +260,15 @@ export const getSmPayDetail = async ({
 
 /**
  * 광고주 smPay 신청 이력 리스트 조회(SAG025)
- *
  */
 export const getSmPayApplyList = async ({
   user,
   advertiserId,
-}: WithAdvertiserId): Promise<ResponseSmPayApplyInfo[]> => {
+}: WithAdvertiserId): Promise<SmPayDetailDto[]> => {
   const { agentId, userId } = user;
 
   try {
-    const response = await get<ResponseSmPayApplyInfo[]>(
+    const response = await get<SmPayDetailDto[]>(
       `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/apply-form-list?`
     );
 

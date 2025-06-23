@@ -14,15 +14,19 @@ export async function generateMetadata({
   params: PageParams;
 }): Promise<Metadata> {
   return {
-    title: `SM-Pay 지난 이력 : ${params.slug}`,
+    title: `SM-Pay 지난 이력 상세 : ${params.slug}`,
   };
 }
 
-export default function SMPayManagementHistoryPage() {
+export default function SMPayManagementHistoryPage({
+  params,
+}: {
+  params: PageParams;
+}) {
   return (
     <div>
       <ContentHeader title="SM Pay 지난 이력 보기" items={breadcrumbItems} />
-      <SMPayManagementHistoryView />
+      <SMPayManagementHistoryView id={params.slug} />
     </div>
   );
 }

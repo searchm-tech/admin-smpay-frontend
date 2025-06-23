@@ -24,8 +24,8 @@ type RuleSectionProps = {
   type: "show" | "write";
   upChargeRule: ChargeRule;
   downChargeRule: ChargeRule;
-  handleUpChargeRuleChange: (value: ChargeRule) => void;
-  handleDownChargeRuleChange: (value: ChargeRule) => void;
+  handleUpChargeRuleChange?: (value: ChargeRule) => void;
+  handleDownChargeRuleChange?: (value: ChargeRule) => void;
 };
 const RuleSection2 = ({
   type,
@@ -68,7 +68,7 @@ const RuleSection2 = ({
               <div>
                 기준 ROAS가{" "}
                 <span className="font-bold">
-                  {downChargeRule.standardRoasPercent}% 미만
+                  {upChargeRule.standardRoasPercent}% 미만
                 </span>
                 이면 충전 금액을{" "}
                 <span className="text-red-600">
@@ -94,6 +94,7 @@ const RuleSection2 = ({
                   className="w-[100px]"
                   value={upChargeRule?.standardRoasPercent}
                   onChange={(e) =>
+                    handleUpChargeRuleChange &&
                     handleUpChargeRuleChange({
                       ...upChargeRule,
                       standardRoasPercent: Number(e) || 0,
@@ -118,6 +119,7 @@ const RuleSection2 = ({
                         id="above-flat"
                         checked={upChargeRule?.boundType === "FIXED_AMOUNT"}
                         onClick={() =>
+                          handleUpChargeRuleChange &&
                           handleUpChargeRuleChange({
                             ...upChargeRule,
                             boundType: "FIXED_AMOUNT",
@@ -132,6 +134,7 @@ const RuleSection2 = ({
                         id="above-rate"
                         checked={upChargeRule?.boundType === "PERCENTAGE"}
                         onClick={() =>
+                          handleUpChargeRuleChange &&
                           handleUpChargeRuleChange({
                             ...upChargeRule,
                             boundType: "PERCENTAGE",
@@ -145,6 +148,7 @@ const RuleSection2 = ({
                     className="w-[100px]"
                     value={upChargeRule?.changePercentOrValue}
                     onChange={(e) =>
+                      handleUpChargeRuleChange &&
                       handleUpChargeRuleChange({
                         ...upChargeRule,
                         changePercentOrValue: Number(e) || 0,
@@ -171,6 +175,7 @@ const RuleSection2 = ({
                         id="below-flat"
                         checked={downChargeRule?.boundType === "FIXED_AMOUNT"}
                         onClick={() =>
+                          handleDownChargeRuleChange &&
                           handleDownChargeRuleChange({
                             ...downChargeRule,
                             boundType: "FIXED_AMOUNT",
@@ -185,6 +190,7 @@ const RuleSection2 = ({
                         id="below-rate"
                         checked={downChargeRule?.boundType === "PERCENTAGE"}
                         onClick={() =>
+                          handleDownChargeRuleChange &&
                           handleDownChargeRuleChange({
                             ...downChargeRule,
                             boundType: "PERCENTAGE",
@@ -198,6 +204,7 @@ const RuleSection2 = ({
                     className="w-[100px]"
                     value={downChargeRule.changePercentOrValue}
                     onChange={(e) =>
+                      handleDownChargeRuleChange &&
                       handleDownChargeRuleChange({
                         ...downChargeRule,
                         changePercentOrValue: Number(e) || 0,

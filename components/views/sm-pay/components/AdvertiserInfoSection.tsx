@@ -1,4 +1,4 @@
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -22,8 +22,8 @@ import {
   useSmPayApplyList,
 } from "@/hooks/queries/sm-pay";
 
-import type { ResponseSmPayApplyInfo } from "@/types/api/smpay";
 import type { TableProps } from "@/types/table";
+import { SmPayDetailDto } from "@/types/smpay";
 
 type Props = {
   advertiserId: number;
@@ -106,9 +106,11 @@ type HistoryModalProps = {
 };
 const HistoryModal = ({ onClose, advertiserId }: HistoryModalProps) => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const originFormId = searchParams.get("formId");
 
   const { data: dataSource } = useSmPayApplyList(advertiserId || 0);
-  const columns: TableProps<ResponseSmPayApplyInfo>["columns"] = [
+  const columns: TableProps<SmPayDetailDto>["columns"] = [
     {
       title: "광고주 신청서 ID",
       dataIndex: "advertiserFormId",
@@ -131,7 +133,10 @@ const HistoryModal = ({ onClose, advertiserId }: HistoryModalProps) => {
       key: "advertiserName",
       render: (text: string, record: any) => (
         <LinkTextButton
-          onClick={() => router.push(`/sm-pay/management/history/${1}`)}
+          onClick={() => {
+            const url = `/sm-pay/management/history/${advertiserId}?formId=${record.advertiserFormId}&orignFormId=${originFormId}`;
+            router.push(url);
+          }}
         >
           {text}
         </LinkTextButton>
@@ -157,10 +162,7 @@ const HistoryModal = ({ onClose, advertiserId }: HistoryModalProps) => {
       cancelDisabled
     >
       <div className="w-[85vw] overflow-y-auto">
-        <Table<ResponseSmPayApplyInfo>
-          dataSource={dataSource}
-          columns={columns}
-        />
+        <Table<SmPayDetailDto> dataSource={dataSource} columns={columns} />
       </div>
     </Modal>
   );
