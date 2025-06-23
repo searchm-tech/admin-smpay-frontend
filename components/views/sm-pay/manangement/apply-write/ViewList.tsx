@@ -11,8 +11,8 @@ import { SearchInput } from "@/components/composite/input-components";
 import { LabelBullet } from "@/components/composite/label-bullet";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 
-import EditModal from "./EditModal";
-import CreateModal from "./RegisterModal";
+import ModalEdit from "./ModalEdit";
+import ModalCreate from "./ModalCreate";
 
 import { ColumnTooltip } from "@/constants/table";
 import { ADVERTISER_STATUS_MAP } from "@/constants/status";
@@ -20,38 +20,30 @@ import { useSmPayAdvertiserApplyList } from "@/hooks/queries/sm-pay";
 
 import { cn } from "@/lib/utils";
 
-import type { TableProps } from "antd";
-import type { TableParams } from "@/types/table";
+import type { TableParams, TableProps, FilterValue } from "@/types/table";
 import type {
   SmPayAdvertiserStatus,
   SmPayAdvertiserApplyDto as TAdvertiser,
 } from "@/types/smpay";
-
-const defaultTable = {
-  pagination: {
-    current: 1,
-    pageSize: 10,
-    total: 0,
-  },
-  sortField: "ADVERTISER_REGISTER_DESC",
-};
+import type { AdvertiserOrderType } from "@/types/adveriser";
+import { type ModalInfo, defaultTable } from "./constants";
 
 const ViewList = () => {
   const router = useRouter();
   const [search, setSearch] = useState<string>("");
-  const [searchKeyword, setSearchKeyword] = useState<string>("");
+  const [keyword, setKeyword] = useState<string>("");
   const [tableParams, setTableParams] = useState<TableParams>(defaultTable);
 
   const [selected, setSelected] = useState<number | null>(null);
-  const [editData, setEditData] = useState<TAdvertiser | null>(null);
-  const [registData, setRegistData] = useState<TAdvertiser | null>(null);
+  const [modalInfo, setModalInfo] = useState<ModalInfo | null>(null);
+
   const [isError, setIsError] = useState(false);
 
-  const { data: advertiserApplyRes } = useSmPayAdvertiserApplyList({
+  const { data: advertiserApplyRes, isPending } = useSmPayAdvertiserApplyList({
     page: tableParams.pagination?.current || 1,
     size: tableParams.pagination?.pageSize || 10,
-    keyword: searchKeyword,
     orderType: tableParams.sortField as SmPayAdvertiserStatus,
+    keyword,
   });
 
   const columns: TableProps<TAdvertiser>["columns"] = [
@@ -88,11 +80,25 @@ const ViewList = () => {
       render: (_, record) => {
         if (!record.advertiserName) {
           return (
-            <Button onClick={() => setRegistData(record)}>정보 등록</Button>
+            <Button
+              onClick={() => {
+                setModalInfo({
+                  type: "create",
+                  advertiserId: record.advertiserId,
+                });
+              }}
+            >
+              정보 등록
+            </Button>
           );
         }
         return (
-          <Button variant="cancel" onClick={() => setEditData(record)}>
+          <Button
+            variant="cancel"
+            onClick={() => {
+              setModalInfo({ type: "edit", advertiserId: record.advertiserId });
+            }}
+          >
             정보 변경
           </Button>
         );
@@ -116,7 +122,7 @@ const ViewList = () => {
   ];
 
   const handleSearch = () => {
-    setSearchKeyword(search);
+    setKeyword(search);
     setSelected(null);
     setTableParams((prev) => ({
       ...prev,
@@ -127,6 +133,46 @@ const ViewList = () => {
         total: 0,
       },
     }));
+  };
+
+  const handleTableChange: TableProps<TAdvertiser>["onChange"] = (
+    pagination,
+    filters,
+    sorter
+  ) => {
+    let sortField: AdvertiserOrderType = "ADVERTISER_REGISTER_DESC"; // 기본값
+
+    if (sorter && !Array.isArray(sorter) && sorter.field && sorter.order) {
+      const field = sorter.field as string;
+      const order = sorter.order === "ascend" ? "ASC" : "DESC";
+
+      // field 이름을 API에서 요구하는 형식으로 변환
+      const fieldMap: Record<string, string> = {
+        advertiserId: "ADVERTISER_ID",
+        advertiserLoginId: "ADVERTISER_LOGIN_ID",
+        advertiserNickName: "ADVERTISER_NICKNAME",
+        advertiserName: "ADVERTISER_NAME",
+        advertiserType: "ADVERTISER_TYPE",
+        registerOrUpdateDt: "ADVERTISER_REGISTER_TIME",
+      };
+
+      const mappedField = fieldMap[field];
+
+      if (mappedField) {
+        sortField = `${mappedField}_${order}` as AdvertiserOrderType;
+      }
+    }
+
+    setTableParams({
+      pagination: {
+        current: pagination.current ?? 1,
+        pageSize: pagination.pageSize ?? 10,
+      },
+      filters: filters as Record<string, FilterValue>,
+      keyword: tableParams.keyword, // 기존 keyword 유지
+      sortOrder: undefined, // TAgencyOrder를 사용하므로 불필요
+      sortField: sortField,
+    });
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -163,20 +209,20 @@ const ViewList = () => {
           onConfirm={() => setIsError(false)}
         />
       )}
-      {editData && (
-        <EditModal
-          onClose={() => setEditData(null)}
-          advertiserId={editData.advertiserId}
+      {modalInfo?.type === "edit" && (
+        <ModalEdit
+          refetch={handleSearch}
+          onConfirm={() => setModalInfo(null)}
+          onClose={() => setModalInfo(null)}
+          advertiserId={modalInfo.advertiserId}
         />
       )}
-      {registData && (
-        <CreateModal
-          onClose={() => setRegistData(null)}
-          onConfirm={() => {
-            setRegistData(null);
-            handleSearch();
-          }}
-          advertiserId={registData.advertiserId}
+      {modalInfo?.type === "create" && (
+        <ModalCreate
+          refetch={handleSearch}
+          onClose={() => setModalInfo(null)}
+          onConfirm={() => setModalInfo(null)}
+          advertiserId={modalInfo.advertiserId}
         />
       )}
       <div>
@@ -203,8 +249,13 @@ const ViewList = () => {
           rowKey={(record) => record.advertiserId}
           columns={columns}
           dataSource={advertiserApplyRes?.content ?? []}
-          total={advertiserApplyRes?.totalCount ?? 0}
-          loading={false}
+          pagination={{
+            current: tableParams.pagination?.current || 1,
+            pageSize: tableParams.pagination?.pageSize || 10,
+            total: advertiserApplyRes?.totalCount ?? 0,
+          }}
+          loading={isPending}
+          onChange={handleTableChange}
           rowSelection={{
             type: "radio",
             columnWidth: 50,

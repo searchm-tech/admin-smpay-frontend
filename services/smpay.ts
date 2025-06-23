@@ -130,7 +130,6 @@ export const getSmPayAdvertiserDetail = async ({
   user,
   advertiserId,
 }: RequestSmPayAdvertiserDetail): Promise<ResponseSmPayAdvertiserDetail> => {
-  console.log("user", user);
   const { agentId, userId } = user;
 
   try {
