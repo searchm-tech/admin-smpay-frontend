@@ -18,7 +18,7 @@ const defaultTableParams = {
     total: 0,
   },
   filters: {},
-  sortField: "ADVERTISER_CUSTOMER_ID_DESC",
+  sortField: "ADVERTISER_REGISTER_DESC",
 };
 
 const SMPayManagementView = () => {
