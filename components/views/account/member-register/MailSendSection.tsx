@@ -154,11 +154,6 @@ const MailSendSection = ({ user }: TViewProps) => {
       return;
     }
 
-    if (!selectedAgency) {
-      setDialog("agency-select");
-      return;
-    }
-
     if (!isAdmin) {
       /**
        * 관리자가 아닌 경우
@@ -187,7 +182,7 @@ const MailSendSection = ({ user }: TViewProps) => {
        * - 대행사 최상위 그룹장 회원 초대 메일 발송
        */
       if (!selectedAgency) {
-        setDialog("err");
+        setDialog("agency-select");
         return;
       }
 

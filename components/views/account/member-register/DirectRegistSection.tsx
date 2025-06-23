@@ -165,11 +165,6 @@ const DirectRegistSection = ({ user }: TViewProps) => {
       return;
     }
 
-    if (!selectedAgency) {
-      setDialog("agency-select");
-      return;
-    }
-
     if (
       !PASSWORD_REGEX.test(password) ||
       !PASSWORD_REGEX.test(passwordConfirm)
@@ -208,7 +203,7 @@ const DirectRegistSection = ({ user }: TViewProps) => {
       mutateAddUserDirect(data);
     } else {
       if (!selectedAgency) {
-        setDialog("err");
+        setDialog("agency-select");
         return;
       }
 
