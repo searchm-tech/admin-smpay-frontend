@@ -116,6 +116,11 @@ const DirectRegistSection = ({ user }: TViewProps) => {
       return;
     }
     if (isAdmin) {
+      if (!selectedAgency) {
+        setDialog("agency-select");
+        return;
+      }
+
       if (!EMAIL_REGEX.test(`${emailId}@${selectedAgency?.domainName}`)) {
         setDialog("check-email-regex");
         return;
@@ -129,7 +134,9 @@ const DirectRegistSection = ({ user }: TViewProps) => {
 
     try {
       setCheckNameLoading(true);
-      const response = await getUsersNameCheckApi(emailId);
+      const response = await getUsersNameCheckApi(
+        `${emailId}@${selectedAgency?.domainName}`
+      );
 
       setNameCheckResult(response ? "duplicate" : "available");
     } catch (error) {
@@ -194,7 +201,7 @@ const DirectRegistSection = ({ user }: TViewProps) => {
       const data: RequestMemberDirect = {
         type: memberType as TAuthType,
         name,
-        emailAddress: `${emailId}@${selectedAgency?.domainName}`,
+        emailAddress: `${emailId}@${agencyInfo?.domainName}`,
         password,
         phoneNumber: phone,
         agentId: user.agentId,
@@ -212,7 +219,7 @@ const DirectRegistSection = ({ user }: TViewProps) => {
         userType: "AGENCY_GROUP_MASTER",
         agentId: Number(selectedAgency.agentId),
         name,
-        emailAddress: `${emailId}@${selectedAgency?.domainName}`,
+        emailAddress: `${emailId}@${selectedAgency.domainName}`,
         password,
         phoneNumber: phone,
       };
