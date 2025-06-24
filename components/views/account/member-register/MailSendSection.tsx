@@ -178,7 +178,7 @@ const MailSendSection = ({ user }: TViewProps) => {
       const params: RequestSignupEmail = {
         type: memberType as TAuthType,
         name,
-        emailAddress: `${emailId}@${selectedAgency?.domainName}`,
+        emailAddress: `${emailId}@${agencyInfo?.domainName}`,
         agentId: user.agentId,
         departmentId: Number(departmentNode?.id),
       };
