@@ -1,3 +1,4 @@
+// TODO : 삭제 확인
 export interface AdvertiserData {
   id: number;
   name: string;

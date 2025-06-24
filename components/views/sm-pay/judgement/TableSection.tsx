@@ -10,7 +10,6 @@ import Table from "@/components/composite/table";
 import { formatDate } from "@/utils/format";
 
 import type { ColumnsType } from "antd/es/table";
-import type { SmPayJudgementData } from "@/types/sm-pay";
 import type { TableProps } from "antd";
 
 import { StopInfoModal } from "../manangement/dialog";
@@ -91,9 +90,10 @@ const TableSection = ({
           {!record.isReviewerRead && <Badge label="new" />}
 
           <LinkTextButton
-            onClick={() =>
-              router.push(`/sm-pay/judgement/${record.advertiserId}`)
-            }
+            onClick={() => {
+              const url = `/sm-pay/judgement/${record.advertiserId}?formId=${record.advertiserFormId}`;
+              router.push(url);
+            }}
           >
             {text}
           </LinkTextButton>

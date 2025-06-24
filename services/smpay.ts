@@ -10,6 +10,7 @@ import {
   RequestSmPayAdvertiserStatus,
   RequestSmPayDetail,
   RequestSmPayRead,
+  ParamsSmPayApproval,
   RequestSmPayWrite,
   ResponseSmPayAdvertiserApply,
   ResponseSmPayAdvertiserStatIndicator,
@@ -17,9 +18,16 @@ import {
   ResponseSmPayAudit,
   ResponseSmPayStatusCount,
   WithAdvertiserId,
+  ChargeRuleDto,
+  PrePaymentScheduleDto,
 } from "@/types/api/smpay";
 
-import type { DailyStat, SmPayDetailDto } from "@/types/smpay";
+import type {
+  DailyStat,
+  SmPayScreeningIndicator,
+  SmPayDetailDto,
+  SmPayReviewerMemo,
+} from "@/types/smpay";
 
 //
 
@@ -285,6 +293,7 @@ export const getSmPayApplyList = async ({
  * 광고주 심사 관리 리스트 조회(최상위 그룹장 전용)(SAG030)
  * - 화면 : [최상위 그룹장] > 심사 요청 목록
  */
+
 export const getSmPayAuditList = async ({
   user,
   queryParams,
@@ -339,6 +348,137 @@ export const patchSmPayRead = async ({
   try {
     const response = await patch<null>(
       `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/alarm?isReviewerRead=${isReviewerRead}`
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+/**
+ * 광고주 심사 지표 조회 (최상위 그룹장 전용)(SAG032)
+ * - 화면 : 심사요청 상세 > 심사 지표 영역
+ */
+export const getSmPayAdvertiserScreeningIndicator = async ({
+  user,
+  advertiserId,
+}: WithAdvertiserId): Promise<SmPayScreeningIndicator> => {
+  const { agentId, userId } = user;
+
+  try {
+    const response = await get<SmPayScreeningIndicator>(
+      `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/screening-indicator`
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+/**
+ * 광고주 심사자 참고용 메모 조회 (최상위 그룹장 전용)(SAG035)
+ * - 화면 : 심사요청 상세 > 심사자 참고용 메모 영역
+ */
+
+export const getSmPayAdvertiserReviewerMemo = async ({
+  user,
+  advertiserId,
+}: WithAdvertiserId): Promise<SmPayReviewerMemo> => {
+  const { agentId, userId } = user;
+
+  try {
+    const response = await get<SmPayReviewerMemo>(
+      `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/reviewer-memo`
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+// /service/api/v1/agents/1/users/1/advertisers/1/reviewer-decision
+
+/**
+ * 광고주 심상 승인 /거절 (최상위 그룹장 전용)(SAG036)
+ */
+
+type SmPayApprovalVariables = {
+  user: RequestAgentUser;
+  advertiserId: number;
+  params: ParamsSmPayApproval;
+};
+
+export const postSmPayApproval = async ({
+  user,
+  advertiserId,
+  params,
+}: SmPayApprovalVariables): Promise<null> => {
+  const { agentId, userId } = user;
+
+  try {
+    const response = await post<null>(
+      `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/reviewer-decision`,
+      params
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+///service/api/v1/agents/1/users/1/advertisers/1/charge-rule
+
+/**
+ * 광고주 충전 규칙 조회 (최상위 그룹장 전용)(SAG033)
+ * - 화면 : 심사요청 상세 > 충전 규칙 영역
+ */
+export const getSmPayAdvertiserChargeRule = async ({
+  user,
+  advertiserId,
+}: WithAdvertiserId): Promise<ChargeRuleDto[]> => {
+  const { agentId, userId } = user;
+
+  try {
+    const response = await get<ChargeRuleDto[]>(
+      `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/charge-rule`
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+// /service/api/v1/agents/1/users/1/advertisers/1/pre-payment-schedule
+
+/**
+ * 광고주 선결제 스케줄 조회 (최상위 그룹장 전용)(SAG034)
+ * - 화면 : 심사요청 상세 > 선결제 스케줄 영역
+ */
+
+export const getSmPayAdvertiserPrePaymentSchedule = async ({
+  user,
+  advertiserId,
+}: WithAdvertiserId): Promise<PrePaymentScheduleDto> => {
+  const { agentId, userId } = user;
+
+  try {
+    const response = await get<PrePaymentScheduleDto>(
+      `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/pre-payment-schedule`
     );
     return response;
   } catch (error) {

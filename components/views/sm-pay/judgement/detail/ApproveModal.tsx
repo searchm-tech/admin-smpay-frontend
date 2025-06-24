@@ -1,22 +1,68 @@
 import { useState } from "react";
 import { Modal } from "@/components/composite/modal-components";
+import { ParamsSmPayApproval } from "@/types/api/smpay";
+import { useSmPayApproval } from "@/hooks/queries/sm-pay";
+import LoadingUI from "@/components/common/Loading";
 
 type ApproveModalProps = {
+  advertiserId: number;
   onClose: () => void;
   onConfirm: () => void;
+  params: Partial<ParamsSmPayApproval>;
 };
 
-const ApproveModal = ({ onClose, onConfirm }: ApproveModalProps) => {
+const ApproveModal = ({
+  onClose,
+  onConfirm,
+  params,
+  advertiserId,
+}: ApproveModalProps) => {
   const [isConfirm, setIsConfirm] = useState(false);
 
+  const { mutate: postSmPayApproval, isPending: isApproving } =
+    useSmPayApproval({
+      onSuccess: () => {
+        setIsConfirm(true);
+      },
+    });
+
   const handleConfirm = () => {
-    console.log("승인 처리 클릭");
-    setIsConfirm(true);
+    const defaultParams: ParamsSmPayApproval = {
+      statIndicator: params?.statIndicator || {
+        operationPeriod: 0,
+        dailyAverageRoas: 0,
+        monthlyConvAmt: 0,
+        dailySalesAmt: 0,
+        recommendRoasPercent: 0,
+      },
+      chargeRule: params?.chargeRule || [],
+      prePaymentSchedule: params?.prePaymentSchedule || {
+        initialAmount: 0,
+        maxChargeLimit: 0,
+        minChargeLimit: 0,
+      },
+      reviewerMemo: params?.reviewerMemo || "",
+      approvalMemo: params?.approvalMemo || "",
+      rejectStatusMemo: params?.rejectStatusMemo || "",
+      decisionType: params?.decisionType || "APPROVE",
+    };
+    postSmPayApproval({
+      advertiserId: advertiserId,
+      params: {
+        ...defaultParams,
+        decisionType: "APPROVE",
+      },
+    });
   };
+
+  if (isApproving) {
+    return <LoadingUI title="광고주 심사 승인중" />;
+  }
 
   if (!isConfirm) {
     return (
       <Modal
+        open
         onClose={onClose}
         onConfirm={handleConfirm}
         title="광고주 심사 승인"
@@ -36,11 +82,11 @@ const ApproveModal = ({ onClose, onConfirm }: ApproveModalProps) => {
 
   return (
     <Modal
-      onClose={onClose}
+      open
       onConfirm={onConfirm}
       title="광고주 심사 승인"
-      confirmText="승인 처리"
-      cancelText="취소"
+      confirmText="확인"
+      cancelDisabled
     >
       <div>광고주의 SM Pay 신청이 승인되었습니다.</div>
     </Modal>

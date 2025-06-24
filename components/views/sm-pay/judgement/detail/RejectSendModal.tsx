@@ -1,25 +1,90 @@
 import { useState } from "react";
 
 import { Textarea } from "@/components/ui/textarea";
-import { Modal } from "@/components/composite/modal-components";
+import { ConfirmDialog, Modal } from "@/components/composite/modal-components";
 import {
   Descriptions,
   DescriptionItem,
 } from "@/components/composite/description-components";
+import { ParamsSmPayApproval } from "@/types/api/smpay";
+import { useSmPayApproval } from "@/hooks/queries/sm-pay";
+import LoadingUI from "@/components/common/Loading";
 
 type RejectSendModalProps = {
   onClose: () => void;
   onConfirm: () => void;
+  advertiserId: number;
+  params: Partial<ParamsSmPayApproval>;
 };
 
-const RejectSendModal = ({ onClose, onConfirm }: RejectSendModalProps) => {
+const RejectSendModal = ({
+  onClose,
+  onConfirm,
+  advertiserId,
+  params,
+}: RejectSendModalProps) => {
   const [rejectReason, setRejectReason] = useState("");
   const [isConfirm, setIsConfirm] = useState(false);
+  const [isError, setIsError] = useState(false);
+
+  const { mutate: postSmPayApproval, isPending: isRejecting } =
+    useSmPayApproval({
+      onSuccess: () => {
+        setIsConfirm(true);
+      },
+    });
 
   const handleConfirm = () => {
-    console.log("반려 처리 클릭");
-    setIsConfirm(true);
+    if (!rejectReason) {
+      setIsError(true);
+      return;
+    }
+
+    const defaultParams: ParamsSmPayApproval = {
+      statIndicator: params?.statIndicator || {
+        operationPeriod: 0,
+        dailyAverageRoas: 0,
+        monthlyConvAmt: 0,
+        dailySalesAmt: 0,
+        recommendRoasPercent: 0,
+      },
+      chargeRule: params?.chargeRule || [],
+      prePaymentSchedule: params?.prePaymentSchedule || {
+        initialAmount: 0,
+        maxChargeLimit: 0,
+        minChargeLimit: 0,
+      },
+      reviewerMemo: params?.reviewerMemo || "",
+      approvalMemo: params?.approvalMemo || "",
+      rejectStatusMemo: params?.rejectStatusMemo || "",
+      decisionType: params?.decisionType || "APPROVE",
+    };
+
+    postSmPayApproval({
+      advertiserId: advertiserId,
+      params: {
+        ...defaultParams,
+        rejectStatusMemo: rejectReason,
+        decisionType: "REJECT",
+      },
+    });
   };
+
+  if (isRejecting) {
+    return <LoadingUI title="광고주 심사 반려중" />;
+  }
+
+  if (isError) {
+    return (
+      <ConfirmDialog
+        open
+        onConfirm={() => setIsError(false)}
+        title="광고주 심사 반려"
+        content="반려 사유를 입력해주세요."
+        confirmText="확인"
+      />
+    );
+  }
 
   if (isConfirm) {
     return (

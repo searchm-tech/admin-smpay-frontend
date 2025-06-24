@@ -97,6 +97,7 @@ export type SmPayAuditDto = {
   registerOrUpdateDt: string;
   isApprovalRead: boolean;
   isReviewerRead: boolean;
+  advertiserFormId: number;
 };
 
 export type SmPayStatIndicator = {
@@ -137,4 +138,21 @@ export type SmPayDetailDto = {
   approvalMemo: string; // "운영자 메모";
   registerDt: string; //  null;
   updateDt: string; // null;
+};
+
+// 심사 상세 > 최상위 그룹장 전용 심사 지표 조회 DTO
+export type SmPayScreeningIndicator = {
+  advertiserScreeningIndicatorId: number;
+  advertiserId: number;
+  advertiserOperationPeriod: number;
+  advertiserDailyAverageRoas: number;
+  advertiserMonthlyConvAmt: number;
+  advertiserDailySalesAmt: number;
+  advertiserRecommendRoasPercent: number;
+};
+
+// 심사 상세 > 광고주 심사자 참고용 메모 조회 DTO
+export type SmPayReviewerMemo = {
+  advertiserReviewerMemosId: number;
+  description: string;
 };

@@ -6,6 +6,7 @@ import {
   AlertDialogContent,
   AlertDialogFooter,
   AlertDialogCancel,
+  AlertDialogDescription,
 } from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
 import { X } from "lucide-react";
@@ -43,6 +44,9 @@ export const Dialog = ({
           <AlertDialogTitle className="font-normal text-base">
             {title}
           </AlertDialogTitle>
+          <AlertDialogDescription className="sr-only">
+            확인 또는 취소를 선택하세요.
+          </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           {!cancelDisabled && (
@@ -111,9 +115,10 @@ export const Modal = ({
               />
             )}
           </AlertDialogTitle>
+          <AlertDialogDescription className="sr-only"></AlertDialogDescription>
         </AlertDialogHeader>
 
-        <div className={cn("px-8", contentClassName)}>{children}</div>
+        <div className={cn("text-sm px-8", contentClassName)}>{children}</div>
 
         {!footerDisabled && (
           <AlertDialogFooter className="pb-4">
