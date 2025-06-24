@@ -112,12 +112,16 @@ const MailSendSection = ({ user }: TViewProps) => {
     }
 
     if (isAdmin) {
+      if (!selectedAgency) {
+        setDialog("agency-select");
+        return;
+      }
+
       if (!EMAIL_REGEX.test(`${emailId}@${selectedAgency?.domainName}`)) {
         setDialog("check-email-regex");
         return;
       }
     } else {
-      console.log("agencyInfo", agencyInfo);
       if (!EMAIL_REGEX.test(`${emailId}@${agencyInfo?.domainName}`)) {
         setDialog("check-email-regex");
         return;
@@ -125,8 +129,12 @@ const MailSendSection = ({ user }: TViewProps) => {
     }
 
     try {
+      const emailAddress = isAdmin
+        ? `${emailId}@${selectedAgency?.domainName}`
+        : `${emailId}@${agencyInfo?.domainName}`;
+
       setCheckNameLoading(true);
-      const response = await getUsersNameCheckApi(emailId);
+      const response = await getUsersNameCheckApi(emailAddress);
 
       // response가 true면 중복, false면 사용 가능
       if (!response) {
@@ -206,10 +214,6 @@ const MailSendSection = ({ user }: TViewProps) => {
       setSelectedAgency(findAgency);
     }
   };
-
-  console.log("agencyInfo", agencyInfo);
-  console.log("selectedAgency", selectedAgency);
-  console.log("agencyList", agencyList);
 
   return (
     <section className="py-4">
@@ -334,7 +338,11 @@ const MailSendSection = ({ user }: TViewProps) => {
               />
             )}
 
-            <Button variant="outline" onClick={handleEmailCheck}>
+            <Button
+              variant="outline"
+              onClick={handleEmailCheck}
+              disabled={enableEmailId}
+            >
               {enableEmailId ? "중복 체크 완료" : "중복 체크"}
             </Button>
 
