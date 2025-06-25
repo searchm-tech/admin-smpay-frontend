@@ -3,9 +3,9 @@ import type {
   SortOrder,
 } from "antd/es/table/interface";
 import type { TableProps as AntdTableProps } from "antd";
-import { SmPayAdvertiserStautsOrderType } from "./smpay";
+import type { ColumnsType as AntdColumnsType } from "antd/es/table";
 
-export interface TableParams {
+export interface TableParams<T = any> {
   pagination?: {
     current: number;
     pageSize: number;
@@ -15,8 +15,10 @@ export interface TableParams {
   sortOrder?: SortOrder;
   filters?: Record<string, AntdFilterValue | null>;
   keyword?: string;
-  orderType?: SmPayAdvertiserStautsOrderType;
+  orderType?: T;
 }
+
+export type ColumnsType<T> = AntdColumnsType<T>;
 
 export type TableProps<T> = AntdTableProps<T>;
 

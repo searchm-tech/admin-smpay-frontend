@@ -280,7 +280,10 @@ export const getSmPayApplyList = async ({
       `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/apply-form-list?`
     );
 
-    return response;
+    return response.map((item, index) => ({
+      ...item,
+      no: index + 1,
+    }));
   } catch (error) {
     if (error instanceof ApiError) {
       throw error;

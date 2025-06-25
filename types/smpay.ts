@@ -115,6 +115,7 @@ export type SmPayStatIndicator = {
  * - API : 광고주 smPay 신청 이력 리스트 조회(SAG025)
  */
 export type SmPayDetailDto = {
+  no: number;
   chargeRules: ChargeRule[];
   advertiserFormId: number; // 1;
   advertiserId: number; // 1;

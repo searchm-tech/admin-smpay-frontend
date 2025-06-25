@@ -15,7 +15,11 @@ import { LinkTextButton } from "@/components/composite/button-components";
 
 import LoadingUI from "@/components/common/Loading";
 
-import { formatBusinessNumber, formatPhoneNumber } from "@/utils/format";
+import {
+  formatBusinessNumber,
+  formatDate,
+  formatPhoneNumber,
+} from "@/utils/format";
 import { SmPayAdvertiserStatusLabel } from "@/constants/status";
 import {
   useSmPayAdvertiserDetail,
@@ -23,7 +27,7 @@ import {
 } from "@/hooks/queries/sm-pay";
 
 import type { TableProps } from "@/types/table";
-import { SmPayDetailDto } from "@/types/smpay";
+import { SmPayAdvertiserStatus, SmPayDetailDto } from "@/types/smpay";
 
 type Props = {
   advertiserId: number;
@@ -110,28 +114,39 @@ const HistoryModal = ({ onClose, advertiserId }: HistoryModalProps) => {
   const originFormId = searchParams.get("formId");
 
   const { data: dataSource } = useSmPayApplyList(advertiserId || 0);
+
+  console.log("dataSource", dataSource);
   const columns: TableProps<SmPayDetailDto>["columns"] = [
     {
-      title: "광고주 신청서 ID",
-      dataIndex: "advertiserFormId",
-      key: "advertiserFormId",
-    },
-
-    {
-      title: "광고주 대표자명",
-      dataIndex: "advertiserRepresentativeName",
-      key: "advertiserRepresentativeName",
+      title: "No",
+      dataIndex: "no",
+      key: "no",
+      align: "center",
     },
     {
-      title: "advertiserNickname",
+      title: "CUSTOMER ID",
+      dataIndex: "advertiserCustomerId",
+      key: "advertiserCustomerId",
+      align: "center",
+    },
+    {
+      title: "광고주 로그인 ID",
+      dataIndex: "advertiserLoginId",
+      key: "advertiserLoginId",
+      align: "center",
+    },
+    {
+      title: "광고주 닉네임",
       dataIndex: "advertiserNickname",
-      key: "광고주 닉네임",
+      key: "advertiserNickname",
+      align: "center",
     },
     {
       title: "광고주명",
       dataIndex: "advertiserName",
       key: "advertiserName",
-      render: (text: string, record: any) => (
+      align: "center",
+      render: (text: string, record) => (
         <LinkTextButton
           onClick={() => {
             const url = `/sm-pay/management/history/${advertiserId}?formId=${record.advertiserFormId}&orignFormId=${originFormId}`;
@@ -146,11 +161,17 @@ const HistoryModal = ({ onClose, advertiserId }: HistoryModalProps) => {
       title: "최종 상태",
       dataIndex: "advertiserStatus",
       key: "advertiserStatus",
+      align: "center",
+      render: (value: string, record) =>
+        SmPayAdvertiserStatusLabel[
+          record.advertiserStatus as SmPayAdvertiserStatus
+        ],
     },
     {
       title: "최종 수정 일시",
       dataIndex: "updatedAt",
       key: "updatedAt",
+      render: (value: string, record) => formatDate(value || record.registerDt),
     },
   ];
   return (
@@ -162,7 +183,11 @@ const HistoryModal = ({ onClose, advertiserId }: HistoryModalProps) => {
       cancelDisabled
     >
       <div className="w-[85vw] overflow-y-auto">
-        <Table<SmPayDetailDto> dataSource={dataSource} columns={columns} />
+        <Table<SmPayDetailDto>
+          dataSource={dataSource}
+          columns={columns}
+          pagination={false}
+        />
       </div>
     </Modal>
   );
