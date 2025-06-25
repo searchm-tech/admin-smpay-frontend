@@ -5,9 +5,12 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import { ConfirmDialog } from "@/components/composite/modal-components";
+import { useSession } from "next-auth/react";
+import { getIsAdmin } from "../utils";
 
 export default function QueryProvider({ children }: { children: ReactNode }) {
   const [roleError, setRoleError] = useState(false);
+  const { data: session } = useSession();
 
   useEffect(() => {
     const handleAuthError = (event: any) => {
@@ -43,7 +46,11 @@ export default function QueryProvider({ children }: { children: ReactNode }) {
           content="인가권한이 없는 화면입니다."
           onConfirm={() => {
             setRoleError(false);
-            window.location.href = "/sm-pay";
+            const isAdmin = getIsAdmin(session?.user?.type);
+            const url = isAdmin
+              ? "/sm-pay/admin/overview"
+              : "/sm-pay/management";
+            window.location.href = url;
           }}
           cancelDisabled
         />

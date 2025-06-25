@@ -137,11 +137,11 @@ const SignInView = ({ code }: SignInViewProps) => {
   }, [form]);
 
   useEffect(() => {
-    if (code) {
-      getAgencyDomainNameApi(code).then((res) => {
-        setDomainName(res.domainName);
-      });
-    }
+    if (!code) return;
+
+    getAgencyDomainNameApi(code).then((res) => {
+      setDomainName(res.domainName);
+    });
   }, [code]);
 
   return (

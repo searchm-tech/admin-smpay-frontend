@@ -3,19 +3,27 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import { StopInfoModal } from "@/components/views/sm-pay/manangement/dialog";
+
 import { Badge } from "@/components/ui/badge";
 import { LinkTextButton } from "@/components/composite/button-components";
 import Table from "@/components/composite/table";
 
 import { formatDate } from "@/utils/format";
 
-import type { ColumnsType } from "antd/es/table";
-import type { TableProps } from "antd";
+import type {
+  ColumnsType,
+  FilterValue,
+  TableParams,
+  TableProps,
+} from "@/types/table";
+import type {
+  SmPayAdvertiserStautsOrderType,
+  SmPayAdvertiserStatus,
+  SmPayAuditDto,
+} from "@/types/smpay";
 
-import { StopInfoModal } from "../manangement/dialog";
-import { TableParams } from "@/types/table";
-import { SmPayAdvertiserStautsOrderType, SmPayAuditDto } from "@/types/smpay";
-import { FilterValue } from "antd/es/table/interface";
+import { SmPayAdvertiserStatusLabel } from "@/constants/status";
 
 type PropsTableSection = {
   tableParams: TableParams;
@@ -39,25 +47,12 @@ const TableSection = ({
   const columns: ColumnsType<SmPayAuditDto> = [
     {
       title: "No",
-      dataIndex: "id",
-      key: "id",
+      dataIndex: "no",
+      key: "no",
       width: 70,
       sorter: true,
+      align: "center",
     },
-    // {
-    //   title: "대행사명",
-    //   dataIndex: "agencyName",
-    //   key: "agencyName",
-    //   sorter: true,
-    //   align: "center",
-    // },
-    // {
-    //   title: "담당자명",
-    //   dataIndex: "departmentName",
-    //   key: "departmentName",
-    //   sorter: true,
-    //   align: "center",
-    // },
     {
       title: "CUSTOMER ID",
       dataIndex: "advertiserCustomerId",
@@ -91,7 +86,9 @@ const TableSection = ({
 
           <LinkTextButton
             onClick={() => {
-              const url = `/sm-pay/judgement/${record.advertiserId}?formId=${record.advertiserFormId}`;
+              const url = `/sm-pay/judgement/${record.advertiserId}?formId=${
+                record.advertiserFormId
+              } ${record.isReviewerRead ? "" : "?isReviewerRead=true"}`;
               router.push(url);
             }}
           >
@@ -106,6 +103,8 @@ const TableSection = ({
       key: "advertiserType",
       align: "center",
       sorter: true,
+      render: (value) =>
+        SmPayAdvertiserStatusLabel[value as SmPayAdvertiserStatus],
     },
     {
       title: "최종 수정 일시",

@@ -1,5 +1,5 @@
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-
 import { type ChangeEvent, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -49,6 +49,7 @@ import type {
 } from "@/types/api/user";
 
 const DirectRegistSection = ({ user }: TViewProps) => {
+  const router = useRouter();
   const isAdmin = getIsAdmin(user.type);
   const { data: session } = useSession();
   // TODO : 수정 필요
@@ -134,11 +135,17 @@ const DirectRegistSection = ({ user }: TViewProps) => {
 
     try {
       setCheckNameLoading(true);
-      const response = await getUsersNameCheckApi(
-        `${emailId}@${selectedAgency?.domainName}`
-      );
-
-      setNameCheckResult(response ? "duplicate" : "available");
+      if (isAdmin) {
+        const response = await getUsersNameCheckApi(
+          `${emailId}@${selectedAgency?.domainName}`
+        );
+        setNameCheckResult(response ? "duplicate" : "available");
+      } else {
+        const response = await getUsersNameCheckApi(
+          `${emailId}@${agencyInfo?.domainName}`
+        );
+        setNameCheckResult(response ? "duplicate" : "available");
+      }
     } catch (error) {
     } finally {
       setCheckNameLoading(false);
@@ -191,7 +198,7 @@ const DirectRegistSection = ({ user }: TViewProps) => {
     }
 
     if (!isAdmin) {
-      if (!memberType || !departmentNode) {
+      if (!memberType || !departmentNode || !agencyInfo) {
         setDialog("err");
         return;
       }
@@ -432,8 +439,12 @@ const DirectRegistSection = ({ user }: TViewProps) => {
         <Button className="w-[150px]" onClick={handleSubmit}>
           확인
         </Button>
-        <Button variant="cancel" className="w-[150px]" onClick={() => {}}>
-          취소
+        <Button
+          variant="cancel"
+          className="w-[150px]"
+          onClick={() => router.push("/account/member-management")}
+        >
+          뒤로가기
         </Button>
       </div>
     </section>

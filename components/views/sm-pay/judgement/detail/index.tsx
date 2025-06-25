@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,11 @@ import OperationMemoSection from "@/components/views/sm-pay/components/Operation
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
 import AdvertiserSimulationModal from "@/components/views/sm-pay/components/AdvertiserSimulationModal";
 import GuidSection from "@/components/views/sm-pay/components/GuideSection";
+
+import AdvertiserInfoSection from "../../components/AdvertiserInfoSection";
+import StatIndicatorSection from "../../components/StatIndicatorSection";
+import RuleSection2 from "../../components/RuleSection2";
+import ScheduleSection2 from "../../components/ScheduleSection2";
 
 import ApproveModal from "./ApproveModal";
 import RejectSendModal from "./RejectSendModal";
@@ -26,18 +32,11 @@ import {
   useSmPayAdvertiserPrePaymentSchedule,
 } from "@/hooks/queries/sm-pay";
 
-import AdvertiserInfoSection from "../../components/AdvertiserInfoSection";
-import StatIndicatorSection from "../../components/StatIndicatorSection";
-import RuleSection2 from "../../components/RuleSection2";
-import ScheduleSection2 from "../../components/ScheduleSection2";
-
+import type { ChargeRule, PrePaymentSchedule } from "@/types/smpay";
 import type {
-  ChargeRule,
-  PrePaymentSchedule,
-  SmPayStatIndicator,
-} from "@/types/smpay";
-import { useRouter, useSearchParams } from "next/navigation";
-import { ParamsSmPayApproval, StatIndicatorParams } from "@/types/api/smpay";
+  ParamsSmPayApproval,
+  StatIndicatorParams,
+} from "@/types/api/smpay";
 
 type SmPayJudgementDetailViewProps = {
   id: string;
@@ -48,6 +47,7 @@ const status = "reject";
 const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
   const router = useRouter();
   const formId = useSearchParams().get("formId");
+  const isReviewerRead = useSearchParams().get("isReviewerRead");
   const [isApproved, setIsApproved] = useState(false);
   const [isRejectSend, setIsRejectSend] = useState(false);
   const [isReject, setIsReject] = useState(false);
@@ -110,12 +110,8 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
 
   const { mutate: patchRead } = useSmPayRead();
 
-  const handleOpenRejectModal = () => {
-    setIsReject(true);
-  };
-
   useEffect(() => {
-    if (id && smpayInfo) {
+    if (id && smpayInfo && !isReviewerRead) {
       patchRead({ advertiserId: Number(id), isReviewerRead: true });
     }
 
@@ -164,7 +160,14 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
         });
       }
     }
-  }, [smpayInfo, screeningIndicator, chargeRule, prePaymentScheduleData, id]);
+  }, [
+    smpayInfo,
+    screeningIndicator,
+    chargeRule,
+    prePaymentScheduleData,
+    id,
+    isReviewerRead,
+  ]);
 
   const statIndicatorData = {
     operationPeriod: statIndicator.operationPeriod,
@@ -209,7 +212,10 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
           advertiserId={Number(id)}
           params={defaultParams}
           onClose={() => setIsRejectSend(false)}
-          onConfirm={() => setIsRejectSend(false)}
+          onConfirm={() => {
+            setIsRejectSend(false);
+            router.push("/sm-pay/judgement");
+          }}
         />
       )}
 

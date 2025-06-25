@@ -33,6 +33,7 @@ axiosRetry(apiClient, {
   retryDelay: (retryCount) => {
     return retryCount * 1000; // 각 재시도마다 1초씩 증가
   },
+  // TODO : 네트워크가 여러번 실행되는경우 - 그때  사용
   // retryCondition: (error) => {
   //   // 500번대 서버 에러나 네트워크 에러일 때만 재시도
   //   return (
@@ -45,7 +46,7 @@ axiosRetry(apiClient, {
   },
 });
 
-// // API 요청 카운터
+// // API 요청 카운터 : 네트워크가 여러번 실행되는경우 - 그때  사용
 // let requestCount = 0;
 // const MAX_REQUESTS = 5;
 
@@ -63,17 +64,6 @@ axiosRetry(apiClient, {
 //   }
 // );
 
-// // 응답 인터셉터
-// apiClient.interceptors.response.use(
-//   (response) => {
-//     return response;
-//   },
-//   (error) => {
-//     requestCount--; // 실패한 요청은 카운트에서 제외
-//     return Promise.reject(error);
-//   }
-// );
-
 // 요청 인터셉터 (항상 최신 세션의 accessToken 사용)
 apiClient.interceptors.request.use(
   (config) => {
@@ -82,6 +72,9 @@ apiClient.interceptors.request.use(
     }
 
     const { accessToken } = useSessionStore.getState();
+
+    // TODO : 디버깅용 로그 (필요시 활성화) - sentry 적용
+    // console.log('🔑 Current token:', accessToken?.slice(0, 20) + '...');
 
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
