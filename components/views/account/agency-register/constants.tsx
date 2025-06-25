@@ -132,7 +132,12 @@ export const ModalInfo = {
   },
   error_enable_unique_code: {
     title: "대행사 고유코드 중복 확인",
-    content: "이미 사용 중인 고유코드입니다.",
+    content: (
+      <div className="text-center">
+        <p>이미 사용 중인 고유코드입니다.</p>
+        <p>다른 고유코드를 입력해 주세요.</p>
+      </div>
+    ),
   },
   error_invalid_unique_code: {
     title: "대행사 고유코드 형식 오류",
