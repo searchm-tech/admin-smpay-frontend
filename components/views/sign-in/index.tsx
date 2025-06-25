@@ -170,6 +170,7 @@ const SignInView = ({ code }: SignInViewProps) => {
                 !!domainName ? "아이디를 입력해주세요" : "이메일을 입력해주세요"
               }
               suffix={domainName ? `@${domainName}` : undefined}
+              preventSpaces
             />
 
             <InputForm<FormValues>
@@ -178,6 +179,7 @@ const SignInView = ({ code }: SignInViewProps) => {
               type="password"
               label="비밀번호"
               placeholder="영문, 숫자, 특수문자가 모두 들어간 8-16자"
+              preventSpaces
             />
 
             <div>
