@@ -61,8 +61,12 @@ const formSchema = z.object({
   name: z.string().min(1, "대행사명을 입력해주세요."),
   uniqueCode: z
     .string()
-    .min(1, "대행사 고유코드를 입력해주세요")
-    .regex(UNIQUE_CODE_REGEX, "식별 가능한 값을 입력해주세요"),
+    .min(1, "최소 4자 이상 입력해주세요")
+    .max(16, "최대 16자까지만 입력 가능합니다.")
+    .regex(
+      UNIQUE_CODE_REGEX,
+      "대행사 고유코드는 대행사 전용 URL에 사용되는 고유값으로, 4~16자의 영문으로 입력해주세요."
+    ),
   representativeName: z.string().min(1, "대표자명을 입력해주세요."),
   businessRegistrationNumber: z
     .string()
@@ -281,7 +285,10 @@ const AgencyRegisterView = () => {
                           type="button"
                           variant="outline"
                           onClick={() => onDuplicateUniqueCode(field.value)}
-                          disabled={!field.value}
+                          disabled={
+                            !field.value ||
+                            !!formData.formState.errors.uniqueCode
+                          }
                         >
                           {isEnableCode ? "중복 체크 완료" : "중복 체크"}
                         </Button>
@@ -363,7 +370,10 @@ const AgencyRegisterView = () => {
                           type="button"
                           variant="outline"
                           onClick={() => onDuplicateEmailDomain(field.value)}
-                          disabled={!field.value}
+                          disabled={
+                            !field.value ||
+                            !!formData.formState.errors.domainName
+                          }
                         >
                           {isEnableEmailDomain ? "중복 체크 완료" : "중복 체크"}
                         </Button>
