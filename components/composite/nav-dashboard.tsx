@@ -113,10 +113,8 @@ export function NavDashboard() {
                             asChild
                             isActive={isSubActive}
                             className={cn(
-                              "cursor-pointer h-9 px-4 rounded-md text-sm",
-                              // TODO : 피그마 디자인과 일치해볼지는 고민 좀
-                              isSubActive &&
-                                "bg-[#C9C0C0] text-black font-medium rounded-[12px] h-[36px]" // active 시
+                              "cursor-pointer h-9 px-4 rounded-md hover:text-red-500",
+                              isSubActive && "bg-[#C9C0C0] text-red-500" // active 시
                             )}
                           >
                             <a href={subItem.url}>
