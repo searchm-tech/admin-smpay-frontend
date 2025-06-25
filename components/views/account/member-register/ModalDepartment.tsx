@@ -10,6 +10,8 @@ import DepartmentTree from "@/components/common/DepartmentTree";
 
 import { useQuerySubDepartments } from "@/hooks/queries/departments";
 
+import { getIsAdmin } from "@/lib/utils";
+
 import { convertToDepartmentTreeNode, filterTreeData } from "./constant";
 import type { DepartmentTreeNode } from "@/types/tree";
 
@@ -42,6 +44,8 @@ const ModalDepartment = ({ setIsOpen, onSelect }: ModalDepartmentProps) => {
     search
   );
 
+  const isAdmin = getIsAdmin(user?.type);
+
   return (
     <Modal
       open
@@ -72,11 +76,13 @@ const ModalDepartment = ({ setIsOpen, onSelect }: ModalDepartmentProps) => {
           )}
         </div>
 
-        <div className="flex justify-end">
-          <LinkTextButton onClick={() => router.push("/account/department")}>
-            부서 관리 페이지로 이동
-          </LinkTextButton>
-        </div>
+        {isAdmin && (
+          <div className="flex justify-end">
+            <LinkTextButton onClick={() => router.push("/account/department")}>
+              부서 관리 페이지로 이동
+            </LinkTextButton>
+          </div>
+        )}
       </div>
     </Modal>
   );
