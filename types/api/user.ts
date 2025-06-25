@@ -106,6 +106,7 @@ export type ResponseAgencyUsers = {
 
 // TODO : 실제 모델이랑 비교 필요
 export type AgencyUserDto = {
+  agentId: number;
   userId: number;
   agentName: string;
   type: TAuthType;

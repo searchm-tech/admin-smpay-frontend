@@ -36,9 +36,6 @@ const GroupMemberManagementView = ({ user }: ViewProps) => {
     userId: user.userId,
   });
 
-  console.log(dataSource);
-
-  // TODO : 페이지네이션 관련 테스트 확인 필요
   const onSearch = (keyword: string) => {
     setSearch(keyword);
     setTableParams((prev) => ({
@@ -61,6 +58,7 @@ const GroupMemberManagementView = ({ user }: ViewProps) => {
         isLoading={isPending}
         setTableParams={setTableParams}
         refetch={refetch}
+        totalCount={dataSource?.totalCount || 0}
       />
     </div>
   );

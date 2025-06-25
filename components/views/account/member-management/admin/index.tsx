@@ -33,7 +33,6 @@ const AdminMemberManagementView = ({ user }: ViewProps) => {
     orderType: tableParams.sortField as AgencyUsersOrder,
   });
 
-  // TODO : 페이지네이션 관련 테스트 확인 필요
   const onSearch = (keyword: string) => {
     setSearch(keyword);
     setTableParams((prev) => ({
@@ -56,6 +55,7 @@ const AdminMemberManagementView = ({ user }: ViewProps) => {
         isLoading={isPending}
         setTableParams={setTableParams}
         refetch={refetch}
+        totalCount={dataSource?.totalCount || 0}
       />
     </div>
   );
