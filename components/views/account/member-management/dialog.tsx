@@ -4,6 +4,7 @@ import { ConfirmDialog } from "@/components/composite/modal-components";
 import {
   useMutationAgencyUserDelete,
   useMutationAgencyUserStatus,
+  useMutationAdminAgencyUserStatus,
 } from "@/hooks/queries/user";
 
 import { statusDialogContent } from "./constant";
@@ -98,4 +99,36 @@ const StatusDialog = ({ params, onClose, onConfirm }: StatusDialogProps) => {
   );
 };
 
-export { DeleteDialog, StatusDialog };
+const StatusAdminDialog = ({
+  params,
+  onClose,
+  onConfirm,
+}: StatusDialogProps) => {
+  const { mutate: updateUserStatus, isPending } =
+    useMutationAdminAgencyUserStatus({
+      onSuccess: () => {
+        onConfirm();
+        onClose();
+      },
+    });
+
+  const handleSubmit = () => updateUserStatus(params);
+
+  return (
+    <Fragment>
+      {isPending && <LoadingUI />}
+      <ConfirmDialog
+        open
+        onClose={onClose}
+        onConfirm={handleSubmit}
+        content={
+          <div className="text-center">
+            {statusDialogContent[params.status]}
+          </div>
+        }
+      />
+    </Fragment>
+  );
+};
+
+export { DeleteDialog, StatusDialog, StatusAdminDialog };
