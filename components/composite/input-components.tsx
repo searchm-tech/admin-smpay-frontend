@@ -24,6 +24,7 @@ interface InputFormProps<T extends FieldValues> {
   suffix?: string;
   error?: string;
   showError?: boolean;
+  preventSpaces?: boolean; // 띄어쓰기 방지 옵션 추가
 }
 
 function InputForm<T extends FieldValues>({
@@ -35,6 +36,7 @@ function InputForm<T extends FieldValues>({
   suffix,
   error,
   showError = true,
+  preventSpaces = false,
 }: InputFormProps<T>) {
   return (
     <FormField
@@ -54,6 +56,34 @@ function InputForm<T extends FieldValues>({
                 } ${suffix ? "pr-32" : ""}`}
                 placeholder={placeholder}
                 {...field}
+                onChange={
+                  preventSpaces
+                    ? (e) => {
+                        const noSpace = e.target.value.replace(/\s+/g, "");
+                        field.onChange(noSpace);
+                      }
+                    : field.onChange
+                }
+                onPaste={
+                  preventSpaces
+                    ? (e) => {
+                        e.preventDefault();
+                        const paste = e.clipboardData.getData("text");
+                        const noSpace = paste.replace(/\s+/g, "");
+                        field.onChange(noSpace);
+                      }
+                    : undefined
+                }
+                onKeyDown={
+                  preventSpaces
+                    ? (e) => {
+                        // 스페이스바 입력 방지
+                        if (e.key === " ") {
+                          e.preventDefault();
+                        }
+                      }
+                    : undefined
+                }
               />
               {suffix && (
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">
