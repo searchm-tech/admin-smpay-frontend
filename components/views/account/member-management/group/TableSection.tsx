@@ -32,6 +32,7 @@ type TableSectionProps = {
   setTableParams: (params: TableParamsMember) => void;
   user: TSMPayUser;
   refetch: () => void;
+  totalCount: number;
 };
 
 const TableSection = ({
@@ -40,6 +41,7 @@ const TableSection = ({
   setTableParams,
   user,
   refetch,
+  totalCount,
 }: TableSectionProps) => {
   const router = useRouter();
 
@@ -112,6 +114,7 @@ const TableSection = ({
       render: (value, record) => {
         return (
           <Select
+            disabled={Number(user.userId) === Number(record.userId)}
             options={USER_STATUS_OPTS}
             value={value}
             onChange={(value) =>
@@ -130,8 +133,8 @@ const TableSection = ({
       dataIndex: "registerDt",
       sorter: true,
       align: "center",
-      render: (value, record) => {
-        return <span>{formatDate(record.registerDt, "yyyy-MM-dd")}</span>;
+      render: (value) => {
+        return <span>{formatDate(value, "yyyy-MM-dd")}</span>;
       },
     },
   ];
@@ -190,7 +193,7 @@ const TableSection = ({
         columns={columns}
         rowKey={(record) => record.id}
         dataSource={dataSource}
-        total={dataSource.length}
+        total={totalCount}
         onChange={handleTableChange}
         loading={isLoading}
       />

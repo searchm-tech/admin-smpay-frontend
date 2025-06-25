@@ -9,7 +9,6 @@ import {
   getSmPayRejectReason,
   getSmPayStatus,
   getSmPayStopInfo,
-  getSmPaySubmitDetail,
   updateSmPayStatus,
 } from "@/services/sm-pay";
 
@@ -17,7 +16,6 @@ import type {
   SmPayRejectReasonResponse,
   TableParams,
   SmPayResponse,
-  SmPaySubmitDetailResponse,
   SmPayStopInfoResponse,
   SmPayStatusResponse,
 } from "@/services/types";
@@ -32,8 +30,10 @@ import type {
   PutSmPayAdvertiserDetail,
   SmPayWriteParams,
   ResponseSmPayAudit,
-  RequestSmPayRead,
   AdvertiserDetailDto,
+  ParamsSmPayApproval,
+  ChargeRuleDto,
+  PrePaymentScheduleDto,
 } from "@/types/api/smpay";
 
 import { useAuthQuery } from "../useAuthQuery";
@@ -51,11 +51,18 @@ import {
   getSmPayApplyList,
   getSmPayAuditList,
   patchSmPayRead,
+  getSmPayAdvertiserScreeningIndicator,
+  getSmPayAdvertiserReviewerMemo,
+  postSmPayApproval,
+  getSmPayAdvertiserChargeRule,
+  getSmPayAdvertiserPrePaymentSchedule,
 } from "@/services/smpay";
 import type {
   DailyStat,
   SmPayDetailDto,
   SmPayStatIndicator,
+  SmPayScreeningIndicator,
+  SmPayReviewerMemo,
 } from "@/types/smpay";
 
 export const useSmPayList = (params: TableParams) => {
@@ -71,18 +78,6 @@ export const useSmPayStatus = () => {
   return useQuery<SmPayStatusResponse>({
     queryKey: ["/smpay/status"],
     queryFn: () => getSmPayStatus(),
-  });
-};
-
-export const useSmPaySubmitDetail = (id: string) => {
-  return useQuery<SmPaySubmitDetailResponse>({
-    queryKey: ["/smpay/submit-detail", id],
-    queryFn: () => getSmPaySubmitDetail(id),
-    enabled: !!id,
-    initialData: {
-      data: null,
-      success: false,
-    },
   });
 };
 
@@ -272,5 +267,64 @@ export const useSmPayRead = (
         isReviewerRead: variables.isReviewerRead,
       }),
     ...options,
+  });
+};
+
+// 광고주 심사 지표 조회 (최상위 그룹장 전용)(SAG032) query
+export const useSmPayScreeningIndicator = (advertiserId: number) => {
+  return useAuthQuery<SmPayScreeningIndicator>({
+    queryKey: ["/smpay/screening-indicator", advertiserId],
+    queryFn: (user: RequestAgentUser) =>
+      getSmPayAdvertiserScreeningIndicator({ user, advertiserId }),
+    enabled: !!advertiserId,
+  });
+};
+
+// 광고주 심사자 참고용 메모 조회 (최상위 그룹장 전용)(SAG035) query
+export const useSmPayReviewerMemo = (advertiserId: number) => {
+  return useAuthQuery<SmPayReviewerMemo>({
+    queryKey: ["/smpay/reviewer-memo", advertiserId],
+    queryFn: (user: RequestAgentUser) =>
+      getSmPayAdvertiserReviewerMemo({ user, advertiserId }),
+  });
+};
+
+// useSmPayApproval 훅에 전달될 variables 타입 정의
+type SmPayApprovalVariables = {
+  advertiserId: number;
+  params: ParamsSmPayApproval;
+};
+
+// 광고주 심상 승인 /거절 (최상위 그룹장 전용)(SAG036) mutate
+export const useSmPayApproval = (
+  options?: UseMutationOptions<null, Error, SmPayApprovalVariables>
+) => {
+  return useAuthMutation<null, Error, SmPayApprovalVariables>({
+    mutationFn: (variables, user) =>
+      postSmPayApproval({
+        user,
+        advertiserId: variables.advertiserId,
+        params: variables.params,
+      }),
+    ...options,
+  });
+};
+
+// 광고주 충전 규칙 조회 (최상위 그룹장 전용)(SAG033) query
+export const useSmPayAdvertiserChargeRule = (advertiserId: number) => {
+  return useAuthQuery<ChargeRuleDto[]>({
+    queryKey: ["/smpay/advertiser-charge-rule", advertiserId],
+    queryFn: (user: RequestAgentUser) =>
+      getSmPayAdvertiserChargeRule({ user, advertiserId }),
+    enabled: !!advertiserId,
+  });
+};
+
+// 광고주 선결제 스케줄 조회 (최상위 그룹장 전용)(SAG034) query
+export const useSmPayAdvertiserPrePaymentSchedule = (advertiserId: number) => {
+  return useAuthQuery<PrePaymentScheduleDto>({
+    queryKey: ["/smpay/advertiser-pre-payment-schedule", advertiserId],
+    queryFn: (user: RequestAgentUser) =>
+      getSmPayAdvertiserPrePaymentSchedule({ user, advertiserId }),
   });
 };

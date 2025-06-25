@@ -17,8 +17,6 @@ import OperationAccountStatusSection from "@/components/views/sm-pay/components/
 import RejectSendModal from "./RejectSendModal";
 import CompleteModal from "./CompleteModal";
 
-import { useSmPaySubmitDetail } from "@/hooks/queries/sm-pay";
-
 import { STATUS_LABELS } from "@/constants/status";
 
 import type { AdvertiserData } from "@/types/adveriser";
@@ -28,30 +26,13 @@ type Props = {
 };
 
 const SmPayAdminOverviewDetailView = ({ id }: Props) => {
-  const { data: response, isPending } = useSmPaySubmitDetail(id);
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
   const [completeModalOpen, setCompleteModalOpen] = useState(false);
 
-  const advertiserData: AdvertiserData | null = response?.data
-    ? {
-        id: response.data.id,
-        name: response.data.advertiserName,
-        customerId: response.data.customerId,
-        loginId: response.data.loginId,
-        advertiserName: response.data.advertiserName,
-        status: "AVAILABLE",
-        updatedAt: response.data.updatedAt,
-        businessName: response.data.businessName,
-        businessNumber: response.data.businessNumber,
-        businessOwnerName: response.data.businessOwnerName,
-        businessOwnerPhone: response.data.businessOwnerPhone,
-        businessOwnerEmail: response.data.businessOwnerEmail,
-      }
-    : null;
-
+  const advertiserData: AdvertiserData | null = null;
   return (
     <div>
-      {isPending && <LoadingUI title="SM Pay 정보 조회 중..." />}
+      {/* {isPending && <LoadingUI title="SM Pay 정보 조회 중..." />} */}
       {rejectModalOpen && (
         <RejectSendModal
           open={rejectModalOpen}
@@ -69,7 +50,8 @@ const SmPayAdminOverviewDetailView = ({ id }: Props) => {
 
       <AdvertiseStatusSection
         isHistory
-        status={response.data ? STATUS_LABELS[response.data.status] : ""}
+        status="AVAILABLE"
+        // status={response.data ? STATUS_LABELS[response.data.status] : ""}
       />
 
       <div className="flex justify-center gap-1 w-full">

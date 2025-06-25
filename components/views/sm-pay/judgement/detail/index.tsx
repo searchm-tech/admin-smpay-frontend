@@ -17,11 +17,13 @@ import RejectSendModal from "./RejectSendModal";
 import { RejectDialog } from "@/components/views/sm-pay/manangement/dialog";
 
 import {
-  useSmPaySubmitDetail,
   useSmPayStatusUpdate,
-  useSmPayAdvertiserDetail,
   useSmPayRead,
   useSmPayDetail,
+  useSmPayScreeningIndicator,
+  useSmPayReviewerMemo,
+  useSmPayAdvertiserChargeRule,
+  useSmPayAdvertiserPrePaymentSchedule,
 } from "@/hooks/queries/sm-pay";
 
 import AdvertiserInfoSection from "../../components/AdvertiserInfoSection";
@@ -29,8 +31,13 @@ import StatIndicatorSection from "../../components/StatIndicatorSection";
 import RuleSection2 from "../../components/RuleSection2";
 import ScheduleSection2 from "../../components/ScheduleSection2";
 
-import type { AdvertiserData } from "@/types/adveriser";
-import type { ChargeRule } from "@/types/smpay";
+import type {
+  ChargeRule,
+  PrePaymentSchedule,
+  SmPayStatIndicator,
+} from "@/types/smpay";
+import { useRouter, useSearchParams } from "next/navigation";
+import { ParamsSmPayApproval, StatIndicatorParams } from "@/types/api/smpay";
 
 type SmPayJudgementDetailViewProps = {
   id: string;
@@ -39,12 +46,23 @@ type SmPayJudgementDetailViewProps = {
 const status = "reject";
 
 const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
-  console.log("id", id);
+  const router = useRouter();
+  const formId = useSearchParams().get("formId");
   const [isApproved, setIsApproved] = useState(false);
   const [isRejectSend, setIsRejectSend] = useState(false);
   const [isReject, setIsReject] = useState(false);
   const [isRestart, setIsRestart] = useState(false);
   const [isSimulation, setIsSimulation] = useState(false);
+
+  const [statIndicator, setStatIndicator] = useState<StatIndicatorParams>({
+    operationPeriod: 0,
+    dailyAverageRoas: 0,
+    monthlyConvAmt: 0,
+    dailySalesAmt: 0,
+    recommendRoasPercent: 0,
+  });
+
+  const [operationMemo, setOperationMemo] = useState("");
 
   const [upChargeRule, setUpChargeRule] = useState<ChargeRule>({
     standardRoasPercent: 0,
@@ -60,10 +78,29 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
     changePercentOrValue: 0,
   });
 
+  const [prePaymentSchedule, setPrePaymentSchedule] =
+    useState<PrePaymentSchedule>({
+      initialAmount: 0,
+      maxChargeLimit: 0,
+      minChargeLimit: 0,
+    });
+
   const { data: smpayInfo, isPending: loading } = useSmPayDetail(
     Number(id),
-    Number(0)
+    Number(formId || 0)
   );
+
+  const { data: screeningIndicator, isPending: loadingScreeningIndicator } =
+    useSmPayScreeningIndicator(Number(id));
+
+  const { data: reviewerMemo, isPending: loadingReviewerMemo } =
+    useSmPayReviewerMemo(Number(id));
+
+  const { data: chargeRule, isPending: loadingChargeRule } =
+    useSmPayAdvertiserChargeRule(Number(id));
+
+  const { data: prePaymentScheduleData, isPending: loadingPrePaymentSchedule } =
+    useSmPayAdvertiserPrePaymentSchedule(Number(id));
 
   const { mutate: updateStatus, isPending: isUpdating } = useSmPayStatusUpdate({
     onSuccess: () => {
@@ -83,54 +120,94 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
     }
 
     if (smpayInfo) {
-      const { advertiserStandardRoasPercent, chargeRules } = smpayInfo;
+      const { advertiserStandardRoasPercent } = smpayInfo;
 
-      const findUpChargeRule = chargeRules.find(
-        (rule) => rule.rangeType === "UP"
-      );
-      const findDownChargeRule = chargeRules.find(
-        (rule) => rule.rangeType === "DOWN"
-      );
+      if (chargeRule) {
+        const findUpChargeRule = chargeRule.find(
+          (rule) => rule.rangeType === "UP"
+        );
+        const findDownChargeRule = chargeRule.find(
+          (rule) => rule.rangeType === "DOWN"
+        );
 
-      if (findUpChargeRule) {
-        setUpChargeRule({
-          ...findUpChargeRule,
-          standardRoasPercent: advertiserStandardRoasPercent,
+        if (findUpChargeRule) {
+          setUpChargeRule({
+            ...findUpChargeRule,
+            standardRoasPercent: advertiserStandardRoasPercent,
+          });
+        }
+
+        if (findDownChargeRule) {
+          setDownChargeRule({
+            ...findDownChargeRule,
+            standardRoasPercent: advertiserStandardRoasPercent,
+          });
+        }
+      }
+
+      if (screeningIndicator) {
+        setStatIndicator({
+          operationPeriod: screeningIndicator?.advertiserOperationPeriod || 0,
+          dailyAverageRoas: screeningIndicator?.advertiserDailyAverageRoas || 0,
+          monthlyConvAmt: screeningIndicator?.advertiserMonthlyConvAmt || 0,
+          dailySalesAmt: screeningIndicator?.advertiserDailySalesAmt || 0,
+          recommendRoasPercent:
+            screeningIndicator?.advertiserRecommendRoasPercent || 0,
         });
       }
-      if (findDownChargeRule) {
-        setDownChargeRule({
-          ...findDownChargeRule,
-          standardRoasPercent: advertiserStandardRoasPercent,
+
+      if (prePaymentScheduleData) {
+        setPrePaymentSchedule({
+          initialAmount: prePaymentScheduleData.initialAmount,
+          maxChargeLimit: prePaymentScheduleData.maxChargeLimit,
+          minChargeLimit: prePaymentScheduleData.minChargeLimit,
         });
       }
     }
-  }, [smpayInfo, id]);
+  }, [smpayInfo, screeningIndicator, chargeRule, prePaymentScheduleData, id]);
 
-  const prePaymentSchedule = {
-    initialAmount: smpayInfo?.initialAmount || 0,
-    maxChargeLimit: smpayInfo?.maxChargeLimit || 0,
-    minChargeLimit: smpayInfo?.minChargeLimit || 0,
+  const statIndicatorData = {
+    operationPeriod: statIndicator.operationPeriod,
+    dailyAverageRoas: statIndicator.dailyAverageRoas,
+    monthlyConvAmt: statIndicator.monthlyConvAmt,
+    dailySalesAmt: statIndicator.dailySalesAmt,
+    recommendRoas: statIndicator.recommendRoasPercent,
   };
 
-  const statIndicator = {
-    operationPeriod: smpayInfo?.advertiserOperationPeriod || 0,
-    dailyAverageRoas: smpayInfo?.advertiserDailyAverageRoas || 0,
-    monthlyConvAmt: smpayInfo?.advertiserMonthlyConvAmt || 0,
-    dailySalesAmt: smpayInfo?.advertiserDailySalesAmt || 0,
-    recommendRoas: smpayInfo?.advertiserRecommendRoasPercent || 0,
+  const isLoading =
+    loadingScreeningIndicator ||
+    loadingReviewerMemo ||
+    loading ||
+    loadingChargeRule ||
+    loadingPrePaymentSchedule;
+
+  const defaultParams: Partial<ParamsSmPayApproval> = {
+    statIndicator: statIndicator,
+    chargeRule: [upChargeRule, downChargeRule],
+    prePaymentSchedule,
+    reviewerMemo: reviewerMemo?.description || "",
+    approvalMemo: operationMemo,
   };
 
   return (
     <div>
+      {isLoading && <LoadingUI title="심사 정보 조회중" />}
+
       {isApproved && (
         <ApproveModal
+          advertiserId={Number(id)}
+          params={defaultParams}
           onClose={() => setIsApproved(false)}
-          onConfirm={() => setIsApproved(false)}
+          onConfirm={() => {
+            setIsApproved(false);
+            router.push("/sm-pay/judgement");
+          }}
         />
       )}
       {isRejectSend && (
         <RejectSendModal
+          advertiserId={Number(id)}
+          params={defaultParams}
           onClose={() => setIsRejectSend(false)}
           onConfirm={() => setIsRejectSend(false)}
         />
@@ -172,7 +249,7 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
 
       <StatIndicatorSection
         advertiserId={Number(id)}
-        statIndicator={statIndicator}
+        statIndicator={statIndicatorData}
       />
 
       <RuleSection2
@@ -181,8 +258,15 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
         downChargeRule={downChargeRule}
       />
       <ScheduleSection2 type="show" prePaymentSchedule={prePaymentSchedule} />
-      <JudgementMemoSection type="show" text={smpayInfo?.reviewerMemo || ""} />
-      <OperationMemoSection type="write" text={smpayInfo?.approvalMemo || ""} />
+      <JudgementMemoSection
+        type="show"
+        text={reviewerMemo?.description || ""}
+      />
+      <OperationMemoSection
+        type="write"
+        text={operationMemo}
+        handleChange={setOperationMemo}
+      />
 
       {status === "reject" && (
         <div className="flex justify-center gap-4 py-5">

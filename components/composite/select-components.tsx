@@ -17,6 +17,7 @@ type SelectProps = {
   onChange?: (value: string) => void;
   placeholder?: string;
   className?: string;
+  disabled?: boolean;
 };
 
 const Select = ({
@@ -25,10 +26,11 @@ const Select = ({
   onChange,
   placeholder = "선택해주세요",
   className = "",
+  disabled = false,
 }: SelectProps) => {
   return (
-    <ShadcnSelect value={value} onValueChange={onChange}>
-      <ShadcnSelectTrigger className={className}>
+    <ShadcnSelect value={value} onValueChange={onChange} disabled={disabled}>
+      <ShadcnSelectTrigger className={className} disabled={disabled}>
         <ShadcnSelectValue placeholder={placeholder} />
       </ShadcnSelectTrigger>
       <ShadcnSelectContent>

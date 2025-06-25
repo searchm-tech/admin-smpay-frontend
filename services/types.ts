@@ -58,11 +58,6 @@ export interface AdvertiserListResponse {
   hasNextPage: boolean;
 }
 
-export interface SmPaySubmitDetailResponse {
-  data: SmPayData | null;
-  success: boolean;
-}
-
 export interface SmPayRejectReasonResponse {
   data: string;
   success: boolean;

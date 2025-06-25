@@ -3,7 +3,6 @@ import type {
   TableParams,
   SmPayResponse,
   SmPayStatusResponse,
-  SmPaySubmitDetailResponse,
   SmPayRejectReasonResponse,
   SmPayStopInfoResponse,
 } from "./types";
@@ -189,24 +188,6 @@ export const getSmPayStatus = async (): Promise<SmPayStatusResponse> => {
         count: statusCounts["APPLICATION_CANCELLED"] || 0,
       },
     ],
-    success: true,
-  };
-};
-
-export const getSmPaySubmitDetail = async (
-  id: string
-): Promise<SmPaySubmitDetailResponse> => {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  const numId = parseInt(id, 10);
-  const data = mockData.find((item) => item.id === numId);
-
-  if (!data) {
-    return { data: null, success: false };
-  }
-
-  return {
-    data,
     success: true,
   };
 };

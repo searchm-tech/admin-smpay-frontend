@@ -33,6 +33,7 @@ type TableSectionProps = {
   setTableParams: (params: TableParamsMember) => void;
   user: TSMPayUser;
   refetch: () => void;
+  totalCount: number;
 };
 
 type TDataAgencyUser = AgencyUserDto & { id: string };
@@ -42,6 +43,7 @@ const TableSection = ({
   setTableParams,
   user,
   refetch,
+  totalCount,
 }: TableSectionProps) => {
   const router = useRouter();
 
@@ -124,12 +126,13 @@ const TableSection = ({
 
         return (
           <Select
+            disabled={Number(user.userId) === Number(record.userId)}
             options={USER_STATUS_OPTS}
             value={value}
             onChange={(value) =>
               setStatusDialog({
                 userId: record.userId,
-                agentId: user.agentId,
+                agentId: record.agentId,
                 status: value as UserStatus,
               })
             }
@@ -204,7 +207,7 @@ const TableSection = ({
         columns={columns}
         rowKey={(record) => record.id}
         dataSource={dataSource}
-        total={dataSource.length}
+        total={totalCount}
         onChange={handleTableChange}
         loading={isLoading}
       />

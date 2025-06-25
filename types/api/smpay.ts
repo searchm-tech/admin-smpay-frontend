@@ -151,3 +151,31 @@ export type ResponseSmPayAudit = ResponseWithPagination & {
 export interface RequestSmPayRead extends WithAdvertiserId {
   isReviewerRead: boolean;
 }
+
+// 광고주 심상 승인 /거절 (최상위 그룹장 전용)(SAG036) params type
+export type ParamsSmPayApproval = {
+  decisionType: "APPROVE" | "REJECT";
+  statIndicator: StatIndicatorParams;
+  chargeRule: ChargeRule[];
+  prePaymentSchedule: PrePaymentSchedule;
+  reviewerMemo: string;
+  approvalMemo: string;
+  rejectStatusMemo: string;
+};
+
+export type ChargeRuleDto = {
+  advertiserChargeRuleId: number;
+  advertiserId: number;
+  standardRoasPercent: number;
+  changePercentOrValue: number;
+  rangeType: "UP" | "DOWN";
+  boundType: "FIXED_AMOUNT" | "PERCENT";
+};
+
+export type PrePaymentScheduleDto = {
+  advertiserPrepaymentScheduleId: number;
+  advertiserId: number;
+  initialAmount: number;
+  maxChargeLimit: number;
+  minChargeLimit: number;
+};

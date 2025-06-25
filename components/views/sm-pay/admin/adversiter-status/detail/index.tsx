@@ -18,8 +18,6 @@ import OperationAccountStatusSection from "@/components/views/sm-pay/components/
 import GuidSection from "../../../components/GuideSection";
 import RejectModal from "./RejectModal";
 
-import { useSmPaySubmitDetail } from "@/hooks/queries/sm-pay";
-
 import type { AdvertiserData } from "@/types/adveriser";
 import { STATUS_LABELS } from "@/constants/status";
 
@@ -29,29 +27,13 @@ type Props = {
 
 const SmPayAdminAdversiterStatusDetailView = ({ id }: Props) => {
   const router = useRouter();
-  const { data: response, isPending } = useSmPaySubmitDetail(id);
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
 
-  const advertiserData: AdvertiserData | null = response?.data
-    ? {
-        id: response.data.id,
-        name: response.data.advertiserName,
-        customerId: response.data.customerId,
-        loginId: response.data.loginId,
-        advertiserName: response.data.advertiserName,
-        status: "AVAILABLE",
-        updatedAt: response.data.updatedAt,
-        businessName: response.data.businessName,
-        businessNumber: response.data.businessNumber,
-        businessOwnerName: response.data.businessOwnerName,
-        businessOwnerPhone: response.data.businessOwnerPhone,
-        businessOwnerEmail: response.data.businessOwnerEmail,
-      }
-    : null;
+  const advertiserData: AdvertiserData | null = null;
 
   return (
     <div className="flex flex-col gap-4">
-      {isPending && <LoadingUI title="SM Pay 정보 조회 중..." />}
+      {/* {isPending && <LoadingUI title="SM Pay 정보 조회 중..." />} */}
       {rejectModalOpen && (
         <RejectModal
           open={rejectModalOpen}
@@ -63,7 +45,8 @@ const SmPayAdminAdversiterStatusDetailView = ({ id }: Props) => {
       <GuidSection viewType="reject" onClick={() => setRejectModalOpen(true)} />
       <AdvertiseStatusSection
         isHistory
-        status={response.data ? STATUS_LABELS[response.data.status] : ""}
+        status="AVAILABLE"
+        // status={response.data ? STATUS_LABELS[response.data.status] : ""}
       />
       <AdvertiserSection advertiserDetail={null} />
       <AccountSection smPayData={null} />
