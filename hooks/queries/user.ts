@@ -17,8 +17,9 @@ import {
   postAgencyUserEmailSendApi,
   getAdminAgencyUsersListApi,
   getGroupUserListApi,
-  putAgencyUserStatusApi,
+  patchAgencyUserStatusApi,
   delAgencyUserApi,
+  putAdminAgencyUserStatusApi,
 } from "@/services/user";
 import type { ApiResponseData } from "@/services/types";
 import type { TSMPayUser, TUserInfoResponse } from "@/types/user";
@@ -146,13 +147,24 @@ export const useMutationAgencyUserEmailSend = (
   });
 };
 
-// 대행사 회원 상태 변경 mutation
+// [최상위 그룹장, 그룹장] 회원 정보 상태 변경(SAG004) mutation
 export const useMutationAgencyUserStatus = (
   options?: UseMutationOptions<null, Error, RequestAgencyUserStatus>
 ) => {
   return useMutation({
     mutationFn: (params: RequestAgencyUserStatus) =>
-      putAgencyUserStatusApi(params),
+      patchAgencyUserStatusApi(params),
+    ...options,
+  });
+};
+
+// [시스템 관리자] 대행사 회원 상태 변경(AAG004) mutation
+export const useMutationAdminAgencyUserStatus = (
+  options?: UseMutationOptions<null, Error, RequestAgencyUserStatus>
+) => {
+  return useMutation({
+    mutationFn: (params: RequestAgencyUserStatus) =>
+      putAdminAgencyUserStatusApi(params),
     ...options,
   });
 };

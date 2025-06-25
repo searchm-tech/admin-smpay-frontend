@@ -5,7 +5,7 @@ import { useState } from "react";
 import { formatDate } from "date-fns";
 import { Trash2, SquarePen } from "lucide-react";
 
-import { StatusDialog, DeleteDialog } from "../dialog";
+import { DeleteDialog, StatusAdminDialog } from "../dialog";
 import Table from "@/components/composite/table";
 import Select from "@/components/composite/select-components";
 import { ConfirmDialog } from "@/components/composite/modal-components";
@@ -213,7 +213,7 @@ const TableSection = ({
       />
 
       {statusDialog && (
-        <StatusDialog
+        <StatusAdminDialog
           params={statusDialog}
           onClose={() => setStatusDialog(null)}
           onConfirm={() => setDialog("update-status")}

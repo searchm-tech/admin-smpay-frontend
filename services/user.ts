@@ -305,14 +305,32 @@ export const getGroupUserListApi = async (
   }
 };
 
-// 대행사 회원 상태 변경 API (AAG007)
-export const putAgencyUserStatusApi = async (
+// [시스템 관리자] 대행사 회원 상태 변경(AAG004) API
+export const putAdminAgencyUserStatusApi = async (
   params: RequestAgencyUserStatus
 ): Promise<null> => {
   try {
     const { userId, agentId, status } = params;
     const response = await put<null>(
       `/admin/api/v1/agents/${agentId}/users/${userId}/status?status=${status}`
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+// [최상위 그룹장, 그룹장] 회원 정보 상태 변경(SAG004) API
+export const patchAgencyUserStatusApi = async (
+  params: RequestAgencyUserStatus
+): Promise<null> => {
+  try {
+    const { userId, agentId, status } = params;
+    const response = await patch<null>(
+      `/service/api/v1/agents/${agentId}/users/${userId}/status?status=${status}`
     );
     return response;
   } catch (error) {
