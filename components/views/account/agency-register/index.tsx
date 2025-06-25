@@ -453,7 +453,7 @@ const AgencyRegisterView = () => {
               className="w-[150px]"
               onClick={() => router.push("/account/agency-management")}
             >
-              취소
+              뒤로가기
             </Button>
           </div>
         </form>

@@ -36,6 +36,11 @@ import { TOOLTIP_AGENCY_CODE } from "@/constants/hover";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formatBusinessNumber } from "@/utils/format";
+import {
+  ModalInfo,
+  validateBillInfo,
+  type ModalInfoType,
+} from "@/components/views/account/agency-register/constants";
 
 const formSchema = z.object({
   agentBillName: z.string().min(1, "계산서 발행 담당자명을 입력해주세요"),
@@ -54,6 +59,7 @@ const AgencyEditView = ({ id }: { id: string }) => {
 
   const [isSuccess, setIsSuccess] = useState(false);
   const [failDialog, setFailDialog] = useState("");
+  const [modalInfo, setModalInfo] = useState<ModalInfoType | null>(null);
 
   const {
     data: agencyDetail,
@@ -87,6 +93,22 @@ const AgencyEditView = ({ id }: { id: string }) => {
       !dataForm.agentBillPhoneNumber ||
       !dataForm.agentBillEmailAddress
     ) {
+      return;
+    }
+
+    if (
+      dataForm.agentBillEmailAddress &&
+      !EMAIL_REGEX.test(dataForm.agentBillEmailAddress)
+    ) {
+      setModalInfo("error_invalid_email_address");
+      return;
+    }
+
+    if (
+      dataForm.agentBillPhoneNumber &&
+      dataForm.agentBillPhoneNumber.length !== 11
+    ) {
+      setModalInfo("error_invalid_phone_number");
       return;
     }
 
@@ -136,6 +158,16 @@ const AgencyEditView = ({ id }: { id: string }) => {
           content={failDialog}
           onConfirm={() => setFailDialog("")}
           cancelDisabled
+        />
+      )}
+
+      {modalInfo && (
+        <ConfirmDialog
+          open
+          title={ModalInfo[modalInfo].title} // TODO : 노출 되는지 확인 필요
+          content={ModalInfo[modalInfo].content}
+          onConfirm={() => setModalInfo(null)}
+          onClose={() => setModalInfo(null)}
         />
       )}
 
@@ -237,7 +269,7 @@ const AgencyEditView = ({ id }: { id: string }) => {
               className="w-[150px]"
               onClick={() => router.push("/account/agency-management")}
             >
-              취소
+              뒤로가기
             </Button>
           </div>
         </form>
