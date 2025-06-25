@@ -193,10 +193,18 @@ export const postAgencyGroupMasterApi = async (
 export const postAgencyUserDirectApi = async (
   params: RequestMemberDirect
 ): Promise<TSMPayUser> => {
+  const paramsData = {
+    departmentId: 256,
+    emailAddress: "test3@gmail.com",
+    name: "서동찬2",
+    password: "Tpdh7845!@",
+    phoneNumber: "01023232132",
+    type: "AGENCY_GROUP_MEMBER",
+  };
   try {
     const response = await post<TSMPayUser>(
       `/service/api/v1/agents/${params.agentId}/users`,
-      params
+      paramsData
     );
     return response;
   } catch (error) {

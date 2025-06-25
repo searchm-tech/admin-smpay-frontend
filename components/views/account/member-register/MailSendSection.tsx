@@ -1,3 +1,4 @@
+import { useRouter } from "next/navigation";
 import { type ChangeEvent, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -47,6 +48,7 @@ import type {
 } from "@/types/api/user";
 
 const MailSendSection = ({ user }: TViewProps) => {
+  const router = useRouter();
   const isAdmin = getIsAdmin(user.type);
   const { data: session } = useSession();
 
@@ -368,8 +370,12 @@ const MailSendSection = ({ user }: TViewProps) => {
         <Button className="w-[150px]" onClick={handleSubmit}>
           확인
         </Button>
-        <Button variant="cancel" className="w-[150px]" onClick={() => {}}>
-          취소
+        <Button
+          variant="cancel"
+          className="w-[150px]"
+          onClick={() => router.push("/account")}
+        >
+          뒤로가기
         </Button>
       </div>
     </section>
