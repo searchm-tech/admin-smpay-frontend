@@ -199,7 +199,7 @@ export const postAgencyUserDirectApi = async (
     name: params.name,
     password: params.password,
     phoneNumber: params.phoneNumber,
-    type: "AGENCY_GROUP_MEMBER",
+    type: params.type,
   };
   try {
     const response = await post<TSMPayUser>(
