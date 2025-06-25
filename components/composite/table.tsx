@@ -13,6 +13,7 @@ interface TableProps<T> extends AntdTableProps<T> {
   total?: number;
   loading?: boolean;
   defaultPageSize?: number;
+  emptyText?: string;
 }
 
 const PAGE_SIZE_OPTIONS = ["10", "20", "50", "100"];
@@ -24,6 +25,7 @@ function Table<T extends object>({
   total = 50,
   loading = false,
   defaultPageSize = 10,
+  emptyText = "검색 결과가 없습니다.",
   ...rest
 }: TableProps<T>) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -55,6 +57,7 @@ function Table<T extends object>({
         dataSource={dataSource}
         rowKey={(record) => (record as any).id ?? (record as any).key}
         showSorterTooltip={false}
+        locale={{ emptyText }}
         pagination={{
           pageSize,
           current: currentPage,
