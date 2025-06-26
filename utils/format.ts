@@ -84,3 +84,16 @@ export const calculateDailyTotal = (data: DailyStat[] | undefined) => {
     avgRnk: data.reduce((sum, item) => sum + item.avgRnk, 0) / data.length,
   };
 };
+
+/**
+ * 1,000원 단위 절상 계산
+ * @param amount 원본 금액
+ * @returns 절상된 금액
+ */
+export const roundUpToThousand = (amount: number): number => {
+  if (!amount || amount <= 0) {
+    return 0; // 최소 충전 금액
+  }
+
+  return Math.floor((amount + 999) / 1000) * 1000;
+};
