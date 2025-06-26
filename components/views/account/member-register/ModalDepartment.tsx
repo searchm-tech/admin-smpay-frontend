@@ -12,7 +12,11 @@ import { useQuerySubDepartments } from "@/hooks/queries/departments";
 
 import { getIsAdmin } from "@/lib/utils";
 
-import { convertToDepartmentTreeNode, filterTreeData } from "./constant";
+import {
+  convertToDepartmentTreeNode,
+  convertToDepartmentTreeNodeGroupMaster,
+  filterTreeData,
+} from "./constant";
 import type { DepartmentTreeNode } from "@/types/tree";
 
 type ModalDepartmentProps = {
@@ -39,10 +43,19 @@ const ModalDepartment = ({ setIsOpen, onSelect }: ModalDepartmentProps) => {
     setIsOpen(false);
   };
 
+  // 그룹 마스터인지 확인
+  const isGroupMaster = user?.type === "AGENCY_GROUP_MANAGER";
+
   const filteredData = filterTreeData(
-    subDepartments?.children.map(convertToDepartmentTreeNode) || [],
+    isGroupMaster
+      ? subDepartments
+        ? [convertToDepartmentTreeNodeGroupMaster(subDepartments)]
+        : []
+      : subDepartments?.children.map(convertToDepartmentTreeNode) || [],
     search
   );
+
+  console.log(filteredData);
 
   const isAdmin = getIsAdmin(user?.type);
 
