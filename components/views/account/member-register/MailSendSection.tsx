@@ -322,6 +322,7 @@ const MailSendSection = ({ user }: TViewProps) => {
                 onChange={handleEmailIdChange}
                 disabled={!selectedAgency || enableEmailId}
                 suffix={selectedAgency ? `@${selectedAgency.domainName}` : ""}
+                preventSpaces
               />
             )}
 
