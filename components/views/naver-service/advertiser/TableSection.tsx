@@ -8,7 +8,7 @@ import Table from "@/components/composite/table";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 
 import { formatDate } from "@/utils/format";
-import { dialogContent, syncTypeMap } from "../constants";
+import { defaultTableParams, dialogContent, syncTypeMap } from "../constants";
 import { InProgressFlag, LossPrivilegeFlag } from "./constants";
 import { SyncFailDialog, type SyncFail } from "../dialog";
 
@@ -65,10 +65,10 @@ const TableSection = ({
 
   // 2. 광고주 데이터 동기화 해제
   const { mutate: mutateDeleteAdvertiserSync } = useMuateDeleteAdvertiserSync({
-    onSuccess: () => {
+    onSuccess: async () => {
       setMessage("광고주 등록 해제 완료");
-      refetch();
       setSelectedRowKeys([]);
+      await refetch();
     },
     onError: (error) => setMessage(error.message),
   });
@@ -329,10 +329,11 @@ const TableSection = ({
           open
           confirmText="확인"
           cancelDisabled
-          onConfirm={() => {
+          onConfirm={async () => {
             setIsSuccessSync(false);
-            refetch();
+            setTableParams(defaultTableParams);
             setSelectedRowKeys([]);
+            await refetch();
           }}
           content={dialogContent["success-sync"]}
         />

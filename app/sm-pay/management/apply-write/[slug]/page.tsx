@@ -39,7 +39,7 @@ export default function SMPayApplyWriteFormPage({
 
   return (
     <div>
-      <ContentHeader title="SM Pay 신청" items={breadcrumbItems} />
+      <ContentHeader title="SM Pay 신청서 작성" items={breadcrumbItems} />
       <SMPayMasterApplyWriteForm id={Number(params.slug)} />
     </div>
   );

@@ -194,7 +194,11 @@ const ModalEdit = ({
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Input className="max-w-[450px]" {...field} />
+                        <Input
+                          className="max-w-[450px]"
+                          preventSpaces
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

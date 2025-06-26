@@ -167,7 +167,7 @@ const SMPayMasterApplyWriteForm = ({ id }: ViewWrieProps) => {
         </Button>
 
         <Button className="w-[150px]" onClick={handleSendAdAgree}>
-          광고주 동의 요청 발송
+          심사 요청
         </Button>
         <Button variant="cancel" className="w-[150px]" onClick={() => {}}>
           취소

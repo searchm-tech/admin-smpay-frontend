@@ -39,7 +39,11 @@ const ViewList = () => {
 
   const [isError, setIsError] = useState(false);
 
-  const { data: advertiserApplyRes, isPending } = useSmPayAdvertiserApplyList({
+  const {
+    data: advertiserApplyRes,
+    isPending,
+    refetch,
+  } = useSmPayAdvertiserApplyList({
     page: tableParams.pagination?.current || 1,
     size: tableParams.pagination?.pageSize || 10,
     orderType: tableParams.sortField as SmPayAdvertiserStatus,
@@ -199,6 +203,11 @@ const ViewList = () => {
     );
   };
 
+  const handleConfrimModal = async () => {
+    setModalInfo(null);
+    await refetch();
+  };
+
   return (
     <section>
       {isError && (
@@ -211,17 +220,17 @@ const ViewList = () => {
       )}
       {modalInfo?.type === "edit" && (
         <ModalEdit
-          refetch={handleSearch}
-          onConfirm={() => setModalInfo(null)}
+          refetch={refetch}
+          onConfirm={handleConfrimModal}
           onClose={() => setModalInfo(null)}
           advertiserId={modalInfo.advertiserId}
         />
       )}
       {modalInfo?.type === "create" && (
         <ModalCreate
-          refetch={handleSearch}
+          refetch={refetch}
+          onConfirm={handleConfrimModal}
           onClose={() => setModalInfo(null)}
-          onConfirm={() => setModalInfo(null)}
           advertiserId={modalInfo.advertiserId}
         />
       )}
