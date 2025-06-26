@@ -254,13 +254,19 @@ interface InputWithSuffixProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   suffix?: string;
   containerClassName?: string;
+  preventSpaces?: boolean;
 }
 
 const InputWithSuffix = forwardRef<HTMLInputElement, InputWithSuffixProps>(
-  ({ className, suffix, containerClassName, ...props }, ref) => {
+  ({ className, suffix, containerClassName, preventSpaces, ...props }, ref) => {
     return (
       <div className={cn("relative", containerClassName)}>
-        <Input className={cn("pr-32", className)} ref={ref} {...props} />
+        <Input
+          className={cn("pr-32", className)}
+          ref={ref}
+          {...props}
+          preventSpaces={preventSpaces}
+        />
         {suffix && (
           <div className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
             {suffix}

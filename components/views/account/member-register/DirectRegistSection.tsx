@@ -371,6 +371,7 @@ const DirectRegistSection = ({ user }: TViewProps) => {
                 onChange={handleEmailIdChange}
                 disabled={!selectedAgency || enableEmailId}
                 suffix={selectedAgency ? `@${selectedAgency.domainName}` : ""}
+                preventSpaces
               />
             )}
 
@@ -381,6 +382,7 @@ const DirectRegistSection = ({ user }: TViewProps) => {
                 value={emailId}
                 onChange={handleEmailIdChange}
                 disabled={enableEmailId}
+                preventSpaces
                 suffix={
                   agencyInfo
                     ? `@${agencyInfo?.domainName}`
@@ -416,6 +418,7 @@ const DirectRegistSection = ({ user }: TViewProps) => {
             value={password}
             onChange={(e) => handlePasswordChange(e, "password")}
             placeholder="영문, 숫자, 특수문자가 모두 들어간 8-16자"
+            preventSpaces
           />
         </DescriptionItem>
         <DescriptionItem label="비밀번호 확인 *">
@@ -425,6 +428,7 @@ const DirectRegistSection = ({ user }: TViewProps) => {
             value={passwordConfirm}
             onChange={(e) => handlePasswordChange(e, "passwordConfirm")}
             placeholder="영문, 숫자, 특수문자가 모두 들어간 8-16자"
+            preventSpaces
           />
         </DescriptionItem>
         <DescriptionItem label="연락처 *">

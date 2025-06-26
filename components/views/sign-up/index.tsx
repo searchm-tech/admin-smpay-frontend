@@ -163,6 +163,7 @@ const SignUpView = ({ agentCode, userCode }: SignUpViewProps) => {
               placeholder="비밀번호를 입력해주세요"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              preventSpaces
             />
           </DescriptionItem>
           <DescriptionItem label="비밀번호 확인 *">
@@ -172,6 +173,7 @@ const SignUpView = ({ agentCode, userCode }: SignUpViewProps) => {
               placeholder="비밀번호를 입력해주세요"
               value={passwordConfirm}
               onChange={(e) => setPasswordConfirm(e.target.value)}
+              preventSpaces
             />
           </DescriptionItem>
           <DescriptionItem label="연락처">

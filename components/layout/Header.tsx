@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
 import { Separator } from "@/components/ui/separator";
@@ -12,9 +13,17 @@ import ShortcutButton from "@/components/common/DownloadShortCut";
 
 import { getUserAuthTypeLabel } from "@/utils/status";
 
+import { getRedirectPath } from "@/lib/utils";
+
 const Header = () => {
+  const router = useRouter();
   const { toggleSidebar } = useSidebar();
   const { data: session } = useSession();
+
+  const moveHome = () => {
+    const redirectPath = getRedirectPath(session?.user.type);
+    router.push(redirectPath);
+  };
 
   const labelType =
     session?.user && getUserAuthTypeLabel(session?.user.type || "");
@@ -32,6 +41,8 @@ const Header = () => {
         </div>
 
         <Image
+          className="cursor-pointer"
+          onClick={moveHome}
           src="/images/logo_main.png"
           alt="icon_menu"
           width={93}

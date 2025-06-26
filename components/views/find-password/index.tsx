@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { PhoneInput } from "@/components/composite/input-components";
 import { LabelBullet } from "@/components/composite/label-bullet";
-import { ConfirmDialog } from "@/components/composite/modal-components";
+import { ConfirmDialog, Modal } from "@/components/composite/modal-components";
 import {
   Descriptions,
   DescriptionItem,
@@ -17,8 +17,6 @@ import Title from "@/components/common/Title";
 import LoadingUI from "@/components/common/Loading";
 import { DescriptionPwd } from "@/components/common/Box";
 import ErrorView from "../error";
-
-import ModalSuccess from "../sign-up/ModalSuccess";
 
 import { userAuthTypeMap } from "@/utils/status";
 import { PASSWORD_REGEX } from "@/constants/reg";
@@ -106,12 +104,22 @@ const FindPasswordView = ({ agentCode, userCode }: FindPasswordViewProps) => {
   return (
     <div className="w-full max-w-[1024px] flex flex-col gap-5 mx-auto my-10 overflow-y-auto py-4">
       {result && (
-        <ModalSuccess
-          onClose={() => {
-            router.push("/sign-in");
-            setResult(false);
-          }}
-        />
+        <Modal
+          open
+          title="회원 가입 완료"
+          onClose={() => router.push("/sign-in")}
+          onConfirm={() => router.push("/sign-in")}
+          confirmText="확인"
+          cancelText="닫기"
+          iconDisabled
+        >
+          <div className="w-[800px]">
+            <div className="text-center text-base font-bold">
+              <p>비밀번호 재설정이 완료되었습니다.</p>
+              <p className="mb-4">로그인 후 SM Pay 서비스 이용이 가능합니다.</p>
+            </div>
+          </div>
+        </Modal>
       )}
 
       {errorMessage && (

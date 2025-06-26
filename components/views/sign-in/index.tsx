@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,6 +23,7 @@ import { getAgencyDomainNameApi } from "@/services/agency";
 
 import { STORAGE_KEYS, createFormSchema } from "./constants";
 import { ApiError } from "@/lib/api";
+import { getRedirectPath } from "@/lib/utils";
 
 import type { TSMPayUser } from "@/types/user";
 
@@ -31,6 +32,8 @@ interface SignInViewProps {
 }
 
 const SignInView = ({ code }: SignInViewProps) => {
+  const router = useRouter();
+  const { data: session, status } = useSession();
   const { setAccessToken, setRefreshToken } = useSessionStore();
 
   const [isRememberUsername, setIsRememberUsername] = useState(false);
@@ -38,6 +41,7 @@ const SignInView = ({ code }: SignInViewProps) => {
   const [loading, setLoading] = useState(false);
   const [isPwdSettingModalOpen, setIsPwdSettingModalOpen] = useState(false);
   const [domainName, setDomainName] = useState("");
+  const [isCheckingToken, setIsCheckingToken] = useState(true);
 
   const formSchema = createFormSchema(!!domainName);
   type FormValues = z.infer<typeof formSchema>;
@@ -50,6 +54,50 @@ const SignInView = ({ code }: SignInViewProps) => {
     },
     mode: "onChange",
   });
+
+  // 토큰 유효성 검사 및 리다이렉트
+  useEffect(() => {
+    const checkTokenAndRedirect = async () => {
+      // 세션 로딩 중이면 대기
+      if (status === "loading") {
+        return;
+      }
+
+      try {
+        // 세션이 존재하고 인증된 상태인지 확인
+        if (status === "authenticated" && session?.user) {
+          const { user } = session;
+          // 토큰 만료 검사 (session에 토큰 만료 정보가 있다고 가정)
+          // 실제 토큰 객체 구조에 따라 수정 필요
+          if (session.accessToken) {
+            // 토큰이 유효하면 권한에 맞는 페이지로 리다이렉트
+            const redirectPath = getRedirectPath(user.type);
+            router.replace(redirectPath);
+            return;
+          }
+        }
+
+        // localStorage에서도 토큰 확인
+        const storedAccessToken = localStorage.getItem("accessToken");
+        const storedRefreshToken = localStorage.getItem("refreshToken");
+
+        if (storedAccessToken && storedRefreshToken) {
+          router.replace("/sm-pay");
+          return;
+        }
+      } catch (error) {
+        console.error("Token validation error:", error);
+        // 에러 발생 시 토큰 클리어
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        await signOut();
+      } finally {
+        setIsCheckingToken(false);
+      }
+    };
+
+    checkTokenAndRedirect();
+  }, [session, status, router]);
 
   const handleRememberChange = (checked: boolean) => {
     setIsRememberUsername(checked);
@@ -98,12 +146,15 @@ const SignInView = ({ code }: SignInViewProps) => {
           uniqueCode: uniqueCode,
         };
 
+        // 권한에 맞는 리다이렉트 경로 설정
+        const redirectPath = getRedirectPath(user.type);
+
         // TODO : next-auth 토큰 갱신 관련하여 학습 후, 토큰 관리를 어떻게 할지 확인 할 것.
         await signIn("credentials", {
           ...user,
           accessToken: accessToken,
           refreshToken: refreshToken,
-          callbackUrl: "/sm-pay",
+          callbackUrl: redirectPath,
         });
 
         setAccessToken(accessToken.token);
@@ -143,6 +194,11 @@ const SignInView = ({ code }: SignInViewProps) => {
       setDomainName(res.domainName);
     });
   }, [code]);
+
+  // 토큰 검사 중이면 로딩 표시
+  if (isCheckingToken) {
+    return <LoadingUI title="인증 정보 확인 중..." />;
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">

@@ -2,8 +2,61 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
-const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
-  ({ className, type, ...props }, ref) => {
+interface InputProps extends React.ComponentProps<"input"> {
+  preventSpaces?: boolean;
+}
+
+const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  (
+    {
+      className,
+      type,
+      preventSpaces = false,
+      onChange,
+      onPaste,
+      onKeyDown,
+      ...props
+    },
+    ref
+  ) => {
+    const handleChange = React.useCallback(
+      (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (preventSpaces) {
+          const noSpace = e.target.value.replace(/\s+/g, "");
+          e.target.value = noSpace;
+        }
+        onChange?.(e);
+      },
+      [preventSpaces, onChange]
+    );
+
+    const handlePaste = React.useCallback(
+      (e: React.ClipboardEvent<HTMLInputElement>) => {
+        if (preventSpaces) {
+          e.preventDefault();
+          const paste = e.clipboardData.getData("text");
+          const noSpace = paste.replace(/\s+/g, "");
+          const target = e.target as HTMLInputElement;
+          target.value = noSpace;
+          // onChange 이벤트를 수동으로 트리거
+          const changeEvent = new Event("input", { bubbles: true });
+          target.dispatchEvent(changeEvent);
+        }
+        onPaste?.(e);
+      },
+      [preventSpaces, onPaste]
+    );
+
+    const handleKeyDown = React.useCallback(
+      (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (preventSpaces && e.key === " ") {
+          e.preventDefault();
+        }
+        onKeyDown?.(e);
+      },
+      [preventSpaces, onKeyDown]
+    );
+
     return (
       <input
         type={type}
@@ -12,6 +65,9 @@ const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
           className
         )}
         ref={ref}
+        onChange={handleChange}
+        onPaste={handlePaste}
+        onKeyDown={handleKeyDown}
         {...props}
       />
     );
