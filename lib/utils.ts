@@ -72,3 +72,16 @@ export function getAuthType(type?: TAuthType | null) {
 
   return "agency";
 }
+
+// 사용자 권한에 따른 리다이렉트 경로 반환
+export function getRedirectPath(userType?: TAuthType | null): string {
+  if (!userType) return "/dashboard";
+
+  // 관리자는 관리자 페이지로
+  if (getIsAdmin(userType)) {
+    return "/sm-pay/charge";
+  }
+
+  // 기본적으로 sm-pay 메인 페이지로
+  return "/dashboard";
+}
