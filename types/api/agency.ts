@@ -93,3 +93,9 @@ export type RequestPutAgencyBill = {
     emailAddress: string;
   }[];
 };
+
+// 대행사 전체 리스트 조회 응답 타입
+export type ResponseAgencyAll = {
+  agent: TAgency;
+  isMasterAccount: boolean;
+};

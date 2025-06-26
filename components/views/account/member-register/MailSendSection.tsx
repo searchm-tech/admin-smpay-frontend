@@ -52,7 +52,7 @@ const MailSendSection = ({ user }: TViewProps) => {
   const isAdmin = getIsAdmin(user.type);
   const { data: session } = useSession();
 
-  const { data: agencyList = [] } = useQueryAgencyAll({ enabled: isAdmin });
+  const { data: agencyAllDto = [] } = useQueryAgencyAll({ enabled: isAdmin });
 
   // TODO : 수정 필요
   const { data: agencyInfo } = useQueryAgencyDomainName(
@@ -208,14 +208,15 @@ const MailSendSection = ({ user }: TViewProps) => {
   };
 
   const handleAgencySelect = (value: string) => {
-    const findAgency = agencyList.find(
-      (agency) => agency.agentId.toString() === value
+    const findAgency = agencyAllDto.find(
+      (agentDto) => agentDto.agent.agentId.toString() === value
     );
 
     if (findAgency) {
-      setSelectedAgency(findAgency);
+      setSelectedAgency(findAgency.agent);
     }
   };
+  console.log(agencyAllDto);
 
   return (
     <section className="py-4">
@@ -271,9 +272,10 @@ const MailSendSection = ({ user }: TViewProps) => {
               className="max-w-[500px]"
               value={selectedAgency?.agentId.toString()}
               onChange={handleAgencySelect}
-              options={agencyList.map((agency) => ({
-                label: `${agency.name} | ${agency.representativeName}`,
-                value: agency.agentId.toString(),
+              options={agencyAllDto.map((agentDto) => ({
+                label: `${agentDto.agent.name} | ${agentDto.agent.representativeName}`,
+                value: agentDto.agent.agentId.toString(),
+                disabled: agentDto.isMasterAccount,
               }))}
             />
           ) : (
