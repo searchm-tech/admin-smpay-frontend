@@ -32,6 +32,17 @@ export const convertToDepartmentTreeNode = (
   };
 };
 
+// 그룹 마스터용 변환 함수 - 단일 부서를 폴더로 변환
+export const convertToDepartmentTreeNodeGroupMaster = (
+  dept: TSubDepartmentsResponse
+): DepartmentTreeNode => {
+  return {
+    id: `${dept.departmentId}`,
+    name: dept.name,
+    children: [], // 그룹 마스터의 경우 해당 부서가 폴더가 되고, 나중에 그룹원들이 추가됨
+  };
+};
+
 // 검색 필터링 함수
 export const filterTreeData = (
   nodes: DepartmentTreeNode[],
