@@ -57,7 +57,7 @@ const DirectRegistSection = ({ user }: TViewProps) => {
     session?.user.uniqueCode || ""
   );
 
-  const { data: agencyList = [] } = useQueryAgencyAll({ enabled: isAdmin });
+  const { data: agencyAllDto = [] } = useQueryAgencyAll({ enabled: isAdmin });
   const {
     mutate: mutateAddGroupMasterDirect,
     isPending: isPendingAddGroupMasterDirect,
@@ -235,12 +235,12 @@ const DirectRegistSection = ({ user }: TViewProps) => {
   };
 
   const handleAgencySelect = (value: string) => {
-    const findAgency = agencyList.find(
-      (agency) => agency.agentId.toString() === value
+    const findAgency = agencyAllDto.find(
+      (agentDto) => agentDto.agent.agentId.toString() === value
     );
 
     if (findAgency) {
-      setSelectedAgency(findAgency);
+      setSelectedAgency(findAgency.agent);
     }
   };
 
@@ -321,9 +321,10 @@ const DirectRegistSection = ({ user }: TViewProps) => {
               className="max-w-[500px]"
               value={selectedAgency?.agentId.toString()}
               onChange={handleAgencySelect}
-              options={agencyList.map((agency) => ({
-                label: `${agency.name} | ${agency.representativeName}`,
-                value: agency.agentId.toString(),
+              options={agencyAllDto.map((agentDto) => ({
+                label: `${agentDto.agent.name} | ${agentDto.agent.representativeName}`,
+                value: agentDto.agent.agentId.toString(),
+                disabled: agentDto.isMasterAccount,
               }))}
             />
           ) : (

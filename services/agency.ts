@@ -11,12 +11,13 @@ import type {
   RequestAgencyStatus,
   ResponseAgencyDetail,
   RequestPutAgencyBill,
+  ResponseAgencyAll,
 } from "@/types/api/agency";
 
 // 대행사 전체 리스트 조회 API (AAG012)
-export async function getAgencyAllApi(): Promise<TAgency[]> {
+export async function getAgencyAllApi(): Promise<ResponseAgencyAll[]> {
   try {
-    const response: TAgency[] = await get("/admin/api/v1/agents/all");
+    const response: ResponseAgencyAll[] = await get("/admin/api/v1/agents/all");
     return response; // result만 반환!
   } catch (error) {
     if (error instanceof ApiError) {

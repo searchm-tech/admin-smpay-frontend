@@ -25,13 +25,14 @@ import type {
   ResponseAgencys,
   ResponseAgencyDetail,
   RequestPutAgencyBill,
+  ResponseAgencyAll,
 } from "@/types/api/agency";
 
 // 대행사 전체 리스트 조회 쿼리
 export const useQueryAgencyAll = (
-  options?: Partial<UseQueryOptions<TAgency[], Error>>
+  options?: Partial<UseQueryOptions<ResponseAgencyAll[], Error>>
 ) => {
-  return useQuery<TAgency[]>({
+  return useQuery<ResponseAgencyAll[]>({
     queryKey: ["agencyAll"],
     queryFn: getAgencyAllApi,
     initialData: [],
@@ -49,8 +50,6 @@ export const useMutationAgencySendMail = (
     ...options,
   });
 };
-
-// ------------ 실제 API query ------------
 
 // 대행사 페이지네이션 리스트 조회 (AAG003) query
 export const useQueryAgencyApi = (

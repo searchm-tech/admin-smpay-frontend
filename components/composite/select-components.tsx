@@ -9,6 +9,7 @@ import {
 export type SelectOption = {
   label: string;
   value: string;
+  disabled?: boolean;
 };
 
 type SelectProps = {
@@ -35,8 +36,22 @@ const Select = ({
       </ShadcnSelectTrigger>
       <ShadcnSelectContent>
         {options.map((option: SelectOption) => (
-          <ShadcnSelectItem key={option.value} value={option.value}>
-            {option.label}
+          <ShadcnSelectItem
+            key={option.value}
+            value={option.value}
+            disabled={option.disabled}
+            className={
+              option.disabled
+                ? "text-muted-foreground hover:cursor-not-allowed data-[disabled]:pointer-events-auto"
+                : ""
+            }
+          >
+            <span className={option.disabled ? "line-through" : ""}>
+              {option.label}
+            </span>
+            {option.disabled && (
+              <span className="ml-2 text-xs no-underline">(선택 불가)</span>
+            )}
           </ShadcnSelectItem>
         ))}
       </ShadcnSelectContent>
