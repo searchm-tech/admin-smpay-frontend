@@ -34,6 +34,8 @@ const RuleSection2 = ({
   handleUpChargeRuleChange,
   handleDownChargeRuleChange,
 }: RuleSectionProps) => {
+  console.log(upChargeRule);
+  console.log(downChargeRule);
   return (
     <section>
       <div className="flex items-center gap-2 py-4">
@@ -61,21 +63,25 @@ const RuleSection2 = ({
                   {upChargeRule?.boundType === "FIXED_AMOUNT"
                     ? "정액으로"
                     : "정률로"}
-                  {upChargeRule?.changePercentOrValue}%씩 증액
+                  {upChargeRule?.changePercentOrValue}
+                  {upChargeRule?.boundType === "FIXED_AMOUNT" ? "원" : "%"}씩
+                  증액
                 </span>
                 하고
               </div>
               <div>
                 기준 ROAS가{" "}
                 <span className="font-bold">
-                  {upChargeRule.standardRoasPercent}% 미만
+                  {downChargeRule.standardRoasPercent}% 미만
                 </span>
                 이면 충전 금액을{" "}
                 <span className="text-red-600">
                   {downChargeRule.boundType === "FIXED_AMOUNT"
                     ? "정액으로"
                     : "정률로"}
-                  {downChargeRule.changePercentOrValue}%씩 감액
+                  {downChargeRule.changePercentOrValue}
+                  {downChargeRule.boundType === "FIXED_AMOUNT" ? "원" : "%"}씩
+                  감액
                 </span>
                 합니다.
               </div>
@@ -101,7 +107,7 @@ const RuleSection2 = ({
                     })
                   }
                 />
-                <span>%</span>
+                %
               </div>
 
               <div className="flex items-center gap-4">
@@ -155,7 +161,9 @@ const RuleSection2 = ({
                       })
                     }
                   />
-                  <span>%씩</span>
+                  <span>
+                    {upChargeRule?.boundType === "FIXED_AMOUNT" ? "원" : "%"}씩
+                  </span>
                   <span className="text-blue-600">증액하고</span>
                 </div>
               </div>

@@ -130,6 +130,9 @@ const SMPayMasterApplyWriteForm = ({ id }: ViewWrieProps) => {
         <AdvertiserSimulationModal
           open={isSimulation}
           onClose={() => setIsSimulation(false)}
+          upChargeRule={upChargeRule}
+          downChargeRule={downChargeRule}
+          prePaymentSchedule={prePaymentSchedule}
         />
       )}
 
