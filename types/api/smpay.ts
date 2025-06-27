@@ -1,6 +1,7 @@
 import {
   ChargeRule,
   PrePaymentSchedule,
+  SmPayAdminAuditDto,
   SmPayAdvertiserApplyDto,
   SmPayAdvertiserStatus,
   SmPayAdvertiserStatusDto,
@@ -178,4 +179,8 @@ export type PrePaymentScheduleDto = {
   initialAmount: number;
   maxChargeLimit: number;
   minChargeLimit: number;
+};
+
+export type ResponseSmPayAdminAudit = ResponseWithPagination & {
+  content: SmPayAdminAuditDto[];
 };

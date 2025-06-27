@@ -34,6 +34,7 @@ import type {
   ParamsSmPayApproval,
   ChargeRuleDto,
   PrePaymentScheduleDto,
+  ResponseSmPayAdminAudit,
 } from "@/types/api/smpay";
 
 import { useAuthQuery } from "../useAuthQuery";
@@ -56,6 +57,7 @@ import {
   postSmPayApproval,
   getSmPayAdvertiserChargeRule,
   getSmPayAdvertiserPrePaymentSchedule,
+  getSmPayAdminAuditList,
 } from "@/services/smpay";
 import type {
   DailyStat,
@@ -326,5 +328,14 @@ export const useSmPayAdvertiserPrePaymentSchedule = (advertiserId: number) => {
     queryKey: ["/smpay/advertiser-pre-payment-schedule", advertiserId],
     queryFn: (user: RequestAgentUser) =>
       getSmPayAdvertiserPrePaymentSchedule({ user, advertiserId }),
+  });
+};
+
+// 광고주 심사 관리 리스트 조회 (운영 관리자 전용) (AAG018)
+export const useSmPayAdminAuditList = (params: QueryParams) => {
+  return useAuthQuery<ResponseSmPayAdminAudit>({
+    queryKey: ["/smpay/admin-audit-list", params],
+    queryFn: (user: RequestAgentUser) =>
+      getSmPayAdminAuditList({ user, queryParams: params }),
   });
 };
