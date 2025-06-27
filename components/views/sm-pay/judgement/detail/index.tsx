@@ -47,7 +47,7 @@ const status = "reject";
 const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
   const router = useRouter();
   const formId = useSearchParams().get("formId");
-  const isReviewerRead = useSearchParams().get("isReviewerRead");
+  const isApprovalRead = useSearchParams().get("isApprovalRead") === "true";
   const [isApproved, setIsApproved] = useState(false);
   const [isRejectSend, setIsRejectSend] = useState(false);
   const [isReject, setIsReject] = useState(false);
@@ -85,7 +85,7 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
       minChargeLimit: 0,
     });
 
-  const { data: smpayInfo, isPending: loading } = useSmPayDetail(
+  const { data: smpayInfo, isPending: loadingSmpayInfo } = useSmPayDetail(
     Number(id),
     Number(formId || 0)
   );
@@ -111,10 +111,12 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
   const { mutate: patchRead } = useSmPayRead();
 
   useEffect(() => {
-    if (id && smpayInfo && !isReviewerRead) {
-      patchRead({ advertiserId: Number(id), isReviewerRead: true });
+    // 심사 목록 읽음 상태 변경
+    if (id && smpayInfo && !isApprovalRead) {
+      patchRead({ advertiserId: Number(id), isApprovalRead: true });
     }
 
+    // TODO : 각영역 별로 데이터 노출 방식 고민 필요
     if (smpayInfo) {
       const { advertiserStandardRoasPercent } = smpayInfo;
 
@@ -166,7 +168,7 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
     chargeRule,
     prePaymentScheduleData,
     id,
-    isReviewerRead,
+    isApprovalRead,
   ]);
 
   const statIndicatorData = {
@@ -180,7 +182,7 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
   const isLoading =
     loadingScreeningIndicator ||
     loadingReviewerMemo ||
-    loading ||
+    loadingSmpayInfo ||
     loadingChargeRule ||
     loadingPrePaymentSchedule;
 

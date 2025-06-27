@@ -344,13 +344,13 @@ export const getSmPayAuditList = async ({
 export const patchSmPayRead = async ({
   user,
   advertiserId,
-  isReviewerRead,
+  isApprovalRead,
 }: RequestSmPayRead): Promise<null> => {
   const { agentId, userId } = user;
 
   try {
     const response = await patch<null>(
-      `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/alarm?isReviewerRead=${isReviewerRead}`
+      `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/alarm?isApprovalRead=${isApprovalRead}`
     );
     return response;
   } catch (error) {

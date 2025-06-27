@@ -24,6 +24,7 @@ import type {
 } from "@/types/smpay";
 
 import { SmPayAdvertiserStatusLabel } from "@/constants/status";
+import { buildJudgementUrl } from "./constants";
 
 type PropsTableSection = {
   tableParams: TableParams;
@@ -82,14 +83,18 @@ const TableSection = ({
       sorter: true,
       render: (text, record) => (
         <div className="flex items-center justify-center gap-2">
-          {!record.isReviewerRead && <Badge label="new" />}
+          {!record.isApprovalRead && <Badge label="new" />}
 
           <LinkTextButton
             onClick={() => {
-              const url = `/sm-pay/judgement/${record.advertiserId}?formId=${
-                record.advertiserFormId
-              } ${record.isReviewerRead ? "" : "?isReviewerRead=true"}`;
-              router.push(url);
+              const { advertiserId, advertiserFormId, isApprovalRead } = record;
+              router.push(
+                buildJudgementUrl(
+                  advertiserId,
+                  advertiserFormId,
+                  isApprovalRead
+                )
+              );
             }}
           >
             {text}
@@ -154,6 +159,8 @@ const TableSection = ({
     });
   };
 
+  console.log(dataSource);
+
   return (
     <section>
       {stopModalId && (
@@ -168,6 +175,7 @@ const TableSection = ({
         columns={columns}
         dataSource={dataSource}
         loading={loadingData}
+        rowKey="advertiserFormId"
         pagination={{
           ...tableParams.pagination,
           total,
