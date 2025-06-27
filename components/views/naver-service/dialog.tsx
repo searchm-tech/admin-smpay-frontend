@@ -10,8 +10,6 @@ import {
   useMuateDeleteLicense,
 } from "@/hooks/queries/license";
 
-import { ApiError } from "@/lib/api";
-
 import { formatDate } from "@/utils/format";
 
 import { dialogContent } from "./constants";
@@ -50,11 +48,7 @@ export const CheckUpdateLicenseDialog = ({
   // 라이선스 등록 + 수정
   const { mutate: mutateLicense, isPending } = useMuateLicense({
     onSuccess: () => setIsSuccess(true),
-    onError: (error) => {
-      if (error instanceof ApiError) {
-        setErrMessage(error.message);
-      }
-    },
+    onError: () => setErrMessage("라이선스 중복 혹은 비정상적인 요청입니다."),
   });
 
   if (isPending) {

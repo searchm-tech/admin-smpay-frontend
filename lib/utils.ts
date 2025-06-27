@@ -30,6 +30,39 @@ export function buildQueryParams(params: Record<string, any>): string {
   return searchParams.toString();
 }
 
+/**
+ * API Table Response 변환 함수
+ * @param response - API 응답 객체 (content 배열 포함)
+ * @param transform - 각 아이템에 적용할 커스텀 변환 함수 (선택사항)
+ * @returns 변환된 응답 객체
+ */
+export function transformTableResponse<
+  T,
+  R = T & { id: number },
+  ResponseType = any
+>(
+  response: ResponseType & { content: T[] },
+  queryParams: { page: number; size: number },
+  transform?: (item: T, index: number) => R
+): ResponseType & { content: R[] } {
+  const { page, size } = queryParams;
+
+  let content = response.content.map((item, index) => {
+    const baseItem = {
+      ...item,
+      id: (page - 1) * size + index + 1,
+    } as R;
+
+    // 커스텀 변환 함수가 있으면 적용
+    return transform ? transform(item, index) : baseItem;
+  });
+
+  return {
+    ...response,
+    content,
+  };
+}
+
 // 관리자 확인
 export function getIsAdmin(type?: TAuthType | null) {
   if (!type) return false;

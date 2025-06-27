@@ -157,3 +157,20 @@ export type SmPayReviewerMemo = {
   advertiserReviewerMemosId: number;
   description: string;
 };
+
+// [시스템 관리자] 광고주 심사 관리 리스트 조회 (운영 관리자 전용) (AAG018)
+export type SmPayAdminAuditDto = {
+  id: number;
+  agentId: number;
+  agentName: string;
+  userId: number;
+  userName: string;
+  advertiserId: number;
+  advertiserCustomerId: number;
+  advertiserLoginId: string;
+  advertiserNickname: string;
+  advertiserName: string;
+  advertiserType: SmPayAdvertiserStatus;
+  registerOrUpdateDt: string;
+  isOperatorRead: boolean;
+};

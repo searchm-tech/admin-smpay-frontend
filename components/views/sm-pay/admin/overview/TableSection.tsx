@@ -1,5 +1,5 @@
 "use client";
-
+import { useMemo } from "react";
 import { useRouter } from "next/navigation";
 
 import { Badge } from "@/components/ui/badge";
@@ -8,69 +8,126 @@ import Table from "@/components/composite/table";
 
 import { formatDate } from "@/utils/format";
 
-import type { ColumnsType } from "antd/es/table";
-import type { SmPayJudgementData } from "@/types/sm-pay";
-import type { TableProps } from "antd";
+import { useWindowSize } from "@/hooks/useWindowSize";
+import { useSidebar } from "@/components/ui/sidebar";
+
+import { SmPayAdvertiserStatusLabel } from "@/constants/status";
+
+import type {
+  SmPayAdminAuditDto,
+  SmPayAdvertiserStatus,
+  SmPayAdvertiserStautsOrderType,
+} from "@/types/smpay";
+import type {
+  ColumnsType,
+  FilterValue,
+  TableParams,
+  TableProps,
+} from "@/types/table";
 
 type PropsTableSection = {
-  dataSource: SmPayJudgementData[];
-  loading: boolean;
-  pagination: {
-    current: number;
-    pageSize: number;
-    total: number;
-  };
-  onTableChange: TableProps<SmPayJudgementData & { id: number }>["onChange"];
+  tableParams: TableParams;
+  setTableParams: (params: TableParams) => void;
+  total: number;
+  loadingData: boolean;
+  dataSource: SmPayAdminAuditDto[];
 };
 
 const TableSection = ({
+  tableParams,
+  setTableParams,
+  total,
+  loadingData,
   dataSource,
-  loading,
-  pagination,
-  onTableChange,
 }: PropsTableSection) => {
   const router = useRouter();
+  const { width } = useWindowSize();
+  const { state } = useSidebar();
 
-  const columns: ColumnsType<SmPayJudgementData & { id: number }> = [
+  const handleTableChange: TableProps<SmPayAdminAuditDto>["onChange"] = (
+    pagination,
+    filters,
+    sorter
+  ) => {
+    console.log(sorter);
+    let sortField: SmPayAdvertiserStautsOrderType = "ADVERTISER_REGISTER_DESC"; // 기본값
+
+    if (sorter && !Array.isArray(sorter) && sorter.field && sorter.order) {
+      const field = sorter.field as string;
+      const order = sorter.order === "ascend" ? "ASC" : "DESC";
+
+      // field 이름을 API에서 요구하는 형식으로 변환
+      const fieldMap: Record<string, string> = {
+        id: "NO", // NO_ 정렬 조건으로 전달
+        agentName: "AGENT_NAME",
+        userName: "USER_NAME",
+        advertiserCustomerId: "ADVERTISER_CUSTOMER_ID",
+        advertiserLoginId: "ADVERTISER_ID",
+        advertiserNickname: "ADVERTISER_NICK_NAME",
+        advertiserName: "ADVERTISER_NAME",
+        advertiserType: "ADVERTISER_STATUS",
+        registerOrUpdateDt: "ADVERTISER_REGISTER",
+      };
+
+      const mappedField = fieldMap[field];
+
+      if (mappedField) {
+        sortField = `${mappedField}_${order}` as SmPayAdvertiserStautsOrderType;
+      }
+    }
+
+    setTableParams({
+      pagination: {
+        current: pagination.current ?? 1,
+        pageSize: pagination.pageSize ?? 10,
+      },
+      filters: filters as Record<string, FilterValue>,
+      keyword: tableParams.keyword, // 기존 keyword 유지
+      sortOrder: undefined, // TAgencyOrder를 사용하므로 불필요
+      sortField: sortField,
+    });
+  };
+
+  const columns: ColumnsType<SmPayAdminAuditDto> = [
     {
       title: "No",
-      dataIndex: "no",
-      key: "no",
-      width: 70,
+      dataIndex: "id",
+      key: "id",
       sorter: true,
+      align: "center",
     },
     {
       title: "대행사명",
-      dataIndex: "agencyName",
-      key: "agencyName",
+      dataIndex: "agentName",
+      key: "agentName",
       sorter: true,
       align: "center",
     },
     {
       title: "담당자명",
-      dataIndex: "departmentName",
-      key: "departmentName",
+      dataIndex: "userName",
+      key: "userName",
       sorter: true,
       align: "center",
     },
     {
       title: "CUSTOMER ID",
-      dataIndex: "customerId",
-      key: "customerId",
+      dataIndex: "advertiserCustomerId",
+      key: "advertiserCustomerId",
       sorter: true,
       align: "center",
     },
     {
       title: "광고주 로그인 ID",
-      dataIndex: "advertiserId",
-      key: "advertiserId",
+      dataIndex: "advertiserLoginId",
+      key: "advertiserLoginId",
       align: "center",
       sorter: true,
     },
     {
       title: "광고주 닉네임",
-      dataIndex: "nickname",
-      key: "nickname",
+      dataIndex: "advertiserNickname",
+      key: "advertiserNickname",
       align: "center",
       sorter: true,
     },
@@ -82,7 +139,7 @@ const TableSection = ({
       sorter: true,
       render: (text, record) => (
         <div className="flex items-center justify-center gap-2">
-          {record.advertiserStatus === "new" && <Badge label="new" />}
+          {!record.isOperatorRead && <Badge label="new" />}
           <LinkTextButton
             onClick={() => router.push(`/sm-pay/admin/overview/${record.id}`)}
           >
@@ -94,34 +151,59 @@ const TableSection = ({
 
     {
       title: "상태",
-      dataIndex: "status",
-      key: "status",
+      dataIndex: "advertiserType",
+      key: "advertiserType",
       align: "center",
       sorter: true,
-      render: (status: string, record: SmPayJudgementData) => {
-        return <span>{status}</span>;
+      render: (status: string) => {
+        return (
+          <span>
+            {SmPayAdvertiserStatusLabel[status as SmPayAdvertiserStatus]}
+          </span>
+        );
       },
     },
     {
       title: "최종 수정 일시",
-      dataIndex: "updatedAt",
-      key: "updatedAt",
+      dataIndex: "registerOrUpdateDt",
+      key: "registerOrUpdateDt",
       align: "center",
       sorter: true,
-      render: (date) => {
-        return <span>{formatDate(date)}</span>;
-      },
+      render: (date) => formatDate(date),
     },
   ];
 
+  const tableWidthClass = useMemo(() => {
+    // expanded 1440 -> 1070px
+    if (state === "expanded" && width <= 1440) {
+      return "max-w-[1070px]"; // 이걸로 고정
+    }
+
+    // collapsed 1440 -> 1220px
+    if (state === "collapsed" && width <= 1440) {
+      return "max-w-[1220px]";
+    }
+
+    return "w-full";
+  }, [width, state]);
+
   return (
-    <section>
-      <Table<SmPayJudgementData & { id: number }>
+    <section className={tableWidthClass}>
+      <Table<SmPayAdminAuditDto>
         columns={columns}
+        rowKey="id"
         dataSource={dataSource}
-        loading={loading}
-        pagination={pagination}
-        onChange={onTableChange}
+        loading={loadingData}
+        pagination={{
+          ...tableParams.pagination,
+          total,
+          position: ["bottomCenter"],
+          showSizeChanger: true,
+        }}
+        onChange={handleTableChange}
+        scroll={{ x: 2000 }}
+        size="middle"
+        className="sorter-table"
       />
     </section>
   );

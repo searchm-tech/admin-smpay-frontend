@@ -4,7 +4,6 @@ import type {
   RuleInfo,
   ScheduleInfo,
   SmPayData,
-  SmPayJudgementData,
   SmPayJudgementStatus,
 } from "@/types/sm-pay";
 

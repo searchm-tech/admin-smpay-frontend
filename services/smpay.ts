@@ -1,8 +1,8 @@
 // 광고주 smPay 신청 관리 리스트 조회(SAG022)
 
 import { ApiError, get, patch, post, put } from "@/lib/api";
-import { buildQueryParams } from "@/lib/utils";
-import { RequestAgentUser } from "@/types/api/common";
+import { buildQueryParams, transformTableResponse } from "@/lib/utils";
+import type { RequestAgentUser } from "@/types/api/common";
 import {
   AdvertiserDetailDto,
   RequestSmPayAdvertiserApply,
@@ -20,6 +20,7 @@ import {
   WithAdvertiserId,
   ChargeRuleDto,
   PrePaymentScheduleDto,
+  ResponseSmPayAdminAudit,
 } from "@/types/api/smpay";
 
 import type {
@@ -27,6 +28,7 @@ import type {
   SmPayScreeningIndicator,
   SmPayDetailDto,
   SmPayReviewerMemo,
+  SmPayAdvertiserStautsOrderType,
 } from "@/types/smpay";
 
 //
@@ -484,6 +486,58 @@ export const getSmPayAdvertiserPrePaymentSchedule = async ({
       `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/pre-payment-schedule`
     );
     return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+/**
+ * 광고주 심사 관리 리스트 조회 (운영 관리자 전용) (AAG018)
+ * - 화면 : [시스템 관리자] SM Pay 관리 > 운영 검토 요청 목록
+ */
+
+export const getSmPayAdminAuditList = async ({
+  user,
+  queryParams,
+}: RequestSmPayAdvertiserStatus): Promise<ResponseSmPayAdminAudit> => {
+  const { agentId, userId } = user;
+
+  // NO_ 정렬 조건을 ADVERTISER_REGISTER로 변환
+  let apiOrderType = queryParams.orderType;
+  const isNoSort = queryParams.orderType.startsWith("NO");
+
+  if (isNoSort) {
+    apiOrderType = queryParams.orderType.replace(
+      "NO",
+      "ADVERTISER_REGISTER"
+    ) as SmPayAdvertiserStautsOrderType;
+  }
+
+  const paramsResult = buildQueryParams({
+    page: queryParams.page,
+    size: queryParams.size,
+    keyword: queryParams.keyword,
+    orderType: apiOrderType,
+  });
+
+  try {
+    const response = await get<ResponseSmPayAdminAudit>(
+      `/admin/api/v1/agents/${agentId}/users/${userId}/advertisers/audit/list?${paramsResult}`
+    );
+    const result = transformTableResponse(response, queryParams);
+
+    // NO_ASC 정렬인 경우 순서 뒤집기 (화면 노출용 번호)
+    if (queryParams.orderType === "NO_ASC") {
+      return {
+        ...result,
+        content: result.content.reverse(),
+      };
+    }
+
+    return result;
   } catch (error) {
     if (error instanceof ApiError) {
       throw error;
