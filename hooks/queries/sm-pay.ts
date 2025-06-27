@@ -252,7 +252,7 @@ export const useSmPayAuditList = (params: QueryParams) => {
 // useSmPayWrite 훅에 전달될 variables 타입 정의
 type SmPayReadVariables = {
   advertiserId: number;
-  isReviewerRead: boolean;
+  isApprovalRead: boolean;
 };
 
 // 광고주 심사 목록 읽음, 미읽음 상태 변경 (최상위 그룹장 전용)(SAG031) mutate
@@ -264,7 +264,7 @@ export const useSmPayRead = (
       patchSmPayRead({
         user,
         advertiserId: variables.advertiserId,
-        isReviewerRead: variables.isReviewerRead,
+        isApprovalRead: variables.isApprovalRead,
       }),
     ...options,
   });

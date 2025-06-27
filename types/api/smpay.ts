@@ -149,7 +149,7 @@ export type ResponseSmPayAudit = ResponseWithPagination & {
 };
 
 export interface RequestSmPayRead extends WithAdvertiserId {
-  isReviewerRead: boolean;
+  isApprovalRead: boolean;
 }
 
 // 광고주 심상 승인 /거절 (최상위 그룹장 전용)(SAG036) params type

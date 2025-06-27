@@ -34,8 +34,6 @@ const RuleSection2 = ({
   handleUpChargeRuleChange,
   handleDownChargeRuleChange,
 }: RuleSectionProps) => {
-  console.log(upChargeRule);
-  console.log(downChargeRule);
   return (
     <section>
       <div className="flex items-center gap-2 py-4">
