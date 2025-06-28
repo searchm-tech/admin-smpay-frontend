@@ -28,14 +28,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     pathname === "/find-password" ||
     pathname === "/sign-out" ||
     pathname === "/sign-up" ||
-    pathname === "/example";
+    pathname === "/example" ||
+    pathname === "/error";
 
   // const isNoNeedTokenPage = pathname !== "/sign-in"; // 비밀번호 설정 관련 페이지도 추가
 
-  const isErrorPage =
-    pathname === "/not-found" ||
-    pathname === "/expiration-mail" ||
-    pathname === "/expiration-login";
+  const isErrorPage = pathname === "/not-found" || pathname === "/error";
 
   const handleCloseExpireModal = () => {
     setIsExpireModalOpen(false);

@@ -23,24 +23,24 @@ const MENU_CONFIG = {
       "충전 회수 현황": "/sm-pay/charge",
     },
   },
-  "광고 성과 리포트": {
-    icon: ChartSpline,
-    baseUrl: "/report",
-    subMenus: {
-      "계정 보고서": "/report/account",
-      "캠페인 보고서": "/report/campaign",
-      "광고 그룹 보고서": "/report/ad-group",
-      "키워드 보고서": "/report/keyword",
-      "검색어 보고서": "/report/search-keyword",
-      "전환 보고서": "/report/conversion",
-      "매체 보고서": "/report/media",
-    },
-  },
-  "자동 입찰": {
-    icon: Target,
-    baseUrl: "/auto-bidding",
-    subMenus: {},
-  },
+  // "광고 성과 리포트": {
+  //   icon: ChartSpline,
+  //   baseUrl: "/report",
+  //   subMenus: {
+  //     "계정 보고서": "/report/account",
+  //     "캠페인 보고서": "/report/campaign",
+  //     "광고 그룹 보고서": "/report/ad-group",
+  //     "키워드 보고서": "/report/keyword",
+  //     "검색어 보고서": "/report/search-keyword",
+  //     "전환 보고서": "/report/conversion",
+  //     "매체 보고서": "/report/media",
+  //   },
+  // },
+  // "자동 입찰": {
+  //   icon: Target,
+  //   baseUrl: "/auto-bidding",
+  //   subMenus: {},
+  // },
   "계정 관리": {
     icon: Smile,
     baseUrl: "/account",
@@ -50,24 +50,24 @@ const MENU_CONFIG = {
       "대행사 관리": "/account/agency-management",
     },
   },
-  "CS 관리": {
-    icon: Smile,
-    baseUrl: "/cs",
-    subMenus: {},
-  },
-  "게시판 관리": {
-    icon: Eraser,
-    baseUrl: "/board",
-    subMenus: {
-      "공지 관리": "/board/notice",
-      "FAQ 관리": "/board/faq",
-    },
-  },
-  "알림 설정": {
-    icon: AlarmClock,
-    baseUrl: "/notification",
-    subMenus: {},
-  },
+  // "CS 관리": {
+  //   icon: Smile,
+  //   baseUrl: "/cs",
+  //   subMenus: {},
+  // },
+  // "게시판 관리": {
+  //   icon: Eraser,
+  //   baseUrl: "/board",
+  //   subMenus: {
+  //     "공지 관리": "/board/notice",
+  //     "FAQ 관리": "/board/faq",
+  //   },
+  // },
+  // "알림 설정": {
+  //   icon: AlarmClock,
+  //   baseUrl: "/notification",
+  //   subMenus: {},
+  // },
 } as const;
 
 export interface FrontendMenuItem {

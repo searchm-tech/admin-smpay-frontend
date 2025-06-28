@@ -16,7 +16,7 @@ import {
 import Title from "@/components/common/Title";
 import LoadingUI from "@/components/common/Loading";
 import { DescriptionPwd } from "@/components/common/Box";
-import ErrorView from "../error";
+import ErrorView, { ErrorComponent } from "../error";
 
 import { userAuthTypeMap } from "@/utils/status";
 import { PASSWORD_REGEX } from "@/constants/reg";
@@ -95,10 +95,10 @@ const FindPasswordView = ({ agentCode, userCode }: FindPasswordViewProps) => {
 
   if (isLoading) return <LoadingUI />;
 
-  if (error) return <ErrorView message={error.message} />;
+  if (error) return <ErrorComponent message={error.message} />;
 
   if (!mailVerify?.isVerified) {
-    return <ErrorView message="유효하지 않은 인증 링크입니다." />;
+    return <ErrorComponent message="유효하지 않은 인증 링크입니다." />;
   }
 
   return (

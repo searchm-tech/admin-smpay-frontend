@@ -165,6 +165,11 @@ const SignInView = ({ code }: SignInViewProps) => {
       let message = "로그인 실패";
       if (error instanceof ApiError) {
         message = error.message;
+
+        if (error.code === "103") {
+          router.push(`/error?type=inactive`);
+          return;
+        }
       }
       setErrMessage(message);
     } finally {
