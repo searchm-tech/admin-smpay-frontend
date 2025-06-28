@@ -49,7 +49,7 @@ export const getAdvertiserList = async (
 // Description :동기화 하기전, IN_PROGRESS 상태로 변경하여, 진행중으로 만들고, 서버에서 성공하면 동기화 api 실행할 것
 export const postAdvertiserSyncJobStatus = async (
   params: RequestAdvertiserSyncStatus
-) => {
+): Promise<null> => {
   try {
     const { agentId, userId, jobList } = params;
 

@@ -324,11 +324,12 @@ const TreeNodeComponent: React.FC<TreeNodeProps> = ({
           open
           content={
             <div className="text-center">
-              <p>하위 그릅원이 있으면 그룹을 삭제할 수 없습니다.</p>
+              <p>하위 그룹원이 있으면 그룹을 삭제할 수 없습니다.</p>
               <p>그룹원을 이동한 후 다시 시도해주세요.</p>
             </div>
           }
           onConfirm={() => setShowDeleteError(false)}
+          cancelDisabled
         />
       )}
       {node.type === "folder" ? (

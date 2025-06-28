@@ -65,7 +65,7 @@ export const CreateGuideSection = () => {
                 className="text-blue-600 border-b border-blue-600 cursor-pointer"
                 onClick={() => setIsOpen(true)}
               >
-                네이버 검색광고 홈페이지 {">"} 도구 {">"} API 사용 관리페이지
+                네이버 광고 {">"} 도구 {">"} API 사용 관리페이지
               </span>
               에서 확인하실 수 있습니다.
             </p>
@@ -91,9 +91,9 @@ export const CreateGuideSection = () => {
               네이버 광고주 등록
             </h3>
             <p className="text-xs md:text-sm text-gray-600">
-              광고주 등록 후 30분 이내에 광고주 등기화가 완료됩니다.
+              SM Pay에서 관리하고자 하는
               <br />
-              광고주의 ID를 검색해 등록해주세요.
+              광고주의 ID를 검색해 등록해 주세요.
             </p>
           </div>
         </div>
