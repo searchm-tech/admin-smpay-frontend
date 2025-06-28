@@ -33,7 +33,6 @@ const AgencyManagementView = () => {
     orderType: tableParams.sortField as TAgencyOrder,
   });
 
-  // TODO : 페이지네이션 관련 테스트 확인 필요
   const onSearch = (keyword: string) => {
     setSearch(keyword);
     setTableParams((prev) => ({

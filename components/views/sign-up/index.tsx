@@ -17,7 +17,7 @@ import Title from "@/components/common/Title";
 import LoadingUI from "@/components/common/Loading";
 import { DescriptionPwd } from "@/components/common/Box";
 
-import ErrorView from "../error";
+import { ErrorComponent } from "../error";
 
 import ModalSuccess from "./ModalSuccess";
 
@@ -98,10 +98,10 @@ const SignUpView = ({ agentCode, userCode }: SignUpViewProps) => {
 
   if (isLoading) return <LoadingUI />;
 
-  if (error) return <ErrorView message={error.message} />;
+  if (error) return <ErrorComponent message={error.message} />;
 
   if (!mailVerify?.isVerified) {
-    return <ErrorView message="유효하지 않은 인증 링크입니다." />;
+    return <ErrorComponent message="유효하지 않은 인증 링크입니다." />;
   }
 
   return (
