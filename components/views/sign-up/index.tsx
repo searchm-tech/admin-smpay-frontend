@@ -62,8 +62,8 @@ const SignUpView = ({ agentCode, userCode }: SignUpViewProps) => {
 
   const onSubmit = () => {
     if (!mailVerify) return;
-    if (!phone || !password || !passwordConfirm) {
-      setErrorMessage("모든 항목을 입력해주세요.");
+    if (!password || !passwordConfirm) {
+      setErrorMessage("필수 항목을 입력해주세요.");
       return;
     }
 
@@ -79,10 +79,10 @@ const SignUpView = ({ agentCode, userCode }: SignUpViewProps) => {
       return;
     }
 
-    if (phone.length !== 11) {
-      setErrorMessage("올바른 형식의 전화번호를 입력해주세요.");
-      return;
-    }
+    // if (phone.length !== 11) {
+    //   setErrorMessage("올바른 형식의 전화번호를 입력해주세요.");
+    //   return;
+    // }
 
     const phoneNumber = phone.replace(/[^0-9]/g, "");
 
@@ -104,6 +104,7 @@ const SignUpView = ({ agentCode, userCode }: SignUpViewProps) => {
     return <ErrorComponent message="유효하지 않은 인증 링크입니다." />;
   }
 
+  console.log(mailVerify);
   return (
     <div className="w-full max-w-[1024px] flex flex-col gap-5 mx-auto my-10 overflow-y-auto py-4">
       {result && (
@@ -147,11 +148,11 @@ const SignUpView = ({ agentCode, userCode }: SignUpViewProps) => {
           <DescriptionItem label="성명">
             {mailVerify.userResponseDto.name}
           </DescriptionItem>
-          <DescriptionItem label="사업자등록번호">
-            {mailVerify.adminAgentResponseDto.businessRegistrationNumber}
+          <DescriptionItem label="부서명">
+            주식회사 {mailVerify.adminAgentResponseDto.name} /
           </DescriptionItem>
-          <DescriptionItem label="고유코드">
-            {mailVerify.adminAgentResponseDto.uniqueCode}
+          <DescriptionItem label="이메일주소">
+            name@{mailVerify.adminAgentResponseDto.domainName}
           </DescriptionItem>
         </Descriptions>
         <DescriptionPwd />

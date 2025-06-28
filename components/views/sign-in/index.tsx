@@ -170,6 +170,11 @@ const SignInView = ({ code }: SignInViewProps) => {
           router.push(`/error?type=inactive`);
           return;
         }
+
+        if (error.code === "20") {
+          setErrMessage("회원 정보가 존재하지 않습니다.");
+          return;
+        }
       }
       setErrMessage(message);
     } finally {

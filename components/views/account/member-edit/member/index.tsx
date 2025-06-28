@@ -18,6 +18,7 @@ import LoadingUI from "@/components/common/Loading";
 import { getUserAuthTypeLabel } from "@/utils/status";
 import { useMutationUserInfo, useQueryUserInfo } from "@/hooks/queries/user";
 import { EMAIL_REGEX } from "@/constants/reg";
+import { getRedirectPath } from "@/lib/utils";
 
 import type { TAgency } from "@/types/agency";
 import type { RequestPatchUserInfo } from "@/types/api/user";
@@ -31,6 +32,7 @@ type Props = {
 
 const MemberView = ({ userId, agentId }: Props) => {
   const router = useRouter();
+  const { data: session } = useSession();
   const { update: updateSession } = useSession();
 
   const {
@@ -106,7 +108,6 @@ const MemberView = ({ userId, agentId }: Props) => {
       setDepartment(userInfoData.user.department);
     }
   }, [userInfoData]);
-  console.log(userInfoData);
 
   return (
     <div className="my-5">
@@ -148,7 +149,7 @@ const MemberView = ({ userId, agentId }: Props) => {
               className="max-w-[500px]"
               placeholder="이메일 주소를 입력해주세요"
               value={userInfo?.loginId || ""}
-              onChange={(e) => handleChangeUserInfo("id", e.target.value)}
+              onChange={(e) => handleChangeUserInfo("loginId", e.target.value)}
             />
           </DescriptionItem>
           <DescriptionItem label="연락처 *">
@@ -170,7 +171,10 @@ const MemberView = ({ userId, agentId }: Props) => {
         <Button
           variant="cancel"
           className="w-[150px]"
-          onClick={() => router.back()}
+          onClick={() => {
+            const redirectPath = getRedirectPath(session?.user.type);
+            router.push(redirectPath);
+          }}
         >
           취소
         </Button>

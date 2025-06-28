@@ -70,8 +70,6 @@ const MemberView = ({ userId, agentId }: Props) => {
   useEffect(() => {
     if (userInfo) {
       setPhone(userInfo.user.user.phoneNumber);
-    } else {
-      setEnableInfo(true);
     }
   }, [userInfo]);
 

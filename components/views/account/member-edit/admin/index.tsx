@@ -20,6 +20,7 @@ import {
 
 import { EMAIL_REGEX } from "@/constants/reg";
 import { getUserAuthTypeLabel } from "@/utils/status";
+import { getRedirectPath } from "@/lib/utils";
 
 import type { TSMPayUser } from "@/types/user";
 import type { RequestPatchUserInfo } from "@/types/api/user";
@@ -31,6 +32,7 @@ type Props = {
 // AdminView - 관리자 회원 정보 변경, 기본 정보 변경 공용 컴포넌트
 const AdminView = ({ userId }: Props) => {
   const router = useRouter();
+  const { data: session } = useSession();
   const { update: updateSession } = useSession();
 
   const {
@@ -152,7 +154,10 @@ const AdminView = ({ userId }: Props) => {
         <Button
           variant="cancel"
           className="w-[150px]"
-          onClick={() => router.back()}
+          onClick={() => {
+            const redirectPath = getRedirectPath(session?.user.type);
+            router.push(redirectPath);
+          }}
         >
           취소
         </Button>
@@ -171,6 +176,7 @@ const AdminView = ({ userId }: Props) => {
             setSuccessDialog(false);
             handleRefetch();
           }}
+          cancelDisabled
         />
       )}
 

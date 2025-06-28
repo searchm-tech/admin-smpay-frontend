@@ -67,6 +67,7 @@ const ModalPwdSetting = ({ onClose }: Props) => {
           open
           content="비밀번호 재설정 링크가 전달되었습니다."
           onConfirm={handleClose}
+          onClose={handleClose}
           cancelDisabled
         />
       )}
