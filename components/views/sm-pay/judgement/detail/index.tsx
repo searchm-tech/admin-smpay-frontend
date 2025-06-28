@@ -86,11 +86,6 @@ const SmPayJudgementDetailView = ({ id }: Props) => {
       minChargeLimit: 0,
     });
 
-  const { data: smpayInfo, isPending: loadingSmpayInfo } = useSmPayDetail(
-    Number(id),
-    Number(formId || 0)
-  );
-
   const { data: screeningIndicator, isPending: loadingScreeningIndicator } =
     useSmPayScreeningIndicator(Number(id));
 
@@ -113,58 +108,54 @@ const SmPayJudgementDetailView = ({ id }: Props) => {
 
   useEffect(() => {
     // 심사 목록 읽음 상태 변경
-    if (id && smpayInfo && !isApprovalRead) {
+    if (id && !isApprovalRead) {
       patchRead({ advertiserId: Number(id), isApprovalRead: true });
     }
 
     // TODO : 각영역 별로 데이터 노출 방식 고민 필요
-    if (smpayInfo) {
-      const { advertiserStandardRoasPercent } = smpayInfo;
 
-      if (chargeRule) {
-        const findUpChargeRule = chargeRule.find(
-          (rule) => rule.rangeType === "UP"
-        );
-        const findDownChargeRule = chargeRule.find(
-          (rule) => rule.rangeType === "DOWN"
-        );
+    if (chargeRule) {
+      const findUpChargeRule = chargeRule.find(
+        (rule) => rule.rangeType === "UP"
+      );
+      const findDownChargeRule = chargeRule.find(
+        (rule) => rule.rangeType === "DOWN"
+      );
 
-        if (findUpChargeRule) {
-          setUpChargeRule({
-            ...findUpChargeRule,
-            standardRoasPercent: advertiserStandardRoasPercent,
-          });
-        }
-
-        if (findDownChargeRule) {
-          setDownChargeRule({
-            ...findDownChargeRule,
-            standardRoasPercent: advertiserStandardRoasPercent,
-          });
-        }
-      }
-
-      if (screeningIndicator) {
-        setStatIndicator({
-          operationPeriod: screeningIndicator?.advertiserOperationPeriod || 0,
-          dailyAverageRoas: screeningIndicator?.advertiserDailyAverageRoas || 0,
-          monthlyConvAmt: screeningIndicator?.advertiserMonthlyConvAmt || 0,
-          dailySalesAmt: screeningIndicator?.advertiserDailySalesAmt || 0,
-          recommendRoasPercent:
-            screeningIndicator?.advertiserRecommendRoasPercent || 0,
+      if (findUpChargeRule) {
+        setUpChargeRule({
+          ...findUpChargeRule,
+          standardRoasPercent: findUpChargeRule.standardRoasPercent,
         });
       }
 
-      if (prePaymentScheduleData) {
-        setPrePaymentSchedule({
-          initialAmount: prePaymentScheduleData.initialAmount,
-          maxChargeLimit: prePaymentScheduleData.maxChargeLimit,
-          minChargeLimit: prePaymentScheduleData.minChargeLimit,
+      if (findDownChargeRule) {
+        setDownChargeRule({
+          ...findDownChargeRule,
+          standardRoasPercent: findDownChargeRule.standardRoasPercent,
         });
       }
     }
+
+    if (screeningIndicator) {
+      setStatIndicator({
+        operationPeriod: screeningIndicator?.advertiserOperationPeriod || 0,
+        dailyAverageRoas: screeningIndicator?.advertiserDailyAverageRoas || 0,
+        monthlyConvAmt: screeningIndicator?.advertiserMonthlyConvAmt || 0,
+        dailySalesAmt: screeningIndicator?.advertiserDailySalesAmt || 0,
+        recommendRoasPercent:
+          screeningIndicator?.advertiserRecommendRoasPercent || 0,
+      });
+    }
+
+    if (prePaymentScheduleData) {
+      setPrePaymentSchedule({
+        initialAmount: prePaymentScheduleData.initialAmount,
+        maxChargeLimit: prePaymentScheduleData.maxChargeLimit,
+        minChargeLimit: prePaymentScheduleData.minChargeLimit,
+      });
+    }
   }, [
-    smpayInfo,
     screeningIndicator,
     chargeRule,
     prePaymentScheduleData,
@@ -183,7 +174,6 @@ const SmPayJudgementDetailView = ({ id }: Props) => {
   const isLoading =
     loadingScreeningIndicator ||
     loadingReviewerMemo ||
-    loadingSmpayInfo ||
     loadingChargeRule ||
     loadingPrePaymentSchedule;
 
@@ -242,17 +232,20 @@ const SmPayJudgementDetailView = ({ id }: Props) => {
       {isSimulation && (
         <AdvertiserSimulationModal
           open={isSimulation}
+          upChargeRule={upChargeRule}
+          downChargeRule={downChargeRule}
+          prePaymentSchedule={prePaymentSchedule}
           onClose={() => setIsSimulation(false)}
         />
       )}
 
-      <GuidSection
+      {/* <GuidSection
         viewType={
           smpayInfo?.advertiserStatus === "OPERATION_REJECT"
             ? "reject"
             : "master-judgement"
         }
-      />
+      /> */}
 
       <AdvertiserInfoSection advertiserId={Number(id)} isHistory />
 
