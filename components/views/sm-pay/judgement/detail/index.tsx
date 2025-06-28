@@ -98,7 +98,7 @@ const SmPayJudgementDetailView = ({ id }: Props) => {
     useSmPayReviewerMemo(Number(id));
 
   const { data: chargeRule, isPending: loadingChargeRule } =
-    useSmPayAdminOverviewChargeRule(Number(id));
+    useSmPayAdvertiserChargeRule(Number(id));
 
   const { data: prePaymentScheduleData, isPending: loadingPrePaymentSchedule } =
     useSmPayAdvertiserPrePaymentSchedule(Number(id));

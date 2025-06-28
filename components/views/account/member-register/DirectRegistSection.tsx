@@ -93,7 +93,7 @@ const DirectRegistSection = ({ user }: TViewProps) => {
   >("");
 
   const resetSuccess = () => {
-    setDialog("success");
+    setDialog("success-direct");
     setDepartmentNode(null);
     setSelectedAgency(null);
     setMemberType("");
@@ -264,7 +264,7 @@ const DirectRegistSection = ({ user }: TViewProps) => {
           open
           onClose={() => setDialog(null)}
           onConfirm={() => setDialog(null)}
-          title={dialog === "success" ? "전송 완료" : "오류"} // TODO : 노출 되는지 확인 필요
+          title={dialog === "success-direct" ? "전송 완료" : "오류"} // TODO : 노출 되는지 확인 필요
           content={DialogContent[dialog]}
         />
       )}

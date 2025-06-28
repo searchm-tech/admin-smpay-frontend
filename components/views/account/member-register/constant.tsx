@@ -77,6 +77,12 @@ export const DialogContent = {
       <p>초대 링크는 전송 후 3일이 지나면 만료됩니다.</p>
     </div>
   ),
+  "success-direct": (
+    <div className="text-center">
+      <p>회원가입 정보가 등록하신 이메일 주소로 발송되었습니다.</p>
+      <p>담당자에게 이메일을 확인을 요청해주세요.</p>
+    </div>
+  ),
   department: "부서 선택을 해주세요.",
   emailRegex: "이메일 형식이 올바르지 않습니다.",
   nameCheck: "중복 체크를 해주세요.",

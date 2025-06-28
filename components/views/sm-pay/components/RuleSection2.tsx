@@ -62,7 +62,7 @@ const RuleSection2 = ({
                     ? "정액으로"
                     : "정률로"}
                   {upChargeRule?.changePercentOrValue}
-                  {upChargeRule?.boundType === "FIXED_AMOUNT" ? "원" : "%"}씩
+                  {upChargeRule?.boundType === "FIXED_AMOUNT" ? "원" : "%"} 씩
                   증액
                 </span>
                 하고
@@ -78,7 +78,7 @@ const RuleSection2 = ({
                     ? "정액으로"
                     : "정률로"}
                   {downChargeRule.changePercentOrValue}
-                  {downChargeRule.boundType === "FIXED_AMOUNT" ? "원" : "%"}씩
+                  {downChargeRule.boundType === "FIXED_AMOUNT" ? "원" : "%"} 씩
                   감액
                 </span>
                 합니다.
@@ -160,7 +160,7 @@ const RuleSection2 = ({
                     }
                   />
                   <span>
-                    {upChargeRule?.boundType === "FIXED_AMOUNT" ? "원" : "%"}씩
+                    {upChargeRule?.boundType === "FIXED_AMOUNT" ? "원" : "%"} 씩
                   </span>
                   <span className="text-blue-600">증액하고</span>
                 </div>
@@ -217,7 +217,10 @@ const RuleSection2 = ({
                       })
                     }
                   />
-                  <span>%씩</span>
+                  <span>
+                    {downChargeRule?.boundType === "FIXED_AMOUNT" ? "원" : "%"}{" "}
+                    씩
+                  </span>
                   <span className="text-red-600">감액합니다.</span>
                 </div>
               </div>
