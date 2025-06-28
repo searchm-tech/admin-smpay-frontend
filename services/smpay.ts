@@ -8,7 +8,7 @@ import {
   RequestSmPayAdvertiserApply,
   RequestSmPayAdvertiserDetailPut,
   RequestSmPayAdvertiserStatus,
-  RequestSmPayDetail,
+  RequestFormId,
   RequestSmPayRead,
   ParamsSmPayApproval,
   RequestSmPayWrite,
@@ -21,6 +21,9 @@ import {
   ChargeRuleDto,
   PrePaymentScheduleDto,
   ResponseSmPayAdminAudit,
+  RequestSmPayAdminRead,
+  RequestSmPayAdminOverviewApplyFormDetail,
+  AdminOverviewOperatorDecision,
 } from "@/types/api/smpay";
 
 import type {
@@ -29,6 +32,9 @@ import type {
   SmPayDetailDto,
   SmPayReviewerMemo,
   SmPayAdvertiserStautsOrderType,
+  OverviewApplyListDto,
+  SmPayApprovalMemo,
+  OverviewAccountBalanceDto,
 } from "@/types/smpay";
 
 //
@@ -252,7 +258,7 @@ export const getSmPayDetail = async ({
   user,
   advertiserId,
   formId,
-}: RequestSmPayDetail): Promise<SmPayDetailDto> => {
+}: RequestFormId): Promise<SmPayDetailDto> => {
   const { agentId, userId } = user;
 
   try {
@@ -538,6 +544,282 @@ export const getSmPayAdminAuditList = async ({
     }
 
     return result;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+/**
+ * 광고주 충전 규칙 조회(AAG023)
+ * - 화면 : [시스템 관리자] SM Pay 관리 > 운영 검토 요청 상세 - 충전 규칙 영역
+ */
+export const getSmPayAdminOverviewChargeRule = async ({
+  user,
+  advertiserId,
+}: WithAdvertiserId): Promise<ChargeRuleDto[]> => {
+  const { agentId, userId } = user;
+
+  try {
+    const response = await get<ChargeRuleDto[]>(
+      `/admin/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/charge-rule`
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+/**
+ * 광고주 선결제 스케줄 조회(AAG024)
+ * - 화면 : [시스템 관리자] SM Pay 관리 > 운영 검토 요청 상세 - 선결제 스케줄 영역
+ */
+export const getSmPayAdminOverviewPrePaymentSchedule = async ({
+  user,
+  advertiserId,
+}: WithAdvertiserId): Promise<PrePaymentScheduleDto> => {
+  const { agentId, userId } = user;
+
+  try {
+    const response = await get<PrePaymentScheduleDto>(
+      `/admin/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/pre-payment-schedule`
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+/**
+ * 광고주 심사 목록 읽음, 미읽음 상태 변경 (운영 관리자 전용) (AAG019)
+ * - 화면 : [시스템 관리자] SM Pay 관리 > 운영 검토 요청 상세
+ */
+export const patchSmPayAdminOverviewAlarm = async ({
+  user,
+  advertiserId,
+  isOperatorRead,
+}: RequestSmPayAdminRead): Promise<null> => {
+  const { agentId, userId } = user;
+
+  try {
+    const response = await patch<null>(
+      `/admin/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/alarm?isOperatorRead=${isOperatorRead}`
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+/**
+ * 광고주 detail 조회 (AAG020)
+ * - 화면 : [시스템 관리자] SM Pay 관리 > 운영 검토 요청 상세
+ */
+export const getSmPayAdminOverviewDetail = async ({
+  user,
+  advertiserId,
+}: WithAdvertiserId): Promise<AdvertiserDetailDto> => {
+  const { agentId, userId } = user;
+
+  try {
+    const response = await get<AdvertiserDetailDto>(
+      `/admin/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/details`
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+/**
+ * 광고주 smPay 신청 이력 리스트 조회 (AAG021)
+ * - 화면 : [시스템 관리자] SM Pay 관리 > 운영 검토 요청 상세 > 신청 이력 리스트
+ */
+export const getSmPayAdminOverviewApplyFormList = async ({
+  user,
+  advertiserId,
+}: WithAdvertiserId): Promise<OverviewApplyListDto[]> => {
+  const { agentId, userId } = user;
+
+  try {
+    const response = await get<OverviewApplyListDto[]>(
+      `/admin/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/apply-form-list`
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+/**
+ * 광고주 smPay 신청 이력 상세 조회(AAG022)
+ * - 화면 : [시스템 관리자] SM Pay 관리 > 운영 검토 요청 상세 > 신청 이력 상세
+ */
+
+// /core/admin/api/v1/agents/1/users/1/advertisers/1/form/1
+
+export const getSmPayAdminOverviewApplyFormDetail = async ({
+  user,
+  advertiserId,
+  formId,
+}: RequestSmPayAdminOverviewApplyFormDetail): Promise<OverviewApplyListDto> => {
+  const { agentId, userId } = user;
+
+  try {
+    const response = await get<OverviewApplyListDto>(
+      `/admin/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/form/${formId}`
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+// /core/admin/api/v1/agents/1/users/1/advertisers/1/reviewer-memo
+
+/**
+ * 광고주 심사자 참고용 메모 조회(AAG024)
+ * - 화면 : [시스템 관리자] SM Pay 관리 > 운영 검토 요청 상세 > 심사자 참고용 메모 영역
+ */
+
+export const getSmPayAdminOverviewReviewerMemo = async ({
+  user,
+  advertiserId,
+}: WithAdvertiserId): Promise<SmPayReviewerMemo> => {
+  const { agentId, userId } = user;
+
+  try {
+    const response = await get<SmPayReviewerMemo>(
+      `/admin/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/reviewer-memo`
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+/**
+ * 광고주 최상위 그룹장 참고용 메모 조회(AAG025)
+ * - 화면 : [시스템 관리자] SM Pay 관리 > 운영 검토 요청 상세 >  참고용 메모 영역
+ */
+export const getSmPayAdminOverviewApprovalMemo = async ({
+  user,
+  advertiserId,
+}: WithAdvertiserId): Promise<SmPayApprovalMemo> => {
+  const { agentId, userId } = user;
+
+  try {
+    const response = await get<SmPayApprovalMemo>(
+      `/admin/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/approval-memo`
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+/**
+ * 광고주 운영 심사 승인/반려(AAG026)
+ * - 화면 : [시스템 관리자] SM Pay 관리 > 운영 검토 요청 상세
+ */
+export const postSmPayAdminOverviewOperatorDecision = async ({
+  user,
+  advertiserId,
+  params,
+}: AdminOverviewOperatorDecision): Promise<null> => {
+  const { agentId, userId } = user;
+
+  const testParams = {
+    decisionType: "REJECT",
+    chargeRule: [
+      {
+        advertiserChargeRuleId: 54,
+        advertiserId: 3659,
+        standardRoasPercent: 1,
+        changePercentOrValue: 2,
+        rangeType: "UP",
+        boundType: "FIXED_AMOUNT",
+      },
+      {
+        advertiserChargeRuleId: 53,
+        advertiserId: 3659,
+        standardRoasPercent: 0,
+        changePercentOrValue: 2,
+        rangeType: "DOWN",
+        boundType: "FIXED_AMOUNT",
+      },
+    ],
+    prePaymentSchedule: {
+      initialAmount: 1000,
+      maxChargeLimit: 1,
+      minChargeLimit: 100000,
+    },
+    reviewerMemo: "asdfasdf",
+    approvalMemo: "",
+    rejectStatusMemo: "asdfasdfasdf",
+  };
+  const {
+    decisionType,
+    chargeRule,
+    prePaymentSchedule,
+    reviewerMemo,
+    approvalMemo,
+    rejectStatusMemo,
+  } = params;
+
+  try {
+    const response = await post<null>(
+      `/admin/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/operator-decision`,
+      testParams
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+/**
+ * 운영 계좌 잔액 조회(AAG027)
+ * - 화면 : [시스템 관리자] SM Pay 관리 > 운영 검토 요청 상세 > 운영 계좌 잔액 영역
+ */
+export const getSmPayAdminOverviewAccountBalance = async ({
+  userId,
+  agentId,
+}: RequestAgentUser): Promise<OverviewAccountBalanceDto> => {
+  try {
+    const response = await get<OverviewAccountBalanceDto>(
+      `/admin/api/v1/agents/${agentId}/users/${userId}/calculate-account-balance`
+    );
+    return response;
   } catch (error) {
     if (error instanceof ApiError) {
       throw error;

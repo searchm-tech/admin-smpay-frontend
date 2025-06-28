@@ -108,7 +108,6 @@ export type SmPayStatIndicator = {
   recommendRoas: number; // 권장 ROAS  0.8,
 };
 
-//
 /**
  * SM Pay 상세 내용
  * - API : 광고주 smPay 신청 이력 상세 조회(SAG026) response type
@@ -158,6 +157,12 @@ export type SmPayReviewerMemo = {
   description: string;
 };
 
+// 심사 상세 > 광고주 최상위 그룹장 참고용 메모 조회 DTO
+export type SmPayApprovalMemo = {
+  advertiserApprovalMemosId: number;
+  description: string;
+};
+
 // [시스템 관리자] 광고주 심사 관리 리스트 조회 (운영 관리자 전용) (AAG018)
 export type SmPayAdminAuditDto = {
   id: number;
@@ -173,4 +178,35 @@ export type SmPayAdminAuditDto = {
   advertiserType: SmPayAdvertiserStatus;
   registerOrUpdateDt: string;
   isOperatorRead: boolean;
+};
+
+/**
+ * [시스템 관리자] SM Pay 관리 > 운영 검토 요청 상세 > 신청 이력 리스트
+ */
+export interface OverviewApplyListDto extends SmPayDetailDto {
+  id: number;
+  advertiserFormId: number;
+  advertiserId: number;
+  advertiserStatus: SmPayAdvertiserStatus;
+  advertiserName: string;
+  advertiserNickname: string;
+  accounts: OverviewApplyAccountDto[];
+  advertiserLoginId: string;
+  advertiserCustomerId: number;
+}
+
+export type OverviewApplyAccountDto = {
+  advertiserFormAccountId: number;
+  advertiserFormId: number;
+  advertiserAccountCode: string;
+  advertiserAccountCodeName: string;
+  advertiserAccountNumber: string;
+  advertiserAccountName: string;
+  advertiserAccountType: string; // DEPOSIT, WITHDRAW
+};
+
+// 운영 계좌 잔액 조회(AAG027)
+export type OverviewAccountBalanceDto = {
+  balance: number;
+  dailyUsingAmount: number;
 };

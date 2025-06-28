@@ -144,7 +144,9 @@ const TableSection = ({
             <span>{value}</span>
 
             {record.jobStatus === "IN_PROGRESS" && <InProgressFlag />}
-            {record.isLossPrivilege && <LossPrivilegeFlag />}
+            {record.isLossPrivilege && record.jobStatus === "STOP" && (
+              <LossPrivilegeFlag />
+            )}
           </div>
         );
       },

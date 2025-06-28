@@ -141,7 +141,14 @@ const TableSection = ({
         <div className="flex items-center justify-center gap-2">
           {!record.isOperatorRead && <Badge label="new" />}
           <LinkTextButton
-            onClick={() => router.push(`/sm-pay/admin/overview/${record.id}`)}
+            onClick={() => {
+              const query = !record.isOperatorRead
+                ? "?isOperatorRead=false"
+                : "";
+              const url = `/sm-pay/admin/overview/${record.advertiserId}${query}`;
+
+              router.push(url);
+            }}
           >
             {text}
           </LinkTextButton>

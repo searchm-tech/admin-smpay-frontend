@@ -35,6 +35,7 @@ import type {
   ChargeRuleDto,
   PrePaymentScheduleDto,
   ResponseSmPayAdminAudit,
+  ParamsSmPayAdminOverviewOperatorDecision,
 } from "@/types/api/smpay";
 
 import { useAuthQuery } from "../useAuthQuery";
@@ -58,6 +59,16 @@ import {
   getSmPayAdvertiserChargeRule,
   getSmPayAdvertiserPrePaymentSchedule,
   getSmPayAdminAuditList,
+  getSmPayAdminOverviewChargeRule,
+  patchSmPayAdminOverviewAlarm,
+  getSmPayAdminOverviewDetail,
+  getSmPayAdminOverviewApplyFormList,
+  getSmPayAdminOverviewApplyFormDetail,
+  getSmPayAdminOverviewPrePaymentSchedule,
+  getSmPayAdminOverviewReviewerMemo,
+  getSmPayAdminOverviewApprovalMemo,
+  postSmPayAdminOverviewOperatorDecision,
+  getSmPayAdminOverviewAccountBalance,
 } from "@/services/smpay";
 import type {
   DailyStat,
@@ -65,6 +76,9 @@ import type {
   SmPayStatIndicator,
   SmPayScreeningIndicator,
   SmPayReviewerMemo,
+  OverviewApplyListDto,
+  SmPayApprovalMemo,
+  OverviewAccountBalanceDto,
 } from "@/types/smpay";
 
 export const useSmPayList = (params: TableParams) => {
@@ -337,5 +351,131 @@ export const useSmPayAdminAuditList = (params: QueryParams) => {
     queryKey: ["/smpay/admin-audit-list", params],
     queryFn: (user: RequestAgentUser) =>
       getSmPayAdminAuditList({ user, queryParams: params }),
+  });
+};
+
+// 광고주 충전 규칙 조회 (운영 관리자 전용) (AAG023)
+export const useSmPayAdminOverviewChargeRule = (advertiserId: number) => {
+  return useAuthQuery<ChargeRuleDto[]>({
+    queryKey: ["/smpay/admin-overview-charge-rule", advertiserId],
+    queryFn: (user: RequestAgentUser) =>
+      getSmPayAdminOverviewChargeRule({ user, advertiserId }),
+  });
+};
+
+// 광고주 선결제 스케줄 조회 (운영 관리자 전용) (AAG024)
+export const useSmPayAdminOverviewPrePaymentSchedule = (
+  advertiserId: number
+) => {
+  return useAuthQuery<PrePaymentScheduleDto>({
+    queryKey: ["/smpay/admin-overview-pre-payment-schedule", advertiserId],
+    queryFn: (user: RequestAgentUser) =>
+      getSmPayAdminOverviewPrePaymentSchedule({ user, advertiserId }),
+  });
+};
+// useSmPayWrite 훅에 전달될 variables 타입 정의
+type SmPayReadAdminVariables = {
+  advertiserId: number;
+  isOperatorRead: boolean;
+};
+
+// 광고주 심사 목록 읽음, 미읽음 상태 변경 (운영 관리자 전용) (AAG019)
+export const useSmPayAdminOverviewAlarm = (
+  options?: UseMutationOptions<null, Error, SmPayReadAdminVariables>
+) => {
+  return useAuthMutation<null, Error, SmPayReadAdminVariables>({
+    mutationFn: (variables, user) =>
+      patchSmPayAdminOverviewAlarm({
+        user,
+        advertiserId: variables.advertiserId,
+        isOperatorRead: variables.isOperatorRead,
+      }),
+    ...options,
+  });
+};
+
+// 광고주 detail 조회 (운영 관리자 전용) (AAG020)
+export const useSmPayAdminDetail = (advertiserId: number) => {
+  return useAuthQuery<AdvertiserDetailDto>({
+    queryKey: ["/smpay/admin-overview-detail", advertiserId],
+    queryFn: (user: RequestAgentUser) =>
+      getSmPayAdminOverviewDetail({ user, advertiserId }),
+  });
+};
+
+// 광고주 smPay 신청 이력 리스트 조회 (운영 관리자 전용) (AAG021)
+export const useSmPayAdminOverviewApplyFormList = (advertiserId: number) => {
+  return useAuthQuery<OverviewApplyListDto[]>({
+    queryKey: ["/smpay/admin-overview-apply-form-list", advertiserId],
+    queryFn: (user: RequestAgentUser) =>
+      getSmPayAdminOverviewApplyFormList({ user, advertiserId }),
+  });
+};
+
+// 광고주 smPay 신청 이력 상세 조회 (운영 관리자 전용) (AAG022)
+export const useSmPayAdminOverviewApplyFormDetail = (
+  advertiserId: number,
+  formId: number
+) => {
+  return useAuthQuery<OverviewApplyListDto>({
+    queryKey: ["/smpay/admin-overview-apply-form-detail", advertiserId, formId],
+    queryFn: (user: RequestAgentUser) =>
+      getSmPayAdminOverviewApplyFormDetail({ user, advertiserId, formId }),
+  });
+};
+
+// 광고주 심사자 참고용 메모 조회 (운영 관리자 전용) (AAG025)
+export const useSmPayAdminOverviewReviewerMemo = (advertiserId: number) => {
+  return useAuthQuery<SmPayReviewerMemo>({
+    queryKey: ["/smpay/admin-overview-reviewer-memo", advertiserId],
+    queryFn: (user: RequestAgentUser) =>
+      getSmPayAdminOverviewReviewerMemo({ user, advertiserId }),
+  });
+};
+
+// 광고주 최상위 그룹장 참고용 메모 조회 (운영 관리자 전용) (AAG026)
+export const useSmPayAdminOverviewApprovalMemo = (advertiserId: number) => {
+  return useAuthQuery<SmPayApprovalMemo>({
+    queryKey: ["/smpay/admin-overview-approval-memo", advertiserId],
+    queryFn: (user: RequestAgentUser) =>
+      getSmPayAdminOverviewApprovalMemo({ user, advertiserId }),
+  });
+};
+
+// useSmPayApproval 훅에 전달될 variables 타입 정의 - TODO : 명칭 변경 필요
+type SmPayAdminOverviewOperatorDecisionVariables = {
+  advertiserId: number;
+  params: ParamsSmPayAdminOverviewOperatorDecision;
+};
+
+// 광고주 운영 심사 승인/반려 (운영 관리자 전용) (AAG026)
+export const useSmPayAdminOverviewOperatorDecision = (
+  options?: UseMutationOptions<
+    null,
+    Error,
+    SmPayAdminOverviewOperatorDecisionVariables
+  >
+) => {
+  return useAuthMutation<
+    null,
+    Error,
+    SmPayAdminOverviewOperatorDecisionVariables
+  >({
+    mutationFn: (variables, user) =>
+      postSmPayAdminOverviewOperatorDecision({
+        user,
+        advertiserId: variables.advertiserId,
+        params: variables.params,
+      }),
+    ...options,
+  });
+};
+
+// 운영 계좌 잔액 조회 (운영 관리자 전용) (AAG027)
+export const useSmPayAdminOverviewAccountBalance = (userId: number) => {
+  return useAuthQuery<OverviewAccountBalanceDto>({
+    queryKey: ["/smpay/admin-overview-account-balance", userId],
+    queryFn: (user: RequestAgentUser) =>
+      getSmPayAdminOverviewAccountBalance(user),
   });
 };

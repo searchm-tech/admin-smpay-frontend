@@ -271,10 +271,7 @@ export const TreeNodeComponent: React.FC<TreeNodeProps> = ({
       )}
       <div
         {...(shouldDisableDrag ? {} : attributes)}
-        {...(shouldDisableDrag ? {} : listeners)}
-        className={`flex-1 flex items-center gap-2 ${
-          shouldDisableDrag ? "cursor-default" : "cursor-move"
-        }`}
+        className="flex-1 flex items-center gap-2 cursor-default"
       >
         {isEditing ? (
           <input
