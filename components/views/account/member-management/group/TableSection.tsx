@@ -210,7 +210,11 @@ const TableSection = ({
         <DeleteDialog
           params={deleteDialog}
           onClose={() => setDeleteDialog(null)}
-          onConfirm={() => setDialog("response-delete")}
+          onConfirm={() => {
+            setDialog(null);
+            setDeleteDialog(null);
+            refetch();
+          }}
         />
       )}
 

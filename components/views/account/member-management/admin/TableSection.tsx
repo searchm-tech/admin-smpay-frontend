@@ -96,7 +96,8 @@ const TableSection = ({
               className="text-[#007AFF] cursor-pointer"
               size={20}
               onClick={() => {
-                const url = `/account/member-edit?userId=${record.userId}&agentId=${user.agentId}`;
+                console.log(record);
+                const url = `/account/member-edit?userId=${record.userId}&agentId=${record.agentId}`;
                 router.push(url);
               }}
             />
@@ -106,7 +107,7 @@ const TableSection = ({
               onClick={() =>
                 setDeleteDialog({
                   userId: record.userId,
-                  agentId: user.agentId,
+                  agentId: record.agentId,
                 })
               }
             />
@@ -224,7 +225,10 @@ const TableSection = ({
         <DeleteDialog
           params={deleteDialog}
           onClose={() => setDeleteDialog(null)}
-          onConfirm={() => setDialog("response-delete")}
+          onConfirm={() => {
+            setDeleteDialog(null);
+            refetch();
+          }}
         />
       )}
 

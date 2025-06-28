@@ -70,7 +70,6 @@ const TableSection = ({
       const fieldMap: Record<string, string> = {
         rowNumber: "NO",
         agentName: "AGENT",
-        agentRepresentativeName: "AGENT_REPRESENTATIVE",
         status: "STATUS",
         registerDt: "REGISTER_DT",
       };
@@ -111,12 +110,10 @@ const TableSection = ({
       title: "대표자명",
       dataIndex: "agentRepresentativeName",
       sorter: true,
-      align: "center",
     },
     {
       title: "사업자 등록 번호",
       dataIndex: "businessRegistrationNumber",
-      sorter: true,
       align: "center",
       render: (value: string) => {
         return <span>{formatBusinessNumber(value)}</span>;

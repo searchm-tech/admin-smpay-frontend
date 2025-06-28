@@ -44,10 +44,10 @@ const ModalDepartment = ({ setIsOpen, onSelect }: ModalDepartmentProps) => {
   };
 
   // 그룹 마스터인지 확인
-  const isGroupMaster = user?.type === "AGENCY_GROUP_MANAGER";
+  const isGroupManager = user?.type === "AGENCY_GROUP_MANAGER";
 
   const filteredData = filterTreeData(
-    isGroupMaster
+    isGroupManager
       ? subDepartments
         ? [convertToDepartmentTreeNodeGroupMaster(subDepartments)]
         : []
@@ -55,9 +55,8 @@ const ModalDepartment = ({ setIsOpen, onSelect }: ModalDepartmentProps) => {
     search
   );
 
-  console.log(filteredData);
-
   const isAdmin = getIsAdmin(user?.type);
+  const isGroupMaster = user?.type === "AGENCY_GROUP_MASTER";
 
   return (
     <Modal
@@ -89,7 +88,7 @@ const ModalDepartment = ({ setIsOpen, onSelect }: ModalDepartmentProps) => {
           )}
         </div>
 
-        {isAdmin && (
+        {(isAdmin || isGroupMaster) && (
           <div className="flex justify-end">
             <LinkTextButton onClick={() => router.push("/account/department")}>
               부서 관리 페이지로 이동
