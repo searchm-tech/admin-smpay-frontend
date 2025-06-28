@@ -70,6 +70,7 @@ const TableSection = ({
       const fieldMap: Record<string, string> = {
         rowNumber: "NO",
         agentName: "AGENT",
+        agentRepresentativeName: "AGENT_REPRESENTATIVE",
         status: "STATUS",
         registerDt: "REGISTER_DT",
       };
@@ -96,8 +97,9 @@ const TableSection = ({
   const columns: TableProps<TAgencyData>["columns"] = [
     {
       title: "No",
-      dataIndex: "agentId",
+      dataIndex: "rowNumber",
       align: "center",
+      sorter: true,
     },
     {
       title: "대행사명",

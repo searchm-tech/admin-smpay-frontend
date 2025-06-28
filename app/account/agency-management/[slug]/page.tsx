@@ -29,7 +29,7 @@ export default async function AgencyManagementEditPage({
 
 const breadcrumbItems: DashboardSubItem[] = [
   {
-    title: "계좌 관리",
+    title: "계정 관리",
     url: "/account",
   },
   {
