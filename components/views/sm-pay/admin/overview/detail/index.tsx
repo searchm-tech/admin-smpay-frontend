@@ -1,41 +1,137 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 import LoadingUI from "@/components/common/Loading";
 import { Button } from "@/components/ui/button";
 
-import RuleSection from "@/components/views/sm-pay/components/RuleSection";
 import OperationMemoSection from "@/components/views/sm-pay/components/OperationMemoSection";
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
-import ScheduleSection from "@/components/views/sm-pay/components/ScheduleSection";
+import OperationAccountStatusSection from "@/components/views/sm-pay/components/OperationAccountStatusSection";
+import RuleSection2 from "../../../components/RuleSection2";
+import AdvertiserInfoSection from "./AdvertiserInfoSection";
+import ScheduleSection2 from "../../../components/ScheduleSection2";
+
+import ScheduleSection from "@/components/views/sm-pay/components/ScheduleSection"; // TODO : 삭제 예정
 import AdvertiserSection from "@/components/views/sm-pay/components/AdvertiserSection";
 import AdvertiseStatusSection from "@/components/views/sm-pay/components/AdvertiseStatusSection";
 import AgencyInfoSection from "@/components/views/sm-pay/components/AgencyInfoSection";
-import OperationAccountStatusSection from "@/components/views/sm-pay/components/OperationAccountStatusSection";
 
 import RejectSendModal from "./RejectSendModal";
-import CompleteModal from "./CompleteModal";
+import CompleteModal from "./ApproveDialog";
 
-import { STATUS_LABELS } from "@/constants/status";
+import {
+  useSmPayAdminOverviewAlarm,
+  useSmPayAdminOverviewChargeRule,
+  useSmPayAdminDetail,
+  useSmPayAdminOverviewPrePaymentSchedule,
+  useSmPayAdminOverviewReviewerMemo,
+  useSmPayAdminOverviewApprovalMemo,
+} from "@/hooks/queries/sm-pay";
+import type { ChargeRule } from "@/types/smpay";
 
-import type { AdvertiserData } from "@/types/adveriser";
+import type { ParamsSmPayAdminOverviewOperatorDecision } from "@/types/api/smpay";
 
 type Props = {
   id: string;
 };
 
 const SmPayAdminOverviewDetailView = ({ id }: Props) => {
+  const isOperatorRead = useSearchParams().get("isOperatorRead") === "true";
+
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
   const [completeModalOpen, setCompleteModalOpen] = useState(false);
 
-  const advertiserData: AdvertiserData | null = null;
+  const [upChargeRule, setUpChargeRule] = useState<ChargeRule>({
+    standardRoasPercent: 0,
+    rangeType: "UP",
+    boundType: "FIXED_AMOUNT",
+    changePercentOrValue: 0,
+  });
+
+  const [downChargeRule, setDownChargeRule] = useState<ChargeRule>({
+    standardRoasPercent: 0,
+    rangeType: "DOWN",
+    boundType: "FIXED_AMOUNT",
+    changePercentOrValue: 0,
+  });
+
+  const { mutate: patchRead, isPending: loadingPatchRead } =
+    useSmPayAdminOverviewAlarm();
+
+  const { data: chargeRule, isPending: loadingChargeRule } =
+    useSmPayAdminOverviewChargeRule(Number(id));
+
+  const { data: prePaymentScheduleData, isPending: loadingPrePaymentSchedule } =
+    useSmPayAdminOverviewPrePaymentSchedule(Number(id));
+
+  const { data: smpayInfo, isPending: loadingSmpayInfo } = useSmPayAdminDetail(
+    Number(id)
+  );
+
+  const { data: reviewerMemo, isPending: loadingReviewerMemo } =
+    useSmPayAdminOverviewReviewerMemo(Number(id));
+
+  const { data: approvalMemo, isPending: loadingApprovalMemo } =
+    useSmPayAdminOverviewApprovalMemo(Number(id));
+
+  useEffect(() => {
+    if (id && !isOperatorRead) {
+      patchRead({ advertiserId: Number(id), isOperatorRead: true });
+    }
+
+    if (chargeRule) {
+      const upChargeRule = chargeRule.find(
+        (rule) => rule.rangeType === "UP"
+      ) as ChargeRule;
+      const downChargeRule = chargeRule.find(
+        (rule) => rule.rangeType === "DOWN"
+      ) as ChargeRule;
+      setUpChargeRule(upChargeRule);
+      setDownChargeRule(downChargeRule);
+    }
+  }, [chargeRule, isOperatorRead]);
+
+  const prePaymentSchedule = {
+    initialAmount: prePaymentScheduleData?.initialAmount || 0,
+    maxChargeLimit: prePaymentScheduleData?.maxChargeLimit || 0,
+    minChargeLimit: prePaymentScheduleData?.minChargeLimit || 0,
+  };
+
+  const approveParams: ParamsSmPayAdminOverviewOperatorDecision = {
+    decisionType: "APPROVE",
+    chargeRule: [upChargeRule, downChargeRule],
+    prePaymentSchedule,
+    reviewerMemo: reviewerMemo?.description || "",
+    approvalMemo: approvalMemo?.description || "",
+    rejectStatusMemo: "",
+  };
+
+  const rejectParams: ParamsSmPayAdminOverviewOperatorDecision = {
+    decisionType: "REJECT",
+    chargeRule: [upChargeRule, downChargeRule],
+    prePaymentSchedule,
+    reviewerMemo: reviewerMemo?.description || "",
+    approvalMemo: approvalMemo?.description || "",
+    rejectStatusMemo: "",
+  };
+
+  const isLoading =
+    loadingPatchRead ||
+    loadingChargeRule ||
+    loadingSmpayInfo ||
+    loadingApprovalMemo ||
+    loadingPrePaymentSchedule ||
+    loadingReviewerMemo;
+
   return (
     <div>
-      {/* {isPending && <LoadingUI title="SM Pay 정보 조회 중..." />} */}
+      {isLoading && <LoadingUI title="SM Pay 정보 조회 중..." />}
       {rejectModalOpen && (
         <RejectSendModal
           open={rejectModalOpen}
+          params={{ ...rejectParams, advertiserId: Number(id) }}
           onClose={() => setRejectModalOpen(false)}
           onConfirm={() => setRejectModalOpen(false)}
         />
@@ -43,28 +139,34 @@ const SmPayAdminOverviewDetailView = ({ id }: Props) => {
       {completeModalOpen && (
         <CompleteModal
           open={completeModalOpen}
+          params={{ ...approveParams, advertiserId: Number(id) }}
           onClose={() => setCompleteModalOpen(false)}
           onConfirm={() => setCompleteModalOpen(false)}
         />
       )}
 
-      <AdvertiseStatusSection
-        isHistory
-        status="AVAILABLE"
-        // status={response.data ? STATUS_LABELS[response.data.status] : ""}
+      <AdvertiserInfoSection advertiserData={smpayInfo} isHistory />
+
+      <RuleSection2
+        type="show"
+        upChargeRule={upChargeRule}
+        downChargeRule={downChargeRule}
       />
 
-      <div className="flex justify-center gap-1 w-full">
-        <AgencyInfoSection />
-        <AdvertiserSection advertiserDetail={null} />
-      </div>
+      <ScheduleSection2 type="show" prePaymentSchedule={prePaymentSchedule} />
+      <OperationAccountStatusSection
+        advertiserId={Number(id)}
+        initialAmount={prePaymentSchedule.initialAmount}
+      />
 
-      <RuleSection type="show" />
-      <ScheduleSection type="show" />
-      <OperationAccountStatusSection />
-
-      <JudgementMemoSection type="show" />
-      <OperationMemoSection type="show" />
+      <JudgementMemoSection
+        type="show"
+        text={reviewerMemo?.description || ""}
+      />
+      <OperationMemoSection
+        type="show"
+        text={approvalMemo?.description || ""}
+      />
 
       <div className="flex justify-center gap-4 py-5">
         <Button

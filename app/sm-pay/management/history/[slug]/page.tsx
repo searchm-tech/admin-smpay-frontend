@@ -1,5 +1,5 @@
 import ContentHeader from "@/components/common/ContentHeader";
-import SMPayManagementHistoryView from "@/components/views/sm-pay/manangement/history";
+import SmPayApplyHistoryDetailView from "@/components/views/sm-pay/manangement/history";
 
 import type { Metadata } from "next";
 import type { DashboardSubItem } from "@/types/menu";
@@ -26,7 +26,7 @@ export default function SMPayManagementHistoryPage({
   return (
     <div>
       <ContentHeader title="SM Pay 지난 이력 보기" items={breadcrumbItems} />
-      <SMPayManagementHistoryView id={params.slug} />
+      <SmPayApplyHistoryDetailView id={params.slug} />
     </div>
   );
 }

@@ -30,6 +30,7 @@ import {
   useSmPayReviewerMemo,
   useSmPayAdvertiserChargeRule,
   useSmPayAdvertiserPrePaymentSchedule,
+  useSmPayAdminOverviewChargeRule,
 } from "@/hooks/queries/sm-pay";
 
 import type { ChargeRule, PrePaymentSchedule } from "@/types/smpay";
@@ -38,13 +39,13 @@ import type {
   StatIndicatorParams,
 } from "@/types/api/smpay";
 
-type SmPayJudgementDetailViewProps = {
+type Props = {
   id: string;
 };
 
 const status = "reject";
 
-const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
+const SmPayJudgementDetailView = ({ id }: Props) => {
   const router = useRouter();
   const formId = useSearchParams().get("formId");
   const isApprovalRead = useSearchParams().get("isApprovalRead") === "true";
@@ -97,7 +98,7 @@ const SmPayJudgementDetailView = ({ id }: SmPayJudgementDetailViewProps) => {
     useSmPayReviewerMemo(Number(id));
 
   const { data: chargeRule, isPending: loadingChargeRule } =
-    useSmPayAdvertiserChargeRule(Number(id));
+    useSmPayAdminOverviewChargeRule(Number(id));
 
   const { data: prePaymentScheduleData, isPending: loadingPrePaymentSchedule } =
     useSmPayAdvertiserPrePaymentSchedule(Number(id));

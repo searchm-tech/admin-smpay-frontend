@@ -5,7 +5,6 @@ import {
   UseQueryOptions,
 } from "@tanstack/react-query";
 import {
-  fetchAdvertisers,
   getAdvertiserList,
   postAdvertiserSyncJobStatus,
   postAdvertiserSync,
@@ -22,13 +21,6 @@ import type {
   RequestAdvertiserBizMoneyList,
   ResponseAdvertiserBizMoneyList,
 } from "@/types/api/advertiser";
-
-export const useAdvertiserList = (params: FetchAdvertiserParams) => {
-  return useQuery({
-    queryKey: ["advertisers", params],
-    queryFn: () => fetchAdvertisers(params),
-  });
-};
 
 // ---- 실제 react-query 사용 코드 ----
 

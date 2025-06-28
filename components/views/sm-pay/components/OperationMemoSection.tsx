@@ -42,7 +42,7 @@ const OperationMemoSection = ({ type, text, handleChange }: Props) => {
         />
       )}
 
-      {type === "show" && <MemoBox text={`<p><${text}/p>`} />}
+      {type === "show" && <MemoBox text={text || ""} />}
     </section>
   );
 };

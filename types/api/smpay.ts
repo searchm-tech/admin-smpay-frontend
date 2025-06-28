@@ -76,6 +76,10 @@ export type WithAdvertiserId = {
   advertiserId: number;
 };
 
+export interface RequestFormId extends WithAdvertiserId {
+  formId: number | string;
+}
+
 // 광고주 detail 조회(SAG024) response type
 export type AdvertiserDetailDto = {
   advertiserId: number;
@@ -138,10 +142,6 @@ export interface RequestSmPayWrite extends WithAdvertiserId {
   params: SmPayWriteParams;
 }
 
-export interface RequestSmPayDetail extends WithAdvertiserId {
-  formId: number | string;
-}
-
 // SM-Pay 심사 > 요청 목록 리스트
 export type ResponseSmPayAudit = ResponseWithPagination & {
   content: (SmPayAuditDto & {
@@ -153,10 +153,24 @@ export interface RequestSmPayRead extends WithAdvertiserId {
   isApprovalRead: boolean;
 }
 
+export interface RequestSmPayAdminRead extends WithAdvertiserId {
+  isOperatorRead: boolean;
+}
+
 // 광고주 심상 승인 /거절 (최상위 그룹장 전용)(SAG036) params type
 export type ParamsSmPayApproval = {
   decisionType: "APPROVE" | "REJECT";
   statIndicator: StatIndicatorParams;
+  chargeRule: ChargeRule[];
+  prePaymentSchedule: PrePaymentSchedule;
+  reviewerMemo: string;
+  approvalMemo: string;
+  rejectStatusMemo: string;
+};
+
+// 광고주 운영 심사 승인/반려 (운영 관리자 전용) (AAG026)
+export type ParamsSmPayAdminOverviewOperatorDecision = {
+  decisionType: "APPROVE" | "REJECT";
   chargeRule: ChargeRule[];
   prePaymentSchedule: PrePaymentSchedule;
   reviewerMemo: string;
@@ -183,4 +197,18 @@ export type PrePaymentScheduleDto = {
 
 export type ResponseSmPayAdminAudit = ResponseWithPagination & {
   content: SmPayAdminAuditDto[];
+};
+
+// 광고주 smPay 신청 이력 상세 조회 (운영 관리자 전용) (AAG022)
+export type RequestSmPayAdminOverviewApplyFormDetail = {
+  user: RequestAgentUser;
+  advertiserId: number;
+  formId: number;
+};
+
+// 광고주 운영 심사 승인/반려 (운영 관리자 전용) (AAG026)
+export type AdminOverviewOperatorDecision = {
+  user: RequestAgentUser;
+  advertiserId: number;
+  params: ParamsSmPayAdminOverviewOperatorDecision;
 };

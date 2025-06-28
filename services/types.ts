@@ -1,4 +1,3 @@
-import type { AdvertiserData } from "@/types/adveriser";
 import type {
   RuleHistory,
   RuleInfo,
@@ -49,12 +48,6 @@ export interface FetchAdvertiserParams {
   pagination: PaginationParams;
   sort?: SortParams;
   filters?: FilterParams;
-}
-
-export interface AdvertiserListResponse {
-  data: AdvertiserData[];
-  success: boolean;
-  hasNextPage: boolean;
 }
 
 export interface SmPayRejectReasonResponse {

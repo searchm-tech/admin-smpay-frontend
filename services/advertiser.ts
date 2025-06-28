@@ -1,9 +1,7 @@
 import { ApiError, del, get, post } from "@/lib/api";
-import { mockAdvertiserData } from "./mock/advertiser";
 import { buildQueryParams } from "@/lib/utils";
 
-import type { AdvertiserListResponse, TableParams } from "./types";
-import type { AdvertiserData } from "@/types/adveriser";
+import type { TableParams } from "./types";
 import type { RuleInfo, ScheduleInfo } from "@/types/sm-pay";
 import type {
   RequestAdvertiserList,
@@ -14,76 +12,6 @@ import type {
   RequestAdvertiserBizMoneyList,
   ResponseAdvertiserBizMoneyList,
 } from "@/types/api/advertiser";
-
-/**
- * TODO : 삭제  - 광고주 목록 조회 api
- * @param params
- * @returns
- */
-export const fetchAdvertisers = async (
-  params: TableParams
-): Promise<AdvertiserListResponse & { total: number }> => {
-  // 서버 응답을 시뮬레이션하기 위한 지연
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
-  const { pagination, sort, filters } = params;
-  let filteredData = [...mockAdvertiserData];
-
-  // 필터링 적용
-  if (filters) {
-    Object.entries(filters).forEach(([key, values]) => {
-      if (values && values.length > 0) {
-        if (key === "search") {
-          const searchTerm = values[0].toLowerCase();
-          filteredData = filteredData.filter(
-            (item: AdvertiserData) =>
-              item.name.toLowerCase().includes(searchTerm) ||
-              item.customerId.toLowerCase().includes(searchTerm) ||
-              item.loginId.toLowerCase().includes(searchTerm)
-          );
-        } else {
-          filteredData = filteredData.filter((item: AdvertiserData) => {
-            const itemValue = String((item as any)[key]);
-            return values.includes(itemValue);
-          });
-        }
-      }
-    });
-  }
-
-  // 정렬 적용
-  if (sort?.field && sort.order) {
-    filteredData.sort((a: AdvertiserData, b: AdvertiserData) => {
-      const aValue = (a as any)[sort.field!];
-      const bValue = (b as any)[sort.field!];
-
-      if (typeof aValue === "string") {
-        return sort.order === "ascend"
-          ? aValue.localeCompare(bValue)
-          : bValue.localeCompare(aValue);
-      }
-
-      if (typeof aValue === "number") {
-        return sort.order === "ascend" ? aValue - bValue : bValue - aValue;
-      }
-
-      return 0;
-    });
-  }
-
-  // 페이지네이션 적용
-  const { current, pageSize } = pagination;
-  const startIndex = (current - 1) * pageSize;
-  const endIndex = startIndex + pageSize;
-  const paginatedData = filteredData.slice(startIndex, endIndex);
-
-  return {
-    data: paginatedData,
-    success: true,
-    total: filteredData.length,
-    hasNextPage: filteredData.length > pageSize,
-  };
-};
 
 /**
  * 광고주 동의 요청 발송 api

@@ -18,9 +18,6 @@ import OperationAccountStatusSection from "@/components/views/sm-pay/components/
 import GuidSection from "../../../components/GuideSection";
 import RejectModal from "./RejectModal";
 
-import type { AdvertiserData } from "@/types/adveriser";
-import { STATUS_LABELS } from "@/constants/status";
-
 type Props = {
   id: string;
 };
@@ -28,8 +25,6 @@ type Props = {
 const SmPayAdminAdversiterStatusDetailView = ({ id }: Props) => {
   const router = useRouter();
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
-
-  const advertiserData: AdvertiserData | null = null;
 
   return (
     <div className="flex flex-col gap-4">
@@ -53,7 +48,7 @@ const SmPayAdminAdversiterStatusDetailView = ({ id }: Props) => {
 
       <RuleSection type="show" />
       <ScheduleSection type="show" />
-      <OperationAccountStatusSection />
+      {/* <OperationAccountStatusSection /> */}
 
       <JudgementMemoSection type="show" />
       <OperationMemoSection type="show" />

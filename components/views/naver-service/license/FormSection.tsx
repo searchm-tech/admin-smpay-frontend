@@ -73,7 +73,11 @@ const FormSection = ({
     onSuccess: () => setIsSuccessCreate(true),
     onError: (error) => {
       if (error instanceof ApiError) {
-        setErrMessage(error.message);
+        if (Number(error.code) === 20) {
+          setErrMessage("중복 또는 처리중인 라이선스입니다");
+        } else {
+          setErrMessage(error.message);
+        }
       }
     },
   });

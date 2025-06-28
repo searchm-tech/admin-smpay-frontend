@@ -13,44 +13,41 @@ import { Modal } from "@/components/composite/modal-components";
 import Table from "@/components/composite/table";
 import { LinkTextButton } from "@/components/composite/button-components";
 
-import LoadingUI from "@/components/common/Loading";
-
 import {
   formatBusinessNumber,
   formatDate,
   formatPhoneNumber,
 } from "@/utils/format";
 import { SmPayAdvertiserStatusLabel } from "@/constants/status";
-import {
-  useSmPayAdvertiserDetail,
-  useSmPayApplyList,
-} from "@/hooks/queries/sm-pay";
+import { useSmPayAdminOverviewApplyFormList } from "@/hooks/queries/sm-pay";
 
 import type { TableProps } from "@/types/table";
-import { SmPayAdvertiserStatus, SmPayDetailDto } from "@/types/smpay";
+import type {
+  OverviewApplyListDto,
+  SmPayAdvertiserStatus,
+} from "@/types/smpay";
+import type { AdvertiserDetailDto } from "@/types/api/smpay";
 
 type Props = {
-  advertiserId: number;
+  advertiserData?: AdvertiserDetailDto;
   isHistory?: boolean;
 };
 
-const AdvertiserInfoSection = ({ advertiserId, isHistory = false }: Props) => {
-  const { data: detailInfo, isPending: isLoading } =
-    useSmPayAdvertiserDetail(advertiserId);
-
+const AdvertiserInfoSection = ({
+  isHistory = false,
+  advertiserData,
+}: Props) => {
   const [isHistoryModal, setIsHistoryModal] = useState(false);
 
   return (
     <div>
-      {isLoading && <LoadingUI title="광고주 정보 조회 중..." />}
       <section>
-        {isHistoryModal && (
+        {isHistoryModal && advertiserData && (
           <HistoryModal
             onClose={() => setIsHistoryModal(false)}
-            advertiserId={advertiserId}
+            advertiserId={advertiserData.advertiserId}
           />
         )}
-
         <div className="flex items-center gap-4 py-4">
           <LabelBullet labelClassName="text-base font-bold">
             광고주 상태
@@ -65,7 +62,8 @@ const AdvertiserInfoSection = ({ advertiserId, isHistory = false }: Props) => {
         <Descriptions columns={1}>
           <DescriptionItem label="광고주 상태">
             <Label>
-              {detailInfo && SmPayAdvertiserStatusLabel[detailInfo.status]}
+              {advertiserData &&
+                SmPayAdvertiserStatusLabel[advertiserData.status]}
             </Label>
           </DescriptionItem>
         </Descriptions>
@@ -79,23 +77,25 @@ const AdvertiserInfoSection = ({ advertiserId, isHistory = false }: Props) => {
         </div>
         <Descriptions columns={1}>
           <DescriptionItem label="광고주명">
-            <Label>{detailInfo?.name}</Label>
+            <Label>{advertiserData?.name}</Label>
           </DescriptionItem>
           <DescriptionItem label="대표자명">
-            <Label>{detailInfo?.representativeName}</Label>
+            <Label>{advertiserData?.representativeName}</Label>
           </DescriptionItem>
           <DescriptionItem label="사업자 등록번호">
             <Label>
               {formatBusinessNumber(
-                detailInfo?.businessRegistrationNumber || ""
+                advertiserData?.businessRegistrationNumber || ""
               )}
             </Label>
           </DescriptionItem>
           <DescriptionItem label="광고주 휴대폰 번호">
-            <Label>{formatPhoneNumber(detailInfo?.phoneNumber || "")}</Label>
+            <Label>
+              {formatPhoneNumber(advertiserData?.phoneNumber || "")}
+            </Label>
           </DescriptionItem>
           <DescriptionItem label="광고주 이메일 주소">
-            <Label>{detailInfo?.emailAddress}</Label>
+            <Label>{advertiserData?.emailAddress}</Label>
           </DescriptionItem>
         </Descriptions>
       </section>
@@ -109,19 +109,19 @@ type HistoryModalProps = {
   onClose: () => void;
   advertiserId?: number;
 };
+
 const HistoryModal = ({ onClose, advertiserId }: HistoryModalProps) => {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const originFormId = searchParams.get("formId");
 
-  const { data: dataSource } = useSmPayApplyList(advertiserId || 0);
+  const { data: dataSource } = useSmPayAdminOverviewApplyFormList(
+    Number(advertiserId)
+  );
 
-  console.log("dataSource", dataSource);
-  const columns: TableProps<SmPayDetailDto>["columns"] = [
+  const columns: TableProps<OverviewApplyListDto>["columns"] = [
     {
       title: "No",
-      dataIndex: "no",
-      key: "no",
+      dataIndex: "id",
+      key: "id",
       align: "center",
     },
     {
@@ -150,7 +150,7 @@ const HistoryModal = ({ onClose, advertiserId }: HistoryModalProps) => {
       render: (text: string, record) => (
         <LinkTextButton
           onClick={() => {
-            const url = `/sm-pay/management/history/${advertiserId}?formId=${record.advertiserFormId}&orignFormId=${originFormId}`;
+            const url = `/sm-pay/management/history/${advertiserId}?formId=${record.advertiserFormId}&orignFormId=${record.advertiserFormId}`;
             router.push(url);
           }}
         >
@@ -184,7 +184,7 @@ const HistoryModal = ({ onClose, advertiserId }: HistoryModalProps) => {
       cancelDisabled
     >
       <div className="w-[85vw] overflow-y-auto">
-        <Table<SmPayDetailDto>
+        <Table<OverviewApplyListDto>
           dataSource={dataSource}
           columns={columns}
           pagination={false}

@@ -13,9 +13,9 @@ import ScheduleSection2 from "@/components/views/sm-pay/components/ScheduleSecti
 import RuleSection2 from "@/components/views/sm-pay/components/RuleSection2";
 import AdvertiserInfoSection from "@/components/views/sm-pay/components/AdvertiserInfoSection";
 
-import { RejectDialog } from "../../manangement/dialog";
+import { RejectDialog } from "../../../manangement/dialog";
 
-import { useSmPayDetail } from "@/hooks/queries/sm-pay";
+import { useSmPayAdminOverviewApplyFormDetail } from "@/hooks/queries/sm-pay";
 
 import type { ChargeRule } from "@/types/smpay";
 
@@ -23,7 +23,7 @@ interface Props {
   id: string;
 }
 
-const SmPayApplyHistoryDetailView = ({ id }: Props) => {
+const SmPayAdminOverviewHistoryDetailView = ({ id }: Props) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const formId = searchParams.get("formId");
@@ -44,10 +44,8 @@ const SmPayApplyHistoryDetailView = ({ id }: Props) => {
     changePercentOrValue: 0,
   });
 
-  const { data: smpayInfo, isPending: loading } = useSmPayDetail(
-    Number(id),
-    Number(formId)
-  );
+  const { data: smpayInfo, isPending: loading } =
+    useSmPayAdminOverviewApplyFormDetail(Number(id), Number(formId));
 
   useEffect(() => {
     if (smpayInfo) {
@@ -129,7 +127,7 @@ const SmPayApplyHistoryDetailView = ({ id }: Props) => {
           variant="cancel"
           className="w-[150px]"
           onClick={() => {
-            const url = `/sm-pay/management/apply-detail/${id}/?formId=${formId}`;
+            const url = `/sm-pay/management/apply-detail/${id}`;
             router.push(url);
           }}
         >
@@ -140,4 +138,4 @@ const SmPayApplyHistoryDetailView = ({ id }: Props) => {
   );
 };
 
-export default SmPayApplyHistoryDetailView;
+export default SmPayAdminOverviewHistoryDetailView;

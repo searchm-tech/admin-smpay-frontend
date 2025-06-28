@@ -12,11 +12,9 @@ import {
 } from "@dnd-kit/core";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 
-import { cn } from "@/lib/utils";
 import LoadingUI from "@/components/common/Loading";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 
 import {
   useMutationDepartments,
@@ -89,8 +87,6 @@ const OrganizationSection: React.FC = () => {
   const [errorNoData, setErrorNoData] = useState(false);
 
   const [successSave, setSuccessSave] = useState(false);
-
-  const [newFolderName, setNewFolderName] = useState("");
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -171,8 +167,10 @@ const OrganizationSection: React.FC = () => {
         // 현재 부모 노드의 depth 확인
         const parentDepth = getNodeDepth(newData, parentId);
 
-        // 4 depth 제한 체크 (새 폴더는 부모 depth + 1이 됨)
-        if (parentDepth >= 4) {
+        // TODO : 그룹장 권한 체크 필요 + 검색 API 추가 필요
+        // 시스템 관리자 일 경우 : 8 depth 제한 체크
+        // 최상위 그룹장 일 경우 : 7 depth 제한 체크
+        if (parentDepth >= 7) {
           setErrorMaxDepth(true);
           return prevData;
         }
@@ -258,26 +256,6 @@ const OrganizationSection: React.FC = () => {
       removeNode(newData, nodeId);
       return newData;
     });
-  };
-
-  const handleAddTopFolder = () => {
-    if (newFolderName === "") {
-      setErrorNewFolder(true);
-      return;
-    }
-
-    setTreeData((prevData) => {
-      const newData = JSON.parse(JSON.stringify(prevData));
-      newData.push({
-        id: `folder-${Date.now()}`,
-        name: newFolderName,
-        type: "folder",
-        children: [],
-      });
-      return newData;
-    });
-
-    setNewFolderName("");
   };
 
   const handleSave = async () => {
@@ -412,20 +390,10 @@ const OrganizationSection: React.FC = () => {
         </div>
       </DndContext>
 
-      <div className="w-full my-4 px-4 py-2 border rounded-lg bg-white flex gap-4 items-center">
-        <div className="flex gap-2 items-center">
-          +<span className="text-[#148AFF]">최상위 부서</span>{" "}
-          <span>부서 추가</span>
-        </div>
-
-        <Input
-          placeholder="부서 이름"
-          className="max-w-xs"
-          value={newFolderName}
-          onChange={(e) => setNewFolderName(e.target.value)}
-        />
-        <Button onClick={handleAddTopFolder}>부서 추가</Button>
-        <Button onClick={handleSave}>저장</Button>
+      <div className="w-full  px-4 py-2  flex gap-4 items-center justify-center">
+        <Button onClick={handleSave} className="w-[150px] h-10">
+          저장
+        </Button>
       </div>
     </Fragment>
   );
