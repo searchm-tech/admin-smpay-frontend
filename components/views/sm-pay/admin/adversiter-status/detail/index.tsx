@@ -48,7 +48,7 @@ const SmPayAdminAdversiterStatusDetailView = ({ id }: Props) => {
 
       <RuleSection type="show" />
       <ScheduleSection type="show" />
-      <OperationAccountStatusSection />
+      {/* <OperationAccountStatusSection /> */}
 
       <JudgementMemoSection type="show" />
       <OperationMemoSection type="show" />

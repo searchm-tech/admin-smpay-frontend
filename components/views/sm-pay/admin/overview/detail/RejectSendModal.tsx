@@ -2,14 +2,15 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Textarea } from "@/components/ui/textarea";
+import LoadingUI from "@/components/common/Loading";
 import { Modal } from "@/components/composite/modal-components";
 import {
   Descriptions,
   DescriptionItem,
 } from "@/components/composite/description-components";
 import { useSmPayAdminOverviewOperatorDecision } from "@/hooks/queries/sm-pay";
-import { ParamsSmPayAdminOverviewOperatorDecision } from "@/types/api/smpay";
-import LoadingUI from "@/components/common/Loading";
+
+import type { ParamsSmPayAdminOverviewOperatorDecision } from "@/types/api/smpay";
 
 type RejectSendModalProps = {
   open: boolean;

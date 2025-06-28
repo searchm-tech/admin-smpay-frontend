@@ -13,8 +13,6 @@ import { Modal } from "@/components/composite/modal-components";
 import Table from "@/components/composite/table";
 import { LinkTextButton } from "@/components/composite/button-components";
 
-import LoadingUI from "@/components/common/Loading";
-
 import {
   formatBusinessNumber,
   formatDate,
@@ -24,7 +22,10 @@ import { SmPayAdvertiserStatusLabel } from "@/constants/status";
 import { useSmPayAdminOverviewApplyFormList } from "@/hooks/queries/sm-pay";
 
 import type { TableProps } from "@/types/table";
-import { OverviewApplyListDto, SmPayAdvertiserStatus } from "@/types/smpay";
+import type {
+  OverviewApplyListDto,
+  SmPayAdvertiserStatus,
+} from "@/types/smpay";
 import type { AdvertiserDetailDto } from "@/types/api/smpay";
 
 type Props = {

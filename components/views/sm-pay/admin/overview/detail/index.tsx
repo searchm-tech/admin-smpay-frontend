@@ -1,17 +1,22 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 import LoadingUI from "@/components/common/Loading";
 import { Button } from "@/components/ui/button";
 
 import OperationMemoSection from "@/components/views/sm-pay/components/OperationMemoSection";
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
+import OperationAccountStatusSection from "@/components/views/sm-pay/components/OperationAccountStatusSection";
+import RuleSection2 from "../../../components/RuleSection2";
+import AdvertiserInfoSection from "./AdvertiserInfoSection";
+import ScheduleSection2 from "../../../components/ScheduleSection2";
+
 import ScheduleSection from "@/components/views/sm-pay/components/ScheduleSection"; // TODO : 삭제 예정
 import AdvertiserSection from "@/components/views/sm-pay/components/AdvertiserSection";
 import AdvertiseStatusSection from "@/components/views/sm-pay/components/AdvertiseStatusSection";
 import AgencyInfoSection from "@/components/views/sm-pay/components/AgencyInfoSection";
-import OperationAccountStatusSection from "@/components/views/sm-pay/components/OperationAccountStatusSection";
 
 import RejectSendModal from "./RejectSendModal";
 import CompleteModal from "./ApproveDialog";
@@ -26,11 +31,7 @@ import {
 } from "@/hooks/queries/sm-pay";
 import type { ChargeRule } from "@/types/smpay";
 
-import RuleSection2 from "../../../components/RuleSection2";
-import { useSearchParams } from "next/navigation";
-import AdvertiserInfoSection from "./AdvertiserInfoSection";
 import type { ParamsSmPayAdminOverviewOperatorDecision } from "@/types/api/smpay";
-import ScheduleSection2 from "../../../components/ScheduleSection2";
 
 type Props = {
   id: string;

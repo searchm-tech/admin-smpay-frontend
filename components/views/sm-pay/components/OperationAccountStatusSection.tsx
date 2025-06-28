@@ -8,8 +8,10 @@ import {
 import { HelpIcon } from "@/components/composite/icon-components";
 import { LabelBullet } from "@/components/composite/label-bullet";
 import { TooltipHover } from "@/components/composite/tooltip-components";
-import { TOOLTIP_CONTENT } from "@/constants/hover";
 import { useSmPayAdminOverviewAccountBalance } from "@/hooks/queries/sm-pay";
+
+import { TOOLTIP_CONTENT } from "@/constants/hover";
+
 import type { OverviewAccountBalanceDto } from "@/types/smpay";
 
 type Props = {
@@ -65,7 +67,10 @@ const calculateSmPayAccount = (
   };
 };
 
-const OperationAccountStatusSection = ({ advertiserId }: Props) => {
+const OperationAccountStatusSection = ({
+  advertiserId,
+  initialAmount,
+}: Props) => {
   const { data: accountInfo } =
     useSmPayAdminOverviewAccountBalance(advertiserId);
 
@@ -113,9 +118,7 @@ const OperationAccountStatusSection = ({ advertiserId }: Props) => {
         </DescriptionItem>
         <DescriptionItem label="승인 시 예상 일 소진 금액">
           <div className="flex items-center gap-2">
-            <Label className="w-1/2">
-              +{calculatedData.approvalExpectedDaily.toLocaleString()}원
-            </Label>
+            <Label className="w-1/2">+{initialAmount.toLocaleString()}원</Label>
             <SubDescItem>
               현재 광고주 승인 시 추가로 예상되는 데일리 소진 금액
             </SubDescItem>
