@@ -37,7 +37,7 @@ const errorType = {
     ),
   },
   inactive: {
-    title: "계정이 비활성화 되었습니다.",
+    title: "계정이 비활성화 또는 삭제되었습니다.",
     description: (
       <>
         <p>SM Pay를 다시 이용하시려면 담당자에게 문의해주세요.</p>

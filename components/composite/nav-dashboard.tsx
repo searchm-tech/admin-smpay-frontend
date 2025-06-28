@@ -56,7 +56,7 @@ export function NavDashboard() {
   }, [session]);
 
   const menuItems = useMemo(() => {
-    if (!session?.user) return COMMON_ITEMS;
+    if (!session?.user) return [];
     if (backendMenu && session?.user) {
       const mappedMenus = mapBackendMenuToFrontend(
         backendMenu,
@@ -70,7 +70,7 @@ export function NavDashboard() {
     }
 
     // 백엔드 메뉴가 없으면 공통 메뉴
-    return COMMON_ITEMS;
+    return [];
   }, [backendMenu, session?.user, menuType]);
 
   return (
