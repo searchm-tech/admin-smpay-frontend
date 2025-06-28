@@ -9,14 +9,14 @@ const Footer = () => {
   >(null);
 
   return (
-    <footer className="w-full h-[223px] bg-[#EDF0F5] text-[#3C4D60] py-3 border-t border-[#A8A8A8] flex flex-col  justify-center gap-2 pl-8">
+    <footer className="w-full h-[140px] bg-[#EDF0F5] text-[#3C4D60] py-4 border-t border-[#A8A8A8] flex flex-col  justify-center gap-2 pl-8">
       {documentType && (
         <DocumentComponent
           type={documentType}
           onClose={() => setDocumentType(null)}
         />
       )}
-      <Image src="/images/logo_footer.png" alt="logo" width={112} height={44} />
+      {/* <Image src="/images/logo_footer.png" alt="logo" width={112} height={44} /> */}
 
       <div className="flex flex-col gap-4">
         <div className="mt-4 flex items-center gap-8 text-sm font-normal">
