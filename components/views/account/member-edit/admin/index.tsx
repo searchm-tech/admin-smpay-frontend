@@ -101,6 +101,8 @@ const AdminView = ({ userId }: Props) => {
     }
   }, [adminUserInfo]);
 
+  console.log(userInfo?.phoneNumber);
+
   return (
     <div className="my-5">
       {isLoading && <LoadingUI title="회원 정보 조회 중..." />}
@@ -131,7 +133,7 @@ const AdminView = ({ userId }: Props) => {
               onChange={(e) => handleChangeUserInfo("id", e.target.value)}
             />
           </DescriptionItem>
-          <DescriptionItem label="연락처 *">
+          {/* <DescriptionItem label="연락처 *">
             <PhoneInput
               className="max-w-[500px]"
               value={userInfo?.phoneNumber}
@@ -139,7 +141,7 @@ const AdminView = ({ userId }: Props) => {
                 handleChangeUserInfo("phoneNumber", e.target.value)
               }
             />
-          </DescriptionItem>
+          </DescriptionItem> */}
         </Descriptions>
       </div>
 

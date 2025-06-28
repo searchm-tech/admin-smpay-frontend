@@ -18,6 +18,10 @@ const MemberEditView = () => {
 
   const isAdmin = getIsAdmin(session?.user.type || null);
 
+  console.log("isAdmin", isAdmin);
+
+  if (!session) return null;
+
   return (
     <Fragment>
       {isAdmin && <AdminView userId={Number(userId || 0)} />}
