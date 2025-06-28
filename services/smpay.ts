@@ -449,8 +449,6 @@ export const postSmPayApproval = async ({
   }
 };
 
-///service/api/v1/agents/1/users/1/advertisers/1/charge-rule
-
 /**
  * 광고주 충전 규칙 조회 (최상위 그룹장 전용)(SAG033)
  * - 화면 : 심사요청 상세 > 충전 규칙 영역
@@ -672,9 +670,6 @@ export const getSmPayAdminOverviewApplyFormList = async ({
  * 광고주 smPay 신청 이력 상세 조회(AAG022)
  * - 화면 : [시스템 관리자] SM Pay 관리 > 운영 검토 요청 상세 > 신청 이력 상세
  */
-
-// /core/admin/api/v1/agents/1/users/1/advertisers/1/form/1
-
 export const getSmPayAdminOverviewApplyFormDetail = async ({
   user,
   advertiserId,
