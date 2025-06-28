@@ -31,6 +31,12 @@ const generateSimulationData = (
   const IS_FIXED_AMOUNT = upChargeRule?.boundType === "FIXED_AMOUNT";
   const DAYS = 28;
 
+  console.log("TARGET_ROAS", TARGET_ROAS);
+  console.log("BASE_CHARGE", BASE_CHARGE);
+  console.log("INCREASE_AMOUNT", INCREASE_AMOUNT);
+  console.log("IS_FIXED_AMOUNT", IS_FIXED_AMOUNT);
+  console.log("DAYS", DAYS);
+
   // SM Pay 적용 전 데이터 (고정)
   const beforeData: SimulationTableRow[] = [];
   let beforeTotalAdCost = 0;
@@ -129,6 +135,9 @@ const AdvertiserSimulationModal = ({
   downChargeRule,
   prePaymentSchedule,
 }: Props) => {
+  console.log("upChargeRule", upChargeRule);
+  console.log("downChargeRule", downChargeRule);
+  console.log("prePaymentSchedule", prePaymentSchedule);
   // 필수 값들이 입력되었는지 확인
   const hasValidInput =
     upChargeRule?.standardRoasPercent &&
@@ -156,6 +165,9 @@ const AdvertiserSimulationModal = ({
     upChargeRule?.boundType === "FIXED_AMOUNT" ? "원씩" : "%씩";
   const decreaseType =
     downChargeRule?.boundType === "FIXED_AMOUNT" ? "원씩" : "%씩";
+
+  console.log("targetRoas", targetRoas);
+  console.log("increaseAmount", increaseAmount);
 
   return (
     <Modal

@@ -60,7 +60,7 @@ const RuleSection2 = ({
                 <span className="text-blue-600">
                   {upChargeRule?.boundType === "FIXED_AMOUNT"
                     ? "정액으로"
-                    : "정률로"}
+                    : "정률로"}{" "}
                   {upChargeRule?.changePercentOrValue}
                   {upChargeRule?.boundType === "FIXED_AMOUNT" ? "원" : "%"} 씩
                   증액
@@ -76,8 +76,8 @@ const RuleSection2 = ({
                 <span className="text-red-600">
                   {downChargeRule.boundType === "FIXED_AMOUNT"
                     ? "정액으로"
-                    : "정률로"}
-                  {downChargeRule.changePercentOrValue}
+                    : "정률로"}{" "}
+                  {upChargeRule.changePercentOrValue}
                   {downChargeRule.boundType === "FIXED_AMOUNT" ? "원" : "%"} 씩
                   감액
                 </span>
