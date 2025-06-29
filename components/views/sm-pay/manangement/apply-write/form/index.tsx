@@ -57,9 +57,9 @@ const SMPayMasterApplyWriteForm = ({ id }: ViewWrieProps) => {
 
   const [prePaymentSchedule, setPrePaymentSchedule] =
     useState<PrePaymentSchedule>({
-      initialAmount: 100000,
-      maxChargeLimit: 100000,
-      minChargeLimit: 100000,
+      initialAmount: 10000,
+      maxChargeLimit: 10000,
+      minChargeLimit: 10000,
     });
 
   const [reviewerMemo, setReviewerMemo] = useState("");
