@@ -12,6 +12,7 @@ type TableModalProps = {
   advertiserId: number;
 };
 
+// TODO : 추후 삭제
 const ModalDailyStat = ({ open, onClose, advertiserId }: TableModalProps) => {
   const { data, isPending } = useSmPayAdvertiserDailyStat(advertiserId);
 
@@ -35,7 +36,7 @@ const ModalDailyStat = ({ open, onClose, advertiserId }: TableModalProps) => {
   ];
 
   return (
-    <Modal open={open} onClose={onClose} title="상세 지표 보기" width="95vw">
+    <Modal open={open} onClose={onClose} title="일별 성과 조회" width="95vw">
       {isPending && <LoadingUI />}
       <div className="w-full max-h-[70vh] overflow-y-auto">
         <Table<DailyStat>

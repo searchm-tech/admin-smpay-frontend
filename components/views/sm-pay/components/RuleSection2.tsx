@@ -22,6 +22,7 @@ import type { ChargeRule } from "@/types/smpay";
 
 type RuleSectionProps = {
   type: "show" | "write";
+  recommendRoas?: number;
   upChargeRule: ChargeRule;
   downChargeRule: ChargeRule;
   handleUpChargeRuleChange?: (value: ChargeRule) => void;
@@ -29,6 +30,7 @@ type RuleSectionProps = {
 };
 const RuleSection2 = ({
   type,
+  recommendRoas,
   upChargeRule,
   downChargeRule,
   handleUpChargeRuleChange,
@@ -93,7 +95,9 @@ const RuleSection2 = ({
           <DescriptionItem label="충전 규칙 설정">
             <div className="flex flex-col gap-4 py-4">
               <div className="flex items-center gap-2">
-                <span className="min-w-[100px]">기준 ROAS가</span>
+                <div className="flex items-center gap-2">
+                  <span className="min-w-[100px]">기준 ROAS가</span>
+                </div>
                 <NumberInput
                   className="w-[100px]"
                   value={upChargeRule?.standardRoasPercent}
@@ -106,6 +110,9 @@ const RuleSection2 = ({
                   }
                 />
                 %
+                <span className="text-[#434343] font-bold">
+                  (권장 ROAS {recommendRoas || 0}%)
+                </span>
               </div>
 
               <div className="flex items-center gap-4">
@@ -238,7 +245,7 @@ const RuleSection2 = ({
                 <span className="text-blue-600 font-bold">
                   {upChargeRule.boundType === "FIXED_AMOUNT"
                     ? "정액으로"
-                    : "정률로"}
+                    : "정률로"}{" "}
                   {upChargeRule.changePercentOrValue}%씩 증액
                 </span>
                 하고

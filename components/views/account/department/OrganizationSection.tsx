@@ -32,6 +32,7 @@ import {
 
 import type { OrganizationTreeNode } from "@/types/tree";
 import type { TDepartmentsPutParams } from "@/services/departments";
+import { getIsAdmin } from "@/lib/utils";
 
 export interface TreeNodeProps {
   node: OrganizationTreeNode;
@@ -85,6 +86,7 @@ const OrganizationSection: React.FC = () => {
   const [errorDuplicateFolder, setErrorDuplicateFolder] = useState(false);
   const [errorMaxDepth, setErrorMaxDepth] = useState(false);
   const [errorNoData, setErrorNoData] = useState(false);
+  const isAdmin = getIsAdmin(session?.user.type);
 
   const [successSave, setSuccessSave] = useState(false);
 
@@ -170,9 +172,14 @@ const OrganizationSection: React.FC = () => {
         // TODO : 그룹장 권한 체크 필요 + 검색 API 추가 필요
         // 시스템 관리자 일 경우 : 8 depth 제한 체크
         // 최상위 그룹장 일 경우 : 7 depth 제한 체크
-        if (parentDepth >= 7) {
+        if (parentDepth >= 7 && !isAdmin) {
           setErrorMaxDepth(true);
           return prevData;
+        } else {
+          if (parentDepth >= 8 && isAdmin) {
+            setErrorMaxDepth(true);
+            return prevData;
+          }
         }
 
         if (!parentNode.children) {
@@ -336,7 +343,8 @@ const OrganizationSection: React.FC = () => {
       {errorMaxDepth && (
         <ConfirmDialog
           open
-          content={<div>최대 4 depth까지만 폴더를 생성할 수 있습니다.</div>}
+          cancelDisabled
+          content={<div>최대 6 depth까지만 폴더를 생성할 수 있습니다.</div>}
           onConfirm={() => setErrorMaxDepth(false)}
         />
       )}

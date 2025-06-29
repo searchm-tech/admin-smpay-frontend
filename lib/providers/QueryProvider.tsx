@@ -47,9 +47,7 @@ export default function QueryProvider({ children }: { children: ReactNode }) {
           onConfirm={() => {
             setRoleError(false);
             const isAdmin = getIsAdmin(session?.user?.type);
-            const url = isAdmin
-              ? "/sm-pay/admin/overview"
-              : "/sm-pay/management";
+            const url = isAdmin ? "/sm-pay/admin/overview" : "/dashboard";
             window.location.href = url;
           }}
           cancelDisabled

@@ -23,6 +23,7 @@ const ScheduleSection2 = ({
   type,
   handleScheduleChange,
 }: Props) => {
+  console.log(prePaymentSchedule);
   return (
     <section>
       <div className="flex items-center gap-2 py-4">
@@ -38,7 +39,7 @@ const ScheduleSection2 = ({
       {type === "show" && (
         <Descriptions columns={1}>
           <DescriptionItem label="일 최대 충전 한도">
-            <span>1일 1회</span>
+            <span>1일 1회 AM 04:00</span>
           </DescriptionItem>
           <DescriptionItem label="최초 충전 금액 설정">
             <span className="text-blue-600">
@@ -56,7 +57,7 @@ const ScheduleSection2 = ({
       {type === "write" && (
         <Descriptions columns={1}>
           <DescriptionItem label="충전 스케쥴">
-            <span>1일 1회</span>
+            <span>1일 1회 AM 04:00</span>
           </DescriptionItem>
           <DescriptionItem label="최초 충전 금액 설정">
             <NumberInput

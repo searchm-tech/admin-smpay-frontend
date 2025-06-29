@@ -33,7 +33,7 @@ const JudgementMemoSection = ({ type, text, handleText }: Props) => {
           value={text}
           size={10}
           onChange={(e) => handleText && handleText(e.target.value)}
-          placeholder="SM Pay 운영 검토 시 참고해야 할 사항을 500자 이내로 입력해주세요."
+          placeholder="선결제 필요 사유 등 광고주와 논의된 조건이나 특이사항을 500자 이내로 입력해주세요."
         />
       )}
 
