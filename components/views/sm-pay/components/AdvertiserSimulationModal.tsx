@@ -135,14 +135,41 @@ const AdvertiserSimulationModal = ({
   downChargeRule,
   prePaymentSchedule,
 }: Props) => {
-  console.log("upChargeRule", upChargeRule);
-  console.log("downChargeRule", downChargeRule);
-  console.log("prePaymentSchedule", prePaymentSchedule);
   // 필수 값들이 입력되었는지 확인
   const hasValidInput =
     upChargeRule?.standardRoasPercent &&
     upChargeRule?.changePercentOrValue &&
-    prePaymentSchedule?.initialAmount;
+    prePaymentSchedule?.initialAmount &&
+    prePaymentSchedule?.maxChargeLimit &&
+    prePaymentSchedule?.maxChargeLimit >= prePaymentSchedule?.initialAmount &&
+    prePaymentSchedule?.initialAmount >= 10000;
+
+  console.log(
+    "upChargeRule?.standardRoasPercent",
+    upChargeRule?.standardRoasPercent
+  );
+  console.log(
+    "upChargeRule?.changePercentOrValue",
+    upChargeRule?.changePercentOrValue
+  );
+  console.log(
+    "prePaymentSchedule?.initialAmount",
+    prePaymentSchedule?.initialAmount
+  );
+  console.log(
+    "prePaymentSchedule?.maxChargeLimit",
+    prePaymentSchedule?.maxChargeLimit
+  );
+  console.log(
+    "prePaymentSchedule?.maxChargeLimit >= prePaymentSchedule?.initialAmount",
+    prePaymentSchedule?.maxChargeLimit &&
+      prePaymentSchedule?.maxChargeLimit >= prePaymentSchedule?.initialAmount
+  );
+  console.log(
+    "prePaymentSchedule?.initialAmount >= 10000",
+    prePaymentSchedule?.initialAmount &&
+      prePaymentSchedule?.initialAmount >= 10000
+  );
 
   const { beforeData, afterData } = hasValidInput
     ? generateSimulationData(upChargeRule, prePaymentSchedule)
@@ -188,7 +215,8 @@ const AdvertiserSimulationModal = ({
               <ul className="text-sm space-y-1">
                 <li>• 기준 ROAS</li>
                 <li>• 충전 증감 정액/정률</li>
-                <li>• 최초 충전 금액</li>
+                <li>• 최초 충전 금액 : 10,000원 이상</li>
+                <li>• 일 최대 충전 한도 : 최초 충전 금액보다 이상 </li>
               </ul>
             </div>
           </div>
