@@ -69,19 +69,30 @@ export const getSmPayAdvertiserStatusList = async ({
   queryParams,
 }: RequestSmPayAdvertiserStatus): Promise<ResponseSmPayAdvertiserStatus> => {
   const { agentId, userId } = user;
+
+  const { page, size, orderType } = queryParams;
+  // NO_ 정렬 조건을 ADVERTISER_REGISTER로 변환
+  let apiOrderType = queryParams.orderType;
+  const isNoSort = queryParams.orderType.startsWith("NO");
+
+  if (isNoSort) {
+    apiOrderType = queryParams.orderType.replace(
+      "NO",
+      "ADVERTISER_REGISTER"
+    ) as SmPayAdvertiserStautsOrderType;
+  }
+
   const paramsResult = buildQueryParams({
     page: queryParams.page,
     size: queryParams.size,
     keyword: queryParams.keyword,
-    orderType: queryParams.orderType,
+    orderType: apiOrderType,
   });
 
   try {
     const response = await get<ResponseSmPayAdvertiserStatus>(
       `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/status-list?${paramsResult}`
     );
-
-    const { page, size, orderType } = queryParams;
 
     let content = response.content.map((item, index) => ({
       ...item,

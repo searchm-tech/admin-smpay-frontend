@@ -80,6 +80,15 @@ const SMPayMasterApplyWriteForm = ({ id }: ViewWrieProps) => {
   };
 
   const handleSendAdAgree = () => {
+    if (
+      !upChargeRule.standardRoasPercent ||
+      !upChargeRule.changePercentOrValue ||
+      !downChargeRule.changePercentOrValue
+    ) {
+      setErrorMessage("충전 규칙을 작성해주세요.");
+      return;
+    }
+
     const chargeRules: ChargeRule[] = [
       {
         standardRoasPercent: downChargeRule.standardRoasPercent,
@@ -96,12 +105,12 @@ const SMPayMasterApplyWriteForm = ({ id }: ViewWrieProps) => {
     ];
 
     if (prePaymentSchedule.initialAmount < 10000) {
-      setErrorMessage("최초 충전 금액은 10,000원 이상이어야 합니다.");
+      setErrorMessage("최초 충전 금액은 10,000원 이상으로 설정해주세요.");
       return;
     }
 
     if (prePaymentSchedule.maxChargeLimit < prePaymentSchedule.initialAmount) {
-      setErrorMessage("일 최대 충전 한도가 최초 충전 금액 이상이어야 합니다.");
+      setErrorMessage("최초 충전 금액 이상으로 입력해주세요.");
       return;
     }
 
@@ -196,7 +205,11 @@ const SMPayMasterApplyWriteForm = ({ id }: ViewWrieProps) => {
         <Button className="w-[150px]" onClick={handleSendAdAgree}>
           심사 요청
         </Button>
-        <Button variant="cancel" className="w-[150px]" onClick={() => {}}>
+        <Button
+          variant="cancel"
+          className="w-[150px]"
+          onClick={() => router.push("/sm-pay/management")}
+        >
           취소
         </Button>
       </div>

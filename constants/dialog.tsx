@@ -23,7 +23,7 @@ export const WRITE_MODAL_CONTENT = {
     <div className="flex flex-col items-center pb-4 font-medium">
       <span>심사 요청이 완료되었습니다.</span>
       <div className="mt-4">
-        <p>담장자와 최상위 그룹장에게 심사요청 안내메일이 발송되었습니다.</p>
+        <p>담당자와 최상위 그룹장에게 심사요청 안내메일이 발송되었습니다.</p>
       </div>
     </div>
   ),

@@ -11,14 +11,18 @@ import { useSmPayAdvertiserStatusList } from "@/hooks/queries/sm-pay";
 import type { TableParams } from "@/types/table";
 import type { SmPayAdvertiserStautsOrderType } from "@/types/smpay";
 
-const defaultTableParams = {
+type TableParamsWithOrder = TableParams & {
+  orderType?: SmPayAdvertiserStautsOrderType;
+};
+
+const defaultTableParams: TableParamsWithOrder = {
   pagination: {
     current: 1,
     pageSize: 10,
     total: 0,
   },
   filters: {},
-  sortField: "ADVERTISER_REGISTER_DESC",
+  orderType: "ADVERTISER_REGISTER_DESC",
 };
 
 const SMPayManagementView = () => {
@@ -26,14 +30,14 @@ const SMPayManagementView = () => {
   const [search, setSearch] = useState<string>("");
 
   const [tableParams, setTableParams] =
-    useState<TableParams>(defaultTableParams);
+    useState<TableParamsWithOrder>(defaultTableParams);
 
   const { data: advertiserStatusRes, isFetching: loadingData } =
     useSmPayAdvertiserStatusList({
       page: tableParams.pagination?.current || 1,
       size: tableParams.pagination?.pageSize || 10,
       keyword: search,
-      orderType: tableParams.sortField as SmPayAdvertiserStautsOrderType,
+      orderType: tableParams.orderType || "ADVERTISER_REGISTER_DESC",
     });
 
   const handleStatusChange = (status: string) => {
