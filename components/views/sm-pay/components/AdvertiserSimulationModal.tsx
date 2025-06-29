@@ -3,10 +3,12 @@ import { GuideBox } from "@/components/common/Box";
 import { Modal } from "@/components/composite/modal-components";
 import Table from "@/components/composite/table";
 
-import { roundUpToThousand } from "@/utils/format";
-
 import type { TableProps } from "antd";
-import type { ChargeRule, PrePaymentSchedule } from "@/types/smpay";
+import type {
+  ChargeRule,
+  PrePaymentSchedule,
+  SmPayStatIndicator,
+} from "@/types/smpay";
 
 type Props = {
   open: boolean;
@@ -14,6 +16,7 @@ type Props = {
   upChargeRule?: ChargeRule;
   downChargeRule?: ChargeRule;
   prePaymentSchedule?: PrePaymentSchedule;
+  statIndicator?: SmPayStatIndicator;
 };
 
 /**
@@ -21,21 +24,16 @@ type Props = {
  */
 const generateSimulationData = (
   upChargeRule?: ChargeRule,
-  prePaymentSchedule?: PrePaymentSchedule
+  prePaymentSchedule?: PrePaymentSchedule,
+  statIndicator?: SmPayStatIndicator
 ) => {
-  const currentRoas = 400;
-  // 기본값 설정
-  const TARGET_ROAS = upChargeRule?.standardRoasPercent || 0;
-  const BASE_CHARGE = prePaymentSchedule?.initialAmount || 0;
-  const INCREASE_AMOUNT = upChargeRule?.changePercentOrValue || 0;
-  const IS_FIXED_AMOUNT = upChargeRule?.boundType === "FIXED_AMOUNT";
-  const DAYS = 28;
+  const currentRoas = statIndicator?.dailyAverageRoas || 0;
 
-  console.log("TARGET_ROAS", TARGET_ROAS);
-  console.log("BASE_CHARGE", BASE_CHARGE);
-  console.log("INCREASE_AMOUNT", INCREASE_AMOUNT);
-  console.log("IS_FIXED_AMOUNT", IS_FIXED_AMOUNT);
-  console.log("DAYS", DAYS);
+  // 적용 전 기본값 설정
+  const PRE_BASE_CHARGE =
+    statIndicator?.dailyAverageRoas || prePaymentSchedule?.initialAmount || 0;
+
+  const DAYS = 28;
 
   // SM Pay 적용 전 데이터 (고정)
   const beforeData: SimulationTableRow[] = [];
@@ -43,7 +41,7 @@ const generateSimulationData = (
   let beforeTotalRevenue = 0;
 
   for (let i = 1; i <= DAYS; i++) {
-    const adCost = BASE_CHARGE; // 매일 동일한 금액
+    const adCost = PRE_BASE_CHARGE; // 매일 동일한 금액
     const revenue = adCost * (currentRoas / 100);
 
     beforeTotalAdCost += adCost;
@@ -67,6 +65,12 @@ const generateSimulationData = (
     roas: currentRoas,
   });
 
+  // 적용 후 기본값 설정
+  const TARGET_ROAS = upChargeRule?.standardRoasPercent || 0;
+  const BASE_CHARGE = prePaymentSchedule?.initialAmount || 0;
+  const INCREASE_AMOUNT = upChargeRule?.changePercentOrValue || 0;
+  const IS_FIXED_AMOUNT = upChargeRule?.boundType === "FIXED_AMOUNT";
+
   // SM Pay 적용 후 데이터 (점진적 증가)
   const afterData: SimulationTableRow[] = [];
   let afterTotalAdCost = 0;
@@ -83,18 +87,13 @@ const generateSimulationData = (
         adCost = BASE_CHARGE + INCREASE_AMOUNT * (i - 1); // 2일차부터 증가
       }
     } else {
-      // 정률 방식: (initialAmount * (changePercent/100)) * roas
+      // 정률 방식: 등비수열로 증가 (ROAS 무시)
       if (i === 1) {
         adCost = BASE_CHARGE; // 1일차는 기본 금액
       } else {
-        // 정률로 증가: 매일 (기본금액 * 증가율 * 일차)를 적용
-        const dailyIncrease = BASE_CHARGE * (INCREASE_AMOUNT / 100);
-        adCost = BASE_CHARGE + dailyIncrease * (i - 1) * (TARGET_ROAS / 100);
+        adCost = BASE_CHARGE * Math.pow(1 + INCREASE_AMOUNT / 100, i - 1);
       }
     }
-
-    // 1,000원 단위 절상 적용
-    adCost = roundUpToThousand(adCost);
 
     // 최대 한도 적용
     const maxLimit = prePaymentSchedule?.maxChargeLimit;
@@ -102,7 +101,11 @@ const generateSimulationData = (
       adCost = maxLimit;
     }
 
-    const revenue = adCost * (TARGET_ROAS / 100);
+    // 소수점 없이 원 단위로 반올림
+    adCost = Math.round(adCost);
+
+    let revenue = adCost * (TARGET_ROAS / 100);
+    revenue = Math.round(revenue);
 
     afterTotalAdCost += adCost;
     afterTotalRevenue += revenue;
@@ -144,33 +147,6 @@ const AdvertiserSimulationModal = ({
     prePaymentSchedule?.maxChargeLimit >= prePaymentSchedule?.initialAmount &&
     prePaymentSchedule?.initialAmount >= 10000;
 
-  console.log(
-    "upChargeRule?.standardRoasPercent",
-    upChargeRule?.standardRoasPercent
-  );
-  console.log(
-    "upChargeRule?.changePercentOrValue",
-    upChargeRule?.changePercentOrValue
-  );
-  console.log(
-    "prePaymentSchedule?.initialAmount",
-    prePaymentSchedule?.initialAmount
-  );
-  console.log(
-    "prePaymentSchedule?.maxChargeLimit",
-    prePaymentSchedule?.maxChargeLimit
-  );
-  console.log(
-    "prePaymentSchedule?.maxChargeLimit >= prePaymentSchedule?.initialAmount",
-    prePaymentSchedule?.maxChargeLimit &&
-      prePaymentSchedule?.maxChargeLimit >= prePaymentSchedule?.initialAmount
-  );
-  console.log(
-    "prePaymentSchedule?.initialAmount >= 10000",
-    prePaymentSchedule?.initialAmount &&
-      prePaymentSchedule?.initialAmount >= 10000
-  );
-
   const { beforeData, afterData } = hasValidInput
     ? generateSimulationData(upChargeRule, prePaymentSchedule)
     : { beforeData: [], afterData: [] };
@@ -178,9 +154,7 @@ const AdvertiserSimulationModal = ({
   // 성과 향상률 계산
   const improvementRateNum =
     hasValidInput && beforeData.length > 0 && afterData.length > 0
-      ? ((afterData[0].conversionRevenue - beforeData[0].conversionRevenue) /
-          beforeData[0].conversionRevenue) *
-        100
+      ? (afterData[0].conversionRevenue / beforeData[0].conversionRevenue) * 100
       : 0;
   const improvementRate = improvementRateNum.toFixed(1);
 
@@ -192,9 +166,6 @@ const AdvertiserSimulationModal = ({
     upChargeRule?.boundType === "FIXED_AMOUNT" ? "원씩" : "%씩";
   const decreaseType =
     downChargeRule?.boundType === "FIXED_AMOUNT" ? "원씩" : "%씩";
-
-  console.log("targetRoas", targetRoas);
-  console.log("increaseAmount", increaseAmount);
 
   return (
     <Modal
