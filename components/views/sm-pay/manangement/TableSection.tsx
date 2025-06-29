@@ -87,7 +87,7 @@ const TableSection = ({
       const order = sorter.order === "ascend" ? "ASC" : "DESC";
 
       const fieldMap: Record<string, string> = {
-        no: "ADVERTISER_REGISTER",
+        no: "NO",
         advertiserName: "ADVERTISER_NAME",
         advertiserCustomerId: "ADVERTISER_CUSTOMER_ID",
         userId: "ADVERTISER_ID",
@@ -155,7 +155,7 @@ const TableSection = ({
       render: (_, record) => {
         const availableActions = STATUS_ACTION_BUTTONS[record.advertiserType];
         return (
-          <div className="flex items-center gap-2">
+          <div className="flex justify-center gap-2">
             {availableActions.includes("view") && (
               <Button
                 variant="greenOutline"
@@ -257,8 +257,6 @@ const TableSection = ({
       behavior: "smooth",
     });
   }, [tableParams.pagination?.current]);
-
-  console.log("dataSource", dataSource);
 
   return (
     <section>
