@@ -8,11 +8,12 @@ import LoadingUI from "@/components/common/Loading";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 
 import AdvertiserInfoSection from "@/components/views/sm-pay/components/AdvertiserInfoSection";
-import RuleSection from "@/components/views/sm-pay/components/RuleSection2";
+import RuleSection2 from "@/components/views/sm-pay/components/RuleSection2";
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
 import AdvertiserSimulationModal from "@/components/views/sm-pay/components/AdvertiserSimulationModal";
 import StatIndicatorSection from "@/components/views/sm-pay/components/StatIndicatorSection";
 import ScheduleSection2 from "@/components/views/sm-pay/components/ScheduleSection2";
+import GuidSection from "@/components/views/sm-pay/components/GuideSection";
 
 import {
   WRITE_MODAL_CONTENT,
@@ -38,6 +39,7 @@ const SMPayMasterApplyWriteForm = ({ id }: ViewWrieProps) => {
   const [writeModal, setWriteModal] = useState<ApplyWriteModalStatus | null>(
     null
   );
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const [upChargeRule, setUpChargeRule] = useState<ChargeRule>({
     standardRoasPercent: 0,
@@ -55,8 +57,8 @@ const SMPayMasterApplyWriteForm = ({ id }: ViewWrieProps) => {
 
   const [prePaymentSchedule, setPrePaymentSchedule] =
     useState<PrePaymentSchedule>({
-      initialAmount: 0,
-      maxChargeLimit: 0,
+      initialAmount: 100000,
+      maxChargeLimit: 100000,
       minChargeLimit: 100000,
     });
 
@@ -93,6 +95,16 @@ const SMPayMasterApplyWriteForm = ({ id }: ViewWrieProps) => {
       },
     ];
 
+    if (prePaymentSchedule.initialAmount < 10000) {
+      setErrorMessage("최초 충전 금액은 10,000원 이상이어야 합니다.");
+      return;
+    }
+
+    if (prePaymentSchedule.maxChargeLimit < prePaymentSchedule.initialAmount) {
+      setErrorMessage("일 최대 충전 한도가 최초 충전 금액 이상이어야 합니다.");
+      return;
+    }
+
     const statIndicatorParams: StatIndicatorParams = {
       operationPeriod: statIndicator?.operationPeriod || 0,
       dailyAverageRoas: statIndicator?.dailyAverageRoas || 0, //1.0;
@@ -116,6 +128,15 @@ const SMPayMasterApplyWriteForm = ({ id }: ViewWrieProps) => {
     <section className="mt-4">
       {loadingSend && <LoadingUI title="... 동의 요청 중" />}
 
+      {errorMessage && (
+        <ConfirmDialog
+          open={!!errorMessage}
+          onClose={() => setErrorMessage(null)}
+          onConfirm={() => setErrorMessage(null)}
+          content={errorMessage}
+        />
+      )}
+
       {writeModal && (
         <ConfirmDialog
           open
@@ -136,12 +157,15 @@ const SMPayMasterApplyWriteForm = ({ id }: ViewWrieProps) => {
         />
       )}
 
-      <AdvertiserInfoSection advertiserId={id} />
+      <GuidSection viewType="write" />
+
+      <AdvertiserInfoSection advertiserId={id} isHistory />
 
       <StatIndicatorSection advertiserId={id} statIndicator={statIndicator} />
 
-      <RuleSection
+      <RuleSection2
         type="write"
+        recommendRoas={statIndicator?.recommendRoas}
         upChargeRule={upChargeRule}
         downChargeRule={downChargeRule}
         handleUpChargeRuleChange={setUpChargeRule}

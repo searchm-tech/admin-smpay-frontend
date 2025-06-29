@@ -27,6 +27,7 @@ import type {
 } from "@/types/smpay";
 import type { AdvertiserOrderType } from "@/types/adveriser";
 import { type ModalInfo, defaultTable } from "./constants";
+import { formatDate } from "@/utils/format";
 
 const ViewList = () => {
   const router = useRouter();
@@ -122,6 +123,7 @@ const ViewList = () => {
       dataIndex: "registerOrUpdateDt",
       align: "center",
       sorter: true,
+      render: (value) => formatDate(value),
     },
   ];
 

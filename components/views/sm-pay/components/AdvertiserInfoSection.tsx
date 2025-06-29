@@ -40,6 +40,8 @@ const AdvertiserInfoSection = ({ advertiserId, isHistory = false }: Props) => {
 
   const [isHistoryModal, setIsHistoryModal] = useState(false);
 
+  const { data: dataSource } = useSmPayApplyList(advertiserId || 0);
+
   return (
     <div>
       {isLoading && <LoadingUI title="광고주 정보 조회 중..." />}
@@ -55,7 +57,7 @@ const AdvertiserInfoSection = ({ advertiserId, isHistory = false }: Props) => {
           <LabelBullet labelClassName="text-base font-bold">
             광고주 상태
           </LabelBullet>
-          {isHistory && (
+          {isHistory && dataSource && dataSource.length > 0 && (
             <Button onClick={() => setIsHistoryModal(true)}>
               SM Pay 지난 이력 보기
             </Button>

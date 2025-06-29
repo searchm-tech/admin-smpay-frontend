@@ -96,11 +96,11 @@ const GuidSection = ({ viewType, className, onClick }: GuidSectionProps) => {
               수정할 수 있습니다.
             </span>
             <span>
-              • 광고주가 등의하지 않아 심사가 진행되지 않은 경우, 광고주에게
+              • 광고주가 동의하지 않아 심사가 진행되지 않은 경우, 광고주에게
               재등의를 받았다면 신규 신청을 통해 다시 심사를 진행할 수 있습니다.
             </span>
             <span>
-              • 광고주의 등의 기한이 만료된 경우에는 &apos;SM Pay 관리&apos;
+              • 광고주의 동의 기한이 만료된 경우에는 &apos;SM Pay 관리&apos;
               메뉴에서 광고주를 검색하여 등의 요청을 다시 보내주세요.
             </span>
             <span>

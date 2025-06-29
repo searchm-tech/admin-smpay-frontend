@@ -194,7 +194,13 @@ type TableModalProps = {
 const TableModal = ({ open, onClose, advertiserId }: TableModalProps) => {
   const { data, isPending } = useSmPayAdvertiserDailyStat(advertiserId);
   return (
-    <Modal open={open} onClose={onClose} title="상세 지표 보기" width={1200}>
+    <Modal
+      open={open}
+      onConfirm={onClose}
+      cancelDisabled
+      title="일별 성과 조회"
+      width="95vw"
+    >
       {isPending && <LoadingUI />}
       <div className="w-full max-h-[70vh] overflow-y-auto">
         <Table<DailyStat & { id: number }>
@@ -279,7 +285,7 @@ const columns: TableProps<DailyStat & { id: number }>["columns"] = [
     width: 100,
   },
   {
-    title: "전환당 비용",
+    title: "전환단가",
     dataIndex: "cpConv",
     key: "cpConv",
     align: "right",
@@ -288,7 +294,7 @@ const columns: TableProps<DailyStat & { id: number }>["columns"] = [
     width: 100,
   },
   {
-    title: "전환 매출",
+    title: "전환매출액",
     dataIndex: "convAmt",
     key: "convAmt",
     align: "right",
@@ -304,14 +310,5 @@ const columns: TableProps<DailyStat & { id: number }>["columns"] = [
     render: (value: number) => (value * 100).toFixed(0) + "%",
     sorter: (a, b) => a.ror - b.ror,
     width: 80,
-  },
-  {
-    title: "평균 노출 순위",
-    dataIndex: "avgRnk",
-    key: "avgRnk",
-    align: "right",
-    render: (value: number) => value.toFixed(2),
-    sorter: (a, b) => a.avgRnk - b.avgRnk,
-    width: 120,
   },
 ];
