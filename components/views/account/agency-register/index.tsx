@@ -226,7 +226,7 @@ const AgencyRegisterView = () => {
       {modalInfo && (
         <ConfirmDialog
           open
-          title={ModalInfo[modalInfo].title} // TODO : 노출 되는지 확인 필요
+          title={ModalInfo[modalInfo].title}
           content={ModalInfo[modalInfo].content}
           onConfirm={handleModal}
           onClose={() => setModalInfo(null)}
@@ -246,12 +246,10 @@ const AgencyRegisterView = () => {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormControl>
-                      <div className="flex items-center gap-2">
-                        <Input className="max-w-[500px]" {...field} />
-                        <FormMessage variant="error" />
-                      </div>
-                    </FormControl>
+                    <FormControlFlex>
+                      <Input className="max-w-[500px]" {...field} />
+                      <FormMessage variant="error" />
+                    </FormControlFlex>
                   </FormItem>
                 )}
               />
@@ -273,39 +271,38 @@ const AgencyRegisterView = () => {
                 name="uniqueCode"
                 render={({ field }) => (
                   <FormItem>
-                    <FormControl>
-                      <div className="flex items-center gap-2">
+                    <FormControlFlex>
+                      <FormControl>
                         <Input
                           className="max-w-[500px]"
                           placeholder="영문 4~16자"
                           {...field}
                           disabled={isEnableCode}
                         />
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={() => onDuplicateUniqueCode(field.value)}
-                          disabled={
-                            !field.value ||
-                            !!formData.formState.errors.uniqueCode
-                          }
-                        >
-                          {isEnableCode ? "중복 체크 완료" : "중복 체크"}
-                        </Button>
+                      </FormControl>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => onDuplicateUniqueCode(field.value)}
+                        disabled={
+                          !field.value || !!formData.formState.errors.uniqueCode
+                        }
+                      >
+                        {isEnableCode ? "중복 체크 완료" : "중복 체크"}
+                      </Button>
 
-                        {isEnableCode && (
-                          <Button
-                            onClick={() => {
-                              setIsEnableCode(false);
-                              formData.setValue("uniqueCode", "");
-                            }}
-                          >
-                            초기화
-                          </Button>
-                        )}
-                        <FormMessage variant="error" />
-                      </div>
-                    </FormControl>
+                      {isEnableCode && (
+                        <Button
+                          onClick={() => {
+                            setIsEnableCode(false);
+                            formData.setValue("uniqueCode", "");
+                          }}
+                        >
+                          초기화
+                        </Button>
+                      )}
+                      <FormMessage variant="error" />
+                    </FormControlFlex>
                   </FormItem>
                 )}
               />
@@ -316,12 +313,10 @@ const AgencyRegisterView = () => {
                 name="representativeName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormControl>
-                      <div className="flex items-center gap-2">
-                        <Input className="max-w-[500px]" {...field} />
-                        <FormMessage variant="error" />
-                      </div>
-                    </FormControl>
+                    <FormControlFlex>
+                      <Input className="max-w-[500px]" {...field} />
+                      <FormMessage variant="error" />
+                    </FormControlFlex>
                   </FormItem>
                 )}
               />
@@ -332,23 +327,20 @@ const AgencyRegisterView = () => {
                 name="businessRegistrationNumber"
                 render={({ field }) => (
                   <FormItem>
-                    <FormControl>
-                      <div className="flex items-center gap-2">
-                        <Input
-                          className="max-w-[500px]"
-                          placeholder="숫자만 연속 입력"
-                          maxLength={12}
-                          {...field}
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            const formattedValue = formatBusinessNumber(value);
-                            field.onChange(formattedValue);
-                          }}
-                        />
-
-                        <FormMessage variant="error" />
-                      </div>
-                    </FormControl>
+                    <FormControlFlex>
+                      <Input
+                        className="max-w-[500px]"
+                        placeholder="숫자만 연속 입력"
+                        maxLength={12}
+                        {...field}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          const formattedValue = formatBusinessNumber(value);
+                          field.onChange(formattedValue);
+                        }}
+                      />
+                      <FormMessage variant="error" />
+                    </FormControlFlex>
                   </FormItem>
                 )}
               />
@@ -359,40 +351,39 @@ const AgencyRegisterView = () => {
                 name="domainName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormControl>
-                      <div className="flex items-center gap-2">
-                        <span className="text-base">ID @</span>
+                    <FormControlFlex>
+                      <span className="text-base">ID @</span>
+                      <FormControl>
                         <Input
                           className="max-w-[455px]"
                           placeholder="company.com"
                           disabled={isEnableEmailDomain}
                           {...field}
                         />
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={() => onDuplicateEmailDomain(field.value)}
-                          disabled={
-                            !field.value ||
-                            !!formData.formState.errors.domainName
-                          }
-                        >
-                          {isEnableEmailDomain ? "중복 체크 완료" : "중복 체크"}
-                        </Button>
+                      </FormControl>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => onDuplicateEmailDomain(field.value)}
+                        disabled={
+                          !field.value || !!formData.formState.errors.domainName
+                        }
+                      >
+                        {isEnableEmailDomain ? "중복 체크 완료" : "중복 체크"}
+                      </Button>
 
-                        {isEnableEmailDomain && (
-                          <Button
-                            onClick={() => {
-                              setIsEnableEmailDomain(false);
-                              formData.setValue("domainName", "");
-                            }}
-                          >
-                            초기화
-                          </Button>
-                        )}
-                        <FormMessage variant="error" />
-                      </div>
-                    </FormControl>
+                      {isEnableEmailDomain && (
+                        <Button
+                          onClick={() => {
+                            setIsEnableEmailDomain(false);
+                            formData.setValue("domainName", "");
+                          }}
+                        >
+                          초기화
+                        </Button>
+                      )}
+                      <FormMessage variant="error" />
+                    </FormControlFlex>
                   </FormItem>
                 )}
               />
@@ -429,12 +420,10 @@ const AgencyRegisterView = () => {
                 name="agentBillEmailAddress"
                 render={({ field }) => (
                   <FormItem>
-                    <FormControl>
-                      <div className="flex items-center gap-2">
-                        <Input className="max-w-[500px]" {...field} />
-                        <FormMessage variant="error" />
-                      </div>
-                    </FormControl>
+                    <FormControlFlex>
+                      <Input className="max-w-[500px]" {...field} />
+                      <FormMessage variant="error" />
+                    </FormControlFlex>
                   </FormItem>
                 )}
               />
@@ -465,3 +454,7 @@ const AgencyRegisterView = () => {
 };
 
 export default AgencyRegisterView;
+
+const FormControlFlex = ({ children }: { children: React.ReactNode }) => {
+  return <div className="flex items-center gap-2">{children}</div>;
+};

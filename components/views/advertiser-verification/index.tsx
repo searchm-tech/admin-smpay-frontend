@@ -5,7 +5,12 @@ import DesktopView from "./desktop";
 import MobilewView from "./mobile";
 import { useWindowSize } from "@/hooks/useWindowSize";
 
-const AdvertiserVerificationView = () => {
+type Props = {
+  authCode: string;
+  advertiserId: number;
+};
+
+const AdvertiserVerificationView = ({ authCode, advertiserId }: Props) => {
   const { device } = useWindowSize();
 
   return (
