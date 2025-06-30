@@ -94,7 +94,7 @@ const TableSection = ({
       setSelectedRowKeys(newSelectedRowKeys);
     },
     getCheckboxProps: (record: TAdvertiser) => ({
-      disabled: record.jobStatus === "IN_PROGRESS" || !record.isLossPrivilege, // Column configuration not to be checked
+      disabled: record.jobStatus === "IN_PROGRESS" || record.isLossPrivilege, // Column configuration not to be checked
       name: record.name,
     }),
     renderCell: (
@@ -144,7 +144,7 @@ const TableSection = ({
             <span>{value}</span>
 
             {record.jobStatus === "IN_PROGRESS" && <InProgressFlag />}
-            {record.isLossPrivilege && record.jobStatus === "STOP" && (
+            {(record.isLossPrivilege || record.jobStatus === "STOP") && (
               <LossPrivilegeFlag />
             )}
           </div>
