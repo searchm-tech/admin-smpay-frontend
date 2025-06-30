@@ -9,8 +9,9 @@ export const DEFAULT_LICENSE_INFO = {
 export const dialogContent = {
   "success-create": (
     <div className="text-center">
-      <p>등록이 성공적으로 완료되었습니다.</p>
-      <p>광고주를 등록해주세요.</p>
+      <p>API 등록이 완료되었습니다.</p>
+      <p>API 동기화에는 최대한 30분이 쇼요될 수 있습니다.</p>
+      <p>잠시 후 광고주 등록을 진행해주세요.</p>
     </div>
   ),
 
@@ -19,7 +20,7 @@ export const dialogContent = {
       <p>API 라이선스를 수정하면,</p>
       <p>이 계정에 등록된 광고주 정보가 초기화됩니다.</p>
       <br />
-      <p>동기화에는 최대 1시간이 소요될 수 있습니다.</p>
+      <p>동기화에는 최대 30분이 소요될 수 있습니다.</p>
       <p>계속하시겠습니까?</p>
     </div>
   ),
