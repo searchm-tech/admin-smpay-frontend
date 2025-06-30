@@ -96,7 +96,6 @@ const TableSection = ({
               className="text-[#007AFF] cursor-pointer"
               size={20}
               onClick={() => {
-                console.log(record);
                 const url = `/account/member-edit?userId=${record.userId}&agentId=${record.agentId}`;
                 router.push(url);
               }}

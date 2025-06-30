@@ -82,6 +82,10 @@ const TableSection = ({
       dataIndex: "action",
       align: "center",
       render: (_, record) => {
+        if (Number(user.userId) === Number(record.userId)) {
+          return null;
+        }
+
         return (
           <div className="flex items-end justify-center gap-4">
             <SquarePen
@@ -92,6 +96,7 @@ const TableSection = ({
                 router.push(url);
               }}
             />
+
             <Trash2
               className="text-[#FF0000] cursor-pointer"
               size={20}
