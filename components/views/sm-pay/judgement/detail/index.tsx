@@ -30,7 +30,7 @@ import {
   useSmPayReviewerMemo,
   useSmPayAdvertiserChargeRule,
   useSmPayAdvertiserPrePaymentSchedule,
-  useSmPayAdminOverviewChargeRule,
+  useSmPayAdvertiserDetail,
 } from "@/hooks/queries/sm-pay";
 
 import type { ChargeRule, PrePaymentSchedule } from "@/types/smpay";
@@ -47,7 +47,7 @@ const status = "reject";
 
 const SmPayJudgementDetailView = ({ id }: Props) => {
   const router = useRouter();
-  const formId = useSearchParams().get("formId");
+
   const isApprovalRead = useSearchParams().get("isApprovalRead") === "true";
   const [isApproved, setIsApproved] = useState(false);
   const [isRejectSend, setIsRejectSend] = useState(false);
@@ -85,6 +85,9 @@ const SmPayJudgementDetailView = ({ id }: Props) => {
       maxChargeLimit: 0,
       minChargeLimit: 0,
     });
+
+  const { data: detailInfo, isPending: loadingDetailInfo } =
+    useSmPayAdvertiserDetail(Number(id));
 
   const { data: screeningIndicator, isPending: loadingScreeningIndicator } =
     useSmPayScreeningIndicator(Number(id));
@@ -239,13 +242,13 @@ const SmPayJudgementDetailView = ({ id }: Props) => {
         />
       )}
 
-      {/* <GuidSection
+      <GuidSection
         viewType={
-          smpayInfo?.advertiserStatus === "OPERATION_REJECT"
+          detailInfo?.status === "OPERATION_REJECT"
             ? "reject"
             : "master-judgement"
         }
-      /> */}
+      />
 
       <AdvertiserInfoSection advertiserId={Number(id)} isHistory />
 

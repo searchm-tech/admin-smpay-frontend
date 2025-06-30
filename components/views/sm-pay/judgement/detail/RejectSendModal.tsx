@@ -102,17 +102,17 @@ const RejectSendModal = ({
   return (
     <Modal
       open
-      title="광고주 심사 취소"
+      title="광고주 심사 반려"
       onClose={onClose}
       onConfirm={handleConfirm}
+      confirmText="반려 처리"
     >
       <div className="w-[800px]">
         <div className="mb-4">
           <p className="pb-4">광고주의 SM Pay 신청이 반려되었습니다.</p>
           <p>반려 사유를 입력해주세요.</p>
           <p>
-            입력한 내용은 담당자가 확인할 수 있으며, 재신청 시 참고 자료로
-            활용됩니다.
+            입력한 내용은 담당자가 확인할 수 있으며, 참고 자료로 활용됩니다.
           </p>
         </div>
 

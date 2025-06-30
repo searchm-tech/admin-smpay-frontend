@@ -85,7 +85,7 @@ const ApproveModal = ({
       open
       onConfirm={onConfirm}
       title="광고주 심사 승인"
-      confirmText="확인"
+      confirmText="승인 처리"
       cancelDisabled
     >
       <div>광고주의 SM Pay 신청이 승인되었습니다.</div>
