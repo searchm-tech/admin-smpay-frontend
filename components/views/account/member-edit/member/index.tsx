@@ -108,6 +108,7 @@ const MemberView = ({ userId, agentId }: Props) => {
       setDepartment(userInfoData.user.department);
     }
   }, [userInfoData]);
+  console.log(userInfo);
 
   return (
     <div className="my-5">
