@@ -63,7 +63,7 @@ const AdminView = ({ userId }: Props) => {
       return;
     }
 
-    if (phoneNumber.length !== 11) {
+    if (phoneNumber && phoneNumber.length !== 11) {
       setErrorDialog("연락처 형식이 올바르지 않습니다.");
       return;
     }
@@ -103,8 +103,6 @@ const AdminView = ({ userId }: Props) => {
     }
   }, [adminUserInfo]);
 
-  console.log(userInfo?.phoneNumber);
-
   return (
     <div className="my-5">
       {isLoading && <LoadingUI title="회원 정보 조회 중..." />}
@@ -135,15 +133,6 @@ const AdminView = ({ userId }: Props) => {
               onChange={(e) => handleChangeUserInfo("id", e.target.value)}
             />
           </DescriptionItem>
-          {/* <DescriptionItem label="연락처 *">
-            <PhoneInput
-              className="max-w-[500px]"
-              value={userInfo?.phoneNumber}
-              onChange={(e) =>
-                handleChangeUserInfo("phoneNumber", e.target.value)
-              }
-            />
-          </DescriptionItem> */}
         </Descriptions>
       </div>
 
