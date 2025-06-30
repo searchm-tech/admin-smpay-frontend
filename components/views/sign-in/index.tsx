@@ -164,6 +164,7 @@ const SignInView = ({ code }: SignInViewProps) => {
       console.error("onSubmit error", error);
       let message = "로그인 실패";
       if (error instanceof ApiError) {
+        console.log("error", error);
         message = error.message;
 
         if (error.code === "103") {
@@ -171,7 +172,7 @@ const SignInView = ({ code }: SignInViewProps) => {
           return;
         }
 
-        if (error.code === "20") {
+        if (error.code === "101") {
           setErrMessage("아이디 또는 비밀번호가 잘못 되었습니다.");
           return;
         }
