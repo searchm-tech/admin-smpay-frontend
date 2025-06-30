@@ -63,12 +63,12 @@ const MemberView = ({ userId, agentId }: Props) => {
   const handleSubmit = () => {
     if (!userInfo) return;
     const { name, loginId, phoneNumber } = userInfo;
-    if (!name || !loginId || !phoneNumber) {
+    if (!name || !loginId) {
       setErrorDialog("모든 필수 항목을 입력해주세요.");
       return;
     }
 
-    if (phoneNumber.length !== 11) {
+    if (phoneNumber && phoneNumber.length !== 11) {
       setErrorDialog("연락처 형식이 올바르지 않습니다.");
       return;
     }
@@ -108,7 +108,6 @@ const MemberView = ({ userId, agentId }: Props) => {
       setDepartment(userInfoData.user.department);
     }
   }, [userInfoData]);
-  console.log(userInfo);
 
   return (
     <div className="my-5">
@@ -153,7 +152,7 @@ const MemberView = ({ userId, agentId }: Props) => {
               onChange={(e) => handleChangeUserInfo("loginId", e.target.value)}
             />
           </DescriptionItem>
-          <DescriptionItem label="연락처 *">
+          <DescriptionItem label="연락처">
             <PhoneInput
               className="max-w-[500px]"
               value={userInfo?.phoneNumber || ""}
