@@ -172,7 +172,7 @@ const SignInView = ({ code }: SignInViewProps) => {
         }
 
         if (error.code === "20") {
-          setErrMessage("회원 정보가 존재하지 않습니다.");
+          setErrMessage("아이디 또는 비밀번호가 잘못 되었습니다.");
           return;
         }
       }
