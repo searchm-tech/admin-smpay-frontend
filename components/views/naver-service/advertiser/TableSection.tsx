@@ -119,7 +119,11 @@ const TableSection = ({
           }
           setSelectedRowKeys(newSelectedRowKeys);
         }}
-        disabled={record.jobStatus === "IN_PROGRESS"}
+        disabled={
+          record.jobStatus === "IN_PROGRESS" ||
+          !record.isLossPrivilege ||
+          record.jobStatus === "STOP"
+        }
       />
     ),
     columnTitle: (
