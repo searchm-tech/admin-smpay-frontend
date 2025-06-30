@@ -1,5 +1,6 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 
 import LoadingUI from "@/components/common/Loading";
 import Title from "@/components/common/Title";
@@ -20,6 +21,7 @@ import {
 } from "@/hooks/queries/user";
 
 import { getUserAuthTypeLabel } from "@/utils/status";
+import { getRedirectPath } from "@/lib/utils";
 
 import type { RequestUserPwd } from "@/types/api/user";
 
@@ -28,28 +30,36 @@ type Props = {
 };
 const AdminView = ({ userId }: Props) => {
   const router = useRouter();
+  const { data: session } = useSession();
 
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [dialog, setDialog] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const { data: adminUserInfo } = useQueryAdminUserInfo({
     userId,
   });
 
   const { mutate: agentsUsersPw, isPending } = useMutationAgentsUsersPw({
-    onSuccess: () => setDialog("비밀번호가 변경되었습니다."),
+    onSuccess: () => setIsSuccess(true),
     onError: (error) => setDialog(error.message),
   });
 
   const handleSubmit = () => {
-    if (!password || !passwordConfirm || phone.length !== 11) {
+    if (!password || !passwordConfirm) {
       setDialog("모든 필수 정보를 입력해주세요.");
       return;
     }
+
     if (password !== passwordConfirm) {
       setDialog("비밀번호가 일치하지 않습니다.");
+      return;
+    }
+
+    if (phone && phone.length !== 11) {
+      setDialog("올바른 형식의 전화번호를 입력해주세요.");
       return;
     }
 
@@ -85,6 +95,18 @@ const AdminView = ({ userId }: Props) => {
           onConfirm={() => setDialog("")}
         />
       )}
+      {isSuccess && (
+        <ConfirmDialog
+          open
+          content="비밀번호가 변경되었습니다."
+          cancelDisabled
+          onConfirm={() => {
+            const redirectPath = getRedirectPath(session?.user.type);
+            router.push(redirectPath);
+          }}
+        />
+      )}
+
       <Title />
       <div className="mx-auto text-center text-[#545F71] font-extrabold flex flex-col gap-2">
         <p>비밀번호를 재설정할 수 있는 페이지입니다.</p>

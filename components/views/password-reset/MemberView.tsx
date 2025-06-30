@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -13,6 +14,8 @@ import { PhoneInput } from "@/components/composite/input-components";
 import Title from "@/components/common/Title";
 import LoadingUI from "@/components/common/Loading";
 import { DescriptionPwd } from "@/components/common/Box";
+import { getUserAuthTypeLabel } from "@/utils/status";
+import { getRedirectPath } from "@/lib/utils";
 
 import {
   useMutationAgentsUsersPw,
@@ -20,17 +23,19 @@ import {
 } from "@/hooks/queries/user";
 
 import type { RequestUserPwd } from "@/types/api/user";
-import { getUserAuthTypeLabel } from "@/utils/status";
+
 type Props = {
   userId: number;
   agentId: number;
 };
 const MemberView = ({ userId, agentId }: Props) => {
   const router = useRouter();
+  const { data: session } = useSession();
+
   const { data: userInfo } = useQueryUserInfo({ agentId, userId });
 
   const { mutate: agentsUsersPw, isPending } = useMutationAgentsUsersPw({
-    onSuccess: () => setDialog("비밀번호가 변경되었습니다."),
+    onSuccess: () => setIsSuccess(true),
     onError: (error) => setDialog(error.message),
   });
 
@@ -39,18 +44,24 @@ const MemberView = ({ userId, agentId }: Props) => {
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [dialog, setDialog] = useState("");
   const [enableInfo, setEnableInfo] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const handleSubmit = () => {
     if (!userInfo) {
       return;
     }
 
-    if (!password || !passwordConfirm || phone.length !== 11) {
+    if (!password || !passwordConfirm) {
       setDialog("모든 필수 정보를 입력해주세요.");
       return;
     }
     if (password !== passwordConfirm) {
       setDialog("비밀번호가 일치하지 않습니다.");
+      return;
+    }
+
+    if (phone && phone.length !== 11) {
+      setDialog("올바른 형식의 전화번호를 입력해주세요.");
       return;
     }
 
@@ -61,8 +72,6 @@ const MemberView = ({ userId, agentId }: Props) => {
       phone,
       type: "RESET",
     };
-
-    console.log("params", params);
 
     agentsUsersPw(params);
   };
@@ -79,7 +88,7 @@ const MemberView = ({ userId, agentId }: Props) => {
       {dialog && (
         <ConfirmDialog
           open
-          title="비밀번호 변경" // TODO : 노출 되는지 확인 필요
+          title="비밀번호 변경"
           content={dialog}
           onClose={() => setDialog("")}
           onConfirm={() => setDialog("")}
@@ -88,7 +97,7 @@ const MemberView = ({ userId, agentId }: Props) => {
       {enableInfo && (
         <ConfirmDialog
           open
-          title="회원정보 변경" // TODO : 노출 되는지 확인 필요
+          title="회원정보 변경"
           content="부서 설정이 되어있지 않습니다. 관리자에게 문의해주세요."
           cancelDisabled
           onConfirm={() => {
@@ -97,6 +106,21 @@ const MemberView = ({ userId, agentId }: Props) => {
           }}
         />
       )}
+
+      {isSuccess && (
+        <ConfirmDialog
+          open
+          content="비밀번호가 변경되었습니다."
+          cancelDisabled
+          onConfirm={() => {
+            const redirectPath = getRedirectPath(session?.user.type);
+            router.push(redirectPath);
+          }}
+        />
+      )}
+
+      <Title />
+
       <Title />
       <div className="mx-auto text-center text-[#545F71] font-extrabold flex flex-col gap-2">
         <p>비밀번호를 재설정할 수 있는 페이지입니다.</p>
