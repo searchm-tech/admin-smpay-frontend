@@ -15,7 +15,10 @@ const ShortcutButton = ({ code }: Props) => {
       return;
     }
 
-    const url = `https://dev.smpay.co.kr/sign-in?code=${code}`;
+    const url =
+      process.env.NEXT_PUBLIC_ENV === "production"
+        ? `https://smpay.co.kr/sign-in?code=${code}`
+        : `https://dev.smpay.co.kr/sign-in?code=${code}`;
 
     const filename = `${agencyInfo.name}.url`;
     const content = `[InternetShortcut]\nURL=${url}`;
