@@ -105,27 +105,30 @@ const TableSection = ({
       record: TAdvertiser,
       index: number,
       originNode: React.ReactNode
-    ) => (
-      <Checkbox
-        checked={checked}
-        onCheckedChange={() => {
-          const key = record.advertiserId;
-          const isChecked = selectedRowKeys.includes(key);
-          let newSelectedRowKeys: React.Key[];
-          if (isChecked) {
-            newSelectedRowKeys = selectedRowKeys.filter((k) => k !== key);
-          } else {
-            newSelectedRowKeys = [...selectedRowKeys, key];
+    ) => {
+      console.log("record", record);
+      return (
+        <Checkbox
+          checked={checked}
+          onCheckedChange={() => {
+            const key = record.advertiserId;
+            const isChecked = selectedRowKeys.includes(key);
+            let newSelectedRowKeys: React.Key[];
+            if (isChecked) {
+              newSelectedRowKeys = selectedRowKeys.filter((k) => k !== key);
+            } else {
+              newSelectedRowKeys = [...selectedRowKeys, key];
+            }
+            setSelectedRowKeys(newSelectedRowKeys);
+          }}
+          disabled={
+            record.jobStatus === "IN_PROGRESS" ||
+            !record.isLossPrivilege ||
+            record.jobStatus === "STOP"
           }
-          setSelectedRowKeys(newSelectedRowKeys);
-        }}
-        disabled={
-          record.jobStatus === "IN_PROGRESS" ||
-          !record.isLossPrivilege ||
-          record.jobStatus === "STOP"
-        }
-      />
-    ),
+        />
+      );
+    },
     columnTitle: (
       <Checkbox
         checked={allSelected ? true : indeterminate ? "indeterminate" : false}
