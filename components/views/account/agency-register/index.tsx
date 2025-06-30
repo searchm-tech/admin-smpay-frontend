@@ -336,13 +336,14 @@ const AgencyRegisterView = () => {
                       <div className="flex items-center gap-2">
                         <Input
                           className="max-w-[500px]"
+                          placeholder="숫자만 연속 입력"
+                          maxLength={12}
                           {...field}
                           onChange={(e) => {
                             const value = e.target.value;
                             const formattedValue = formatBusinessNumber(value);
                             field.onChange(formattedValue);
                           }}
-                          maxLength={12}
                         />
 
                         <FormMessage variant="error" />
@@ -363,8 +364,9 @@ const AgencyRegisterView = () => {
                         <span className="text-base">ID @</span>
                         <Input
                           className="max-w-[455px]"
-                          {...field}
+                          placeholder="company.com"
                           disabled={isEnableEmailDomain}
+                          {...field}
                         />
                         <Button
                           type="button"
