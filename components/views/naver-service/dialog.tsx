@@ -153,10 +153,6 @@ export const CreateLicTipDialog = ({ onClose }: CreateLicTipDialogProps) => {
             </span>
             에서 확인하실 수 있습니다.
           </p>
-          <p>
-            <span className="font-bold">광고주 등록</span> 후 네이버 광고 마케터
-            라이선스 등록을 완료해주세요.
-          </p>
         </div>
 
         <div className="flex justify-center">
