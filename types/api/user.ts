@@ -1,6 +1,7 @@
 // 대행사 회원 메일 인증 코드 확인 API
 
-import { TAuthType, TResetPwdType, UserStatus } from "../user";
+import { TAgency } from "../agency";
+import { TAuthType, TResetPwdType, TSMPayUser, UserStatus } from "../user";
 
 // agents/users/mail-verifications request type
 export type RequestMailVerify = {
@@ -11,8 +12,14 @@ export type RequestMailVerify = {
 // agents/users/mail-verifications response type
 export type ResponseMailVerify = {
   isVerified: boolean;
-  adminAgentResponseDto: AdminAgentResponseDto;
-  userResponseDto: UserResponseDto;
+  department: DepartmentResponseDto;
+  agent: TAgency;
+  user: TSMPayUser;
+};
+
+export type DepartmentResponseDto = {
+  departmentId: number;
+  name: string;
 };
 
 export type AdminAgentResponseDto = {
