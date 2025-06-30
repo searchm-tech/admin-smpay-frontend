@@ -96,7 +96,7 @@ const TableSection = ({
     getCheckboxProps: (record: TAdvertiser) => ({
       disabled:
         record.jobStatus === "IN_PROGRESS" ||
-        !record.isLossPrivilege ||
+        record.isLossPrivilege ||
         record.jobStatus === "STOP", // Column configuration not to be checked
       name: record.name,
     }),
@@ -123,7 +123,7 @@ const TableSection = ({
           }}
           disabled={
             record.jobStatus === "IN_PROGRESS" ||
-            !record.isLossPrivilege ||
+            record.isLossPrivilege ||
             record.jobStatus === "STOP"
           }
         />
