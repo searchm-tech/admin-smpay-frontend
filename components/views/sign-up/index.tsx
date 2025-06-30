@@ -150,7 +150,7 @@ const SignUpView = ({ agentCode, userCode }: SignUpViewProps) => {
             {mailVerify?.department?.name || "부서 미등록"}
           </DescriptionItem>
           <DescriptionItem label="이메일주소">
-            name@{mailVerify.agent.domainName}
+            {mailVerify.user.id}
           </DescriptionItem>
         </Descriptions>
         <DescriptionPwd />
