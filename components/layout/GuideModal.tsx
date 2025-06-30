@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import type { ReactNode } from "react";
+import { useState } from "react";
 
 interface SmPayGuideModalProps {
   onClose: () => void;
@@ -59,6 +60,8 @@ const processSteps = [
 ];
 
 const SmPayGuideModal = ({ onClose }: SmPayGuideModalProps) => {
+  const [dontShowChecked, setDontShowChecked] = useState(false);
+
   const handleDontShowToday = () => {
     const today = new Date();
     const expiryDate = new Date(
@@ -69,9 +72,17 @@ const SmPayGuideModal = ({ onClose }: SmPayGuideModalProps) => {
       0,
       0
     ).getTime();
-
     localStorage.setItem("hideGuideModal", expiryDate.toString());
     onClose();
+  };
+
+  const handleConfirm = () => {
+    if (dontShowChecked) {
+      localStorage.setItem("hideGuideModal", "forever");
+      onClose();
+    } else {
+      onClose();
+    }
   };
 
   return (
@@ -194,13 +205,19 @@ const SmPayGuideModal = ({ onClose }: SmPayGuideModalProps) => {
         <div className="p-4 bg-[#9BA5B7] rounded-b-lg">
           <div className="flex justify-between items-center">
             <label className="flex items-center gap-2 cursor-pointer">
-              <Checkbox className="bg-white border-gray-300" />
+              <Checkbox
+                className="bg-white border-gray-300"
+                checked={dontShowChecked}
+                onCheckedChange={(checked) =>
+                  setDontShowChecked(checked === true)
+                }
+              />
               <span className="text-sm text-[#363C45]">다시 보지 않기</span>
             </label>
             <div className="space-x-2">
               <Button
                 className="w-[150px] bg-[#E86F52] hover:bg-[#E86F52]/90 text-white"
-                onClick={onClose}
+                onClick={handleConfirm}
               >
                 확인
               </Button>

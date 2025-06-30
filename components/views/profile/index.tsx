@@ -6,7 +6,6 @@ import AdminView from "@/components/views/account/member-edit/admin";
 import MemberView from "@/components/views/account/member-edit/member";
 import { getIsAdmin } from "@/lib/utils";
 
-// account/member-edit의 AdminView와 MemberView 공용으로 사용
 const ProfileView = () => {
   const { data: session } = useSession();
 

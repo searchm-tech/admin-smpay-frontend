@@ -38,18 +38,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { formatBusinessNumber } from "@/utils/format";
 import {
   ModalInfo,
-  validateBillInfo,
   type ModalInfoType,
 } from "@/components/views/account/agency-register/constants";
 
 const formSchema = z.object({
-  agentBillName: z.string().min(1, "계산서 발행 담당자명을 입력해주세요"),
-  agentBillPhoneNumber: z
-    .string()
-    .min(1, "계산서 발행 담당자 연락처를 입력해주세요"),
-  agentBillEmailAddress: z
-    .string()
-    .regex(EMAIL_REGEX, "유효하지 않은 이메일입니다."),
+  agentBillName: z.string(),
+  // .min(1, "계산서 발행 담당자명을 입력해주세요"),
+  agentBillPhoneNumber: z.string(),
+  // .min(1, "계산서 발행 담당자 연락처를 입력해주세요"),
+  agentBillEmailAddress: z.string(),
+  // .regex(EMAIL_REGEX, "유효하지 않은 이메일입니다."),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -88,12 +86,22 @@ const AgencyEditView = ({ id }: { id: string }) => {
 
   const onSubmit = (dataForm: FormValues) => {
     if (!agencyDetail) return;
+
     if (
-      !dataForm.agentBillName ||
-      !dataForm.agentBillPhoneNumber ||
-      !dataForm.agentBillEmailAddress
+      dataForm.agentBillName ||
+      dataForm.agentBillPhoneNumber ||
+      dataForm.agentBillEmailAddress
     ) {
-      return;
+      console.log("---", dataForm);
+      if (
+        !dataForm.agentBillName ||
+        !dataForm.agentBillPhoneNumber ||
+        !dataForm.agentBillEmailAddress
+      ) {
+        console.log("2222");
+        setModalInfo("error_required_fields");
+        return;
+      }
     }
 
     if (

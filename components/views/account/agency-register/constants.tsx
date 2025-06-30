@@ -160,6 +160,10 @@ export const ModalInfo = {
     title: "계산서 발행 담당자 전화번호 형식 오류",
     content: "유효하지 않은 전화번호입니다.",
   },
+  error_required_fields: {
+    title: "필수 정보 누락",
+    content: "필수 항목을 모두 입력해주세요.",
+  },
 };
 
 export type ModalInfoType = keyof typeof ModalInfo;
