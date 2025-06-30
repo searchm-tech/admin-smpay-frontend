@@ -28,6 +28,7 @@ import {
 
 import type { TableProps } from "@/types/table";
 import { SmPayAdvertiserStatus, SmPayDetailDto } from "@/types/smpay";
+import GuidSection from "./GuideSection";
 
 type Props = {
   advertiserId: number;
@@ -45,6 +46,15 @@ const AdvertiserInfoSection = ({ advertiserId, isHistory = false }: Props) => {
   return (
     <div>
       {isLoading && <LoadingUI title="광고주 정보 조회 중..." />}
+
+      <GuidSection
+        viewType={
+          detailInfo?.status === "OPERATION_REJECT"
+            ? "reject"
+            : "master-judgement"
+        }
+      />
+
       <section>
         {isHistoryModal && (
           <HistoryModal

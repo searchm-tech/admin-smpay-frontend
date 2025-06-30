@@ -6,9 +6,11 @@ import {
   Descriptions,
   DescriptionItem,
 } from "@/components/composite/description-components";
-import { ParamsSmPayApproval } from "@/types/api/smpay";
-import { useSmPayApproval } from "@/hooks/queries/sm-pay";
 import LoadingUI from "@/components/common/Loading";
+
+import { useSmPayApproval } from "@/hooks/queries/sm-pay";
+
+import type { ParamsSmPayApproval } from "@/types/api/smpay";
 
 type RejectSendModalProps = {
   onClose: () => void;
@@ -29,9 +31,7 @@ const RejectSendModal = ({
 
   const { mutate: postSmPayApproval, isPending: isRejecting } =
     useSmPayApproval({
-      onSuccess: () => {
-        setIsConfirm(true);
-      },
+      onSuccess: () => setIsConfirm(true),
     });
 
   const handleConfirm = () => {

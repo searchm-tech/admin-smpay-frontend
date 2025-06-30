@@ -7,7 +7,6 @@ import LoadingUI from "@/components/common/Loading";
 
 import OperationMemoSection from "@/components/views/sm-pay/components/OperationMemoSection";
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
-import GuidSection from "@/components/views/sm-pay/components/GuideSection";
 import StatIndicatorSection from "@/components/views/sm-pay/components/StatIndicatorSection";
 import ScheduleSection2 from "@/components/views/sm-pay/components/ScheduleSection2";
 import RuleSection2 from "@/components/views/sm-pay/components/RuleSection2";
@@ -89,13 +88,6 @@ const SmPayAdminOverviewHistoryDetailView = ({ id }: Props) => {
 
   return (
     <div>
-      <GuidSection
-        viewType={
-          smpayInfo?.advertiserStatus === "OPERATION_REJECT"
-            ? "reject"
-            : "smpay-guide"
-        }
-      />
       {loading && <LoadingUI title="SM Pay 정보 조회 중..." />}
 
       {isReject && (

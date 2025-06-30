@@ -4,33 +4,28 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { ConfirmDialog } from "@/components/composite/modal-components";
 
 import LoadingUI from "@/components/common/Loading";
 
 import OperationMemoSection from "@/components/views/sm-pay/components/OperationMemoSection";
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
 import AdvertiserSimulationModal from "@/components/views/sm-pay/components/AdvertiserSimulationModal";
-import GuidSection from "@/components/views/sm-pay/components/GuideSection";
 
-import AdvertiserInfoSection from "../../components/AdvertiserInfoSection";
-import StatIndicatorSection from "../../components/StatIndicatorSection";
-import RuleSection2 from "../../components/RuleSection2";
-import ScheduleSection2 from "../../components/ScheduleSection2";
+import AdvertiserInfoSection from "@/components/views/sm-pay/components/AdvertiserInfoSection";
+import StatIndicatorSection from "@/components/views/sm-pay/components/StatIndicatorSection";
+import RuleSection2 from "@/components/views/sm-pay/components/RuleSection2";
+import ScheduleSection2 from "@/components/views/sm-pay/components/ScheduleSection2";
 
 import ApproveModal from "./ApproveModal";
 import RejectSendModal from "./RejectSendModal";
 import { RejectDialog } from "@/components/views/sm-pay/manangement/dialog";
 
 import {
-  useSmPayStatusUpdate,
   useSmPayRead,
-  useSmPayDetail,
   useSmPayScreeningIndicator,
   useSmPayReviewerMemo,
   useSmPayAdvertiserChargeRule,
   useSmPayAdvertiserPrePaymentSchedule,
-  useSmPayAdvertiserDetail,
 } from "@/hooks/queries/sm-pay";
 
 import type { ChargeRule, PrePaymentSchedule } from "@/types/smpay";
@@ -43,16 +38,13 @@ type Props = {
   id: string;
 };
 
-const status = "reject";
-
 const SmPayJudgementDetailView = ({ id }: Props) => {
   const router = useRouter();
 
-  const isApprovalRead = useSearchParams().get("isApprovalRead") === "true";
+  const read = useSearchParams().get("read");
   const [isApproved, setIsApproved] = useState(false);
   const [isRejectSend, setIsRejectSend] = useState(false);
   const [isReject, setIsReject] = useState(false);
-  const [isRestart, setIsRestart] = useState(false);
   const [isSimulation, setIsSimulation] = useState(false);
 
   const [statIndicator, setStatIndicator] = useState<StatIndicatorParams>({
@@ -86,9 +78,6 @@ const SmPayJudgementDetailView = ({ id }: Props) => {
       minChargeLimit: 0,
     });
 
-  const { data: detailInfo, isPending: loadingDetailInfo } =
-    useSmPayAdvertiserDetail(Number(id));
-
   const { data: screeningIndicator, isPending: loadingScreeningIndicator } =
     useSmPayScreeningIndicator(Number(id));
 
@@ -101,21 +90,13 @@ const SmPayJudgementDetailView = ({ id }: Props) => {
   const { data: prePaymentScheduleData, isPending: loadingPrePaymentSchedule } =
     useSmPayAdvertiserPrePaymentSchedule(Number(id));
 
-  const { mutate: updateStatus, isPending: isUpdating } = useSmPayStatusUpdate({
-    onSuccess: () => {
-      setIsRestart(false);
-    },
-  });
-
   const { mutate: patchRead } = useSmPayRead();
 
   useEffect(() => {
     // 심사 목록 읽음 상태 변경
-    if (id && !isApprovalRead) {
+    if (id && read === "unread") {
       patchRead({ advertiserId: Number(id), isApprovalRead: true });
     }
-
-    // TODO : 각영역 별로 데이터 노출 방식 고민 필요
 
     if (chargeRule) {
       const findUpChargeRule = chargeRule.find(
@@ -158,13 +139,7 @@ const SmPayJudgementDetailView = ({ id }: Props) => {
         minChargeLimit: prePaymentScheduleData.minChargeLimit,
       });
     }
-  }, [
-    screeningIndicator,
-    chargeRule,
-    prePaymentScheduleData,
-    id,
-    isApprovalRead,
-  ]);
+  }, [screeningIndicator, chargeRule, prePaymentScheduleData, id, read]);
 
   const statIndicatorData = {
     operationPeriod: statIndicator.operationPeriod,
@@ -222,15 +197,6 @@ const SmPayJudgementDetailView = ({ id }: Props) => {
           onConfirm={() => setIsReject(false)}
         />
       )}
-      {isRestart && (
-        <ConfirmDialog
-          open
-          title="광고주 심사 재개" // TODO : 노출 되는지 확인 필요
-          onClose={() => setIsRestart(false)}
-          onConfirm={() => updateStatus({ id, status: "REVIEW_APPROVED" })}
-          content="광고주 상태를 다시 활성화 하시겠습니까?"
-        />
-      )}
 
       {isSimulation && (
         <AdvertiserSimulationModal
@@ -241,14 +207,6 @@ const SmPayJudgementDetailView = ({ id }: Props) => {
           onClose={() => setIsSimulation(false)}
         />
       )}
-
-      <GuidSection
-        viewType={
-          detailInfo?.status === "OPERATION_REJECT"
-            ? "reject"
-            : "master-judgement"
-        }
-      />
 
       <AdvertiserInfoSection advertiserId={Number(id)} isHistory />
 
@@ -273,29 +231,27 @@ const SmPayJudgementDetailView = ({ id }: Props) => {
         handleChange={setOperationMemo}
       />
 
-      {status === "reject" && (
-        <div className="flex justify-center gap-4 py-5">
-          <Button
-            className="minw-[150px]"
-            variant="orangeOutline"
-            onClick={() => setIsSimulation(true)}
-          >
-            광고 성과 예측 시뮬레이션
-          </Button>
+      <div className="flex justify-center gap-4 py-5">
+        <Button
+          className="minw-[150px]"
+          variant="orangeOutline"
+          onClick={() => setIsSimulation(true)}
+        >
+          광고 성과 예측 시뮬레이션
+        </Button>
 
-          <Button className="w-[150px]" onClick={() => setIsApproved(true)}>
-            심사 승인
-          </Button>
+        <Button className="w-[150px]" onClick={() => setIsApproved(true)}>
+          심사 승인
+        </Button>
 
-          <Button
-            variant="secondary"
-            className="w-[150px]"
-            onClick={() => setIsRejectSend(true)}
-          >
-            심사 반려
-          </Button>
-        </div>
-      )}
+        <Button
+          variant="secondary"
+          className="w-[150px]"
+          onClick={() => setIsRejectSend(true)}
+        >
+          심사 반려
+        </Button>
+      </div>
     </div>
   );
 };

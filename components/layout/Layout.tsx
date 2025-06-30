@@ -31,8 +31,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     pathname === "/example" ||
     pathname === "/error";
 
-  // const isNoNeedTokenPage = pathname !== "/sign-in"; // 비밀번호 설정 관련 페이지도 추가
-
   const isErrorPage = pathname === "/not-found" || pathname === "/error";
 
   const handleCloseExpireModal = () => {
@@ -40,15 +38,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     router.push("/sign-in");
   };
 
-  // useEffect(() => {
-  //   if (isNoNeedTokenPage && !session) {
-  //     console.log(isNoNeedTokenPage && !session);
-  //     setIsExpireModalOpen(true);
-  //   }
-  // }, [isNoNeedTokenPage, session]);
-
   useEffect(() => {
-    if (!isNoNavPage && pathname.includes("/sm-pay")) {
+    if (!isNoNavPage) {
       const hideGuideModal = localStorage.getItem("hideGuideModal");
       const now = new Date().getTime();
 
