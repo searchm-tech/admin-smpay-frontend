@@ -79,10 +79,10 @@ const SignUpView = ({ agentCode, userCode }: SignUpViewProps) => {
       return;
     }
 
-    // if (phone.length !== 11) {
-    //   setErrorMessage("올바른 형식의 전화번호를 입력해주세요.");
-    //   return;
-    // }
+    if (phone && phone.length !== 11) {
+      setErrorMessage("올바른 형식의 전화번호를 입력해주세요.");
+      return;
+    }
 
     const phoneNumber = phone.replace(/[^0-9]/g, "");
 
