@@ -156,7 +156,19 @@ const AdvertiserSimulationModal = ({
     hasValidInput && beforeData.length > 0 && afterData.length > 0
       ? (afterData[0].conversionRevenue / beforeData[0].conversionRevenue) * 100
       : 0;
-  const improvementRate = improvementRateNum.toFixed(1);
+
+  // 0으로 나누거나 NaN, Infinity가 나오지 않게 처리
+  let improvementRate = "0";
+  if (hasValidInput && beforeData.length > 0 && afterData.length > 0) {
+    if (beforeData[0].conversionRevenue === 0) {
+      improvementRate = "0";
+    } else {
+      const rate =
+        (afterData[0].conversionRevenue / beforeData[0].conversionRevenue) *
+        100;
+      improvementRate = isFinite(rate) ? rate.toFixed(1) : "0";
+    }
+  }
 
   // 설정된 규칙 정보
   const targetRoas = upChargeRule?.standardRoasPercent || 0;
@@ -202,9 +214,10 @@ const AdvertiserSimulationModal = ({
               <p>
                 이 전략으로 28일간 운용 시 전환매출액이{" "}
                 <strong className="text-lg">
-                  평균 {improvementRateNum > 0 ? "+" : ""}
-                  {improvementRate}% {improvementRateNum > 0 ? "상승" : "하락"}
-                  할 것으로 예상
+                  평균 {parseFloat(improvementRate) > 0 ? "+" : ""}
+                  {improvementRate}%{" "}
+                  {parseFloat(improvementRate) > 0 ? "상승" : "하락"}할 것으로
+                  예상
                 </strong>
                 됩니다.
               </p>
