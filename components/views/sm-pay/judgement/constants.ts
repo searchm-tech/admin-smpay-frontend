@@ -9,13 +9,11 @@ export const defaultParams = {
 };
 
 // URL 생성 헬퍼 함수
-export const buildJudgementUrl = (
+export const buildUrl = (
   advertiserId: number,
   advertiserFormId: number,
   isApprovalRead: boolean
 ): string => {
   const baseUrl = `/sm-pay/judgement/${advertiserId}?formId=${advertiserFormId}`;
-  return isApprovalRead
-    ? baseUrl
-    : `${baseUrl}&isApprovalRead=${isApprovalRead}`;
+  return isApprovalRead ? baseUrl : `${baseUrl}&read=unread`;
 };

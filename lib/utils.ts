@@ -118,3 +118,30 @@ export function getRedirectPath(userType?: TAuthType | null): string {
   // 기본적으로 sm-pay 메인 페이지로
   return "/dashboard";
 }
+
+/**
+ * NO 관련 정렬(orderType)이 있을 때 번호 부여 및 reverse 처리 유틸
+ * @param content - 원본 배열
+ * @param page - 현재 페이지
+ * @param size - 페이지 크기
+ * @param orderType - 정렬 타입
+ * @param noField - 번호 필드명 (기본값: 'no')
+ * @returns 번호가 부여된(및 필요시 reverse된) 배열
+ */
+export function applyNoOrder<T>(
+  content: T[],
+  page: number,
+  size: number,
+  orderType: string,
+  noField: string = "no"
+): T[] {
+  let numbered = content.map((item, idx) => ({
+    ...item,
+    [noField]: (page - 1) * size + idx + 1,
+  }));
+
+  if (orderType === "NO_ASC") {
+    numbered = numbered.reverse();
+  }
+  return numbered;
+}

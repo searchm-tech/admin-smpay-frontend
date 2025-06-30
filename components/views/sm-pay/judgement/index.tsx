@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import SearchSection from "./SearchSection";
 import TableSection from "./TableSection";
-import GuidSection from "../components/GuideSection";
+import GuidSection from "@/components/views/sm-pay/components/GuideSection";
 
 import { useSmPayAuditList } from "@/hooks/queries/sm-pay";
 import { defaultParams } from "./constants";

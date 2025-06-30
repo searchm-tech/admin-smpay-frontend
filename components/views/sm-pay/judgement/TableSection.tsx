@@ -24,7 +24,7 @@ import type {
 } from "@/types/smpay";
 
 import { SmPayAdvertiserStatusLabel } from "@/constants/status";
-import { buildJudgementUrl } from "./constants";
+import { buildUrl } from "./constants";
 
 type PropsTableSection = {
   tableParams: TableParams;
@@ -88,13 +88,12 @@ const TableSection = ({
           <LinkTextButton
             onClick={() => {
               const { advertiserId, advertiserFormId, isApprovalRead } = record;
-              router.push(
-                buildJudgementUrl(
-                  advertiserId,
-                  advertiserFormId,
-                  isApprovalRead
-                )
+              const url = buildUrl(
+                advertiserId,
+                advertiserFormId,
+                isApprovalRead
               );
+              router.push(url);
             }}
           >
             {text}

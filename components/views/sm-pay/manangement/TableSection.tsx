@@ -159,12 +159,10 @@ const TableSection = ({
             {availableActions.includes("view") && (
               <Button
                 variant="greenOutline"
-                onClick={() =>
-                  handleMoveDetailPage(
-                    record.advertiserFormId,
-                    record.advertiserId
-                  )
-                }
+                onClick={() => {
+                  const { advertiserFormId, advertiserId } = record;
+                  handleMoveDetailPage(advertiserFormId, advertiserId);
+                }}
               >
                 조회
               </Button>

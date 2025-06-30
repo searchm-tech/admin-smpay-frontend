@@ -82,7 +82,7 @@ const SignInView = ({ code }: SignInViewProps) => {
         const storedRefreshToken = localStorage.getItem("refreshToken");
 
         if (storedAccessToken && storedRefreshToken) {
-          router.replace("/sm-pay");
+          router.replace("/");
           return;
         }
       } catch (error) {
