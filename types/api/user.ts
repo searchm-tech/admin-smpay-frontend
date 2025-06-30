@@ -12,7 +12,7 @@ export type RequestMailVerify = {
 // agents/users/mail-verifications response type
 export type ResponseMailVerify = {
   isVerified: boolean;
-  department: DepartmentResponseDto;
+  department?: DepartmentResponseDto;
   agent: TAgency;
   user: TSMPayUser;
 };

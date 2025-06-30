@@ -430,7 +430,7 @@ const OrganizationTree: React.FC = () => {
 
           const newFolder: OrganizationTreeNode = {
             id: `folder-${Date.now()}`,
-            name: "새 폴더",
+            name: "새 부서",
             type: "folder",
             children: [],
           };

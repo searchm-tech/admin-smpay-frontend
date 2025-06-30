@@ -189,15 +189,15 @@ const OrganizationSection: React.FC = () => {
         // 전체 트리에서 모든 폴더 이름 수집
         const allFolderNames = getAllFolderNames(newData);
 
-        // "새 폴더"로 시작하는 폴더들의 번호 추출
-        const baseName = "새 폴더";
+        // "새 부서"로 시작하는 폴더들의 번호 추출
+        const baseName = "새 부서";
         const existingNumbers: number[] = [];
 
         allFolderNames.forEach((name) => {
           if (name === baseName) {
-            existingNumbers.push(1); // "새 폴더"는 1번으로 취급
+            existingNumbers.push(1); // "새 부서"는 1번으로 취급
           } else if (name.startsWith(baseName + " (")) {
-            const match = name.match(/새 폴더 \((\d+)\)$/);
+            const match = name.match(/새 부서 \((\d+)\)$/);
             if (match) {
               existingNumbers.push(parseInt(match[1]));
             }
@@ -208,7 +208,7 @@ const OrganizationSection: React.FC = () => {
         const maxNumber =
           existingNumbers.length > 0 ? Math.max(...existingNumbers) : 0;
 
-        // 새 폴더 이름 결정
+        // 새 부서 이름 결정
         const newFolderName =
           maxNumber === 0 ? baseName : `${baseName} (${maxNumber + 1})`;
 
@@ -285,7 +285,7 @@ const OrganizationSection: React.FC = () => {
           userIds: [session.user.userId],
           children: [
             {
-              departmentName: "새 폴더",
+              departmentName: "새 부서",
               displayOrder: 1,
               userIds: [],
               children: [],
