@@ -76,7 +76,7 @@ const FindPasswordView = ({ agentCode, userCode }: FindPasswordViewProps) => {
       return;
     }
 
-    if (phone.length !== 11) {
+    if (phone && phone.length !== 11) {
       setErrorMessage("올바른 형식의 전화번호를 입력해주세요.");
       return;
     }
