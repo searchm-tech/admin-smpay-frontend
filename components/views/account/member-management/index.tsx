@@ -10,12 +10,10 @@ import type { TSMPayUser } from "@/types/user";
 
 const MemberManagementView = () => {
   const { data: session } = useSession();
-  console.log("session", session);
 
   if (!session?.user) return null;
 
   const isAdmin = getIsAdmin(session?.user.type || null);
-  console.log("isAdmin", isAdmin);
 
   return (
     <div className="flex flex-col gap-4">
