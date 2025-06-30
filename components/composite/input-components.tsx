@@ -160,45 +160,56 @@ interface PhoneInputProps {
 
 const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
   ({ value = "", onChange, className }, ref) => {
+    // 최초 value로부터만 초기값 분리, 이후에는 각 part가 독립적으로 동작
     const [part1, setPart1] = useState(value.slice(0, 3));
     const [part2, setPart2] = useState(value.slice(3, 7));
     const [part3, setPart3] = useState(value.slice(7, 11));
 
+    // value가 외부에서 바뀔 때만 3개로 분리해서 세팅 (직접 입력 시에는 영향 없음)
     useEffect(() => {
       setPart1(value.slice(0, 3));
       setPart2(value.slice(3, 7));
       setPart3(value.slice(7, 11));
     }, [value]);
 
-    const handleChange =
-      (
-        setter: React.Dispatch<React.SetStateAction<string>>,
-        nextIndex?: number
-      ) =>
-      (e: React.ChangeEvent<HTMLInputElement>) => {
-        const onlyNumber = e.target.value.replace(/\D/g, "");
-        setter(onlyNumber);
-
-        const newValue = [
-          nextIndex === 0 ? onlyNumber : part1,
-          nextIndex === 1 ? onlyNumber : part2,
-          nextIndex === 2 ? onlyNumber : part3,
-        ].join("");
-
-        if (onChange) {
-          onChange({
-            ...e,
-            target: { ...e.target, value: newValue },
-          });
-        }
-      };
+    // 각 인풋의 onChange는 해당 인풋만 변경, 3개를 합쳐서 onChange로 전달
+    const handlePart1Change = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const onlyNumber = e.target.value.replace(/\D/g, "").slice(0, 3);
+      setPart1(onlyNumber);
+      if (onChange) {
+        onChange({
+          ...e,
+          target: { ...e.target, value: onlyNumber + part2 + part3 },
+        });
+      }
+    };
+    const handlePart2Change = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const onlyNumber = e.target.value.replace(/\D/g, "").slice(0, 4);
+      setPart2(onlyNumber);
+      if (onChange) {
+        onChange({
+          ...e,
+          target: { ...e.target, value: part1 + onlyNumber + part3 },
+        });
+      }
+    };
+    const handlePart3Change = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const onlyNumber = e.target.value.replace(/\D/g, "").slice(0, 4);
+      setPart3(onlyNumber);
+      if (onChange) {
+        onChange({
+          ...e,
+          target: { ...e.target, value: part1 + part2 + onlyNumber },
+        });
+      }
+    };
 
     return (
       <div className={cn("flex items-center gap-2", className)}>
         <Input
           maxLength={3}
           value={part1}
-          onChange={handleChange(setPart1, 0)}
+          onChange={handlePart1Change}
           className="w-[80px] text-center"
           inputMode="numeric"
           ref={ref} // ref를 첫 번째 input에 연결
@@ -207,7 +218,7 @@ const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
         <Input
           maxLength={4}
           value={part2}
-          onChange={handleChange(setPart2, 1)}
+          onChange={handlePart2Change}
           className="w-[80px] text-center"
           inputMode="numeric"
         />
@@ -215,7 +226,7 @@ const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
         <Input
           maxLength={4}
           value={part3}
-          onChange={handleChange(setPart3, 2)}
+          onChange={handlePart3Change}
           className="w-[80px] text-center"
           inputMode="numeric"
         />
