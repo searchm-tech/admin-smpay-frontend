@@ -67,8 +67,11 @@ const AdvertiserInfoSection = ({ advertiserId, isHistory = false }: Props) => {
           <LabelBullet labelClassName="text-base font-bold">
             광고주 상태
           </LabelBullet>
-          {isHistory && dataSource && dataSource.length > 0 && (
-            <Button onClick={() => setIsHistoryModal(true)}>
+          {isHistory && (
+            <Button
+              onClick={() => setIsHistoryModal(true)}
+              disabled={dataSource && dataSource.length === 0}
+            >
               SM Pay 지난 이력 보기
             </Button>
           )}
