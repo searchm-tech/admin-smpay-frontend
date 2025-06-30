@@ -64,9 +64,8 @@ const GuidSection = ({ viewType, className, onClick }: GuidSectionProps) => {
               설정해 주세요.
             </span>
             <span>
-              • [광고 성과 예측 시뮬레이션] 기능을 통해 설정된 규칙이 적용될
-              경우의 성과를 예측할 수 있으며, 선결제되는 광고비의 회수 가능성도
-              함께 고려해 심사해 주세요.
+              • 설정한 규칙이 어떻게 적용되는지는 [광고 성과 예측 시뮬레이션]
+              기능을 통해 예측이 가능합니다.
             </span>
           </div>
         </div>

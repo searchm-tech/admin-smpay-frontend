@@ -166,8 +166,6 @@ const SMPayMasterApplyWriteForm = ({ id }: ViewWrieProps) => {
         />
       )}
 
-      <GuidSection viewType="write" />
-
       <AdvertiserInfoSection advertiserId={id} isHistory />
 
       <StatIndicatorSection advertiserId={id} statIndicator={statIndicator} />
