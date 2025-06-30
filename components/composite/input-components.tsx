@@ -184,11 +184,20 @@ function splitPhone(value: string) {
 
 const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
   ({ value = "", onChange, className }, ref) => {
-    const [part1, setPart1] = useState(value.slice(0, 3));
-    const [part2, setPart2] = useState(value.slice(3, 7));
-    const [part3, setPart3] = useState(value.slice(7, 11));
+    const [initialized, setInitialized] = useState(false);
+    const [part1, setPart1] = useState("");
+    const [part2, setPart2] = useState("");
+    const [part3, setPart3] = useState("");
 
-    // value prop이 아예 없음! 외부에서 값이 바뀌어도 내부 상태는 유지
+    // 최초 마운트 시에만 value로 초기화, 이후에는 내부 상태만 사용
+    useEffect(() => {
+      if (!initialized && value) {
+        setPart1(value.slice(0, 3));
+        setPart2(value.slice(3, 7));
+        setPart3(value.slice(7, 11));
+        setInitialized(true);
+      }
+    }, [value, initialized]);
 
     const handlePart1Change = (e: React.ChangeEvent<HTMLInputElement>) => {
       const v = e.target.value.replace(/\D/g, "").slice(0, 3);

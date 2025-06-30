@@ -43,9 +43,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       const hideGuideModal = localStorage.getItem("hideGuideModal");
       const now = new Date().getTime();
 
+      if (hideGuideModal === "forever") {
+        setGuideOpen(false);
+        return;
+      }
+
       const isSmPayPath = pathname.includes("/sm-pay/management");
 
-      if (!hideGuideModal || Number(hideGuideModal) < now) {
+      if (isSmPayPath && (!hideGuideModal || Number(hideGuideModal) < now)) {
         setGuideOpen(true);
       }
     }
