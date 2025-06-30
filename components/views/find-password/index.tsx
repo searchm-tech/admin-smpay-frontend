@@ -84,8 +84,8 @@ const FindPasswordView = ({ agentCode, userCode }: FindPasswordViewProps) => {
     const phoneNumber = phone.replace(/[^0-9]/g, "");
 
     const params: RequestUserPwd = {
-      agentId: mailVerify.userResponseDto.agentId,
-      userId: mailVerify.userResponseDto.userId,
+      agentId: mailVerify.agent.agentId,
+      userId: mailVerify.user.userId,
       password,
       phone: phoneNumber,
       type: "REGISTER",
@@ -146,19 +146,17 @@ const FindPasswordView = ({ agentCode, userCode }: FindPasswordViewProps) => {
         </LabelBullet>
         <Descriptions bordered columns={1}>
           <DescriptionItem label="대행사명">
-            {mailVerify.adminAgentResponseDto.name}
+            {mailVerify.agent.name}
           </DescriptionItem>
           <DescriptionItem label="회원 구분">
-            {userAuthTypeMap[mailVerify.userResponseDto.type]}
+            {userAuthTypeMap[mailVerify.user.type]}
           </DescriptionItem>
-          <DescriptionItem label="성명">
-            {mailVerify.userResponseDto.name}
-          </DescriptionItem>
+          <DescriptionItem label="성명">{mailVerify.user.name}</DescriptionItem>
           <DescriptionItem label="사업자등록번호">
-            {mailVerify.adminAgentResponseDto.businessRegistrationNumber}
+            {mailVerify.agent.businessRegistrationNumber}
           </DescriptionItem>
           <DescriptionItem label="고유코드">
-            {mailVerify.adminAgentResponseDto.uniqueCode}
+            {mailVerify.agent.uniqueCode}
           </DescriptionItem>
         </Descriptions>
         <DescriptionPwd />

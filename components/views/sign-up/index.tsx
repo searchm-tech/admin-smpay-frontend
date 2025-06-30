@@ -87,8 +87,8 @@ const SignUpView = ({ agentCode, userCode }: SignUpViewProps) => {
     const phoneNumber = phone.replace(/[^0-9]/g, "");
 
     const params: RequestUserPwd = {
-      agentId: mailVerify.userResponseDto.agentId,
-      userId: mailVerify.userResponseDto.userId,
+      agentId: mailVerify.user.agentId,
+      userId: mailVerify.user.userId,
       password,
       phone: phoneNumber,
       type: "REGISTER",
@@ -104,7 +104,6 @@ const SignUpView = ({ agentCode, userCode }: SignUpViewProps) => {
     return <ErrorComponent message="유효하지 않은 인증 링크입니다." />;
   }
 
-  console.log(mailVerify);
   return (
     <div className="w-full max-w-[1024px] flex flex-col gap-5 mx-auto my-10 overflow-y-auto py-4">
       {result && (
@@ -140,19 +139,17 @@ const SignUpView = ({ agentCode, userCode }: SignUpViewProps) => {
         </LabelBullet>
         <Descriptions bordered columns={1}>
           <DescriptionItem label="대행사명">
-            {mailVerify.adminAgentResponseDto.name}
+            {mailVerify.agent.name}
           </DescriptionItem>
           <DescriptionItem label="회원 구분">
-            {userAuthTypeMap[mailVerify.userResponseDto.type]}
+            {userAuthTypeMap[mailVerify.user.type]}
           </DescriptionItem>
-          <DescriptionItem label="성명">
-            {mailVerify.userResponseDto.name}
-          </DescriptionItem>
+          <DescriptionItem label="성명">{mailVerify.user.name}</DescriptionItem>
           <DescriptionItem label="부서명">
-            주식회사 {mailVerify.adminAgentResponseDto.name} /
+            주식회사 {mailVerify.agent.name} /
           </DescriptionItem>
           <DescriptionItem label="이메일주소">
-            name@{mailVerify.adminAgentResponseDto.domainName}
+            name@{mailVerify.agent.domainName}
           </DescriptionItem>
         </Descriptions>
         <DescriptionPwd />
