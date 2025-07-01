@@ -9,13 +9,14 @@ import type { ParamsSmPayAdminOverviewOperatorDecision } from "@/types/api/smpay
 type Props = {
   open: boolean;
   onClose: () => void;
-  onConfirm: () => void;
   params: ParamsSmPayAdminOverviewOperatorDecision & {
     advertiserId: number;
+    agentId: number;
+    userId: number;
   };
 };
 
-const ApproveDialog = ({ open, onClose, onConfirm, params }: Props) => {
+const ApproveDialog = ({ open, onClose, params }: Props) => {
   const router = useRouter();
   const { mutate: postOperatorDecision, isPending: loadingOperatorDecision } =
     useSmPayAdminOverviewOperatorDecision({
@@ -29,6 +30,8 @@ const ApproveDialog = ({ open, onClose, onConfirm, params }: Props) => {
     postOperatorDecision({
       advertiserId: Number(params.advertiserId),
       params: { ...params },
+      agentId: Number(params.agentId),
+      userId: Number(params.userId),
     });
   };
 

@@ -13,11 +13,6 @@ import RuleSection2 from "../../../components/RuleSection2";
 import AdvertiserInfoSection from "./AdvertiserInfoSection";
 import ScheduleSection2 from "../../../components/ScheduleSection2";
 
-import ScheduleSection from "@/components/views/sm-pay/components/ScheduleSection"; // TODO : 삭제 예정
-import AdvertiserSection from "@/components/views/sm-pay/components/AdvertiserSection";
-import AdvertiseStatusSection from "@/components/views/sm-pay/components/AdvertiseStatusSection";
-import AgencyInfoSection from "@/components/views/sm-pay/components/AgencyInfoSection";
-
 import RejectSendModal from "./RejectSendModal";
 import CompleteModal from "./ApproveDialog";
 
@@ -38,6 +33,8 @@ type Props = {
 };
 
 const SmPayAdminOverviewDetailView = ({ id }: Props) => {
+  const agentId = useSearchParams().get("agentId");
+  const userId = useSearchParams().get("userId");
   const isOperatorRead = useSearchParams().get("isOperatorRead") === "true";
 
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
@@ -67,7 +64,9 @@ const SmPayAdminOverviewDetailView = ({ id }: Props) => {
     useSmPayAdminOverviewPrePaymentSchedule(Number(id));
 
   const { data: smpayInfo, isPending: loadingSmpayInfo } = useSmPayAdminDetail(
-    Number(id)
+    Number(id),
+    Number(agentId),
+    Number(userId)
   );
 
   const { data: reviewerMemo, isPending: loadingReviewerMemo } =
@@ -131,7 +130,12 @@ const SmPayAdminOverviewDetailView = ({ id }: Props) => {
       {rejectModalOpen && (
         <RejectSendModal
           open={rejectModalOpen}
-          params={{ ...rejectParams, advertiserId: Number(id) }}
+          params={{
+            ...rejectParams,
+            advertiserId: Number(id),
+            agentId: Number(smpayInfo?.agentId),
+            userId: Number(smpayInfo?.userId),
+          }}
           onClose={() => setRejectModalOpen(false)}
           onConfirm={() => setRejectModalOpen(false)}
         />
@@ -139,9 +143,13 @@ const SmPayAdminOverviewDetailView = ({ id }: Props) => {
       {completeModalOpen && (
         <CompleteModal
           open={completeModalOpen}
-          params={{ ...approveParams, advertiserId: Number(id) }}
+          params={{
+            ...approveParams,
+            advertiserId: Number(id),
+            agentId: Number(smpayInfo?.agentId),
+            userId: Number(smpayInfo?.userId),
+          }}
           onClose={() => setCompleteModalOpen(false)}
-          onConfirm={() => setCompleteModalOpen(false)}
         />
       )}
 

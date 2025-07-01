@@ -1,5 +1,6 @@
 import {
   ChargeRule,
+  OverviewApplyAccountDto,
   PrePaymentSchedule,
   SmPayAdminAuditDto,
   SmPayAdvertiserApplyDto,
@@ -76,6 +77,12 @@ export type WithAdvertiserId = {
   advertiserId: number;
 };
 
+export type UserAgentAdvertiserId = {
+  agentId: number;
+  userId: number;
+  advertiserId: number;
+};
+
 export interface RequestFormId extends WithAdvertiserId {
   formId: number | string;
 }
@@ -85,6 +92,7 @@ export type AdvertiserDetailDto = {
   advertiserId: number;
   userId: number;
   customerId: number;
+  agentId: number;
   id: string;
   nickName: string;
   name: string;
@@ -211,4 +219,33 @@ export type AdminOverviewOperatorDecision = {
   user: RequestAgentUser;
   advertiserId: number;
   params: ParamsSmPayAdminOverviewOperatorDecision;
+};
+
+export type OverviewForm = {
+  chargeRules: ChargeRuleDto[];
+  accounts: OverviewApplyAccountDto[];
+  advertiserFormId: number;
+  advertiserId: number;
+  advertiserCustomerId: number;
+  advertiserLoginId: string;
+  advertiserStatus: SmPayAdvertiserStatus;
+  advertiserName: string;
+  advertiserNickname: string;
+  advertiserRepresentativeName: string;
+  advertiserPhoneNumber: string;
+  advertiserEmailAddress: string;
+  advertiserOperationPeriod: number;
+  advertiserDailyAverageRoas: number;
+  advertiserMonthlyConvAmt: number;
+  advertiserDailySalesAmt: number;
+  advertiserRecommendRoasPercent: number;
+  advertiserStandardRoasPercent: number;
+  advertiserRejectDescription: string | null;
+  initialAmount: number;
+  maxChargeLimit: number;
+  minChargeLimit: number;
+  reviewerMemo: string;
+  approvalMemo: string | null;
+  registerDt: string;
+  updateDt: string | null;
 };

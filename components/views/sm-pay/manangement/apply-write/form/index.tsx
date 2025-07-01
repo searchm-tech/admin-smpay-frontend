@@ -13,7 +13,6 @@ import JudgementMemoSection from "@/components/views/sm-pay/components/Judgement
 import AdvertiserSimulationModal from "@/components/views/sm-pay/components/AdvertiserSimulationModal";
 import StatIndicatorSection from "@/components/views/sm-pay/components/StatIndicatorSection";
 import ScheduleSection2 from "@/components/views/sm-pay/components/ScheduleSection2";
-import GuidSection from "@/components/views/sm-pay/components/GuideSection";
 
 import {
   WRITE_MODAL_CONTENT,

@@ -1,12 +1,21 @@
 import ContentHeader from "@/components/common/ContentHeader";
 
-import type { Metadata } from "next";
 import type { DashboardSubItem } from "@/types/menu";
+import SmPayAdminOverviewHistoryDetailView from "@/components/views/sm-pay/admin/overview/history";
 
-export default function SmPayAdminOverviewHistoryPage() {
+type PageParams = Promise<{ slug: string }>;
+
+export default async function SmPayAdminOverviewHistoryPage({
+  params,
+}: {
+  params: PageParams;
+}) {
+  const { slug } = await params;
+
   return (
     <div>
       <ContentHeader title="SM Pay 지난 이력 보기" items={breadcrumbItems} />
+      <SmPayAdminOverviewHistoryDetailView id={slug} />
     </div>
   );
 }

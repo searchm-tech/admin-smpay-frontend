@@ -9,7 +9,9 @@ import { Badge } from "@/components/ui/badge";
 import { LinkTextButton } from "@/components/composite/button-components";
 import Table from "@/components/composite/table";
 
+import { SmPayAdvertiserStatusLabel } from "@/constants/status";
 import { formatDate } from "@/utils/format";
+import { buildUrl } from "./constants";
 
 import type {
   ColumnsType,
@@ -22,9 +24,6 @@ import type {
   SmPayAdvertiserStatus,
   SmPayAuditDto,
 } from "@/types/smpay";
-
-import { SmPayAdvertiserStatusLabel } from "@/constants/status";
-import { buildUrl } from "./constants";
 
 type PropsTableSection = {
   tableParams: TableParams;
@@ -157,8 +156,6 @@ const TableSection = ({
       orderType: orderType,
     });
   };
-
-  console.log(dataSource);
 
   return (
     <section>

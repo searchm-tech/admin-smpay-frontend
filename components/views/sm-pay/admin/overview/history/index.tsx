@@ -10,13 +10,14 @@ import JudgementMemoSection from "@/components/views/sm-pay/components/Judgement
 import StatIndicatorSection from "@/components/views/sm-pay/components/StatIndicatorSection";
 import ScheduleSection2 from "@/components/views/sm-pay/components/ScheduleSection2";
 import RuleSection2 from "@/components/views/sm-pay/components/RuleSection2";
-import AdvertiserInfoSection from "@/components/views/sm-pay/components/AdvertiserInfoSection";
 
 import { RejectDialog } from "../../../manangement/dialog";
 
 import { useSmPayAdminOverviewApplyFormDetail } from "@/hooks/queries/sm-pay";
 
 import type { ChargeRule } from "@/types/smpay";
+import AdvertiserInfoSection from "../detail/AdvertiserInfoSection";
+import type { AdvertiserDetailDto } from "@/types/api/smpay";
 
 interface Props {
   id: string;
@@ -26,6 +27,8 @@ const SmPayAdminOverviewHistoryDetailView = ({ id }: Props) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const formId = searchParams.get("formId");
+  const agentId = searchParams.get("agentId");
+  const userId = searchParams.get("userId");
 
   const [isReject, setIsReject] = useState(false);
 
@@ -44,7 +47,14 @@ const SmPayAdminOverviewHistoryDetailView = ({ id }: Props) => {
   });
 
   const { data: smpayInfo, isPending: loading } =
-    useSmPayAdminOverviewApplyFormDetail(Number(id), Number(formId));
+    useSmPayAdminOverviewApplyFormDetail(
+      Number(id),
+      Number(formId),
+      Number(agentId),
+      Number(userId)
+    );
+
+  console.log(smpayInfo);
 
   useEffect(() => {
     if (smpayInfo) {
@@ -86,6 +96,24 @@ const SmPayAdminOverviewHistoryDetailView = ({ id }: Props) => {
     recommendRoas: smpayInfo?.advertiserRecommendRoasPercent || 0,
   };
 
+  const advertiserData: AdvertiserDetailDto = {
+    advertiserId: smpayInfo?.advertiserId || 0,
+    userId: Number(userId),
+    customerId: smpayInfo?.advertiserCustomerId || 0,
+    agentId: Number(agentId),
+    id: smpayInfo?.advertiserId.toString() || "",
+    nickName: smpayInfo?.advertiserNickname || "",
+    name: smpayInfo?.advertiserName || "",
+    representativeName: smpayInfo?.advertiserRepresentativeName || "",
+    businessRegistrationNumber: "",
+    phoneNumber: smpayInfo?.advertiserPhoneNumber || "",
+    emailAddress: smpayInfo?.advertiserEmailAddress || "",
+    status: smpayInfo?.advertiserStatus || "UNSYNC_ADVERTISER",
+    roleId: 0,
+    isLossPrivileges: false,
+    advertiserFormId: smpayInfo?.advertiserFormId || 0,
+  };
+
   return (
     <div>
       {loading && <LoadingUI title="SM Pay 정보 조회 중..." />}
@@ -98,7 +126,7 @@ const SmPayAdminOverviewHistoryDetailView = ({ id }: Props) => {
         />
       )}
 
-      <AdvertiserInfoSection advertiserId={Number(id)} />
+      <AdvertiserInfoSection isHistory advertiserData={advertiserData} />
 
       <StatIndicatorSection
         advertiserId={Number(id)}
@@ -119,7 +147,7 @@ const SmPayAdminOverviewHistoryDetailView = ({ id }: Props) => {
           variant="cancel"
           className="w-[150px]"
           onClick={() => {
-            const url = `/sm-pay/management/apply-detail/${id}`;
+            const url = `/sm-pay/admin/overview/history/${id}`;
             router.push(url);
           }}
         >
