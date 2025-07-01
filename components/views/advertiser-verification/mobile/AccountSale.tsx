@@ -8,8 +8,6 @@ import { NumberInput } from "@/components/composite/input-components";
 
 import { type AccountInfo } from "@/types/vertification";
 
-import { TEST_BANK_OPTIONS } from "../constants";
-
 type AccountSaleProps = {
   salesAccount: AccountInfo;
   setSalesAccount: (account: AccountInfo) => void;
@@ -47,7 +45,7 @@ const AccountSale = ({
         <div className="flex flex-col gap-2">
           <Label className="text-sm font-medium">매출 계좌 은행 *</Label>
           <Select
-            options={TEST_BANK_OPTIONS}
+            options={[]}
             placeholder="충전 계좌 은행을 선택해주세요."
             value={salesAccount.bank}
             onChange={(value) =>

@@ -11,7 +11,13 @@ import {
   Descriptions,
 } from "@/components/composite/description-components";
 
-import { useSmPayRejectReason, useSmPayStopInfo } from "@/hooks/queries/sm-pay";
+import type { SmPayAdvertiserStatusDto as TSmPayData } from "@/types/smpay";
+
+import {
+  useSmPayAdvertiserAgreeNotification,
+  useSmPayRejectReason,
+  useSmPayStopInfo,
+} from "@/hooks/queries/sm-pay";
 
 // reject
 type PropsRejectDialog = {
@@ -116,16 +122,24 @@ const ReapplyDialog = ({ onClose, onConfirm }: PropsReapplyDialog) => {
 type PropsAdvertiserAgreementSendDialog = {
   onClose: () => void;
   onConfirm: () => void;
-  id: string;
+  data: TSmPayData;
 };
 
 const AdvertiserAgreementSendDialog = ({
   onClose,
   onConfirm,
-  id,
+  data,
 }: PropsAdvertiserAgreementSendDialog) => {
+  const { mutate: sendAgreeNotification } = useSmPayAdvertiserAgreeNotification(
+    {
+      onSuccess: () => {
+        onConfirm();
+      },
+    }
+  );
+
   const handleConfirm = () => {
-    console.log("advertiser agreement send");
+    sendAgreeNotification(data.advertiserId);
     onConfirm();
   };
   return (

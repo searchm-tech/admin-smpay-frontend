@@ -14,13 +14,19 @@ import {
   DescriptionItem,
 } from "@/components/composite/description-components";
 
-import { TEST_BANK_OPTIONS } from "../constants";
 import { HOVER_ADVERIFY, TOOLTIP_CONTENT } from "@/constants/hover";
 
 import type { AccountInfo } from "@/types/vertification";
 import { ADVERIFY_DIALOG_CONTENT } from "@/constants/dialog";
+import {
+  useAccountCertification,
+  useAccountList,
+  useAdvertiserBankAccount,
+} from "@/hooks/queries/account";
+import LoadingUI from "@/components/common/Loading";
 
 type InfoSectionProps = {
+  advertiserId: number;
   chargeAccount: AccountInfo;
   salesAccount: AccountInfo;
   arsCertified: boolean;
@@ -36,13 +42,48 @@ const InfoSection = ({
   setSalesAccount,
   setArsCertified,
 }: InfoSectionProps) => {
+  const [isCertifiedCharge, setIsCertifiedCharge] = useState(false);
+  const [isCertifiedSales, setIsCertifiedSales] = useState(false);
+
   const [certifiedMessage, setCertifiedMessage] = useState<
     "charge" | "sales" | null
   >(null);
 
   const [error, setError] = useState<string | null>(null);
 
-  const handleChargeCertification = () => {
+  const { data: accountList = [] } = useAccountList();
+
+  const { mutate: accountCertificationChage, isPending: isCertifyingCharge } =
+    useAccountCertification({
+      onSuccess: () => {
+        setIsCertifiedCharge(true);
+        setCertifiedMessage("charge");
+      },
+      onError: (error) => {
+        setError("계좌 인증에 실패했습니다.");
+        setIsCertifiedCharge(false);
+      },
+    });
+  const { mutate: accountCertificationSales, isPending: isCertifyingSales } =
+    useAccountCertification({
+      onSuccess: () => {
+        setIsCertifiedSales(true);
+        setCertifiedMessage("sales");
+      },
+      onError: (error) => {
+        setError("계좌 인증에 실패했습니다.");
+        setIsCertifiedSales(false);
+      },
+    });
+
+  const { mutate: advertiserBankAccount, isPending: isSubmittingBankAccount } =
+    useAdvertiserBankAccount({
+      onSuccess: () => {
+        setArsCertified(true);
+      },
+    });
+
+  const handleChargeCertification = async () => {
     if (
       !chargeAccount.accountHolder ||
       !chargeAccount.accountNumber ||
@@ -52,7 +93,12 @@ const InfoSection = ({
       return;
     }
 
-    setCertifiedMessage("charge");
+    accountCertificationChage({
+      advertiserId: 1,
+      bankCode: chargeAccount.bank,
+      accountNumber: chargeAccount.accountNumber,
+      accountName: chargeAccount.accountHolder,
+    });
   };
 
   const handleSalesCertification = () => {
@@ -65,7 +111,12 @@ const InfoSection = ({
       return;
     }
 
-    setCertifiedMessage("sales");
+    accountCertificationSales({
+      advertiserId: 1,
+      bankCode: salesAccount.bank,
+      accountNumber: salesAccount.accountNumber,
+      accountName: salesAccount.accountHolder,
+    });
   };
 
   const handleARS = () => {
@@ -74,11 +125,32 @@ const InfoSection = ({
       return;
     }
 
-    setArsCertified(true);
+    advertiserBankAccount({
+      advertiserId: 1,
+      accounts: [
+        {
+          bankCode: chargeAccount.bank,
+          bankCodeName: chargeAccount.bank,
+          bankNumber: chargeAccount.accountNumber,
+          name: chargeAccount.accountHolder,
+          type: "DEPOSIT",
+        },
+        {
+          bankCode: salesAccount.bank,
+          bankCodeName: salesAccount.bank,
+          bankNumber: salesAccount.accountNumber,
+          name: salesAccount.accountHolder,
+          type: "WITHDRAW",
+        },
+      ],
+    });
   };
 
   return (
     <section className="w-full mt-10 py-6 border-dotted border-gray-400 border-b-2 border-t-2">
+      {(isCertifyingCharge || isCertifyingSales) && (
+        <LoadingUI title="계좌 인증 중" />
+      )}
       {error && (
         <ConfirmDialog
           open
@@ -119,7 +191,11 @@ const InfoSection = ({
             label={<span className="w-[200px]">충전 계좌 은행 *</span>}
           >
             <Select
-              options={TEST_BANK_OPTIONS}
+              className="max-w-[500px]"
+              options={accountList.map((account) => ({
+                label: account.name,
+                value: account.bankCode,
+              }))}
               placeholder="은행 선택"
               value={chargeAccount.bank}
               onChange={(value) =>
@@ -177,7 +253,10 @@ const InfoSection = ({
             label={<span className="w-[200px]">매출 계좌 은행 *</span>}
           >
             <Select
-              options={TEST_BANK_OPTIONS}
+              options={accountList.map((account) => ({
+                label: account.name,
+                value: account.bankCode,
+              }))}
               placeholder="은행 선택"
               value={salesAccount.bank}
               onChange={(value) =>
@@ -222,7 +301,7 @@ const InfoSection = ({
       <Button
         className="text-center mt-8 w-[400px] h-[50px] font-bold"
         variant="cancel"
-        disabled={arsCertified}
+        disabled={arsCertified || !isCertifiedCharge || !isCertifiedSales}
         onClick={handleARS}
       >
         {arsCertified ? "ARS 인증 완료" : "ARS 인증"}

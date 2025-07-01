@@ -18,7 +18,11 @@ import {
 
 import type { AccountInfo, AgreementInfo } from "@/types/vertification";
 
-const DesktopView = () => {
+type DesktopViewProps = {
+  advertiserId: number;
+};
+
+const DesktopView = ({ advertiserId }: DesktopViewProps) => {
   const router = useRouter();
 
   const [arsCertified, setArsCertified] = useState(false);
@@ -74,11 +78,12 @@ const DesktopView = () => {
   };
 
   return (
-    <div className="max-w-[700px] mt-10 h-[1105px] text-center flex flex-col items-center mx-auto">
+    <div className="max-w-[750px] mt-10 h-[1105px] text-center flex flex-col items-center mx-auto">
       <HeaderSection />
 
       <AgreemenSection agreement={agreement} setAgreement={setAgreement} />
       <InfoSection
+        advertiserId={advertiserId}
         chargeAccount={chargeAccount}
         salesAccount={salesAccount}
         arsCertified={arsCertified}
