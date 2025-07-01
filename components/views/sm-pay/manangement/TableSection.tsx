@@ -63,6 +63,9 @@ const TableSection = ({
     number | null
   >(null);
   const [applySubmitId, setApplySubmitId] = useState<number | null>(null);
+  const [applySubmitData, setApplySubmitData] = useState<TSmPayData | null>(
+    null
+  );
   const [rejectModalId, setRejectModalId] = useState<number | null>(null);
   const [rejectOperationModalId, setRejectOperationModalId] = useState<
     number | null
@@ -209,11 +212,9 @@ const TableSection = ({
             {availableActions.includes("advertiser_agreement_send") && (
               <Button
                 variant="blueOutline"
-                onClick={() => {
-                  setApplySubmitId(record.advertiserCustomerId);
-                }}
+                onClick={() => setApplySubmitData(record)}
               >
-                광고주 등의 전송
+                광고주 동의 전송
               </Button>
             )}
 
@@ -344,13 +345,11 @@ const TableSection = ({
         />
       )}
 
-      {applySubmitId && (
+      {applySubmitData && (
         <AdvertiserAgreementSendDialog
-          id={applySubmitId?.toString() || ""}
+          data={applySubmitData}
           onClose={() => setApplySubmitId(null)}
-          onConfirm={() => {
-            router.push(`/sm-pay/management/apply-detail/${applySubmitId}`);
-          }}
+          onConfirm={() => setApplySubmitId(null)}
         />
       )}
 

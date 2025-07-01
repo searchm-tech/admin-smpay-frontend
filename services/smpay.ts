@@ -6,6 +6,7 @@ import {
 } from "@/hooks/queries/sm-pay";
 import { ApiError, get, patch, post, put } from "@/lib/api";
 import { buildQueryParams, transformTableResponse } from "@/lib/utils";
+import { RequestARSBankAccount } from "@/types/api/account";
 import type { RequestAgentUser } from "@/types/api/common";
 import {
   AdvertiserDetailDto,
@@ -819,6 +820,51 @@ export const getSmPayAdminOverviewAccountBalance = async ({
   try {
     const response = await get<OverviewAccountBalanceDto>(
       `/admin/api/v1/agents/${agentId}/users/${userId}/calculate-account-balance`
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+/**
+ * 광고주 동의 이메일, 문자발송(SAG037)
+ * - 화면 : [대행사] SM Pay 관리 > 목록 리스트 > 광고주 동의 전송 버튼
+ */
+export const postSmPayAdvertiserAgreeNotification = async ({
+  user,
+  advertiserId,
+}: WithAdvertiserId): Promise<null> => {
+  const { agentId, userId } = user;
+
+  try {
+    const response = await post<null>(
+      `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/send-agree-notification`
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+/**
+ * 광고주 은행 계좌 등록 및 운영 제출(AD002)
+ * - 화면 : 광고주 동의 > ARS 인증 버튼
+ */
+export const postSmPayAdvertiserBankAccount = async ({
+  advertiserId,
+  accounts,
+}: RequestARSBankAccount): Promise<null> => {
+  try {
+    const response = await post<null>(
+      `/api/v1/advertisers/${advertiserId}/bank-account`,
+      accounts
     );
     return response;
   } catch (error) {

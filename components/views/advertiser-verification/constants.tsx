@@ -12,13 +12,6 @@ export const DEFAULT_AGREEMENT_INFO: AgreementInfo = {
   agreeService: false,
 };
 
-export const TEST_BANK_OPTIONS = [
-  { label: "농협", value: "088" },
-  { label: "국민", value: "081" },
-  { label: "농협", value: "082" },
-  { label: "국민", value: "083" },
-];
-
 export const dialogContent = {
   private: (
     <div>

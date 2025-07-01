@@ -37,6 +37,7 @@ import type {
   ResponseSmPayAdminAudit,
   ParamsSmPayAdminOverviewOperatorDecision,
   OverviewForm,
+  WithAdvertiserId,
 } from "@/types/api/smpay";
 
 import { useAuthQuery } from "../useAuthQuery";
@@ -70,6 +71,7 @@ import {
   getSmPayAdminOverviewApprovalMemo,
   postSmPayAdminOverviewOperatorDecision,
   getSmPayAdminOverviewAccountBalance,
+  postSmPayAdvertiserAgreeNotification,
 } from "@/services/smpay";
 import type {
   DailyStat,
@@ -515,5 +517,19 @@ export const useSmPayAdminOverviewAccountBalance = (userId: number) => {
     queryKey: ["/smpay/admin-overview-account-balance", userId],
     queryFn: (user: RequestAgentUser) =>
       getSmPayAdminOverviewAccountBalance(user),
+  });
+};
+
+// 광고주 동의 이메일, 문자발송 (SAG037)
+export const useSmPayAdvertiserAgreeNotification = (
+  options?: UseMutationOptions<null, Error, number>
+) => {
+  return useAuthMutation<null, Error, number>({
+    mutationFn: (variables, user) =>
+      postSmPayAdvertiserAgreeNotification({
+        user,
+        advertiserId: variables,
+      }),
+    ...options,
   });
 };

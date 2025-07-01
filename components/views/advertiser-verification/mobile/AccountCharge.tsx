@@ -4,8 +4,6 @@ import { Input } from "@/components/ui/input";
 import Select from "@/components/composite/select-components";
 import { NumberInput } from "@/components/composite/input-components";
 
-import { TEST_BANK_OPTIONS } from "../constants";
-
 import { type AccountInfo } from "@/types/vertification";
 
 type AccountChargeProps = {
@@ -41,7 +39,7 @@ const AccountCharge = ({
         <div className="flex flex-col gap-2">
           <Label className="text-sm font-medium">충전 계좌 은행 *</Label>
           <Select
-            options={TEST_BANK_OPTIONS}
+            options={[]}
             placeholder="충전 계좌 은행을 선택해주세요."
             value={chargeAccount.bank}
             onChange={(value) =>
