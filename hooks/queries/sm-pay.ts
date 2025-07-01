@@ -36,6 +36,7 @@ import type {
   PrePaymentScheduleDto,
   ResponseSmPayAdminAudit,
   ParamsSmPayAdminOverviewOperatorDecision,
+  OverviewForm,
 } from "@/types/api/smpay";
 
 import { useAuthQuery } from "../useAuthQuery";
@@ -394,33 +395,73 @@ export const useSmPayAdminOverviewAlarm = (
   });
 };
 
+export type WithAdvertiserIdAndAgentIdAndUserId = {
+  advertiserId: number;
+  agentId: number;
+  userId: number;
+};
+
 // 광고주 detail 조회 (운영 관리자 전용) (AAG020)
-export const useSmPayAdminDetail = (advertiserId: number) => {
+export const useSmPayAdminDetail = (
+  advertiserId: number,
+  agentId: number,
+  userId: number
+) => {
   return useAuthQuery<AdvertiserDetailDto>({
-    queryKey: ["/smpay/admin-overview-detail", advertiserId],
-    queryFn: (user: RequestAgentUser) =>
-      getSmPayAdminOverviewDetail({ user, advertiserId }),
+    queryKey: ["/smpay/admin-overview-detail", advertiserId, agentId, userId],
+    queryFn: () =>
+      getSmPayAdminOverviewDetail({
+        advertiserId,
+        agentId,
+        userId,
+      }),
   });
 };
 
 // 광고주 smPay 신청 이력 리스트 조회 (운영 관리자 전용) (AAG021)
-export const useSmPayAdminOverviewApplyFormList = (advertiserId: number) => {
-  return useAuthQuery<OverviewApplyListDto[]>({
-    queryKey: ["/smpay/admin-overview-apply-form-list", advertiserId],
-    queryFn: (user: RequestAgentUser) =>
-      getSmPayAdminOverviewApplyFormList({ user, advertiserId }),
+export const useSmPayAdminOverviewApplyFormList = (
+  advertiserId: number,
+  agentId: number,
+  userId: number
+) => {
+  return useQuery<OverviewApplyListDto[]>({
+    queryKey: [
+      "/smpay/admin-overview-apply-form-list",
+      advertiserId,
+      agentId,
+      userId,
+    ],
+    queryFn: () =>
+      getSmPayAdminOverviewApplyFormList({
+        advertiserId,
+        agentId,
+        userId,
+      }),
   });
 };
 
 // 광고주 smPay 신청 이력 상세 조회 (운영 관리자 전용) (AAG022)
 export const useSmPayAdminOverviewApplyFormDetail = (
   advertiserId: number,
-  formId: number
+  formId: number,
+  agentId: number,
+  userId: number
 ) => {
-  return useAuthQuery<OverviewApplyListDto>({
-    queryKey: ["/smpay/admin-overview-apply-form-detail", advertiserId, formId],
-    queryFn: (user: RequestAgentUser) =>
-      getSmPayAdminOverviewApplyFormDetail({ user, advertiserId, formId }),
+  return useQuery<OverviewForm>({
+    queryKey: [
+      "/smpay/admin-overview-apply-form-detail",
+      advertiserId,
+      formId,
+      agentId,
+      userId,
+    ],
+    queryFn: () =>
+      getSmPayAdminOverviewApplyFormDetail({
+        advertiserId,
+        formId,
+        agentId,
+        userId,
+      }),
   });
 };
 
@@ -446,27 +487,24 @@ export const useSmPayAdminOverviewApprovalMemo = (advertiserId: number) => {
 type SmPayAdminOverviewOperatorDecisionVariables = {
   advertiserId: number;
   params: ParamsSmPayAdminOverviewOperatorDecision;
+  agentId: number;
+  userId: number;
+};
+
+export type PropsRequestDecision = {
+  advertiserId: number;
+  params: ParamsSmPayAdminOverviewOperatorDecision;
+  agentId: number;
+  userId: number;
 };
 
 // 광고주 운영 심사 승인/반려 (운영 관리자 전용) (AAG026)
 export const useSmPayAdminOverviewOperatorDecision = (
-  options?: UseMutationOptions<
-    null,
-    Error,
-    SmPayAdminOverviewOperatorDecisionVariables
-  >
+  options?: UseMutationOptions<null, Error, PropsRequestDecision>
 ) => {
-  return useAuthMutation<
-    null,
-    Error,
-    SmPayAdminOverviewOperatorDecisionVariables
-  >({
-    mutationFn: (variables, user) =>
-      postSmPayAdminOverviewOperatorDecision({
-        user,
-        advertiserId: variables.advertiserId,
-        params: variables.params,
-      }),
+  return useMutation<null, Error, PropsRequestDecision>({
+    mutationFn: (data: PropsRequestDecision) =>
+      postSmPayAdminOverviewOperatorDecision(data),
     ...options,
   });
 };

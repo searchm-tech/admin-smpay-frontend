@@ -18,6 +18,8 @@ type RejectSendModalProps = {
   onConfirm: () => void;
   params: ParamsSmPayAdminOverviewOperatorDecision & {
     advertiserId: number;
+    agentId: number;
+    userId: number;
   };
 };
 
@@ -42,6 +44,8 @@ const RejectSendModal = ({
     postOperatorDecision({
       advertiserId: Number(params.advertiserId),
       params: { ...params, rejectStatusMemo: rejectReason },
+      agentId: params.agentId,
+      userId: params.userId,
     });
   };
 

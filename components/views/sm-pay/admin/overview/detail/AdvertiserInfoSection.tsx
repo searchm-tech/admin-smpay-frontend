@@ -39,13 +39,20 @@ const AdvertiserInfoSection = ({
 }: Props) => {
   const [isHistoryModal, setIsHistoryModal] = useState(false);
 
+  const { data: dataSource } = useSmPayAdminOverviewApplyFormList(
+    advertiserData?.advertiserId || 0,
+    advertiserData?.agentId || 0,
+    advertiserData?.userId || 0
+  );
+
   return (
     <div>
       <section>
-        {isHistoryModal && advertiserData && (
+        {isHistoryModal && dataSource && advertiserData && (
           <HistoryModal
             onClose={() => setIsHistoryModal(false)}
-            advertiserId={advertiserData.advertiserId}
+            dataSource={dataSource}
+            advertiserData={advertiserData}
           />
         )}
         <div className="flex items-center gap-4 py-4">
@@ -53,7 +60,10 @@ const AdvertiserInfoSection = ({
             광고주 상태
           </LabelBullet>
           {isHistory && (
-            <Button onClick={() => setIsHistoryModal(true)}>
+            <Button
+              onClick={() => setIsHistoryModal(true)}
+              disabled={dataSource && dataSource.length === 0}
+            >
               SM Pay 지난 이력 보기
             </Button>
           )}
@@ -107,15 +117,16 @@ export default AdvertiserInfoSection;
 
 type HistoryModalProps = {
   onClose: () => void;
-  advertiserId?: number;
+  advertiserData?: AdvertiserDetailDto;
+  dataSource: OverviewApplyListDto[];
 };
 
-const HistoryModal = ({ onClose, advertiserId }: HistoryModalProps) => {
+const HistoryModal = ({
+  onClose,
+  advertiserData,
+  dataSource,
+}: HistoryModalProps) => {
   const router = useRouter();
-
-  const { data: dataSource } = useSmPayAdminOverviewApplyFormList(
-    Number(advertiserId)
-  );
 
   const columns: TableProps<OverviewApplyListDto>["columns"] = [
     {
@@ -150,7 +161,14 @@ const HistoryModal = ({ onClose, advertiserId }: HistoryModalProps) => {
       render: (text: string, record) => (
         <LinkTextButton
           onClick={() => {
-            const url = `/sm-pay/management/history/${advertiserId}?formId=${record.advertiserFormId}&orignFormId=${record.advertiserFormId}`;
+            const { advertiserId, agentId, userId } = advertiserData || {};
+            const queryString = new URLSearchParams({
+              formId: record.advertiserFormId.toString(),
+              agentId: agentId?.toString() || "",
+              userId: userId?.toString() || "",
+            });
+
+            const url = `/sm-pay/admin/overview/history/${advertiserId}?${queryString.toString()}`;
             router.push(url);
           }}
         >

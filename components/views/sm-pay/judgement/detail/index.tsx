@@ -42,6 +42,7 @@ const SmPayJudgementDetailView = ({ id }: Props) => {
   const router = useRouter();
 
   const read = useSearchParams().get("read");
+
   const [isApproved, setIsApproved] = useState(false);
   const [isRejectSend, setIsRejectSend] = useState(false);
   const [isReject, setIsReject] = useState(false);
@@ -208,7 +209,11 @@ const SmPayJudgementDetailView = ({ id }: Props) => {
         />
       )}
 
-      <AdvertiserInfoSection advertiserId={Number(id)} isHistory />
+      {/* <AdvertiserInfoSection
+        advertiserId={Number(id)}
+        userId={Number(userId)}
+        isHistory
+      /> */}
 
       <StatIndicatorSection
         advertiserId={Number(id)}

@@ -1,5 +1,9 @@
 // 광고주 smPay 신청 관리 리스트 조회(SAG022)
 
+import {
+  PropsRequestDecision,
+  WithAdvertiserIdAndAgentIdAndUserId,
+} from "@/hooks/queries/sm-pay";
 import { ApiError, get, patch, post, put } from "@/lib/api";
 import { buildQueryParams, transformTableResponse } from "@/lib/utils";
 import type { RequestAgentUser } from "@/types/api/common";
@@ -22,8 +26,8 @@ import {
   PrePaymentScheduleDto,
   ResponseSmPayAdminAudit,
   RequestSmPayAdminRead,
-  RequestSmPayAdminOverviewApplyFormDetail,
-  AdminOverviewOperatorDecision,
+  UserAgentAdvertiserId,
+  OverviewForm,
 } from "@/types/api/smpay";
 
 import type {
@@ -310,7 +314,6 @@ export const getSmPayApplyList = async ({
     throw error;
   }
 };
-
 /**
  * 광고주 심사 관리 리스트 조회(최상위 그룹장 전용)(SAG030)
  * - 화면 : [최상위 그룹장] > 심사 요청 목록
@@ -636,11 +639,10 @@ export const patchSmPayAdminOverviewAlarm = async ({
  * - 화면 : [시스템 관리자] SM Pay 관리 > 운영 검토 요청 상세
  */
 export const getSmPayAdminOverviewDetail = async ({
-  user,
   advertiserId,
-}: WithAdvertiserId): Promise<AdvertiserDetailDto> => {
-  const { agentId, userId } = user;
-
+  agentId,
+  userId,
+}: WithAdvertiserIdAndAgentIdAndUserId): Promise<AdvertiserDetailDto> => {
   try {
     const response = await get<AdvertiserDetailDto>(
       `/admin/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/details`
@@ -657,18 +659,21 @@ export const getSmPayAdminOverviewDetail = async ({
 /**
  * 광고주 smPay 신청 이력 리스트 조회 (AAG021)
  * - 화면 : [시스템 관리자] SM Pay 관리 > 운영 검토 요청 상세 > 신청 이력 리스트
+ * - requestPath : agentId, userId, advertiserId (광고주)
  */
 export const getSmPayAdminOverviewApplyFormList = async ({
-  user,
   advertiserId,
-}: WithAdvertiserId): Promise<OverviewApplyListDto[]> => {
-  const { agentId, userId } = user;
-
+  agentId,
+  userId,
+}: UserAgentAdvertiserId): Promise<OverviewApplyListDto[]> => {
   try {
     const response = await get<OverviewApplyListDto[]>(
       `/admin/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/apply-form-list`
     );
-    return response;
+    return response.map((item, index) => ({
+      ...item,
+      id: index + 1,
+    }));
   } catch (error) {
     if (error instanceof ApiError) {
       throw error;
@@ -681,15 +686,22 @@ export const getSmPayAdminOverviewApplyFormList = async ({
  * 광고주 smPay 신청 이력 상세 조회(AAG022)
  * - 화면 : [시스템 관리자] SM Pay 관리 > 운영 검토 요청 상세 > 신청 이력 상세
  */
+
+type RequestSmPayAdminOverviewApplyFormDetail = {
+  advertiserId: number;
+  formId: number;
+  agentId: number;
+  userId: number;
+};
+
 export const getSmPayAdminOverviewApplyFormDetail = async ({
-  user,
   advertiserId,
   formId,
-}: RequestSmPayAdminOverviewApplyFormDetail): Promise<OverviewApplyListDto> => {
-  const { agentId, userId } = user;
-
+  agentId,
+  userId,
+}: RequestSmPayAdminOverviewApplyFormDetail): Promise<OverviewForm> => {
   try {
-    const response = await get<OverviewApplyListDto>(
+    const response = await get<OverviewForm>(
       `/admin/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/form/${formId}`
     );
     return response;
@@ -753,43 +765,18 @@ export const getSmPayAdminOverviewApprovalMemo = async ({
 /**
  * 광고주 운영 심사 승인/반려(AAG026)
  * - 화면 : [시스템 관리자] SM Pay 관리 > 운영 검토 요청 상세
+ * - requestPath : adverUserId, adverAgentId
  */
 export const postSmPayAdminOverviewOperatorDecision = async ({
-  user,
+  agentId,
+  userId,
   advertiserId,
   params,
-}: AdminOverviewOperatorDecision): Promise<null> => {
-  const { agentId, userId } = user;
-
-  const testParams = {
-    decisionType: "REJECT",
-    chargeRule: [
-      {
-        advertiserChargeRuleId: 54,
-        advertiserId: 3659,
-        standardRoasPercent: 1,
-        changePercentOrValue: 2,
-        rangeType: "UP",
-        boundType: "FIXED_AMOUNT",
-      },
-      {
-        advertiserChargeRuleId: 53,
-        advertiserId: 3659,
-        standardRoasPercent: 0,
-        changePercentOrValue: 2,
-        rangeType: "DOWN",
-        boundType: "FIXED_AMOUNT",
-      },
-    ],
-    prePaymentSchedule: {
-      initialAmount: 1000,
-      maxChargeLimit: 1,
-      minChargeLimit: 100000,
-    },
-    reviewerMemo: "asdfasdf",
-    approvalMemo: "",
-    rejectStatusMemo: "asdfasdfasdf",
-  };
+}: PropsRequestDecision): Promise<null> => {
+  console.log("agentId", agentId);
+  console.log("userId", userId);
+  console.log("advertiserId", advertiserId);
+  console.log("params", params);
   const {
     decisionType,
     chargeRule,
@@ -799,10 +786,18 @@ export const postSmPayAdminOverviewOperatorDecision = async ({
     rejectStatusMemo,
   } = params;
 
+  const requestParams = {
+    decisionType,
+    chargeRule,
+    prePaymentSchedule,
+    reviewerMemo,
+    approvalMemo,
+    rejectStatusMemo,
+  };
   try {
     const response = await post<null>(
       `/admin/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/operator-decision`,
-      testParams
+      requestParams
     );
     return response;
   } catch (error) {

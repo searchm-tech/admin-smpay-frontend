@@ -24,6 +24,7 @@ import type {
   TableParams,
   TableProps,
 } from "@/types/table";
+import { cn } from "@/lib/utils";
 
 type PropsTableSection = {
   tableParams: TableParams;
@@ -137,23 +138,30 @@ const TableSection = ({
       key: "advertiserName",
       align: "center",
       sorter: true,
-      render: (text, record) => (
-        <div className="flex items-center justify-center gap-2">
-          {!record.isOperatorRead && <Badge label="new" />}
-          <LinkTextButton
-            onClick={() => {
-              const query = !record.isOperatorRead
-                ? "?isOperatorRead=false"
-                : "";
-              const url = `/sm-pay/admin/overview/${record.advertiserId}${query}`;
+      render: (text, record) => {
+        const linkList = [
+          "OPERATION_REVIEW_SUCCESS",
+          "OPERATION_REJECT",
+          "OPERATION_REVIEW",
+        ];
+        const isLink = linkList.includes(record.advertiserType);
 
-              router.push(url);
-            }}
-          >
-            {text}
-          </LinkTextButton>
-        </div>
-      ),
+        if (isLink) {
+          const query = !record.isOperatorRead ? "&isOperatorRead=false" : "";
+          const url = `/sm-pay/admin/overview/${record.advertiserId}?agentId=${record.agentId}&userId=${record.userId}${query}`;
+
+          return (
+            <div className="flex items-center justify-center gap-2">
+              {!record.isOperatorRead && <Badge label="new" />}
+
+              <LinkTextButton onClick={() => router.push(url)}>
+                {text}
+              </LinkTextButton>
+            </div>
+          );
+        }
+        return <span>{text}</span>;
+      },
     },
 
     {
@@ -195,7 +203,7 @@ const TableSection = ({
   }, [width, state]);
 
   return (
-    <section className={tableWidthClass}>
+    <div className={cn(tableWidthClass, "overflow-x-auto ")}>
       <Table<SmPayAdminAuditDto>
         columns={columns}
         rowKey="id"
@@ -208,11 +216,8 @@ const TableSection = ({
           showSizeChanger: true,
         }}
         onChange={handleTableChange}
-        scroll={{ x: 2000 }}
-        size="middle"
-        className="sorter-table"
       />
-    </section>
+    </div>
   );
 };
 
