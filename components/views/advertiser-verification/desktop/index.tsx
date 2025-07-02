@@ -17,6 +17,7 @@ import {
 } from "@/constants/dialog";
 
 import type { AccountInfo, AgreementInfo } from "@/types/vertification";
+import { useAdvertiserBankAccount } from "@/hooks/queries/account";
 
 type DesktopViewProps = {
   advertiserId: number;
@@ -25,7 +26,14 @@ type DesktopViewProps = {
 const DesktopView = ({ advertiserId }: DesktopViewProps) => {
   const router = useRouter();
 
-  const [arsCertified, setArsCertified] = useState(false);
+  const { mutate: advertiserBankAccount, isPending: isSubmittingBankAccount } =
+    useAdvertiserBankAccount({
+      onSuccess: () => {
+        setOpenDialog("submit");
+      },
+    });
+
+  const [arsCertified, setArsCertified] = useState(false); // TODO : ARS 하고 false 변경
   const [agreement, setAgreement] = useState<AgreementInfo>(
     DEFAULT_AGREEMENT_INFO
   );
@@ -74,7 +82,25 @@ const DesktopView = ({ advertiserId }: DesktopViewProps) => {
       return;
     }
 
-    setOpenDialog("submit");
+    advertiserBankAccount({
+      advertiserId: Number(advertiserId),
+      accounts: [
+        {
+          bankCode: chargeAccount.bank,
+          bankCodeName: chargeAccount.bankName,
+          bankNumber: chargeAccount.accountNumber,
+          name: chargeAccount.accountHolder,
+          type: "DEPOSIT",
+        },
+        {
+          bankCode: salesAccount.bank,
+          bankCodeName: salesAccount.bankName,
+          bankNumber: salesAccount.accountNumber,
+          name: salesAccount.accountHolder,
+          type: "WITHDRAW",
+        },
+      ],
+    });
   };
 
   return (

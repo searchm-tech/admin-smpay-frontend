@@ -25,3 +25,9 @@ export type RequestARSBankAccount = {
   accounts: AccountInfo[];
   advertiserId: number;
 };
+
+export type RequestARS = {
+  advertiserId: number;
+  bankCode: string;
+  accountNumber: string;
+};

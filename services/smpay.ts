@@ -863,7 +863,7 @@ export const postSmPayAdvertiserBankAccount = async ({
 }: RequestARSBankAccount): Promise<null> => {
   try {
     const response = await post<null>(
-      `/api/v1/advertisers/${advertiserId}/bank-account`,
+      `/api/v1/advertisers/${advertiserId}/register-account`,
       accounts
     );
     return response;

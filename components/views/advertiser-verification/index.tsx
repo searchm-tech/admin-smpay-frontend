@@ -1,11 +1,15 @@
 "use client";
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 
 import DesktopView from "./desktop";
 import MobilewView from "./mobile";
 import { useWindowSize } from "@/hooks/useWindowSize";
-import { useAdvertiserMailVerification } from "@/hooks/queries/account";
+import {
+  useAccountList,
+  useAdvertiserMailVerification,
+} from "@/hooks/queries/account";
 import { ErrorComponent } from "../error";
+import { useAccountStore } from "@/store/useAccountStore";
 
 type Props = {
   authCode: string;
@@ -14,6 +18,8 @@ type Props = {
 
 const AdvertiserVerificationView = ({ authCode, advertiserId }: Props) => {
   const { device } = useWindowSize();
+  const { setAccountList } = useAccountStore();
+  const { refetch } = useAccountList();
 
   const { data: isMailVerified } = useAdvertiserMailVerification(
     advertiserId,
@@ -24,12 +30,22 @@ const AdvertiserVerificationView = ({ authCode, advertiserId }: Props) => {
     return <ErrorComponent message="유효하지 않은 인증 링크입니다." />;
   }
 
+  useEffect(() => {
+    refetch().then(({ data }) => {
+      setAccountList(data || []);
+    });
+
+    return () => {
+      setAccountList([]);
+    };
+  }, []);
+
   return (
     <Fragment>
       {device === "desktop" ? (
         <DesktopView advertiserId={advertiserId} />
       ) : (
-        <MobilewView />
+        <MobilewView advertiserId={advertiserId} />
       )}
     </Fragment>
   );

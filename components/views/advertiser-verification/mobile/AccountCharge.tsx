@@ -4,19 +4,38 @@ import { Input } from "@/components/ui/input";
 import Select from "@/components/composite/select-components";
 import { NumberInput } from "@/components/composite/input-components";
 
-import { type AccountInfo } from "@/types/vertification";
+import type { AccountInfo } from "@/types/vertification";
+import type { Account } from "@/types/api/account";
+import { useAccountCertification } from "@/hooks/queries/account";
+import LoadingUI from "@/components/common/Loading";
 
 type AccountChargeProps = {
   chargeAccount: AccountInfo;
   setChargeAccount: (value: AccountInfo) => void;
   handleReset: () => void;
+  accountList: Account[];
+  advertiserId: number;
 };
 
 const AccountCharge = ({
   chargeAccount,
   setChargeAccount,
   handleReset,
+  accountList,
+  advertiserId,
 }: AccountChargeProps) => {
+  const { mutate: accountCertificationChage, isPending: isCertifyingCharge } =
+    useAccountCertification({
+      onSuccess: () => {
+        alert("계좌 인증이 완료 되었습니다.");
+        setChargeAccount({ ...chargeAccount, isCertified: true });
+      },
+      onError: (error) => {
+        alert("계좌 인증에 실패했습니다.");
+        setChargeAccount({ ...chargeAccount, isCertified: false });
+      },
+    });
+
   const handleChargeCertification = () => {
     if (
       !chargeAccount.accountHolder ||
@@ -27,19 +46,27 @@ const AccountCharge = ({
       return;
     }
 
-    setChargeAccount({ ...chargeAccount, isCertified: true });
-    alert("계좌 인증이 완료 되었습니다.");
+    accountCertificationChage({
+      advertiserId,
+      bankCode: chargeAccount.bank,
+      accountNumber: chargeAccount.accountNumber,
+      accountName: chargeAccount.accountHolder,
+    });
   };
 
   return (
     <section className="mt-8 w-full px-4">
+      {isCertifyingCharge && <LoadingUI title="계좌 인증 중..." />}
       <div className="flex flex-col gap-4">
         <Label className="text-base font-bold">충전 계좌 정보 입력</Label>
 
         <div className="flex flex-col gap-2">
           <Label className="text-sm font-medium">충전 계좌 은행 *</Label>
           <Select
-            options={[]}
+            options={accountList.map((account) => ({
+              label: account.name,
+              value: account.bankCode,
+            }))}
             placeholder="충전 계좌 은행을 선택해주세요."
             value={chargeAccount.bank}
             onChange={(value) =>
