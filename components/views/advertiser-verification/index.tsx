@@ -26,10 +26,6 @@ const AdvertiserVerificationView = ({ authCode, advertiserId }: Props) => {
     authCode
   );
 
-  if (isMailVerified) {
-    return <ErrorComponent message="유효하지 않은 인증 링크입니다." />;
-  }
-
   useEffect(() => {
     refetch().then(({ data }) => {
       setAccountList(data || []);
@@ -39,6 +35,10 @@ const AdvertiserVerificationView = ({ authCode, advertiserId }: Props) => {
       setAccountList([]);
     };
   }, []);
+
+  if (isMailVerified) {
+    return <ErrorComponent message="유효하지 않은 인증 링크입니다." />;
+  }
 
   return (
     <Fragment>
