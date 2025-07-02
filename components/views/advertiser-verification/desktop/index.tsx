@@ -18,6 +18,7 @@ import {
 
 import type { AccountInfo, AgreementInfo } from "@/types/vertification";
 import { useAdvertiserBankAccount } from "@/hooks/queries/account";
+import LoadingUI from "@/components/common/Loading";
 
 type DesktopViewProps = {
   advertiserId: number;
@@ -34,6 +35,7 @@ const DesktopView = ({ advertiserId }: DesktopViewProps) => {
     });
 
   const [arsCertified, setArsCertified] = useState(false); // TODO : ARS 하고 false 변경
+
   const [agreement, setAgreement] = useState<AgreementInfo>(
     DEFAULT_AGREEMENT_INFO
   );
@@ -105,6 +107,7 @@ const DesktopView = ({ advertiserId }: DesktopViewProps) => {
 
   return (
     <div className="max-w-[750px] mt-10 h-[1105px] text-center flex flex-col items-center mx-auto">
+      {isSubmittingBankAccount && <LoadingUI title="제출 중..." />}
       <HeaderSection />
 
       <AgreemenSection agreement={agreement} setAgreement={setAgreement} />
@@ -117,7 +120,11 @@ const DesktopView = ({ advertiserId }: DesktopViewProps) => {
         setSalesAccount={setSalesAccount}
         setArsCertified={setArsCertified}
       />
-      <FooterSection handleReset={handleReset} handleSubmit={handleSubmit} />
+      <FooterSection
+        handleReset={handleReset}
+        handleSubmit={handleSubmit}
+        arsCertified={arsCertified}
+      />
 
       {error && (
         <ConfirmDialog

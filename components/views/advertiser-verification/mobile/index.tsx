@@ -13,7 +13,8 @@ import FinishView from "./FinishView";
 import { useAccountStore } from "@/store/useAccountStore";
 import { DEFAULT_AGREEMENT_INFO } from "../constants";
 import type { AccountInfo, AgreementInfo } from "@/types/vertification";
-import { useAdvertiserBankAccount } from "@/hooks/queries/account";
+import { useAdvertiserBankAccount, useARS } from "@/hooks/queries/account";
+import LoadingUI from "@/components/common/Loading";
 
 type Props = {
   advertiserId: number;
@@ -28,6 +29,22 @@ const MobilewView = ({ advertiserId }: Props) => {
         setStep(3);
       },
     });
+
+  const { mutate: arsCertification, isPending: isCertifyingARS } = useARS({
+    onSuccess: (response) => {
+      if (response) {
+        alert("ARS 인증이 완료되었습니다.");
+        setArsCertified(true);
+      } else {
+        alert("ARS 인증을 실패하였습니다.");
+        setArsCertified(false);
+      }
+    },
+    onError: (error) => {
+      alert("ARS 인증에 실패했습니다.");
+      setArsCertified(false);
+    },
+  });
 
   const [step, setStep] = useState(1);
 
@@ -91,14 +108,14 @@ const MobilewView = ({ advertiserId }: Props) => {
       accounts: [
         {
           bankCode: chargeAccount.bank,
-          bankCodeName: chargeAccount.bank,
+          bankCodeName: chargeAccount.bankName,
           bankNumber: chargeAccount.accountNumber,
           name: chargeAccount.accountHolder,
           type: "DEPOSIT",
         },
         {
           bankCode: salesAccount.bank,
-          bankCodeName: salesAccount.bank,
+          bankCodeName: salesAccount.bankName,
           bankNumber: salesAccount.accountNumber,
           name: salesAccount.accountHolder,
           type: "WITHDRAW",
@@ -122,8 +139,20 @@ const MobilewView = ({ advertiserId }: Props) => {
       alert("계좌 인증을 진행해주세요.");
       return;
     }
-    setArsCertified(true);
+    arsCertification({
+      advertiserId: Number(advertiserId),
+      bankCode: salesAccount.bank,
+      accountNumber: salesAccount.accountNumber,
+    });
   };
+
+  if (isCertifyingARS) {
+    return <LoadingUI title="ARS 인증 중..." />;
+  }
+
+  if (isSubmittingBankAccount) {
+    return <LoadingUI title="제출 중..." />;
+  }
 
   return (
     <div className="flex flex-col items-center justify-between h-full min-h-[100vh]">

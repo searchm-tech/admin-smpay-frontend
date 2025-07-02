@@ -18,6 +18,8 @@ import {
   useSmPayRejectReason,
   useSmPayStopInfo,
 } from "@/hooks/queries/sm-pay";
+import LoadingUI from "@/components/common/Loading";
+import { useState } from "react";
 
 // reject
 type PropsRejectDialog = {
@@ -130,18 +132,37 @@ const AdvertiserAgreementSendDialog = ({
   onConfirm,
   data,
 }: PropsAdvertiserAgreementSendDialog) => {
-  const { mutate: sendAgreeNotification } = useSmPayAdvertiserAgreeNotification(
-    {
+  const [isSuccess, setIsSuccess] = useState(false);
+  const { mutate: sendAgreeNotification, isPending } =
+    useSmPayAdvertiserAgreeNotification({
       onSuccess: () => {
-        onConfirm();
+        setIsSuccess(true);
       },
-    }
-  );
+    });
 
   const handleConfirm = () => {
     sendAgreeNotification(data.advertiserId);
-    onConfirm();
   };
+
+  if (isPending) {
+    return <LoadingUI title="전송 중..." />;
+  }
+
+  if (isSuccess) {
+    return (
+      <ConfirmDialog
+        open
+        onConfirm={onConfirm}
+        cancelDisabled
+        content={
+          <div className="flex flex-col items-center pb-4 font-medium">
+            <span>광고주에게 SM Pay 동의 요청을 전송하였습니다.</span>
+          </div>
+        }
+      />
+    );
+  }
+
   return (
     <ConfirmDialog
       open

@@ -70,8 +70,8 @@ const formSchema = z.object({
   representativeName: z.string().min(1, "대표자명을 입력해주세요."),
   businessRegistrationNumber: z
     .string()
-    .min(1, "사업자등록번호를 입력해주세요.")
-    .regex(BUSINESS_NUMBER_REGEX, "유효하지 않은 사업자등록번호입니다."),
+    .min(1, "사업자등록번호를 입력해주세요."),
+  // .regex(BUSINESS_NUMBER_REGEX, "유효하지 않은 사업자등록번호입니다."),
   domainName: z
     .string()
     .min(1, "회사 메일 도메인을 입력해주세요.")
@@ -335,8 +335,8 @@ const AgencyRegisterView = () => {
                         {...field}
                         onChange={(e) => {
                           const value = e.target.value;
-                          const formattedValue = formatBusinessNumber(value);
-                          field.onChange(formattedValue);
+                          // const formattedValue = formatBusinessNumber(value);
+                          field.onChange(value);
                         }}
                       />
                       <FormMessage variant="error" />

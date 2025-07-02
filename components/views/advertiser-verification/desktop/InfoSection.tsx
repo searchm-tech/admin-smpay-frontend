@@ -51,7 +51,7 @@ const InfoSection = ({
     "charge" | "sales" | null
   >(null);
 
-  const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
 
   const { mutate: accountCertificationChage, isPending: isCertifyingCharge } =
     useAccountCertification({
@@ -60,7 +60,7 @@ const InfoSection = ({
         setCertifiedMessage("charge");
       },
       onError: (error) => {
-        setError("계좌 인증에 실패했습니다.");
+        setMessage("계좌 인증에 실패했습니다.");
         setIsCertifiedCharge(false);
       },
     });
@@ -71,7 +71,7 @@ const InfoSection = ({
         setCertifiedMessage("sales");
       },
       onError: (error) => {
-        setError("계좌 인증에 실패했습니다.");
+        setMessage("계좌 인증에 실패했습니다.");
         setIsCertifiedSales(false);
       },
     });
@@ -79,15 +79,15 @@ const InfoSection = ({
   const { mutate: arsCertification, isPending: isCertifyingARS } = useARS({
     onSuccess: (response) => {
       if (response) {
-        alert("ARS 인증이 완료되었습니다.");
+        setMessage("ARS 인증이 완료되었습니다.");
         setArsCertified(true);
       } else {
-        setError("ARS 인증을 거절하였습니다.");
+        setMessage("ARS 인증을 실패하였습니다.");
         setArsCertified(false);
       }
     },
     onError: (error) => {
-      setError("ARS 인증에 실패했습니다.");
+      setMessage("ARS 인증에 실패했습니다.");
       setArsCertified(false);
     },
   });
@@ -98,7 +98,7 @@ const InfoSection = ({
       !chargeAccount.accountNumber ||
       !chargeAccount.bank
     ) {
-      setError("입력하지 않은 구간이 있습니다.");
+      setMessage("입력하지 않은 구간이 있습니다.");
       return;
     }
 
@@ -116,7 +116,7 @@ const InfoSection = ({
       !salesAccount.accountNumber ||
       !salesAccount.bank
     ) {
-      setError("입력하지 않은 구간이 있습니다.");
+      setMessage("입력하지 않은 구간이 있습니다.");
       return;
     }
 
@@ -130,7 +130,7 @@ const InfoSection = ({
 
   const handleARS = () => {
     if (!chargeAccount.isCertified || !salesAccount.isCertified) {
-      setError("계좌 인증을 진행해주세요.");
+      setMessage("계좌 인증을 진행해주세요.");
       return;
     }
     arsCertification({
@@ -140,17 +140,19 @@ const InfoSection = ({
     });
   };
 
+  console.log("arsCertified", arsCertified);
+
   return (
     <section className="w-full mt-10 py-6 border-dotted border-gray-400 border-b-2 border-t-2">
       {isCertifyingARS && <LoadingUI title="ARS 인증 중" />}
       {(isCertifyingCharge || isCertifyingSales) && (
         <LoadingUI title="계좌 인증 중" />
       )}
-      {error && (
+      {message && (
         <ConfirmDialog
           open
-          onConfirm={() => setError(null)}
-          content={error}
+          onConfirm={() => setMessage(null)}
+          content={message}
           cancelDisabled={true}
         />
       )}
@@ -309,7 +311,7 @@ const InfoSection = ({
       <Button
         className="text-center mt-8 w-[400px] h-[50px] font-bold"
         variant="cancel"
-        disabled={!isCertifiedCharge || !isCertifiedSales}
+        disabled={!isCertifiedCharge || !isCertifiedSales || arsCertified}
         onClick={handleARS}
       >
         {arsCertified ? "ARS 인증 완료" : "ARS 인증"}
