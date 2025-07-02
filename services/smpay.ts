@@ -6,7 +6,7 @@ import {
 } from "@/hooks/queries/sm-pay";
 import { ApiError, get, patch, post, put } from "@/lib/api";
 import { buildQueryParams, transformTableResponse } from "@/lib/utils";
-import { RequestARSBankAccount } from "@/types/api/account";
+import { AccountInfo, RequestARSBankAccount } from "@/types/api/account";
 import type { RequestAgentUser } from "@/types/api/common";
 import {
   AdvertiserDetailDto,
@@ -864,7 +864,7 @@ export const postSmPayAdvertiserBankAccount = async ({
   try {
     const response = await post<null>(
       `/api/v1/advertisers/${advertiserId}/register-account`,
-      accounts
+      { accounts: [...accounts] }
     );
     return response;
   } catch (error) {

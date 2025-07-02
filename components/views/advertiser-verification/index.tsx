@@ -10,6 +10,7 @@ import {
 } from "@/hooks/queries/account";
 import { ErrorComponent } from "../error";
 import { useAccountStore } from "@/store/useAccountStore";
+import LoadingUI from "@/components/common/Loading";
 
 type Props = {
   authCode: string;
@@ -21,7 +22,7 @@ const AdvertiserVerificationView = ({ authCode, advertiserId }: Props) => {
   const { setAccountList } = useAccountStore();
   const { refetch } = useAccountList();
 
-  const { data: isMailVerified } = useAdvertiserMailVerification(
+  const { data: isMailVerified, isPending } = useAdvertiserMailVerification(
     advertiserId,
     authCode
   );
@@ -36,7 +37,11 @@ const AdvertiserVerificationView = ({ authCode, advertiserId }: Props) => {
     };
   }, []);
 
-  if (isMailVerified) {
+  if (isPending) {
+    return <LoadingUI title="인증 중..." />;
+  }
+
+  if (!isMailVerified) {
     return <ErrorComponent message="유효하지 않은 인증 링크입니다." />;
   }
 

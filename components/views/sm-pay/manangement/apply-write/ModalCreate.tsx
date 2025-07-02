@@ -131,7 +131,7 @@ const ModalCreate = ({
                           onChange={(e) => {
                             const value = e.target.value;
                             const formattedValue = formatBusinessNumber(value);
-                            field.onChange(formattedValue);
+                            field.onChange(value);
                           }}
                           maxLength={12}
                         />

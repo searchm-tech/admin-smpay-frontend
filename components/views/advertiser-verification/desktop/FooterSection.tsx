@@ -4,13 +4,22 @@ import { Button } from "@/components/ui/button";
 type FooterSectionProps = {
   handleReset: () => void;
   handleSubmit: () => void;
+  arsCertified: boolean;
 };
 
-const FooterSection = ({ handleReset, handleSubmit }: FooterSectionProps) => {
+const FooterSection = ({
+  handleReset,
+  handleSubmit,
+  arsCertified,
+}: FooterSectionProps) => {
   return (
     <section className="w-full pt-[20px] pb-[100px]">
       <div className="flex justify-center gap-4 pt-4">
-        <Button className="w-[150px]" onClick={handleSubmit}>
+        <Button
+          className="w-[150px]"
+          onClick={handleSubmit}
+          disabled={!arsCertified}
+        >
           제출
         </Button>
         <Button variant="cancel" className="w-[150px]" onClick={handleReset}>
