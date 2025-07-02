@@ -8,12 +8,14 @@ import {
   getAccountList,
   getAdvertiserMailVerification,
   postAccountCertification,
+  postARS,
 } from "@/services/account";
 
 import type {
   Account,
   RequestAccountCertification,
   RequestARSBankAccount,
+  RequestARS,
 } from "@/types/api/account";
 import { postSmPayAdvertiserBankAccount } from "@/services/smpay";
 
@@ -54,6 +56,16 @@ export const useAdvertiserBankAccount = (
   return useMutation({
     mutationFn: (params: RequestARSBankAccount) =>
       postSmPayAdvertiserBankAccount(params),
+    ...options,
+  });
+};
+
+// ARS 인증 및 출금계좌 등록 (AS001)
+export const useARS = (
+  options?: UseMutationOptions<boolean, Error, RequestARS>
+) => {
+  return useMutation({
+    mutationFn: (params: RequestARS) => postARS(params),
     ...options,
   });
 };

@@ -14,15 +14,15 @@ import {
   DescriptionItem,
 } from "@/components/composite/description-components";
 
+import { useAccountCertification, useARS } from "@/hooks/queries/account";
+
+import { useAccountStore } from "@/store/useAccountStore";
+
 import { HOVER_ADVERIFY, TOOLTIP_CONTENT } from "@/constants/hover";
+import { ADVERIFY_DIALOG_CONTENT } from "@/constants/dialog";
 
 import type { AccountInfo } from "@/types/vertification";
-import { ADVERIFY_DIALOG_CONTENT } from "@/constants/dialog";
-import {
-  useAccountCertification,
-  useAccountList,
-  useAdvertiserBankAccount,
-} from "@/hooks/queries/account";
+
 import LoadingUI from "@/components/common/Loading";
 
 type InfoSectionProps = {
@@ -35,6 +35,7 @@ type InfoSectionProps = {
   setArsCertified: (arsCertified: boolean) => void;
 };
 const InfoSection = ({
+  advertiserId,
   chargeAccount,
   salesAccount,
   arsCertified,
@@ -42,6 +43,7 @@ const InfoSection = ({
   setSalesAccount,
   setArsCertified,
 }: InfoSectionProps) => {
+  const { accountList } = useAccountStore();
   const [isCertifiedCharge, setIsCertifiedCharge] = useState(false);
   const [isCertifiedSales, setIsCertifiedSales] = useState(false);
 
@@ -50,8 +52,6 @@ const InfoSection = ({
   >(null);
 
   const [error, setError] = useState<string | null>(null);
-
-  const { data: accountList = [] } = useAccountList();
 
   const { mutate: accountCertificationChage, isPending: isCertifyingCharge } =
     useAccountCertification({
@@ -76,12 +76,21 @@ const InfoSection = ({
       },
     });
 
-  const { mutate: advertiserBankAccount, isPending: isSubmittingBankAccount } =
-    useAdvertiserBankAccount({
-      onSuccess: () => {
+  const { mutate: arsCertification, isPending: isCertifyingARS } = useARS({
+    onSuccess: (response) => {
+      if (response) {
+        alert("ARS 인증이 완료되었습니다.");
         setArsCertified(true);
-      },
-    });
+      } else {
+        setError("ARS 인증을 거절하였습니다.");
+        setArsCertified(false);
+      }
+    },
+    onError: (error) => {
+      setError("ARS 인증에 실패했습니다.");
+      setArsCertified(false);
+    },
+  });
 
   const handleChargeCertification = async () => {
     if (
@@ -94,7 +103,7 @@ const InfoSection = ({
     }
 
     accountCertificationChage({
-      advertiserId: 1,
+      advertiserId: Number(advertiserId),
       bankCode: chargeAccount.bank,
       accountNumber: chargeAccount.accountNumber,
       accountName: chargeAccount.accountHolder,
@@ -112,7 +121,7 @@ const InfoSection = ({
     }
 
     accountCertificationSales({
-      advertiserId: 1,
+      advertiserId: Number(advertiserId),
       bankCode: salesAccount.bank,
       accountNumber: salesAccount.accountNumber,
       accountName: salesAccount.accountHolder,
@@ -124,30 +133,16 @@ const InfoSection = ({
       setError("계좌 인증을 진행해주세요.");
       return;
     }
-
-    advertiserBankAccount({
-      advertiserId: 1,
-      accounts: [
-        {
-          bankCode: chargeAccount.bank,
-          bankCodeName: chargeAccount.bank,
-          bankNumber: chargeAccount.accountNumber,
-          name: chargeAccount.accountHolder,
-          type: "DEPOSIT",
-        },
-        {
-          bankCode: salesAccount.bank,
-          bankCodeName: salesAccount.bank,
-          bankNumber: salesAccount.accountNumber,
-          name: salesAccount.accountHolder,
-          type: "WITHDRAW",
-        },
-      ],
+    arsCertification({
+      advertiserId: Number(advertiserId),
+      bankCode: salesAccount.bank,
+      accountNumber: salesAccount.accountNumber,
     });
   };
 
   return (
     <section className="w-full mt-10 py-6 border-dotted border-gray-400 border-b-2 border-t-2">
+      {isCertifyingARS && <LoadingUI title="ARS 인증 중" />}
       {(isCertifyingCharge || isCertifyingSales) && (
         <LoadingUI title="계좌 인증 중" />
       )}
@@ -199,7 +194,13 @@ const InfoSection = ({
               placeholder="은행 선택"
               value={chargeAccount.bank}
               onChange={(value) =>
-                setChargeAccount({ ...chargeAccount, bank: value })
+                setChargeAccount({
+                  ...chargeAccount,
+                  bank: value,
+                  bankName:
+                    accountList.find((account) => account.bankCode === value)
+                      ?.name || "",
+                })
               }
             />
           </DescriptionItem>
@@ -253,6 +254,7 @@ const InfoSection = ({
             label={<span className="w-[200px]">매출 계좌 은행 *</span>}
           >
             <Select
+              className="max-w-[500px]"
               options={accountList.map((account) => ({
                 label: account.name,
                 value: account.bankCode,
@@ -260,7 +262,13 @@ const InfoSection = ({
               placeholder="은행 선택"
               value={salesAccount.bank}
               onChange={(value) =>
-                setSalesAccount({ ...salesAccount, bank: value })
+                setSalesAccount({
+                  ...salesAccount,
+                  bank: value,
+                  bankName:
+                    accountList.find((account) => account.bankCode === value)
+                      ?.name || "",
+                })
               }
             />
           </DescriptionItem>
@@ -301,7 +309,7 @@ const InfoSection = ({
       <Button
         className="text-center mt-8 w-[400px] h-[50px] font-bold"
         variant="cancel"
-        disabled={arsCertified || !isCertifiedCharge || !isCertifiedSales}
+        disabled={!isCertifiedCharge || !isCertifiedSales}
         onClick={handleARS}
       >
         {arsCertified ? "ARS 인증 완료" : "ARS 인증"}

@@ -348,8 +348,8 @@ const TableSection = ({
       {applySubmitData && (
         <AdvertiserAgreementSendDialog
           data={applySubmitData}
-          onClose={() => setApplySubmitId(null)}
-          onConfirm={() => setApplySubmitId(null)}
+          onClose={() => setApplySubmitData(null)}
+          onConfirm={() => setApplySubmitData(null)}
         />
       )}
 

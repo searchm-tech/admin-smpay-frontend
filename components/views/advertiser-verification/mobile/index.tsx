@@ -10,13 +10,28 @@ import AccountSale from "@/components/views/advertiser-verification/mobile/Accou
 import { MobileTitle } from "@/components/common/Title";
 import FinishView from "./FinishView";
 
+import { useAccountStore } from "@/store/useAccountStore";
 import { DEFAULT_AGREEMENT_INFO } from "../constants";
 import type { AccountInfo, AgreementInfo } from "@/types/vertification";
+import { useAdvertiserBankAccount } from "@/hooks/queries/account";
 
-const MobilewView = () => {
+type Props = {
+  advertiserId: number;
+};
+
+const MobilewView = ({ advertiserId }: Props) => {
+  const { accountList } = useAccountStore();
+
+  const { mutate: advertiserBankAccount, isPending: isSubmittingBankAccount } =
+    useAdvertiserBankAccount({
+      onSuccess: () => {
+        setStep(3);
+      },
+    });
+
   const [step, setStep] = useState(1);
 
-  const [arsCertified, setArsCertified] = useState(false);
+  const [arsCertified, setArsCertified] = useState(false); // TODO : ARS 하고 false 변경
   const [agreement, setAgreement] = useState<AgreementInfo>(
     DEFAULT_AGREEMENT_INFO
   );
@@ -70,7 +85,26 @@ const MobilewView = () => {
       alert("입력하지 않은 구간이 있습니다.");
       return;
     }
-    setStep(3);
+
+    advertiserBankAccount({
+      advertiserId: Number(advertiserId),
+      accounts: [
+        {
+          bankCode: chargeAccount.bank,
+          bankCodeName: chargeAccount.bank,
+          bankNumber: chargeAccount.accountNumber,
+          name: chargeAccount.accountHolder,
+          type: "DEPOSIT",
+        },
+        {
+          bankCode: salesAccount.bank,
+          bankCodeName: salesAccount.bank,
+          bankNumber: salesAccount.accountNumber,
+          name: salesAccount.accountHolder,
+          type: "WITHDRAW",
+        },
+      ],
+    });
   };
 
   const handleChargeReset = () => {
@@ -88,9 +122,7 @@ const MobilewView = () => {
       alert("계좌 인증을 진행해주세요.");
       return;
     }
-
     setArsCertified(true);
-    alert("ARS 인증이 완료 되었습니다.");
   };
 
   return (
@@ -109,6 +141,8 @@ const MobilewView = () => {
                 chargeAccount={chargeAccount}
                 setChargeAccount={setChargeAccount}
                 handleReset={handleChargeReset}
+                accountList={accountList}
+                advertiserId={advertiserId}
               />
             </Fragment>
           )}
@@ -120,6 +154,8 @@ const MobilewView = () => {
               handleReset={() => setSalesAccount(DEFAULT_ACCOUNT_INFO)}
               handleARS={handleARS}
               arsCertified={arsCertified}
+              accountList={accountList}
+              advertiserId={advertiserId}
             />
           )}
         </div>
@@ -175,6 +211,7 @@ const PrevSumbitButton = ({
 
 const DEFAULT_ACCOUNT_INFO: AccountInfo = {
   bank: "",
+  bankName: "",
   accountNumber: "",
   accountHolder: "",
   isCertified: false,

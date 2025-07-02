@@ -2,8 +2,11 @@
 
 import { ApiError, get, post } from "@/lib/api";
 
-import type { RequestAccountCertification, Account } from "@/types/api/account";
-import { BooleanResponse } from "@/types/sm-pay";
+import type {
+  RequestAccountCertification,
+  Account,
+  RequestARS,
+} from "@/types/api/account";
 
 /**
  * 은행 리스트 전체 조회(AC001)
@@ -52,8 +55,26 @@ export const getAdvertiserMailVerification = async (
 ): Promise<boolean> => {
   try {
     const response = await get<boolean>(
-      `/api/v1/advertisers/${8177}/mail-verifications?advertiserCode=${code}`
+      `/api/v1/advertisers/${advertiserId}/mail-verifications?advertiserCode=${code}`
     );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+// /core/api/v1/ars/certification
+
+/**
+ * ARS 인증 및 출금계좌 등록 (AS001)
+ * - 화면 : 광고주 동의 > 은행 리스트 조회 > 충전 계좌 인증 > ARS 인증
+ */
+export const postARS = async (params: RequestARS): Promise<boolean> => {
+  try {
+    const response = await post<boolean>(`/api/v1/ars/certification`, params);
     return response;
   } catch (error) {
     if (error instanceof ApiError) {
