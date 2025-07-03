@@ -8,7 +8,6 @@ const SMPayChargeAgencyView = () => {
   const params = useParams();
 
   const advertiserId = params.advertiserId as string;
-  console.log(advertiserId);
 
   return (
     <div>
