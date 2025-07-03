@@ -11,9 +11,7 @@ import { StatusDialog } from "./dialog";
 
 import { formatBusinessNumber, formatDate } from "@/utils/format";
 
-import type { TableProps } from "antd";
-import type { TableParams } from "@/types/table";
-import type { FilterValue } from "antd/es/table/interface";
+import type { TableProps, FilterValue } from "@/types/table";
 import type { TAgencyData, TAgencyStatus } from "@/types/agency";
 import type {
   TAgencyOrder,
@@ -25,11 +23,7 @@ import {
   dialogContent,
   type DialogTypes,
 } from "./constants";
-
-export interface TableParamsAgency extends TableParams {
-  keyword: string;
-  sortField?: TAgencyOrder;
-}
+import { TableParamsAgency } from ".";
 
 type TableSectionProps = {
   dataSource: TAgencyData[];

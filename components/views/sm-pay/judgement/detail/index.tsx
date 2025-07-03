@@ -209,11 +209,7 @@ const SmPayJudgementDetailView = ({ id }: Props) => {
         />
       )}
 
-      {/* <AdvertiserInfoSection
-        advertiserId={Number(id)}
-        userId={Number(userId)}
-        isHistory
-      /> */}
+      <AdvertiserInfoSection advertiserId={Number(id)} isHistory />
 
       <StatIndicatorSection
         advertiserId={Number(id)}

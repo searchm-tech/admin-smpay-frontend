@@ -1,4 +1,8 @@
-import type { TableParamsAgency } from ".";
+import type { TableParams } from "@/types/table";
+import type {
+  TAgencyOrder,
+  RequestAgencyStatus as TAgencyStatusParams,
+} from "@/types/api/agency";
 
 export const defaultTableParams: TableParamsAgency = {
   pagination: {
@@ -11,6 +15,11 @@ export const defaultTableParams: TableParamsAgency = {
   sortOrder: "ascend",
   keyword: "",
 };
+
+export interface TableParamsAgency extends TableParams {
+  keyword: string;
+  sortField?: TAgencyOrder;
+}
 
 export const statusDialogContent = {
   NORMAL: (

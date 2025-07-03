@@ -21,9 +21,10 @@ import { useSessionStore } from "@/store/useSessionStore";
 import { signInApi } from "@/services/auth";
 import { getAgencyDomainNameApi } from "@/services/agency";
 
-import { STORAGE_KEYS, createFormSchema } from "./constants";
 import { ApiError } from "@/lib/api";
 import { getRedirectPath } from "@/lib/utils";
+
+import { STORAGE_KEYS, createFormSchema, defaultValues } from "./constants";
 
 import type { TSMPayUser } from "@/types/user";
 
@@ -36,22 +37,21 @@ const SignInView = ({ code }: SignInViewProps) => {
   const { data: session, status } = useSession();
   const { setAccessToken, setRefreshToken } = useSessionStore();
 
-  const [isRememberUsername, setIsRememberUsername] = useState(false);
-  const [errMessage, setErrMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isPwdSettingModalOpen, setIsPwdSettingModalOpen] = useState(false);
-  const [domainName, setDomainName] = useState("");
+  const [pwdModal, setPwdModal] = useState(false);
+
+  const [isRememberUsername, setIsRememberUsername] = useState(false);
   const [isCheckingToken, setIsCheckingToken] = useState(true);
+
+  const [errMessage, setErrMessage] = useState("");
+  const [domainName, setDomainName] = useState("");
 
   const formSchema = createFormSchema(!!domainName);
   type FormValues = z.infer<typeof formSchema>;
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
+    defaultValues,
     mode: "onChange",
   });
 
@@ -215,9 +215,7 @@ const SignInView = ({ code }: SignInViewProps) => {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       {loading && <LoadingUI title="로그인 중..." />}
 
-      {isPwdSettingModalOpen && (
-        <ModalPwdSetting onClose={() => setIsPwdSettingModalOpen(false)} />
-      )}
+      {pwdModal && <ModalPwdSetting onClose={() => setPwdModal(false)} />}
 
       <div className="max-w-md w-full space-y-8">
         <div className="w-full flex justify-center">
@@ -254,11 +252,7 @@ const SignInView = ({ code }: SignInViewProps) => {
                 로그인
               </Button>
 
-              {errMessage && (
-                <span className="text-red-500 text-sm mt-2 block text-center font-medium">
-                  {errMessage}
-                </span>
-              )}
+              {errMessage && <ErrorMessage message={errMessage} />}
             </div>
 
             <div className="flex items-center justify-between">
@@ -269,7 +263,7 @@ const SignInView = ({ code }: SignInViewProps) => {
               />
               <span
                 className="text-[#545F71] cursor-pointer text-sm"
-                onClick={() => setIsPwdSettingModalOpen(true)}
+                onClick={() => setPwdModal(true)}
               >
                 비밀번호 재설정
               </span>
@@ -282,3 +276,11 @@ const SignInView = ({ code }: SignInViewProps) => {
 };
 
 export default SignInView;
+
+const ErrorMessage = ({ message }: { message: string }) => {
+  return (
+    <span className="text-red-500 text-sm mt-2 block text-center font-medium">
+      {message}
+    </span>
+  );
+};

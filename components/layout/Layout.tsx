@@ -12,6 +12,7 @@ import SmPayGuideModal from "./GuideModal";
 
 import { useGuideModalStore } from "@/store/useGuideModalStore";
 import { useSessionStore } from "@/store/useSessionStore";
+import ChannelTalkBoot from "../common/ChannelTalkBoot";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -74,6 +75,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex flex-col min-h-screen">
+      <ChannelTalkBoot />
       {isExpireModalOpen && (
         <ConfirmDialog
           open
