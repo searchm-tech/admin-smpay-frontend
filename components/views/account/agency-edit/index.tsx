@@ -92,13 +92,11 @@ const AgencyEditView = ({ id }: { id: string }) => {
       dataForm.agentBillPhoneNumber ||
       dataForm.agentBillEmailAddress
     ) {
-      console.log("---", dataForm);
       if (
         !dataForm.agentBillName ||
         !dataForm.agentBillPhoneNumber ||
         !dataForm.agentBillEmailAddress
       ) {
-        console.log("2222");
         setModalInfo("error_required_fields");
         return;
       }

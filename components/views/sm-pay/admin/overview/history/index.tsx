@@ -54,8 +54,6 @@ const SmPayAdminOverviewHistoryDetailView = ({ id }: Props) => {
       Number(userId)
     );
 
-  console.log(smpayInfo);
-
   useEffect(() => {
     if (smpayInfo) {
       const { advertiserStandardRoasPercent, chargeRules } = smpayInfo;
