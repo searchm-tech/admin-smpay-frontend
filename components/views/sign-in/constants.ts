@@ -55,3 +55,8 @@ export const createFormSchema = (isAgencyLogin: boolean) => {
       }),
   });
 };
+
+export const defaultValues = {
+  email: "",
+  password: "",
+};
