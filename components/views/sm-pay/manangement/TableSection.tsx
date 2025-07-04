@@ -22,15 +22,15 @@ import type { TableParams } from "@/types/table";
 import type {
   SmPayAdvertiserStatus,
   SmPayAdvertiserStautsOrderType,
-  SmPayAdvertiserStatusDto as TSmPayData,
 } from "@/types/smpay";
+import type { SmPayAdvertiserStatusDto } from "@/types/dto/smpay";
 
 interface TableSectionProps {
   tableParams: TableParams;
   setTableParams: (params: TableParams) => void;
   total: number;
   loadingData: boolean;
-  dataSource: TSmPayData[];
+  dataSource: SmPayAdvertiserStatusDto[];
 }
 
 const TableSection = ({
@@ -48,9 +48,8 @@ const TableSection = ({
     number | null
   >(null);
   const [applySubmitId, setApplySubmitId] = useState<number | null>(null);
-  const [applySubmitData, setApplySubmitData] = useState<TSmPayData | null>(
-    null
-  );
+  const [applySubmitData, setApplySubmitData] =
+    useState<SmPayAdvertiserStatusDto | null>(null);
   const [rejectModalId, setRejectModalId] = useState<number | null>(null);
   const [rejectOperationModalId, setRejectOperationModalId] = useState<
     number | null
@@ -63,7 +62,7 @@ const TableSection = ({
     );
   };
 
-  const handleTableChange: TableProps<TSmPayData>["onChange"] = (
+  const handleTableChange: TableProps<SmPayAdvertiserStatusDto>["onChange"] = (
     pagination,
     filters,
     sorter
@@ -95,13 +94,14 @@ const TableSection = ({
       pagination: {
         current: pagination.current ?? 1,
         pageSize: pagination.pageSize ?? 10,
+        total: pagination.total || 0,
       },
       filters: filters as Record<string, FilterValue>,
       orderType: orderType,
     });
   };
 
-  const columns: TableProps<TSmPayData>["columns"] = [
+  const columns: TableProps<SmPayAdvertiserStatusDto>["columns"] = [
     {
       title: "No",
       dataIndex: "no",
@@ -244,7 +244,7 @@ const TableSection = ({
 
   return (
     <section>
-      <Table<TSmPayData>
+      <Table<SmPayAdvertiserStatusDto>
         columns={columns}
         rowKey="no"
         dataSource={dataSource}

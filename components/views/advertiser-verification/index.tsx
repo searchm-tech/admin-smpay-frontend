@@ -5,11 +5,11 @@ import DesktopView from "./desktop";
 import MobilewView from "./mobile";
 import { useWindowSize } from "@/hooks/useWindowSize";
 import {
-  useAccountList,
+  useBankList,
   useAdvertiserMailVerification,
-} from "@/hooks/queries/account";
+} from "@/hooks/queries/bank";
 import { ErrorComponent } from "../error";
-import { useAccountStore } from "@/store/useAccountStore";
+import { useBankStore } from "@/store/useBankStore";
 import LoadingUI from "@/components/common/Loading";
 
 type Props = {
@@ -19,8 +19,8 @@ type Props = {
 
 const AdvertiserVerificationView = ({ authCode, advertiserId }: Props) => {
   const { device } = useWindowSize();
-  const { setAccountList } = useAccountStore();
-  const { refetch } = useAccountList();
+  const { setBankList } = useBankStore();
+  const { refetch } = useBankList();
 
   const { data: isMailVerified, isPending } = useAdvertiserMailVerification(
     advertiserId,
@@ -29,11 +29,11 @@ const AdvertiserVerificationView = ({ authCode, advertiserId }: Props) => {
 
   useEffect(() => {
     refetch().then(({ data }) => {
-      setAccountList(data || []);
+      setBankList(data || []);
     });
 
     return () => {
-      setAccountList([]);
+      setBankList([]);
     };
   }, []);
 

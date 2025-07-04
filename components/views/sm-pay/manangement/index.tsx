@@ -7,30 +7,16 @@ import TableSection from "./TableSection";
 import GuidSection from "../components/GuideSection";
 
 import { useSmPayAdvertiserStatusList } from "@/hooks/queries/sm-pay";
+import { defaultTableParams } from "./constants";
 
 import type { TableParams } from "@/types/table";
-import type { SmPayAdvertiserStautsOrderType } from "@/types/smpay";
-
-type TableParamsWithOrder = TableParams & {
-  orderType?: SmPayAdvertiserStautsOrderType;
-};
-
-const defaultTableParams: TableParamsWithOrder = {
-  pagination: {
-    current: 1,
-    pageSize: 10,
-    total: 0,
-  },
-  filters: {},
-  orderType: "ADVERTISER_REGISTER_DESC",
-};
 
 const SMPayManagementView = () => {
   const [selectedStatus, setSelectedStatus] = useState<string>("ALL");
   const [search, setSearch] = useState<string>("");
 
   const [tableParams, setTableParams] =
-    useState<TableParamsWithOrder>(defaultTableParams);
+    useState<TableParams>(defaultTableParams);
 
   const { data: advertiserStatusRes, isFetching: loadingData } =
     useSmPayAdvertiserStatusList({

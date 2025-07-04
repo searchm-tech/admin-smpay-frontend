@@ -39,23 +39,6 @@ export type SmPayAdvertiserStautsOrderType =
   | "ADVERTISER_CUSTOMER_ID_ASC"
   | "NO_ASC";
 
-// SMPay 관리 > 광고주 상태 데이터 DTO
-export type SmPayAdvertiserStatusDto = {
-  no: number;
-  advertiserId: number;
-  userId: number;
-  userName: string;
-  advertiserCustomerId: number;
-  advertiserLoginId: string;
-  advertiserName: string;
-  advertiserType: SmPayAdvertiserStatus;
-  description: string;
-  descriptionRegisterDt: string;
-  registerOrUpdateDt: string;
-  isMyAdvertiser: true;
-  advertiserFormId: number;
-};
-
 export type ChargeRule = {
   standardRoasPercent: number; //  1; // 기준 ROAS
   rangeType: string; // "UP";

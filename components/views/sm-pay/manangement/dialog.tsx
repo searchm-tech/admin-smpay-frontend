@@ -1,21 +1,15 @@
 import dayjs from "dayjs";
-import parse from "html-react-parser";
+import { useState } from "react";
 
-import {
-  ConfirmDialog,
-  Modal,
-  type ModalProps,
-} from "@/components/composite/modal-components";
+import LoadingUI from "@/components/common/Loading";
+import { ConfirmDialog, Modal } from "@/components/composite/modal-components";
 import {
   DescriptionItem,
   Descriptions,
 } from "@/components/composite/description-components";
 
-import type { SmPayAdvertiserStatusDto as TSmPayData } from "@/types/smpay";
-
 import { useSmPayAdvertiserAgreeNotification } from "@/hooks/queries/sm-pay";
-import LoadingUI from "@/components/common/Loading";
-import { useState } from "react";
+import type { SmPayAdvertiserStatusDto } from "@/types/dto/smpay";
 
 // reject
 type PropsRejectDialog = {
@@ -116,7 +110,7 @@ const ReapplyDialog = ({ onClose, onConfirm }: PropsReapplyDialog) => {
 type PropsAdvertiserAgreementSendDialog = {
   onClose: () => void;
   onConfirm: () => void;
-  data: TSmPayData;
+  data: SmPayAdvertiserStatusDto;
 };
 
 const AdvertiserAgreementSendDialog = ({

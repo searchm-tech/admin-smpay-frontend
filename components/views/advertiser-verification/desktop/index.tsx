@@ -8,17 +8,18 @@ import AgreemenSection from "./AgreemenSection";
 import InfoSection from "./InfoSection";
 import FooterSection from "./FooterSection";
 
+import LoadingUI from "@/components/common/Loading";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 
-import { DEFAULT_ACCOUNT_INFO, DEFAULT_AGREEMENT_INFO } from "../constants";
+import { DEFAULT_BANK_INFO, DEFAULT_AGREEMENT_INFO } from "../constants";
 import {
   ADVERIFY_DIALOG_CONTENT,
   type AdVerifyDialogStatus,
 } from "@/constants/dialog";
 
-import type { AccountInfo, AgreementInfo } from "@/types/vertification";
-import { useAdvertiserBankAccount } from "@/hooks/queries/account";
-import LoadingUI from "@/components/common/Loading";
+import { useAdvertiserBankAccount } from "@/hooks/queries/bank";
+
+import type { BankInfo, AgreementInfo } from "@/types/vertification";
 
 type DesktopViewProps = {
   advertiserId: number;
@@ -29,9 +30,7 @@ const DesktopView = ({ advertiserId }: DesktopViewProps) => {
 
   const { mutate: advertiserBankAccount, isPending: isSubmittingBankAccount } =
     useAdvertiserBankAccount({
-      onSuccess: () => {
-        setOpenDialog("submit");
-      },
+      onSuccess: () => setOpenDialog("submit"),
     });
 
   const [arsCertified, setArsCertified] = useState(false); // TODO : ARS 하고 false 변경
@@ -39,10 +38,9 @@ const DesktopView = ({ advertiserId }: DesktopViewProps) => {
   const [agreement, setAgreement] = useState<AgreementInfo>(
     DEFAULT_AGREEMENT_INFO
   );
-  const [salesAccount, setSalesAccount] =
-    useState<AccountInfo>(DEFAULT_ACCOUNT_INFO);
+  const [salesAccount, setSalesAccount] = useState<BankInfo>(DEFAULT_BANK_INFO);
   const [chargeAccount, setChargeAccount] =
-    useState<AccountInfo>(DEFAULT_ACCOUNT_INFO);
+    useState<BankInfo>(DEFAULT_BANK_INFO);
 
   const [error, setError] = useState<string | null>(null);
   const [openDialog, setOpenDialog] = useState<AdVerifyDialogStatus | null>(
@@ -50,8 +48,8 @@ const DesktopView = ({ advertiserId }: DesktopViewProps) => {
   );
 
   const handleReset = () => {
-    setSalesAccount(DEFAULT_ACCOUNT_INFO);
-    setChargeAccount(DEFAULT_ACCOUNT_INFO);
+    setSalesAccount(DEFAULT_BANK_INFO);
+    setChargeAccount(DEFAULT_BANK_INFO);
     setAgreement(DEFAULT_AGREEMENT_INFO);
     setArsCertified(false);
 

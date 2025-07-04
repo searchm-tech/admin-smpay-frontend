@@ -11,19 +11,6 @@ import type {
   ResponseAdvertiserBizMoneyList,
 } from "@/types/api/advertiser";
 
-/**
- * 광고주 동의 요청 발송 api
- * @param id
- * @returns
- */
-
-export type SendAdvertiserAgreementResponse = {
-  success: boolean;
-  message?: string;
-};
-
-// --- 실제 API ---
-
 // 광고주 리스트 페이지네이션 조회 (SAG012)
 export const getAdvertiserList = async (
   params: RequestAdvertiserList

@@ -1,11 +1,4 @@
-import {
-  AppWindow,
-  ChartSpline,
-  Smile,
-  Eraser,
-  AlarmClock,
-  Target,
-} from "lucide-react";
+import { AppWindow, Smile } from "lucide-react";
 import { getIsAdmin, getIsGroupMaster, getIsAgency } from "@/lib/utils";
 import type { TResponseMenu } from "@/types/api/menu";
 import type { TAuthType } from "@/types/user";
@@ -16,8 +9,8 @@ const MENU_CONFIG = {
     icon: AppWindow,
     baseUrl: "/sm-pay",
     subMenus: {
-      "SM Pay 관리": "/sm-pay//management",
-      "SM Pay 심사": "/sm-pay//judgement",
+      "SM Pay 관리": "/sm-pay/management",
+      "SM Pay 심사": "/sm-pay/judgement",
       "SM Pay 운영 검토": "/sm-pay/admin/overview",
       "광고주 운영 현황": "/sm-pay/admin/adversiter-status",
       "충전 회수 현황": "/sm-pay/charge",

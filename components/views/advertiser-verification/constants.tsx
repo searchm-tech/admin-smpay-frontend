@@ -1,6 +1,6 @@
-import type { AccountInfo, AgreementInfo } from "@/types/vertification";
+import type { BankInfo, AgreementInfo } from "@/types/vertification";
 
-export const DEFAULT_ACCOUNT_INFO: AccountInfo = {
+export const DEFAULT_BANK_INFO: BankInfo = {
   bank: "",
   bankName: "",
   accountNumber: "",

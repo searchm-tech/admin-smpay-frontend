@@ -5,15 +5,13 @@ export type RequestAccountCertification = {
   accountName: string;
 };
 
-// TODO : 타입 다른 곳으로 옮기기
-export type Account = {
+export type Bank = {
   accountId: number;
   bankCode: string;
   name: string;
 };
 
-// TODO : 타입 다른 곳으로 옮기기
-export type AccountInfo = {
+export type BankInfo = {
   bankCode: string;
   bankCodeName: string;
   bankNumber: string;
@@ -21,8 +19,9 @@ export type AccountInfo = {
   type: "DEPOSIT" | "WITHDRAW";
 };
 
+// 광고주 동의 > 은행 리스트 조회 > 충전 계좌 인증 > ARS 인증
 export type RequestARSBankAccount = {
-  accounts: AccountInfo[];
+  accounts: BankInfo[];
   advertiserId: number;
 };
 

@@ -4,43 +4,42 @@ import { Input } from "@/components/ui/input";
 import Select from "@/components/composite/select-components";
 import { NumberInput } from "@/components/composite/input-components";
 
-import type { AccountInfo } from "@/types/vertification";
-import type { Account } from "@/types/api/account";
-import { useAccountCertification } from "@/hooks/queries/account";
+import type { BankInfo } from "@/types/vertification";
+import { useBanckCertification } from "@/hooks/queries/bank";
 import LoadingUI from "@/components/common/Loading";
+import { useBankStore } from "@/store/useBankStore";
 
-type AccountChargeProps = {
-  chargeAccount: AccountInfo;
-  setChargeAccount: (value: AccountInfo) => void;
+type BankProps = {
+  chargeBank: BankInfo;
+  setChargeAccount: (value: BankInfo) => void;
   handleReset: () => void;
-  accountList: Account[];
   advertiserId: number;
 };
 
-const AccountCharge = ({
-  chargeAccount,
+const BankCharge = ({
+  chargeBank,
   setChargeAccount,
   handleReset,
-  accountList,
   advertiserId,
-}: AccountChargeProps) => {
+}: BankProps) => {
+  const { bankList } = useBankStore();
   const { mutate: accountCertificationChage, isPending: isCertifyingCharge } =
-    useAccountCertification({
+    useBanckCertification({
       onSuccess: () => {
         alert("계좌 인증이 완료 되었습니다.");
-        setChargeAccount({ ...chargeAccount, isCertified: true });
+        setChargeAccount({ ...chargeBank, isCertified: true });
       },
       onError: (error) => {
         alert("계좌 인증에 실패했습니다.");
-        setChargeAccount({ ...chargeAccount, isCertified: false });
+        setChargeAccount({ ...chargeBank, isCertified: false });
       },
     });
 
   const handleChargeCertification = () => {
     if (
-      !chargeAccount.accountHolder ||
-      !chargeAccount.accountNumber ||
-      !chargeAccount.bank
+      !chargeBank.accountHolder ||
+      !chargeBank.accountNumber ||
+      !chargeBank.bank
     ) {
       alert("입력하지 않은 구간이 있습니다.");
       return;
@@ -48,9 +47,9 @@ const AccountCharge = ({
 
     accountCertificationChage({
       advertiserId,
-      bankCode: chargeAccount.bank,
-      accountNumber: chargeAccount.accountNumber,
-      accountName: chargeAccount.accountHolder,
+      bankCode: chargeBank.bank,
+      accountNumber: chargeBank.accountNumber,
+      accountName: chargeBank.accountHolder,
     });
   };
 
@@ -63,14 +62,14 @@ const AccountCharge = ({
         <div className="flex flex-col gap-2">
           <Label className="text-sm font-medium">충전 계좌 은행 *</Label>
           <Select
-            options={accountList.map((account) => ({
-              label: account.name,
-              value: account.bankCode,
+            options={bankList.map((bank) => ({
+              label: bank.name,
+              value: bank.bankCode,
             }))}
             placeholder="충전 계좌 은행을 선택해주세요."
-            value={chargeAccount.bank}
+            value={chargeBank.bank}
             onChange={(value) =>
-              setChargeAccount({ ...chargeAccount, bank: value })
+              setChargeAccount({ ...chargeBank, bank: value })
             }
           />
         </div>
@@ -79,9 +78,9 @@ const AccountCharge = ({
           <Label className="text-sm font-medium">충전 계좌 은행 *</Label>
           <NumberInput
             className="max-w-[500px]"
-            value={chargeAccount.accountNumber}
+            value={chargeBank.accountNumber}
             onChange={(value) =>
-              setChargeAccount({ ...chargeAccount, accountNumber: value })
+              setChargeAccount({ ...chargeBank, accountNumber: value })
             }
           />
         </div>
@@ -90,10 +89,10 @@ const AccountCharge = ({
           <Label className="text-sm font-medium">충전 계좌 예금주명 *</Label>
           <Input
             className="max-w-[500px]"
-            value={chargeAccount.accountHolder}
+            value={chargeBank.accountHolder}
             onChange={(e) =>
               setChargeAccount({
-                ...chargeAccount,
+                ...chargeBank,
                 accountHolder: e.target.value,
               })
             }
@@ -121,4 +120,4 @@ const AccountCharge = ({
   );
 };
 
-export default AccountCharge;
+export default BankCharge;
