@@ -97,7 +97,11 @@ const ModalCreate = ({
                   render={({ field }) => (
                     <FormItem className="flex gap-4 items-end">
                       <FormControl>
-                        <Input className="max-w-[450px]" {...field} />
+                        <Input
+                          className="max-w-[450px]"
+                          placeholder="광고주를 구분할 수 있는 이름을 입력하세요."
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -111,7 +115,11 @@ const ModalCreate = ({
                   render={({ field }) => (
                     <FormItem className="flex gap-4 items-end">
                       <FormControl>
-                        <Input className="max-w-[450px]" {...field} />
+                        <Input
+                          className="max-w-[450px]"
+                          placeholder=""
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -127,6 +135,7 @@ const ModalCreate = ({
                       <FormControl>
                         <Input
                           className="max-w-[450px]"
+                          placeholder="숫자만 연속 입력"
                           {...field}
                           onChange={(e) => {
                             const value = e.target.value;

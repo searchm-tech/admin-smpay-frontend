@@ -217,7 +217,7 @@ const ModalEdit = ({
                 취소
               </Button>
               <Button type="submit" className="w-[150px]">
-                등록
+                확인
               </Button>
             </div>
           </form>
