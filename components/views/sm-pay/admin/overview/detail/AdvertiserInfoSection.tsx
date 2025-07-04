@@ -27,6 +27,8 @@ import type {
   SmPayAdvertiserStatus,
 } from "@/types/smpay";
 import type { AdvertiserDetailDto } from "@/types/api/smpay";
+import { useQueryAgencyDetail } from "@/hooks/queries/agency";
+import { ResponseAgencyBills } from "@/types/api/agency";
 
 type Props = {
   advertiserData?: AdvertiserDetailDto;
@@ -44,6 +46,13 @@ const AdvertiserInfoSection = ({
     advertiserData?.agentId || 0,
     advertiserData?.userId || 0
   );
+
+  const { data: agencyData } = useQueryAgencyDetail(
+    advertiserData?.agentId || 0
+  );
+
+  const agencyInfo: ResponseAgencyBills | null =
+    agencyData?.agentBills[0] || null;
 
   return (
     <div>
@@ -79,35 +88,62 @@ const AdvertiserInfoSection = ({
         </Descriptions>
       </section>
 
-      <section className="w-full">
-        <div className="flex items-center gap-4 py-4">
-          <LabelBullet labelClassName="text-base font-bold">
-            광고주 기본 정보
-          </LabelBullet>
+      <section className="w-full flex gap-4">
+        <div className="flex-1">
+          <div className="flex items-center gap-4 py-4">
+            <LabelBullet labelClassName="text-base font-bold">
+              대행사 및 대행사 담당자 기본 정보
+            </LabelBullet>
+          </div>
+          <Descriptions columns={1}>
+            <DescriptionItem label="대행사명">
+              <Label>{agencyData?.agent.name}</Label>
+            </DescriptionItem>
+            <DescriptionItem label="대표자 명">
+              <Label>{agencyData?.agent.representativeName}</Label>
+            </DescriptionItem>
+            <DescriptionItem label="담당자 명">
+              <Label>{agencyInfo?.name}</Label>
+            </DescriptionItem>
+            <DescriptionItem label="담당자 이메일 주소">
+              <Label>{agencyInfo?.emailAddress}</Label>
+            </DescriptionItem>
+            <DescriptionItem label="담당자 연락처">
+              <Label>{formatPhoneNumber(agencyInfo?.phoneNumber || "")}</Label>
+            </DescriptionItem>
+          </Descriptions>
         </div>
-        <Descriptions columns={1}>
-          <DescriptionItem label="광고주명">
-            <Label>{advertiserData?.name}</Label>
-          </DescriptionItem>
-          <DescriptionItem label="대표자명">
-            <Label>{advertiserData?.representativeName}</Label>
-          </DescriptionItem>
-          <DescriptionItem label="사업자 등록번호">
-            <Label>
-              {formatBusinessNumber(
-                advertiserData?.businessRegistrationNumber || ""
-              )}
-            </Label>
-          </DescriptionItem>
-          <DescriptionItem label="광고주 휴대폰 번호">
-            <Label>
-              {formatPhoneNumber(advertiserData?.phoneNumber || "")}
-            </Label>
-          </DescriptionItem>
-          <DescriptionItem label="광고주 이메일 주소">
-            <Label>{advertiserData?.emailAddress}</Label>
-          </DescriptionItem>
-        </Descriptions>
+
+        <div className="flex-1">
+          <div className="flex items-center gap-4 py-4">
+            <LabelBullet labelClassName="text-base font-bold">
+              광고주 기본 정보
+            </LabelBullet>
+          </div>
+          <Descriptions columns={1}>
+            <DescriptionItem label="광고주명">
+              <Label>{advertiserData?.name}</Label>
+            </DescriptionItem>
+            <DescriptionItem label="대표자명">
+              <Label>{advertiserData?.representativeName}</Label>
+            </DescriptionItem>
+            <DescriptionItem label="사업자 등록번호">
+              <Label>
+                {formatBusinessNumber(
+                  advertiserData?.businessRegistrationNumber || ""
+                )}
+              </Label>
+            </DescriptionItem>
+            <DescriptionItem label="광고주 휴대폰 번호">
+              <Label>
+                {formatPhoneNumber(advertiserData?.phoneNumber || "")}
+              </Label>
+            </DescriptionItem>
+            <DescriptionItem label="광고주 이메일 주소">
+              <Label>{advertiserData?.emailAddress}</Label>
+            </DescriptionItem>
+          </Descriptions>
+        </div>
       </section>
     </div>
   );
@@ -206,6 +242,7 @@ const HistoryModal = ({
           dataSource={dataSource}
           columns={columns}
           pagination={false}
+          scroll={{ y: 300 }}
         />
       </div>
     </Modal>
