@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
@@ -9,15 +9,13 @@ import OperationMemoSection from "@/components/views/sm-pay/components/Operation
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
 import GuidSection from "@/components/views/sm-pay/components/GuideSection";
 import StatIndicatorSection from "@/components/views/sm-pay/components/StatIndicatorSection";
-import ScheduleSection2 from "@/components/views/sm-pay/components/ScheduleSection2";
-import RuleSection2 from "@/components/views/sm-pay/components/RuleSection2";
+import ScheduleSection from "@/components/views/sm-pay/components/ScheduleSection";
+import RuleSection from "@/components/views/sm-pay/components/RuleSection";
 import AdvertiserInfoSection from "@/components/views/sm-pay/components/AdvertiserInfoSection";
 
 import { RejectDialog } from "../../manangement/dialog";
 
 import { useSmPayDetail } from "@/hooks/queries/sm-pay";
-
-import type { ChargeRule } from "@/types/smpay";
 
 interface Props {
   id: string;
@@ -27,53 +25,14 @@ const SmPayApplyHistoryDetailView = ({ id }: Props) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const formId = searchParams.get("formId");
+  const orignFormId = searchParams.get("orignFormId");
 
   const [isReject, setIsReject] = useState(false);
-
-  const [upChargeRule, setUpChargeRule] = useState<ChargeRule>({
-    standardRoasPercent: 0,
-    rangeType: "UP",
-    boundType: "FIXED_AMOUNT",
-    changePercentOrValue: 0,
-  });
-
-  const [downChargeRule, setDownChargeRule] = useState<ChargeRule>({
-    standardRoasPercent: 0,
-    rangeType: "DOWN",
-    boundType: "FIXED_AMOUNT",
-    changePercentOrValue: 0,
-  });
 
   const { data: smpayInfo, isPending: loading } = useSmPayDetail(
     Number(id),
     Number(formId)
   );
-
-  useEffect(() => {
-    if (smpayInfo) {
-      const { advertiserStandardRoasPercent, chargeRules } = smpayInfo;
-
-      const findUpChargeRule = chargeRules.find(
-        (rule) => rule.rangeType === "UP"
-      );
-      const findDownChargeRule = chargeRules.find(
-        (rule) => rule.rangeType === "DOWN"
-      );
-
-      if (findUpChargeRule) {
-        setUpChargeRule({
-          ...findUpChargeRule,
-          standardRoasPercent: advertiserStandardRoasPercent,
-        });
-      }
-      if (findDownChargeRule) {
-        setDownChargeRule({
-          ...findDownChargeRule,
-          standardRoasPercent: advertiserStandardRoasPercent,
-        });
-      }
-    }
-  }, [smpayInfo]);
 
   const prePaymentSchedule = {
     initialAmount: smpayInfo?.initialAmount || 0,
@@ -87,6 +46,19 @@ const SmPayApplyHistoryDetailView = ({ id }: Props) => {
     monthlyConvAmt: smpayInfo?.advertiserMonthlyConvAmt || 0,
     dailySalesAmt: smpayInfo?.advertiserDailySalesAmt || 0,
     recommendRoas: smpayInfo?.advertiserRecommendRoasPercent || 0,
+  };
+
+  const upChargeRule = {
+    standardRoasPercent: smpayInfo?.advertiserStandardRoasPercent || 0,
+    rangeType: "UP",
+    boundType: "FIXED_AMOUNT",
+    changePercentOrValue: 0,
+  };
+  const downChargeRule = {
+    standardRoasPercent: smpayInfo?.advertiserStandardRoasPercent || 0,
+    rangeType: "DOWN",
+    boundType: "FIXED_AMOUNT",
+    changePercentOrValue: 0,
   };
 
   return (
@@ -115,12 +87,12 @@ const SmPayApplyHistoryDetailView = ({ id }: Props) => {
         statIndicator={statIndicator}
       />
 
-      <RuleSection2
+      <RuleSection
         type="show"
         upChargeRule={upChargeRule}
         downChargeRule={downChargeRule}
       />
-      <ScheduleSection2 type="show" prePaymentSchedule={prePaymentSchedule} />
+      <ScheduleSection type="show" prePaymentSchedule={prePaymentSchedule} />
       <JudgementMemoSection type="show" text={smpayInfo?.reviewerMemo || ""} />
       <OperationMemoSection type="show" text={smpayInfo?.approvalMemo || ""} />
 
@@ -129,7 +101,7 @@ const SmPayApplyHistoryDetailView = ({ id }: Props) => {
           variant="cancel"
           className="w-[150px]"
           onClick={() => {
-            const url = `/sm-pay/management/apply-detail/${id}/?formId=${formId}`;
+            const url = `/sm-pay/management/apply-detail/${id}/?formId=${orignFormId}`;
             router.push(url);
           }}
         >

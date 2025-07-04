@@ -8,21 +8,6 @@ import { Button } from "@/components/ui/button";
 
 import Table from "@/components/composite/table";
 
-// import { LinkTextButton } from "@/components/composite/button-components";
-
-import {
-  ApplyCancelDialog,
-  ReapplyDialog,
-  RejectDialog,
-  SuspendDialog,
-  ResumeDialog,
-  TerminationRequestDialog,
-  ResendDialog,
-  StopInfoModal,
-  AdvertiserAgreementSendDialog,
-} from "./dialog";
-import RejectOperationModal from "../components/RejectOperationModal";
-
 import {
   STATUS_ACTION_BUTTONS,
   SmPayAdvertiserStatusLabel,
@@ -259,100 +244,6 @@ const TableSection = ({
 
   return (
     <section>
-      {openDialog === "application_cancel" && (
-        <ApplyCancelDialog
-          onClose={() => setOpenDialog(null)}
-          onConfirm={() => {
-            setOpenDialog(null);
-          }}
-        />
-      )}
-
-      {openDialog === "reapply" && (
-        <ReapplyDialog
-          onClose={() => setOpenDialog(null)}
-          onConfirm={() => router.push(`/sm-pay/management/apply-write`)}
-        />
-      )}
-
-      {openDialog === "suspend" && (
-        <SuspendDialog
-          onClose={() => setOpenDialog(null)}
-          onConfirm={() => {
-            setOpenDialog(null);
-          }}
-        />
-      )}
-
-      {terminationRequestId && (
-        <TerminationRequestDialog
-          id={terminationRequestId?.toString() || ""}
-          onClose={() => setTerminationRequestId(null)}
-          onConfirm={() => {
-            setTerminationRequestId(null);
-          }}
-        />
-      )}
-
-      {openDialog === "resend" && (
-        <ResendDialog
-          onClose={() => setOpenDialog(null)}
-          onConfirm={() => {
-            setOpenDialog(null);
-          }}
-        />
-      )}
-
-      {rejectModalId && (
-        <RejectDialog
-          id={rejectModalId?.toString() || ""}
-          onClose={() => setRejectModalId(null)}
-          onConfirm={() => {
-            router.push(`/sm-pay/management/apply-detail/${rejectModalId}`);
-          }}
-        />
-      )}
-
-      {resumeId && (
-        <ResumeDialog
-          id={resumeId?.toString() || ""}
-          onClose={() => setResumeId(null)}
-          onConfirm={() => {
-            setResumeId(null);
-          }}
-        />
-      )}
-
-      {stopModalId && (
-        <StopInfoModal
-          open
-          id={stopModalId?.toString() || ""}
-          onClose={() => setStopModalId(null)}
-          onConfirm={() => {
-            router.push(`/sm-pay/management/apply-detail/${rejectModalId}`);
-          }}
-        />
-      )}
-
-      {rejectOperationModalId && (
-        <RejectOperationModal
-          open
-          id={rejectOperationModalId?.toString() || ""}
-          onClose={() => setRejectOperationModalId(null)}
-          onConfirm={() => {
-            router.push(`/sm-pay/management/apply-detail/${rejectModalId}`);
-          }}
-        />
-      )}
-
-      {applySubmitData && (
-        <AdvertiserAgreementSendDialog
-          data={applySubmitData}
-          onClose={() => setApplySubmitData(null)}
-          onConfirm={() => setApplySubmitData(null)}
-        />
-      )}
-
       <Table<TSmPayData>
         columns={columns}
         rowKey="no"

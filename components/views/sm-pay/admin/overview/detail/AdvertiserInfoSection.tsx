@@ -1,4 +1,4 @@
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -20,25 +20,19 @@ import {
 } from "@/utils/format";
 import { SmPayAdvertiserStatusLabel } from "@/constants/status";
 import { useSmPayAdminOverviewApplyFormList } from "@/hooks/queries/sm-pay";
+import { useQueryAgencyDetail } from "@/hooks/queries/agency";
 
 import type { TableProps } from "@/types/table";
-import type {
-  OverviewApplyListDto,
-  SmPayAdvertiserStatus,
-} from "@/types/smpay";
+import type { SmPayAdvertiserStatus } from "@/types/smpay";
 import type { AdvertiserDetailDto } from "@/types/api/smpay";
-import { useQueryAgencyDetail } from "@/hooks/queries/agency";
-import { ResponseAgencyBills } from "@/types/api/agency";
+import type { ResponseAgencyBills } from "@/types/api/agency";
+import { SMPayFormHistory } from "@/types/dto/smpay";
 
 type Props = {
   advertiserData?: AdvertiserDetailDto;
-  isHistory?: boolean;
 };
 
-const AdvertiserInfoSection = ({
-  isHistory = false,
-  advertiserData,
-}: Props) => {
+const AdvertiserInfoSection = ({ advertiserData }: Props) => {
   const [isHistoryModal, setIsHistoryModal] = useState(false);
 
   const { data: dataSource } = useSmPayAdminOverviewApplyFormList(
@@ -68,14 +62,13 @@ const AdvertiserInfoSection = ({
           <LabelBullet labelClassName="text-base font-bold">
             광고주 상태
           </LabelBullet>
-          {isHistory && (
-            <Button
-              onClick={() => setIsHistoryModal(true)}
-              disabled={dataSource && dataSource.length === 0}
-            >
-              SM Pay 지난 이력 보기
-            </Button>
-          )}
+
+          <Button
+            onClick={() => setIsHistoryModal(true)}
+            disabled={dataSource && dataSource.length === 0}
+          >
+            SM Pay 지난 이력 보기
+          </Button>
         </div>
 
         <Descriptions columns={1}>
@@ -154,7 +147,7 @@ export default AdvertiserInfoSection;
 type HistoryModalProps = {
   onClose: () => void;
   advertiserData?: AdvertiserDetailDto;
-  dataSource: OverviewApplyListDto[];
+  dataSource: SMPayFormHistory[];
 };
 
 const HistoryModal = ({
@@ -164,11 +157,11 @@ const HistoryModal = ({
 }: HistoryModalProps) => {
   const router = useRouter();
 
-  const columns: TableProps<OverviewApplyListDto>["columns"] = [
+  const columns: TableProps<SMPayFormHistory>["columns"] = [
     {
       title: "No",
-      dataIndex: "id",
-      key: "id",
+      dataIndex: "no",
+      key: "no",
       align: "center",
     },
     {
@@ -226,7 +219,8 @@ const HistoryModal = ({
       title: "최종 수정 일시",
       dataIndex: "updatedAt",
       key: "updatedAt",
-      render: (value: string, record) => formatDate(value || record.registerDt),
+      render: (value: string, record) =>
+        formatDate(value || record.registerOrUpdateDt),
     },
   ];
   return (
@@ -238,7 +232,7 @@ const HistoryModal = ({
       cancelDisabled
     >
       <div className="w-[85vw] overflow-y-auto">
-        <Table<OverviewApplyListDto>
+        <Table<SMPayFormHistory>
           dataSource={dataSource}
           columns={columns}
           pagination={false}

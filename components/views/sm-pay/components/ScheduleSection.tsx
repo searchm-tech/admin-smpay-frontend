@@ -10,20 +10,20 @@ import { TooltipHover } from "@/components/composite/tooltip-components";
 
 import { TOOLTIP_CONTENT } from "@/constants/hover";
 
-import type { ScheduleInfo } from "@/types/sm-pay";
+import type { PrePaymentSchedule } from "@/types/smpay";
 
 type Props = {
-  scheduleInfo?: ScheduleInfo | null;
+  prePaymentSchedule?: PrePaymentSchedule | null;
   type?: "show" | "write";
-  handleScheduleInfoChange?: (value: ScheduleInfo) => void;
+  handleScheduleChange?: (value: PrePaymentSchedule) => void;
 };
 
 const ScheduleSection = ({
-  scheduleInfo,
+  prePaymentSchedule,
   type,
-  handleScheduleInfoChange,
+  handleScheduleChange,
 }: Props) => {
-  console.log(scheduleInfo);
+  console.log(prePaymentSchedule);
   return (
     <section>
       <div className="flex items-center gap-2 py-4">
@@ -39,16 +39,16 @@ const ScheduleSection = ({
       {type === "show" && (
         <Descriptions columns={1}>
           <DescriptionItem label="일 최대 충전 한도">
-            <span>1일 1회</span>
+            <span>1일 1회 AM 04:00</span>
           </DescriptionItem>
           <DescriptionItem label="최초 충전 금액 설정">
             <span className="text-blue-600">
-              {scheduleInfo?.firstCharge.toLocaleString()}원
+              {prePaymentSchedule?.initialAmount.toLocaleString()}원
             </span>
           </DescriptionItem>
           <DescriptionItem label="일 최대 충전 한도">
             <span className="text-blue-600">
-              {scheduleInfo?.maxCharge.toLocaleString()}원
+              {prePaymentSchedule?.maxChargeLimit.toLocaleString()}원
             </span>
           </DescriptionItem>
         </Descriptions>
@@ -57,31 +57,31 @@ const ScheduleSection = ({
       {type === "write" && (
         <Descriptions columns={1}>
           <DescriptionItem label="충전 스케쥴">
-            <span>1일 1회</span>
+            <span>1일 1회 AM 04:00</span>
           </DescriptionItem>
           <DescriptionItem label="최초 충전 금액 설정">
             <NumberInput
               className="max-w-[500px]"
-              value={scheduleInfo?.firstCharge}
+              value={prePaymentSchedule?.initialAmount}
               onChange={(e) =>
-                handleScheduleInfoChange &&
-                handleScheduleInfoChange({
-                  ...(scheduleInfo || {}),
-                  firstCharge: Number(e) || 0,
-                } as ScheduleInfo)
+                handleScheduleChange &&
+                handleScheduleChange({
+                  ...(prePaymentSchedule || {}),
+                  initialAmount: Number(e) || 0,
+                } as PrePaymentSchedule)
               }
             />
           </DescriptionItem>
           <DescriptionItem label="일 최대 충전 한도">
             <NumberInput
               className="max-w-[500px]"
-              value={scheduleInfo?.maxCharge}
+              value={prePaymentSchedule?.maxChargeLimit}
               onChange={(e) =>
-                handleScheduleInfoChange &&
-                handleScheduleInfoChange({
-                  ...(scheduleInfo || {}),
-                  maxCharge: Number(e) || 0,
-                } as ScheduleInfo)
+                handleScheduleChange &&
+                handleScheduleChange({
+                  ...(prePaymentSchedule || {}),
+                  maxChargeLimit: Number(e) || 0,
+                } as PrePaymentSchedule)
               }
             />
           </DescriptionItem>

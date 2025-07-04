@@ -13,8 +13,8 @@ import AdvertiserSimulationModal from "@/components/views/sm-pay/components/Adve
 
 import AdvertiserInfoSection from "@/components/views/sm-pay/components/AdvertiserInfoSection";
 import StatIndicatorSection from "@/components/views/sm-pay/components/StatIndicatorSection";
-import RuleSection2 from "@/components/views/sm-pay/components/RuleSection2";
-import ScheduleSection2 from "@/components/views/sm-pay/components/ScheduleSection2";
+import RuleSection2 from "@/components/views/sm-pay/components/RuleSection";
+import ScheduleSection2 from "@/components/views/sm-pay/components/ScheduleSection";
 
 import ApproveModal from "./ApproveModal";
 import RejectSendModal from "./RejectSendModal";
@@ -58,20 +58,6 @@ const SmPayJudgementDetailView = ({ id }: Props) => {
 
   const [operationMemo, setOperationMemo] = useState("");
 
-  const [upChargeRule, setUpChargeRule] = useState<ChargeRule>({
-    standardRoasPercent: 0,
-    rangeType: "UP",
-    boundType: "FIXED_AMOUNT",
-    changePercentOrValue: 0,
-  });
-
-  const [downChargeRule, setDownChargeRule] = useState<ChargeRule>({
-    standardRoasPercent: 0,
-    rangeType: "DOWN",
-    boundType: "FIXED_AMOUNT",
-    changePercentOrValue: 0,
-  });
-
   const [prePaymentSchedule, setPrePaymentSchedule] =
     useState<PrePaymentSchedule>({
       initialAmount: 0,
@@ -97,29 +83,6 @@ const SmPayJudgementDetailView = ({ id }: Props) => {
     // 심사 목록 읽음 상태 변경
     if (id && read === "unread") {
       patchRead({ advertiserId: Number(id), isApprovalRead: true });
-    }
-
-    if (chargeRule) {
-      const findUpChargeRule = chargeRule.find(
-        (rule) => rule.rangeType === "UP"
-      );
-      const findDownChargeRule = chargeRule.find(
-        (rule) => rule.rangeType === "DOWN"
-      );
-
-      if (findUpChargeRule) {
-        setUpChargeRule({
-          ...findUpChargeRule,
-          standardRoasPercent: findUpChargeRule.standardRoasPercent,
-        });
-      }
-
-      if (findDownChargeRule) {
-        setDownChargeRule({
-          ...findDownChargeRule,
-          standardRoasPercent: findDownChargeRule.standardRoasPercent,
-        });
-      }
     }
 
     if (screeningIndicator) {
@@ -148,6 +111,23 @@ const SmPayJudgementDetailView = ({ id }: Props) => {
     monthlyConvAmt: statIndicator.monthlyConvAmt,
     dailySalesAmt: statIndicator.dailySalesAmt,
     recommendRoas: statIndicator.recommendRoasPercent,
+  };
+
+  const upChargeRule = {
+    standardRoasPercent:
+      chargeRule?.find((rule) => rule.rangeType === "UP")
+        ?.standardRoasPercent || 0,
+    rangeType: "UP",
+    boundType: "FIXED_AMOUNT",
+    changePercentOrValue: 0,
+  };
+  const downChargeRule = {
+    standardRoasPercent:
+      chargeRule?.find((rule) => rule.rangeType === "DOWN")
+        ?.standardRoasPercent || 0,
+    rangeType: "DOWN",
+    boundType: "FIXED_AMOUNT",
+    changePercentOrValue: 0,
   };
 
   const isLoading =
@@ -209,7 +189,7 @@ const SmPayJudgementDetailView = ({ id }: Props) => {
         />
       )}
 
-      <AdvertiserInfoSection advertiserId={Number(id)} isHistory />
+      <AdvertiserInfoSection advertiserId={Number(id)} />
 
       <StatIndicatorSection
         advertiserId={Number(id)}

@@ -8,11 +8,11 @@ import LoadingUI from "@/components/common/Loading";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 
 import AdvertiserInfoSection from "@/components/views/sm-pay/components/AdvertiserInfoSection";
-import RuleSection2 from "@/components/views/sm-pay/components/RuleSection2";
+import RuleSection from "@/components/views/sm-pay/components/RuleSection";
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
 import AdvertiserSimulationModal from "@/components/views/sm-pay/components/AdvertiserSimulationModal";
 import StatIndicatorSection from "@/components/views/sm-pay/components/StatIndicatorSection";
-import ScheduleSection2 from "@/components/views/sm-pay/components/ScheduleSection2";
+import ScheduleSection from "@/components/views/sm-pay/components/ScheduleSection";
 
 import {
   WRITE_MODAL_CONTENT,
@@ -27,11 +27,11 @@ import {
 import type { ChargeRule, PrePaymentSchedule } from "@/types/smpay";
 import type { SmPayWriteParams, StatIndicatorParams } from "@/types/api/smpay";
 
-type ViewWrieProps = {
+type Props = {
   id: number;
 };
 
-const SMPayMasterApplyWriteForm = ({ id }: ViewWrieProps) => {
+const SMPayMasterApplyWriteForm = ({ id }: Props) => {
   const router = useRouter();
   const { data: statIndicator } = useSmPayAdvertiserStatIndicator(id);
 
@@ -165,11 +165,11 @@ const SMPayMasterApplyWriteForm = ({ id }: ViewWrieProps) => {
         />
       )}
 
-      <AdvertiserInfoSection advertiserId={id} isHistory />
+      <AdvertiserInfoSection advertiserId={id} />
 
       <StatIndicatorSection advertiserId={id} statIndicator={statIndicator} />
 
-      <RuleSection2
+      <RuleSection
         type="write"
         recommendRoas={statIndicator?.recommendRoas}
         upChargeRule={upChargeRule}
@@ -178,7 +178,7 @@ const SMPayMasterApplyWriteForm = ({ id }: ViewWrieProps) => {
         handleDownChargeRuleChange={setDownChargeRule}
       />
 
-      <ScheduleSection2
+      <ScheduleSection
         type="write"
         prePaymentSchedule={prePaymentSchedule}
         handleScheduleChange={handleScheduleChange}

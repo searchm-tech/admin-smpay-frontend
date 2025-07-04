@@ -3,20 +3,22 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import LoadingUI from "@/components/common/Loading";
+// import LoadingUI from "@/components/common/Loading";
 import { Button } from "@/components/ui/button";
 
-import RuleSection from "@/components/views/sm-pay/components/RuleSection";
 import OperationMemoSection from "@/components/views/sm-pay/components/OperationMemoSection";
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
 import AdvertiserSection from "@/components/views/sm-pay/components/AdvertiserSection";
 import AccountSection from "@/components/views/sm-pay/components/AccountSection";
-import ScheduleSection from "@/components/views/sm-pay/components/ScheduleSection";
+
 import AdvertiseStatusSection from "@/components/views/sm-pay/components/AdvertiseStatusSection";
-import OperationAccountStatusSection from "@/components/views/sm-pay/components/OperationAccountStatusSection";
+// import OperationAccountStatusSection from "@/components/views/sm-pay/components/OperationAccountStatusSection";
 
 import GuidSection from "../../../components/GuideSection";
 import RejectModal from "./RejectModal";
+
+// import ScheduleSection from "../../../components/ScheduleSection";
+// import RuleSection from "../../../components/RuleSection";
 
 type Props = {
   id: string;
@@ -46,9 +48,13 @@ const SmPayAdminAdversiterStatusDetailView = ({ id }: Props) => {
       <AdvertiserSection advertiserDetail={null} />
       <AccountSection smPayData={null} />
 
-      <RuleSection type="show" />
-      <ScheduleSection type="show" />
-      {/* <OperationAccountStatusSection /> */}
+      {/* <RuleSection
+        type="show"
+        upChargeRule={null}
+        downChargeRule={null}
+        isShow={false}
+      />
+      <ScheduleSection type="show" /> */}
 
       <JudgementMemoSection type="show" />
       <OperationMemoSection type="show" />

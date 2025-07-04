@@ -6,10 +6,9 @@ import {
 } from "@/hooks/queries/sm-pay";
 import { ApiError, get, patch, post, put } from "@/lib/api";
 import { buildQueryParams, transformTableResponse } from "@/lib/utils";
-import { AccountInfo, RequestARSBankAccount } from "@/types/api/account";
+import type { RequestARSBankAccount } from "@/types/api/account";
 import type { RequestAgentUser } from "@/types/api/common";
 import {
-  AdvertiserDetailDto,
   RequestSmPayAdvertiserApply,
   RequestSmPayAdvertiserDetailPut,
   RequestSmPayAdvertiserStatus,
@@ -22,22 +21,27 @@ import {
   ResponseSmPayAdvertiserStatus,
   ResponseSmPayAudit,
   ResponseSmPayStatusCount,
-  WithAdvertiserId,
-  ChargeRuleDto,
-  PrePaymentScheduleDto,
   ResponseSmPayAdminAudit,
   RequestSmPayAdminRead,
+  ResponseOverviewForm,
+  ResponseSMPayDetail,
+  AdvertiserDetailDto,
+  WithAdvertiserId,
+  PrePaymentScheduleDto,
   UserAgentAdvertiserId,
-  OverviewForm,
+  ResponseDailyStat,
+  ResponseChargeRule,
 } from "@/types/api/smpay";
+import {
+  ChargeRuleDto,
+  DailyStatDto,
+  SMPayFormHistory,
+} from "@/types/dto/smpay";
 
 import type {
-  DailyStat,
   SmPayScreeningIndicator,
-  SmPayDetailDto,
   SmPayReviewerMemo,
   SmPayAdvertiserStautsOrderType,
-  OverviewApplyListDto,
   SmPayApprovalMemo,
   OverviewAccountBalanceDto,
 } from "@/types/smpay";
@@ -221,16 +225,16 @@ export const getSmPayAdvertiserStatIndicator = async ({
 export const getSmPayAdvertiserDailyStat = async ({
   user,
   advertiserId,
-}: WithAdvertiserId): Promise<DailyStat[]> => {
+}: WithAdvertiserId): Promise<DailyStatDto[]> => {
   const { agentId, userId } = user;
 
   try {
-    const response = await get<DailyStat[]>(
+    const response = await get<ResponseDailyStat[]>(
       `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/daily-stat`
     );
     return response?.map((item, index) => ({
       ...item,
-      id: index + 1,
+      no: index + 1,
     }));
   } catch (error) {
     if (error instanceof ApiError) {
@@ -274,11 +278,11 @@ export const getSmPayDetail = async ({
   user,
   advertiserId,
   formId,
-}: RequestFormId): Promise<SmPayDetailDto> => {
+}: RequestFormId): Promise<ResponseSMPayDetail> => {
   const { agentId, userId } = user;
 
   try {
-    const response = await get<SmPayDetailDto>(
+    const response = await get<ResponseSMPayDetail>(
       `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/form/${formId}`
     );
     return response;
@@ -296,18 +300,27 @@ export const getSmPayDetail = async ({
 export const getSmPayApplyList = async ({
   user,
   advertiserId,
-}: WithAdvertiserId): Promise<SmPayDetailDto[]> => {
+}: WithAdvertiserId): Promise<SMPayFormHistory[]> => {
   const { agentId, userId } = user;
 
   try {
-    const response = await get<SmPayDetailDto[]>(
+    const response = await get<ResponseSMPayDetail[]>(
       `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/apply-form-list?`
     );
 
-    return response.map((item, index) => ({
-      ...item,
+    const content: SMPayFormHistory[] = response.map((item, index) => ({
       no: index + 1,
+      advertiserCustomerId: item.advertiserCustomerId.toString(),
+      advertiserLoginId: item.advertiserLoginId,
+      advertiserNickname: item.advertiserNickname,
+      advertiserName: item.advertiserName,
+      advertiserStatus: item.advertiserStatus,
+      registerOrUpdateDt: item.registerDt || "",
+      advertiserFormId: item.advertiserFormId,
+      advertiserId: item.advertiserId,
     }));
+
+    return content;
   } catch (error) {
     if (error instanceof ApiError) {
       throw error;
@@ -475,10 +488,18 @@ export const getSmPayAdvertiserChargeRule = async ({
   const { agentId, userId } = user;
 
   try {
-    const response = await get<ChargeRuleDto[]>(
+    const response = await get<ResponseChargeRule[]>(
       `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/charge-rule`
     );
-    return response;
+
+    const content: ChargeRuleDto[] = response.map((item) => ({
+      standardRoasPercent: item.standardRoasPercent,
+      changePercentOrValue: item.changePercentOrValue,
+      rangeType: item.rangeType,
+      boundType: item.boundType,
+    }));
+
+    return content;
   } catch (error) {
     if (error instanceof ApiError) {
       throw error;
@@ -666,15 +687,25 @@ export const getSmPayAdminOverviewApplyFormList = async ({
   advertiserId,
   agentId,
   userId,
-}: UserAgentAdvertiserId): Promise<OverviewApplyListDto[]> => {
+}: UserAgentAdvertiserId): Promise<SMPayFormHistory[]> => {
   try {
-    const response = await get<OverviewApplyListDto[]>(
+    const response = await get<ResponseOverviewForm[]>(
       `/admin/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/apply-form-list`
     );
-    return response.map((item, index) => ({
-      ...item,
-      id: index + 1,
+
+    const contents: SMPayFormHistory[] = response.map((item, index) => ({
+      no: index + 1,
+      advertiserCustomerId: item.advertiserCustomerId.toString(),
+      advertiserLoginId: item.advertiserLoginId,
+      advertiserNickname: item.advertiserNickname,
+      advertiserName: item.advertiserName,
+      advertiserStatus: item.advertiserStatus,
+      registerOrUpdateDt: item.registerDt,
+      advertiserFormId: item.advertiserFormId,
+      advertiserId: item.advertiserId,
     }));
+
+    return contents;
   } catch (error) {
     if (error instanceof ApiError) {
       throw error;
@@ -700,9 +731,9 @@ export const getSmPayAdminOverviewApplyFormDetail = async ({
   formId,
   agentId,
   userId,
-}: RequestSmPayAdminOverviewApplyFormDetail): Promise<OverviewForm> => {
+}: RequestSmPayAdminOverviewApplyFormDetail): Promise<ResponseOverviewForm> => {
   try {
-    const response = await get<OverviewForm>(
+    const response = await get<ResponseOverviewForm>(
       `/admin/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/form/${formId}`
     );
     return response;

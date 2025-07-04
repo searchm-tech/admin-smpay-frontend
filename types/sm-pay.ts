@@ -64,34 +64,6 @@ export type ActionButton =
   | "resume" // 재개
   | "resend"; // 재발송
 
-// TODO : api 맞춰 변경이 필요 및 제거 필요
-export type RuleInfo = {
-  id: number;
-  roas: number;
-  increase: number;
-  increaseType: string;
-  decrease: number;
-  decreaseType: string;
-};
-
-// TODO : 제거 예정
-export type RuleHistory = {
-  id: number;
-  date: string;
-  roas: number;
-  increase: number;
-  increaseType: string;
-  decrease: number;
-  decreaseType: string;
-};
-
-// TODO : 제거 예정
-export type ScheduleInfo = {
-  id: number;
-  firstCharge: number;
-  maxCharge: number;
-};
-
 export type BooleanResponse = {
   data: boolean;
   success: boolean;

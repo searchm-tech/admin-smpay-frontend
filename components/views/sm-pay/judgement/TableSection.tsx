@@ -3,8 +3,6 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import { StopInfoModal } from "@/components/views/sm-pay/manangement/dialog";
-
 import { Badge } from "@/components/ui/badge";
 import { LinkTextButton } from "@/components/composite/button-components";
 import Table from "@/components/composite/table";
@@ -159,14 +157,6 @@ const TableSection = ({
 
   return (
     <section>
-      {stopModalId && (
-        <StopInfoModal
-          open
-          id={stopModalId}
-          onClose={() => setStopModalId("")}
-          onConfirm={() => router.push(`/sm-pay/judgement/${stopModalId}`)}
-        />
-      )}
       <Table<SmPayAuditDto>
         columns={columns}
         dataSource={dataSource}

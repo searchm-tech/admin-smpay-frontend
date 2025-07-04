@@ -9,7 +9,6 @@ import { LinkTextButton } from "@/components/composite/button-components";
 
 import FilterItem from "@/components/common/FilterItem";
 
-import { useSmPayStatus } from "@/hooks/queries/sm-pay";
 import { useWindowSize } from "@/hooks/useWindowSize";
 
 import { formatDate } from "@/utils/format";
@@ -44,7 +43,6 @@ const TableSection = ({
   selectedStatus,
 }: TableSectionProps) => {
   const router = useRouter();
-  const { data: statusData } = useSmPayStatus();
 
   const { width } = useWindowSize();
   const { state } = useSidebar();
@@ -306,7 +304,7 @@ const TableSection = ({
       </div>
 
       <div className="p-4 flex flex-wrap items-center gap-x-6 gap-y-4">
-        {statusData?.data.map((filter) => (
+        {/* {statusData?.data.map((filter) => (
           <FilterItem
             key={filter.name}
             value={filter.status}
@@ -316,7 +314,7 @@ const TableSection = ({
             selectedFilter={selectedStatus}
             handleFilterChange={handleStatusChange}
           />
-        ))}
+        ))} */}
       </div>
       <div className={cn(tableWidthClass, "overflow-x-auto ")}>
         <Table<SmPayData>
