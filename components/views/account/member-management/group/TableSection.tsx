@@ -13,23 +13,22 @@ import { ConfirmDialog } from "@/components/composite/modal-components";
 import { getUserAuthTypeLabel } from "@/utils/status";
 import { USER_STATUS_OPTS } from "@/constants/status";
 
-import type { TableProps } from "antd";
-import type { FilterValue } from "antd/es/table/interface";
+import { dialogContent, type DialogTypes } from "../constant";
 
 import type {
   AgencyUsersOrder,
   RequestAgencyUserDelete as TDeleteParams,
-  GroupUserDto,
   RequestAgencyUserStatus as TStatusParams,
 } from "@/types/api/user";
 import type { TSMPayUser, UserStatus } from "@/types/user";
-import type { TableParamsMember } from ".";
-import { dialogContent, type DialogTypes } from "../constant";
+import type { AccountDto } from "@/types/dto/user";
+import type { FilterValue, TableParams, TableProps } from "@/types/table";
 
 type TableSectionProps = {
-  dataSource: GroupUserDto[];
+  dataSource: AccountDto[];
   isLoading: boolean;
-  setTableParams: (params: TableParamsMember) => void;
+  tableParams: TableParams;
+  setTableParams: (params: TableParams) => void;
   user: TSMPayUser;
   refetch: () => void;
   totalCount: number;
@@ -38,6 +37,7 @@ type TableSectionProps = {
 const TableSection = ({
   dataSource,
   isLoading,
+  tableParams,
   setTableParams,
   user,
   refetch,
@@ -49,10 +49,10 @@ const TableSection = ({
   const [deleteDialog, setDeleteDialog] = useState<TDeleteParams | null>(null);
   const [dialog, setDialog] = useState<DialogTypes | null>(null);
 
-  const columns: TableProps<GroupUserDto>["columns"] = [
+  const columns: TableProps<AccountDto>["columns"] = [
     {
       title: "No",
-      dataIndex: "id",
+      dataIndex: "no",
       align: "center",
       sorter: true,
     },
@@ -66,7 +66,7 @@ const TableSection = ({
       },
     },
     {
-      title: "대표자명",
+      title: "이름",
       dataIndex: "userName",
       sorter: true,
       align: "center",
@@ -144,7 +144,7 @@ const TableSection = ({
     },
   ];
 
-  const handleTableChange: TableProps<GroupUserDto>["onChange"] = (
+  const handleTableChange: TableProps<AccountDto>["onChange"] = (
     pagination,
     filters,
     sorter
@@ -158,7 +158,7 @@ const TableSection = ({
 
       // field 이름을 API에서 요구하는 형식으로 변환
       const fieldMap: Record<string, string> = {
-        id: "NO",
+        no: "NO",
         agentName: "AGENT",
         type: "USER_TYPE",
         userName: "NAME",
@@ -174,7 +174,8 @@ const TableSection = ({
       }
     }
 
-    const newParams: TableParamsMember = {
+    const newParams = {
+      ...tableParams,
       pagination: {
         current: pagination.current || 1,
         pageSize: pagination.pageSize || 10,
@@ -182,21 +183,20 @@ const TableSection = ({
       },
       filters: filters as Record<string, FilterValue>,
       sortField,
-      keyword: "",
     };
     setTableParams(newParams);
   };
 
   const handleSuccessModal = () => {
     setDialog(null);
-    refetch();
+    refetch(); // TODO : 다른 곳이랑 확인 필요
   };
 
   return (
     <section>
-      <Table<GroupUserDto>
+      <Table<AccountDto>
         columns={columns}
-        rowKey={(record) => record.id}
+        rowKey={(record) => record.no}
         dataSource={dataSource}
         total={totalCount}
         onChange={handleTableChange}

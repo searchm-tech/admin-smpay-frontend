@@ -199,6 +199,7 @@ export const useQueryGroupUserList = (
   return useQuery({
     queryKey: ["groupUserList", params],
     queryFn: () => getGroupUserListApi(params),
+    enabled: !!params.agentId && !!params.userId,
     ...options,
   });
 };

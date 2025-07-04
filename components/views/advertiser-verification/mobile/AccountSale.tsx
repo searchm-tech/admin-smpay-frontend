@@ -1,3 +1,5 @@
+import LoadingUI from "@/components/common/Loading";
+
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -6,57 +8,57 @@ import { Separator } from "@/components/ui/separator";
 
 import { NumberInput } from "@/components/composite/input-components";
 
-import type { AccountInfo } from "@/types/vertification";
-import type { Account } from "@/types/api/account";
-import { useAccountCertification } from "@/hooks/queries/account";
-import LoadingUI from "@/components/common/Loading";
+import { useBankStore } from "@/store/useBankStore";
+import { useBanckCertification } from "@/hooks/queries/bank";
 
-type AccountSaleProps = {
-  salesAccount: AccountInfo;
-  setSalesAccount: (account: AccountInfo) => void;
+import type { BankInfo } from "@/types/vertification";
+
+type Props = {
+  salesBank: BankInfo;
+  setSalesBank: (account: BankInfo) => void;
   handleReset: () => void;
   handleARS: () => void;
   arsCertified: boolean;
-  accountList: Account[];
   advertiserId: number;
 };
 
 const AccountSale = ({
-  salesAccount,
-  setSalesAccount,
+  salesBank,
+  setSalesBank,
   handleReset,
   handleARS,
   arsCertified,
-  accountList,
   advertiserId,
-}: AccountSaleProps) => {
-  const { mutate: accountCertificationSales, isPending: isCertifyingSales } =
-    useAccountCertification({
+}: Props) => {
+  const { bankList } = useBankStore();
+
+  const { mutate: bankCertificationSales, isPending: isCertifyingSales } =
+    useBanckCertification({
       onSuccess: () => {
-        setSalesAccount({ ...salesAccount, isCertified: true });
+        setSalesBank({ ...salesBank, isCertified: true });
         alert("계좌 인증이 완료 되었습니다.");
       },
       onError: (error) => {
-        setSalesAccount({ ...salesAccount, isCertified: false });
+        setSalesBank({ ...salesBank, isCertified: false });
         alert("계좌 인증에 실패했습니다.");
       },
     });
 
   const handleSalesCertification = () => {
     if (
-      !salesAccount.accountHolder ||
-      !salesAccount.accountNumber ||
-      !salesAccount.bank
+      !salesBank.accountHolder ||
+      !salesBank.accountNumber ||
+      !salesBank.bank
     ) {
       alert("입력하지 않은 구간이 있습니다.");
       return;
     }
 
-    accountCertificationSales({
+    bankCertificationSales({
       advertiserId,
-      bankCode: salesAccount.bank,
-      accountNumber: salesAccount.accountNumber,
-      accountName: salesAccount.accountHolder,
+      bankCode: salesBank.bank,
+      accountNumber: salesBank.accountNumber,
+      accountName: salesBank.accountHolder,
     });
   };
 
@@ -69,15 +71,13 @@ const AccountSale = ({
         <div className="flex flex-col gap-2">
           <Label className="text-sm font-medium">매출 계좌 은행 *</Label>
           <Select
-            options={accountList.map((account) => ({
-              label: account.name,
-              value: account.bankCode,
+            options={bankList.map((bank) => ({
+              label: bank.name,
+              value: bank.bankCode,
             }))}
             placeholder="충전 계좌 은행을 선택해주세요."
-            value={salesAccount.bank}
-            onChange={(value) =>
-              setSalesAccount({ ...salesAccount, bank: value })
-            }
+            value={salesBank.bank}
+            onChange={(value) => setSalesBank({ ...salesBank, bank: value })}
           />
         </div>
 
@@ -85,9 +85,9 @@ const AccountSale = ({
           <Label className="text-sm font-medium">매출 계좌 번호 *</Label>
           <NumberInput
             className="max-w-[500px]"
-            value={salesAccount.accountNumber}
+            value={salesBank.accountNumber}
             onChange={(value) =>
-              setSalesAccount({ ...salesAccount, accountNumber: value })
+              setSalesBank({ ...salesBank, accountNumber: value })
             }
           />
         </div>
@@ -96,10 +96,10 @@ const AccountSale = ({
           <Label className="text-sm font-medium">매출 계좌 예금주 *</Label>
           <Input
             className="max-w-[500px]"
-            value={salesAccount.accountHolder}
+            value={salesBank.accountHolder}
             onChange={(e) =>
-              setSalesAccount({
-                ...salesAccount,
+              setSalesBank({
+                ...salesBank,
                 accountHolder: e.target.value,
               })
             }

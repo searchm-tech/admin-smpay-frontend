@@ -10,18 +10,12 @@ import { useQueryGroupUserList } from "@/hooks/queries/user";
 
 import type { TableParams } from "@/types/table";
 import type { ViewProps } from "..";
-
-import { AgencyUsersOrder } from "@/types/api/user";
-
-export interface TableParamsMember extends TableParams {
-  keyword: string;
-  sortField?: AgencyUsersOrder;
-}
+import type { AgencyUsersOrder } from "@/types/api/user";
 
 const GroupMemberManagementView = ({ user }: ViewProps) => {
   const [search, setSearch] = useState<string>("");
   const [tableParams, setTableParams] =
-    useState<TableParamsMember>(defaultTableParams);
+    useState<TableParams>(defaultTableParams);
 
   const {
     data: dataSource,
@@ -56,6 +50,7 @@ const GroupMemberManagementView = ({ user }: ViewProps) => {
         user={user}
         dataSource={dataSource?.content || []}
         isLoading={isPending}
+        tableParams={tableParams}
         setTableParams={setTableParams}
         refetch={refetch}
         totalCount={dataSource?.totalCount || 0}

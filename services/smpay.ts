@@ -5,8 +5,12 @@ import {
   WithAdvertiserIdAndAgentIdAndUserId,
 } from "@/hooks/queries/sm-pay";
 import { ApiError, get, patch, post, put } from "@/lib/api";
-import { buildQueryParams, transformTableResponse } from "@/lib/utils";
-import type { RequestARSBankAccount } from "@/types/api/account";
+import {
+  buildQueryParams,
+  convertNoOrderType,
+  transformTableResponse,
+} from "@/lib/utils";
+import type { RequestARSBankAccount } from "@/types/api/bank";
 import type { RequestAgentUser } from "@/types/api/common";
 import {
   RequestSmPayAdvertiserApply,
@@ -35,6 +39,7 @@ import {
 import {
   ChargeRuleDto,
   DailyStatDto,
+  SmPayAdvertiserStatusDto,
   SMPayFormHistory,
 } from "@/types/dto/smpay";
 
@@ -45,6 +50,8 @@ import type {
   SmPayApprovalMemo,
   OverviewAccountBalanceDto,
 } from "@/types/smpay";
+
+import { applyNoAscOrder } from "@/utils/sort";
 
 //
 
@@ -80,16 +87,11 @@ export const getSmPayAdvertiserStatusList = async ({
   const { agentId, userId } = user;
 
   const { page, size, orderType } = queryParams;
-  // NO_ 정렬 조건을 ADVERTISER_REGISTER로 변환
-  let apiOrderType = queryParams.orderType;
-  const isNoSort = queryParams.orderType.startsWith("NO");
 
-  if (isNoSort) {
-    apiOrderType = queryParams.orderType.replace(
-      "NO",
-      "ADVERTISER_REGISTER"
-    ) as SmPayAdvertiserStautsOrderType;
-  }
+  const apiOrderType = convertNoOrderType(
+    queryParams.orderType,
+    "ADVERTISER_REGISTER"
+  );
 
   const paramsResult = buildQueryParams({
     page: queryParams.page,
@@ -103,14 +105,14 @@ export const getSmPayAdvertiserStatusList = async ({
       `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/status-list?${paramsResult}`
     );
 
-    let content = response.content.map((item, index) => ({
-      ...item,
-      no: (page - 1) * size + index + 1,
-    }));
+    let content: SmPayAdvertiserStatusDto[] = response.content.map(
+      (item, index) => ({
+        ...item,
+        no: (page - 1) * size + index + 1,
+      })
+    );
 
-    if (orderType === "NO_ASC") {
-      content = content.reverse();
-    }
+    content = applyNoAscOrder(content, orderType);
 
     return {
       ...response,
@@ -357,9 +359,7 @@ export const getSmPayAuditList = async ({
       no: (page - 1) * size + index + 1,
     }));
 
-    if (orderType === "NO_ASC") {
-      content = content.reverse();
-    }
+    content = applyNoAscOrder(content, orderType);
 
     return {
       ...response,
@@ -507,8 +507,6 @@ export const getSmPayAdvertiserChargeRule = async ({
     throw error;
   }
 };
-
-// /service/api/v1/agents/1/users/1/advertisers/1/pre-payment-schedule
 
 /**
  * 광고주 선결제 스케줄 조회 (최상위 그룹장 전용)(SAG034)

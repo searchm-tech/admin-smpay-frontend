@@ -14,24 +14,24 @@ import {
   DescriptionItem,
 } from "@/components/composite/description-components";
 
-import { useAccountCertification, useARS } from "@/hooks/queries/account";
+import { useBanckCertification, useARS } from "@/hooks/queries/bank";
 
-import { useAccountStore } from "@/store/useAccountStore";
+import { useBankStore } from "@/store/useBankStore";
 
 import { HOVER_ADVERIFY, TOOLTIP_CONTENT } from "@/constants/hover";
 import { ADVERIFY_DIALOG_CONTENT } from "@/constants/dialog";
 
-import type { AccountInfo } from "@/types/vertification";
+import type { BankInfo } from "@/types/vertification";
 
 import LoadingUI from "@/components/common/Loading";
 
 type InfoSectionProps = {
   advertiserId: number;
-  chargeAccount: AccountInfo;
-  salesAccount: AccountInfo;
+  chargeAccount: BankInfo;
+  salesAccount: BankInfo;
   arsCertified: boolean;
-  setChargeAccount: (account: AccountInfo) => void;
-  setSalesAccount: (account: AccountInfo) => void;
+  setChargeAccount: (account: BankInfo) => void;
+  setSalesAccount: (account: BankInfo) => void;
   setArsCertified: (arsCertified: boolean) => void;
 };
 const InfoSection = ({
@@ -43,7 +43,7 @@ const InfoSection = ({
   setSalesAccount,
   setArsCertified,
 }: InfoSectionProps) => {
-  const { accountList } = useAccountStore();
+  const { bankList } = useBankStore();
   const [isCertifiedCharge, setIsCertifiedCharge] = useState(false);
   const [isCertifiedSales, setIsCertifiedSales] = useState(false);
 
@@ -54,7 +54,7 @@ const InfoSection = ({
   const [message, setMessage] = useState<string | null>(null);
 
   const { mutate: accountCertificationChage, isPending: isCertifyingCharge } =
-    useAccountCertification({
+    useBanckCertification({
       onSuccess: () => {
         setIsCertifiedCharge(true);
         setCertifiedMessage("charge");
@@ -65,7 +65,7 @@ const InfoSection = ({
       },
     });
   const { mutate: accountCertificationSales, isPending: isCertifyingSales } =
-    useAccountCertification({
+    useBanckCertification({
       onSuccess: () => {
         setIsCertifiedSales(true);
         setCertifiedMessage("sales");
@@ -189,7 +189,7 @@ const InfoSection = ({
           >
             <Select
               className="max-w-[500px]"
-              options={accountList.map((account) => ({
+              options={bankList.map((account) => ({
                 label: account.name,
                 value: account.bankCode,
               }))}
@@ -200,7 +200,7 @@ const InfoSection = ({
                   ...chargeAccount,
                   bank: value,
                   bankName:
-                    accountList.find((account) => account.bankCode === value)
+                    bankList.find((account) => account.bankCode === value)
                       ?.name || "",
                 })
               }
@@ -257,7 +257,7 @@ const InfoSection = ({
           >
             <Select
               className="max-w-[500px]"
-              options={accountList.map((account) => ({
+              options={bankList.map((account) => ({
                 label: account.name,
                 value: account.bankCode,
               }))}
@@ -268,7 +268,7 @@ const InfoSection = ({
                   ...salesAccount,
                   bank: value,
                   bankName:
-                    accountList.find((account) => account.bankCode === value)
+                    bankList.find((account) => account.bankCode === value)
                       ?.name || "",
                 })
               }

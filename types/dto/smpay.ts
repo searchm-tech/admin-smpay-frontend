@@ -24,3 +24,20 @@ export type ChargeRuleDto = {
   rangeType: "UP" | "DOWN";
   boundType: "FIXED_AMOUNT" | "PERCENT";
 };
+
+// SMPay 관리 > 광고주 상태 데이터 DTO
+export type SmPayAdvertiserStatusDto = {
+  no: number;
+  advertiserId: number;
+  userId: number;
+  userName: string;
+  advertiserCustomerId: number;
+  advertiserLoginId: string;
+  advertiserName: string;
+  advertiserType: SmPayAdvertiserStatus;
+  description: string;
+  descriptionRegisterDt: string;
+  registerOrUpdateDt: string;
+  isMyAdvertiser: true;
+  advertiserFormId: number;
+};

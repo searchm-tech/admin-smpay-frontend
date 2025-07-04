@@ -5,13 +5,12 @@ import {
   SmPayAdminAuditDto,
   SmPayAdvertiserApplyDto,
   SmPayAdvertiserStatus,
-  SmPayAdvertiserStatusDto,
   SmPayAdvertiserStautsOrderType,
   SmPayAuditDto,
 } from "@/types/smpay";
 
 import type { RequestAgentUser, ResponseWithPagination } from "./common";
-import type { ChargeRuleDto } from "../dto/smpay";
+import type { ChargeRuleDto, SmPayAdvertiserStatusDto } from "../dto/smpay";
 
 // 광고주 상태 갯수 조회(SAG020) response type
 export interface ResponseSmPayStatusCount {

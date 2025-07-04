@@ -31,6 +31,21 @@ export function buildQueryParams(params: Record<string, any>): string {
 }
 
 /**
+ * orderType이 "NO"로 시작하면 지정한 대체 문자열로 치환하여 반환합니다.
+ * @param orderType - 변환할 orderType 문자열
+ * @param noPrefixReplacement - "NO"를 대체할 문자열 (예: "ADVERTISER_REGISTER")
+ */
+export function convertNoOrderType(
+  orderType: string,
+  noPrefixReplacement: string
+): string {
+  if (orderType.startsWith("NO")) {
+    return orderType.replace("NO", noPrefixReplacement);
+  }
+  return orderType;
+}
+
+/**
  * API Table Response 변환 함수
  * @param response - API 응답 객체 (content 배열 포함)
  * @param transform - 각 아이템에 적용할 커스텀 변환 함수 (선택사항)
@@ -117,31 +132,4 @@ export function getRedirectPath(userType?: TAuthType | null): string {
 
   // 기본적으로 sm-pay 메인 페이지로
   return "/dashboard";
-}
-
-/**
- * NO 관련 정렬(orderType)이 있을 때 번호 부여 및 reverse 처리 유틸
- * @param content - 원본 배열
- * @param page - 현재 페이지
- * @param size - 페이지 크기
- * @param orderType - 정렬 타입
- * @param noField - 번호 필드명 (기본값: 'no')
- * @returns 번호가 부여된(및 필요시 reverse된) 배열
- */
-export function applyNoOrder<T>(
-  content: T[],
-  page: number,
-  size: number,
-  orderType: string,
-  noField: string = "no"
-): T[] {
-  let numbered = content.map((item, idx) => ({
-    ...item,
-    [noField]: (page - 1) * size + idx + 1,
-  }));
-
-  if (orderType === "NO_ASC") {
-    numbered = numbered.reverse();
-  }
-  return numbered;
 }

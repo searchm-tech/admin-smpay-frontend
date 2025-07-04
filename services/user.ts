@@ -1,5 +1,5 @@
 import { ApiError, del, get, patch, post, put } from "@/lib/api";
-import { buildQueryParams } from "@/lib/utils";
+import { buildQueryParams, convertNoOrderType } from "@/lib/utils";
 import type { ApiResponseData } from "./types";
 import type { TSMPayUser, TUserInfoResponse } from "@/types/user";
 
@@ -21,6 +21,7 @@ import type {
   ResponseGroupUser,
   UserResponseDto,
 } from "@/types/api/user";
+import { applyNoAscOrder } from "@/utils/sort";
 
 // 비밀번호 재설정 API
 export const postUsersPasswordResetApi = async (
@@ -285,26 +286,31 @@ export const getGroupUserListApi = async (
   try {
     const { agentId, userId } = params;
 
+    const apiOrderType = convertNoOrderType(params.orderType, "REGISTER_DT");
+
+    console.log("apiOrderType", apiOrderType);
+
     const queryParams = buildQueryParams({
       page: params.page,
       size: params.size,
       keyword: params.keyword,
-      orderType: params.orderType,
+      orderType: apiOrderType,
     });
 
     const response = await get<ResponseGroupUser>(
       `/service/api/v1/agents/${agentId}/users/${userId}/subordinate-departments-users?${queryParams}`
     );
+    let content = response.content.map((item, index) => ({
+      ...item,
+      no: (params.page - 1) * params.size + index + 1,
+    }));
 
-    const result: ResponseGroupUser = {
+    content = applyNoAscOrder(content, params.orderType);
+
+    return {
       ...response,
-      content: response.content.map((user, index) => ({
-        ...user,
-        id: ((params.page - 1) * params.size + index + 1).toString(), // 페이지네이션을 고려한 번호
-      })),
+      content,
     };
-
-    return result;
   } catch (error) {
     if (error instanceof ApiError) {
       throw error;

@@ -1,7 +1,8 @@
 // 대행사 회원 메일 인증 코드 확인 API
 
-import { TAgency } from "../agency";
-import { TAuthType, TResetPwdType, TSMPayUser, UserStatus } from "../user";
+import type { TAgency } from "../agency";
+import type { AccountDto } from "../dto/user";
+import type { TAuthType, TResetPwdType, TSMPayUser, UserStatus } from "../user";
 
 // agents/users/mail-verifications request type
 export type RequestMailVerify = {
@@ -124,16 +125,6 @@ export type AgencyUserDto = {
   id: string;
 };
 
-export type GroupUserDto = {
-  userId: number;
-  userType: TAuthType;
-  userName: string;
-  status: UserStatus;
-  registerDt: string;
-  emailAddress: string;
-  id: string;
-};
-
 // 확장된 응답 타입 (no 속성이 포함된 content)
 export type ResponseAgencyUsersWithNo = {
   page: number;
@@ -147,7 +138,7 @@ export type ResponseGroupUser = {
   page: number;
   size: number;
   totalCount: number;
-  content: GroupUserDto[];
+  content: AccountDto[];
 };
 
 // 대행사 회원 페이지네이션 조회 (AAG006) params type

@@ -5,35 +5,35 @@ import {
 } from "@tanstack/react-query";
 
 import {
-  getAccountList,
+  getBankList,
   getAdvertiserMailVerification,
-  postAccountCertification,
+  postBankCertification,
   postARS,
-} from "@/services/account";
+} from "@/services/bank";
 
 import type {
-  Account,
+  Bank,
   RequestAccountCertification,
   RequestARSBankAccount,
   RequestARS,
-} from "@/types/api/account";
+} from "@/types/api/bank";
 import { postSmPayAdvertiserBankAccount } from "@/services/smpay";
 
 // 은행 리스트 전체 조회(AC001)
-export const useAccountList = () => {
-  return useQuery<Account[]>({
-    queryKey: ["/account/list"],
-    queryFn: () => getAccountList(),
+export const useBankList = () => {
+  return useQuery<Bank[]>({
+    queryKey: ["/bank/list"],
+    queryFn: () => getBankList(),
   });
 };
 
 // 은행 실명 인증 요청(AC002)
-export const useAccountCertification = (
+export const useBanckCertification = (
   options?: UseMutationOptions<boolean, Error, RequestAccountCertification>
 ) => {
   return useMutation({
     mutationFn: (params: RequestAccountCertification) =>
-      postAccountCertification(params),
+      postBankCertification(params),
     ...options,
   });
 };
