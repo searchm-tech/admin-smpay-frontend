@@ -93,6 +93,10 @@ export const DialogContent = {
   "password-confirm": "비밀번호가 일치하지 않습니다.",
   "phone-regex": "전화번호가 올바르지 않습니다.",
   "agency-select": "대행사를 선택해주세요.",
+  "name-empty": "이름을 입력해주세요.",
+  "member-type": "회원 구분을 선택해주세요.",
+  "department-select": "부서를 선택해주세요.",
+  "password-empty": "비밀번호를 입력해주세요.",
 };
 
 export type DialogContentType = keyof typeof DialogContent;

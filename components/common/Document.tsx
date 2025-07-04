@@ -372,7 +372,7 @@ const documentType = {
         <div>
           <h1 className="text-2xl font-bold">제 1 조 (목적)</h1>
           <p>
-            본 약관은 주식회사 써치엠(이하 &quot;회라&quot;라 한다)이 운영하는
+            본 약관은 주식회사 써치엠(이하 &quot;회사&quot;라 한다)이 운영하는
             웹사이트
             <a href="https://smpay.co.kr" className="text-blue-500 underline">
               https://smpay.co.kr
@@ -439,7 +439,6 @@ const documentType = {
             사유를 명시합니다.
           </p>
           <br />
-          <br />
           <p>
             -- 추가 : 마케터 회원의 개별적인 가입은 불가하며, 소속한 대행사의
             계약에 종속됩니다. 즉, 대행사가 소속 마케터의 계약을 성립 또는
@@ -451,7 +450,7 @@ const documentType = {
           <h1 className="text-2xl font-bold">
             제 5 조 (서비스 개시일 및 이용 기간)
           </h1>
-          <p>① 서비스는 회사의 승인이 완료면 즉시 이용이 가능 합니다.</p>
+          <p>① 서비스는 회사의 승인이 완료면 즉시 이용이 가능합니다.</p>
           <p>
             ② 서비스 이용 기간은 별도 해지 신청 전까지 지속되며, 회사 또는
             대행사의 사정에 따라 일시중지 또는 종료될 수 있습니다
@@ -588,7 +587,7 @@ const documentType = {
         <div>
           <h1 className="text-2xl font-bold">부칙</h1>
           <div>
-            <p>1. 본 약관은 2025년 7월 XX일 부터 적용됩니다.</p>
+            <p>1. 본 약관은 2025년 7월 01일 부터 적용됩니다.</p>
           </div>
         </div>
       </div>

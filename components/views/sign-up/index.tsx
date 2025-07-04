@@ -62,20 +62,24 @@ const SignUpView = ({ agentCode, userCode }: SignUpViewProps) => {
 
   const onSubmit = () => {
     if (!mailVerify) return;
+
     if (!password || !passwordConfirm) {
-      setErrorMessage("필수 항목을 입력해주세요.");
+      setErrorMessage("비밀번호를 입력해주세요.");
+      return;
+    }
+
+    if (
+      !PASSWORD_REGEX.test(password) ||
+      !PASSWORD_REGEX.test(passwordConfirm)
+    ) {
+      setErrorMessage(
+        "비밀번호는 영문, 숫자, 특수문자를 포함하여 8자 이상으로 입력해주세요."
+      );
       return;
     }
 
     if (password !== passwordConfirm) {
       setErrorMessage("비밀번호가 일치하지 않습니다.");
-      return;
-    }
-
-    if (!PASSWORD_REGEX.test(password)) {
-      setErrorMessage(
-        "비밀번호는 영문, 숫자, 특수문자를 포함하여 8자 이상으로 입력해주세요."
-      );
       return;
     }
 
@@ -114,7 +118,6 @@ const SignUpView = ({ agentCode, userCode }: SignUpViewProps) => {
           }}
         />
       )}
-
       {errorMessage && (
         <ConfirmDialog
           open
@@ -196,10 +199,6 @@ const SignUpView = ({ agentCode, userCode }: SignUpViewProps) => {
           취소
         </Button>
       </div>
-
-      {errorMessage && (
-        <span className="text-red-500 text-center text-sm">{errorMessage}</span>
-      )}
     </div>
   );
 };

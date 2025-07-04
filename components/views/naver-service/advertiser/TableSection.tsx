@@ -67,6 +67,7 @@ const TableSection = ({
   const { mutate: mutateDeleteAdvertiserSync } = useMuateDeleteAdvertiserSync({
     onSuccess: async () => {
       setMessage("광고주 등록 해제 완료");
+      setRequestCancel(false);
       setSelectedRowKeys([]);
       await refetch();
     },
@@ -77,6 +78,8 @@ const TableSection = ({
   const [errorMessage, setMessage] = useState<string>("");
   const [isSuccessSync, setIsSuccessSync] = useState<boolean>(false);
   const [failDialogInfo, setFailDialogInfo] = useState<SyncFail | null>(null);
+
+  const [requestCancel, setRequestCancel] = useState<boolean>(false);
 
   const allSelectableRows = dataSource.filter(
     (r) => r.jobStatus !== "IN_PROGRESS"
@@ -303,6 +306,11 @@ const TableSection = ({
       return;
     }
 
+    setRequestCancel(true);
+  };
+
+  const handleRequestCancel = () => {
+    if (!user) return;
     mutateDeleteAdvertiserSync({
       agentId: user.agentId,
       userId: user.userId,
@@ -336,6 +344,14 @@ const TableSection = ({
   return (
     <section className="mt-4">
       {isPending && <LoadingUI title="광고주 상태 작업 중으로 변경 중..." />}
+      {requestCancel && (
+        <ConfirmDialog
+          open
+          content="광고주를 등록 해제하시겠습니까?"
+          onConfirm={handleRequestCancel}
+          onClose={() => setRequestCancel(false)}
+        />
+      )}
       {isSuccessSync && (
         <ConfirmDialog
           open

@@ -18,7 +18,7 @@ const breadcrumbItems: DashboardSubItem[] = [
     url: "/sm-pay",
   },
   {
-    title: "SM Pay 충전",
+    title: "충전 회수 현황",
     url: "/sm-pay/charge",
   },
 ];
