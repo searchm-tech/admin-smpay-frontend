@@ -14,6 +14,7 @@ import Table from "@/components/composite/table";
 import { LinkTextButton } from "@/components/composite/button-components";
 
 import LoadingUI from "@/components/common/Loading";
+import GuidSection from "./GuideSection";
 
 import {
   formatBusinessNumber,
@@ -27,8 +28,7 @@ import {
 } from "@/hooks/queries/sm-pay";
 
 import type { TableProps } from "@/types/table";
-import { SmPayAdvertiserStatus, SmPayDetailDto } from "@/types/smpay";
-import GuidSection from "./GuideSection";
+import type { SmPayAdvertiserStatus, SmPayDetailDto } from "@/types/smpay";
 
 type Props = {
   advertiserId: number;
@@ -60,6 +60,7 @@ const AdvertiserInfoSection = ({ advertiserId, isHistory = false }: Props) => {
           <HistoryModal
             onClose={() => setIsHistoryModal(false)}
             advertiserId={advertiserId}
+            dataSource={dataSource}
           />
         )}
 
@@ -123,15 +124,17 @@ export default AdvertiserInfoSection;
 type HistoryModalProps = {
   onClose: () => void;
   advertiserId?: number;
+  dataSource?: SmPayDetailDto[];
 };
-const HistoryModal = ({ onClose, advertiserId }: HistoryModalProps) => {
+const HistoryModal = ({
+  onClose,
+  advertiserId,
+  dataSource,
+}: HistoryModalProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const originFormId = searchParams.get("formId");
 
-  const { data: dataSource } = useSmPayApplyList(advertiserId || 0);
-
-  console.log("dataSource", dataSource);
   const columns: TableProps<SmPayDetailDto>["columns"] = [
     {
       title: "No",
@@ -203,6 +206,7 @@ const HistoryModal = ({ onClose, advertiserId }: HistoryModalProps) => {
           dataSource={dataSource}
           columns={columns}
           pagination={false}
+          scroll={{ y: 300 }}
         />
       </div>
     </Modal>

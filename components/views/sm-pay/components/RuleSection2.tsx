@@ -72,7 +72,7 @@ const RuleSection2 = ({
               <div>
                 기준 ROAS가{" "}
                 <span className="font-bold">
-                  {downChargeRule.standardRoasPercent}% 미만
+                  {upChargeRule.standardRoasPercent}% 미만
                 </span>
                 이면 충전 금액을{" "}
                 <span className="text-red-600">

@@ -9,9 +9,9 @@ import { Button } from "@/components/ui/button";
 import OperationMemoSection from "@/components/views/sm-pay/components/OperationMemoSection";
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
 import OperationAccountStatusSection from "@/components/views/sm-pay/components/OperationAccountStatusSection";
-import RuleSection2 from "../../../components/RuleSection2";
+import RuleSection2 from "@/components/views/sm-pay/components/RuleSection2";
+import ScheduleSection2 from "@/components/views/sm-pay/components/ScheduleSection2";
 import AdvertiserInfoSection from "./AdvertiserInfoSection";
-import ScheduleSection2 from "../../../components/ScheduleSection2";
 
 import RejectSendModal from "./RejectSendModal";
 import CompleteModal from "./ApproveDialog";

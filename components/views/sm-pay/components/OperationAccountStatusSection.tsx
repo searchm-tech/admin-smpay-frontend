@@ -76,12 +76,14 @@ const OperationAccountStatusSection = ({
 
   // 계산된 값들을 메모이제이션
   const calculatedData = useMemo(() => {
-    // TODO: 실제 승인 예정 광고주들의 예상 소진 금액 계산 로직 적용
-    // 현재는 임시값 350,000원 사용
-    const estimatedApprovalDaily = 350000;
+    const estimatedApprovalDaily = accountInfo?.balance || 0;
 
     return calculateSmPayAccount(accountInfo, estimatedApprovalDaily);
   }, [accountInfo]);
+
+  // initialAmount + calculatedData.currentDailyUsing = 승인 시 예상 일 소진 금액
+  const totalExpectedDailyAmount =
+    initialAmount + calculatedData.currentDailyUsing;
 
   return (
     <section>
@@ -117,6 +119,14 @@ const OperationAccountStatusSection = ({
           </div>
         </DescriptionItem>
         <DescriptionItem label="승인 시 예상 일 소진 금액">
+          <div className="flex items-center gap-2">
+            <Label className="w-1/2">
+              {totalExpectedDailyAmount.toLocaleString()}원
+            </Label>
+            <SubDescItem>승인 시 추가로 증가하는 일 소진 금액</SubDescItem>
+          </div>
+        </DescriptionItem>
+        <DescriptionItem label="일 소진 금액">
           <div className="flex items-center gap-2">
             <Label className="w-1/2">+{initialAmount.toLocaleString()}원</Label>
             <SubDescItem>
