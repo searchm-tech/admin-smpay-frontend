@@ -4,40 +4,24 @@ import {
   type UseMutationOptions,
 } from "@tanstack/react-query";
 
-import {
-  fetchSmPayData,
-  getSmPayRejectReason,
-  getSmPayStatus,
-  getSmPayStopInfo,
-  updateSmPayStatus,
-} from "@/services/sm-pay";
-
-import type {
-  SmPayRejectReasonResponse,
-  TableParams,
-  SmPayResponse,
-  SmPayStopInfoResponse,
-  SmPayStatusResponse,
-} from "@/services/types";
 import type { BooleanResponse } from "@/types/sm-pay";
 import type { RequestAgentUser } from "@/types/api/common";
 import type {
-  ResponseSmPayAdvertiserStatus,
-  ResponseSmPayStatusCount,
-  ResponseSmPayAdvertiserApply,
+  ParamsSmPayAdminOverviewOperatorDecision,
   QueryParams,
   SmPayAdvertiserApplyQuery,
   PutSmPayAdvertiserDetail,
   SmPayWriteParams,
-  ResponseSmPayAudit,
   AdvertiserDetailDto,
   ParamsSmPayApproval,
-  ChargeRuleDto,
   PrePaymentScheduleDto,
+  ResponseSmPayAudit,
+  ResponseSmPayAdvertiserStatus,
+  ResponseSmPayStatusCount,
+  ResponseSmPayAdvertiserApply,
   ResponseSmPayAdminAudit,
-  ParamsSmPayAdminOverviewOperatorDecision,
-  OverviewForm,
-  WithAdvertiserId,
+  ResponseOverviewForm,
+  ResponseSMPayDetail,
 } from "@/types/api/smpay";
 
 import { useAuthQuery } from "../useAuthQuery";
@@ -74,74 +58,18 @@ import {
   postSmPayAdvertiserAgreeNotification,
 } from "@/services/smpay";
 import type {
-  DailyStat,
-  SmPayDetailDto,
   SmPayStatIndicator,
   SmPayScreeningIndicator,
   SmPayReviewerMemo,
-  OverviewApplyListDto,
   SmPayApprovalMemo,
   OverviewAccountBalanceDto,
 } from "@/types/smpay";
 
-export const useSmPayList = (params: TableParams) => {
-  return useQuery<SmPayResponse>({
-    queryKey: ["/smpay/list", params],
-    queryFn: () => fetchSmPayData(params),
-    staleTime: 1000 * 60,
-  });
-};
-
-// 삭제 예정
-export const useSmPayStatus = () => {
-  return useQuery<SmPayStatusResponse>({
-    queryKey: ["/smpay/status"],
-    queryFn: () => getSmPayStatus(),
-  });
-};
-
-export const useSmPayRejectReason = (id: string) => {
-  return useQuery<SmPayRejectReasonResponse>({
-    queryKey: ["/smpay/reject-reason", id],
-    queryFn: () => getSmPayRejectReason(id),
-    enabled: !!id,
-    initialData: {
-      data: "",
-      success: false,
-    },
-  });
-};
-
-export const useSmPayStopInfo = (id: string) => {
-  return useQuery<SmPayStopInfoResponse>({
-    queryKey: ["/smpay/stop-info", id],
-    queryFn: () => getSmPayStopInfo(id),
-    enabled: !!id,
-    initialData: {
-      data: {
-        date: "",
-        reason: "",
-      },
-      success: false,
-    },
-  });
-};
-
-type StatusParams = {
-  id: string;
-  status: string;
-};
-
-export const useSmPayStatusUpdate = (
-  options?: UseMutationOptions<BooleanResponse, Error, StatusParams>
-) => {
-  return useMutation<BooleanResponse, Error, StatusParams>({
-    mutationFn: ({ id, status }) => updateSmPayStatus(id, status),
-    ...options,
-  });
-};
-
-// ------------- 실제 react-query -----------
+import type {
+  ChargeRuleDto,
+  DailyStatDto,
+  SMPayFormHistory,
+} from "@/types/dto/smpay";
 
 // 광고주 상태 갯수 조회(SAG020) query
 export const useSmPayStatusCountList = () => {
@@ -212,7 +140,7 @@ export const useSmPayAdvertiserStatIndicator = (advertiserId: number) => {
 
 // 광고주 일 별 성과 조회(28일)(SAG027) query
 export const useSmPayAdvertiserDailyStat = (advertiserId: number) => {
-  return useAuthQuery<DailyStat[]>({
+  return useAuthQuery<DailyStatDto[]>({
     queryKey: ["/smpay/advertiser-daily-stat", advertiserId],
     queryFn: (user: RequestAgentUser) =>
       getSmPayAdvertiserDailyStat({ user, advertiserId }),
@@ -242,7 +170,7 @@ export const useSmPayWrite = (
 
 // 광고주 smPay 신청 이력 상세 조회(SAG026) query
 export const useSmPayDetail = (advertiserId: number, formId: number) => {
-  return useAuthQuery<SmPayDetailDto>({
+  return useAuthQuery<ResponseSMPayDetail>({
     queryKey: ["/smpay/detail", advertiserId, formId],
     queryFn: (user: RequestAgentUser) =>
       getSmPayDetail({ user, advertiserId, formId }),
@@ -252,7 +180,7 @@ export const useSmPayDetail = (advertiserId: number, formId: number) => {
 
 // 광고주 smPay 신청 이력 리스트 조회(SAG025) query
 export const useSmPayApplyList = (advertiserId: number) => {
-  return useAuthQuery<SmPayDetailDto[]>({
+  return useAuthQuery<SMPayFormHistory[]>({
     queryKey: ["/smpay/apply-list", advertiserId],
     queryFn: (user: RequestAgentUser) =>
       getSmPayApplyList({ user, advertiserId }),
@@ -426,7 +354,7 @@ export const useSmPayAdminOverviewApplyFormList = (
   agentId: number,
   userId: number
 ) => {
-  return useQuery<OverviewApplyListDto[]>({
+  return useQuery<SMPayFormHistory[]>({
     queryKey: [
       "/smpay/admin-overview-apply-form-list",
       advertiserId,
@@ -449,7 +377,7 @@ export const useSmPayAdminOverviewApplyFormDetail = (
   agentId: number,
   userId: number
 ) => {
-  return useQuery<OverviewForm>({
+  return useQuery<ResponseOverviewForm>({
     queryKey: [
       "/smpay/admin-overview-apply-form-detail",
       advertiserId,

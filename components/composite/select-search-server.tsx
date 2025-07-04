@@ -20,7 +20,7 @@ import {
 import useDebounce from "@/hooks/use-debounce";
 
 import { cn } from "@/lib/utils";
-import { TableParams } from "@/services/types";
+import type { TableParams } from "@/types/table";
 
 interface SelectSearchServerProps<T extends { value: string; label: string }> {
   fetchOptions: (

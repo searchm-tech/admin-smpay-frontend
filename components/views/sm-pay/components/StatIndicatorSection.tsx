@@ -17,8 +17,9 @@ import Table from "@/components/composite/table";
 
 import { useSmPayAdvertiserDailyStat } from "@/hooks/queries/sm-pay";
 
-import type { TableProps } from "antd";
-import type { DailyStat, SmPayStatIndicator } from "@/types/smpay";
+import type { SmPayStatIndicator } from "@/types/smpay";
+import type { DailyStatDto } from "@/types/dto/smpay";
+import type { TableProps } from "@/types/table";
 
 type Props = {
   advertiserId: number;
@@ -192,7 +193,8 @@ type TableModalProps = {
 };
 
 const TableModal = ({ open, onClose, advertiserId }: TableModalProps) => {
-  const { data, isPending } = useSmPayAdvertiserDailyStat(advertiserId);
+  const { data: dataSource, isPending } =
+    useSmPayAdvertiserDailyStat(advertiserId);
   return (
     <Modal
       open={open}
@@ -203,13 +205,10 @@ const TableModal = ({ open, onClose, advertiserId }: TableModalProps) => {
     >
       {isPending && <LoadingUI />}
       <div className="w-full max-h-[70vh] overflow-y-auto">
-        <Table<DailyStat & { id: number }>
-          dataSource={data?.map((item: DailyStat, index: number) => ({
-            ...item,
-            id: index + 1,
-          }))}
+        <Table<DailyStatDto>
+          dataSource={dataSource}
           columns={columns}
-          rowKey={(record) => record.id}
+          rowKey={(record) => record.no}
           pagination={false}
         />
       </div>
@@ -217,11 +216,11 @@ const TableModal = ({ open, onClose, advertiserId }: TableModalProps) => {
   );
 };
 
-const columns: TableProps<DailyStat & { id: number }>["columns"] = [
+const columns: TableProps<DailyStatDto>["columns"] = [
   {
     title: "NO",
-    dataIndex: "id",
-    key: "id",
+    dataIndex: "no",
+    key: "no",
     width: 50,
   },
   {

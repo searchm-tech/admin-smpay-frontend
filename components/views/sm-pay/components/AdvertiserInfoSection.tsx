@@ -28,14 +28,14 @@ import {
 } from "@/hooks/queries/sm-pay";
 
 import type { TableProps } from "@/types/table";
-import type { SmPayAdvertiserStatus, SmPayDetailDto } from "@/types/smpay";
+import type { SmPayAdvertiserStatus } from "@/types/smpay";
+import type { SMPayFormHistory } from "@/types/dto/smpay";
 
 type Props = {
   advertiserId: number;
-  isHistory?: boolean;
 };
 
-const AdvertiserInfoSection = ({ advertiserId, isHistory = false }: Props) => {
+const AdvertiserInfoSection = ({ advertiserId }: Props) => {
   const { data: detailInfo, isPending: isLoading } =
     useSmPayAdvertiserDetail(advertiserId);
 
@@ -68,14 +68,13 @@ const AdvertiserInfoSection = ({ advertiserId, isHistory = false }: Props) => {
           <LabelBullet labelClassName="text-base font-bold">
             광고주 상태
           </LabelBullet>
-          {isHistory && (
-            <Button
-              onClick={() => setIsHistoryModal(true)}
-              disabled={dataSource && dataSource.length === 0}
-            >
-              SM Pay 지난 이력 보기
-            </Button>
-          )}
+
+          <Button
+            onClick={() => setIsHistoryModal(true)}
+            disabled={dataSource && dataSource.length === 0}
+          >
+            SM Pay 지난 이력 보기
+          </Button>
         </div>
 
         <Descriptions columns={1}>
@@ -124,7 +123,7 @@ export default AdvertiserInfoSection;
 type HistoryModalProps = {
   onClose: () => void;
   advertiserId?: number;
-  dataSource?: SmPayDetailDto[];
+  dataSource?: SMPayFormHistory[];
 };
 const HistoryModal = ({
   onClose,
@@ -135,7 +134,7 @@ const HistoryModal = ({
   const searchParams = useSearchParams();
   const originFormId = searchParams.get("formId");
 
-  const columns: TableProps<SmPayDetailDto>["columns"] = [
+  const columns: TableProps<SMPayFormHistory>["columns"] = [
     {
       title: "No",
       dataIndex: "no",
@@ -181,7 +180,7 @@ const HistoryModal = ({
       dataIndex: "advertiserStatus",
       key: "advertiserStatus",
       align: "center",
-      render: (value: string, record) =>
+      render: (_: string, record) =>
         SmPayAdvertiserStatusLabel[
           record.advertiserStatus as SmPayAdvertiserStatus
         ],
@@ -190,7 +189,9 @@ const HistoryModal = ({
       title: "최종 수정 일시",
       dataIndex: "updatedAt",
       key: "updatedAt",
-      render: (value: string, record) => formatDate(value || record.registerDt),
+      render: (value: string, record) => {
+        return formatDate(value || record.registerOrUpdateDt || "");
+      },
     },
   ];
   return (
@@ -202,7 +203,7 @@ const HistoryModal = ({
       cancelDisabled
     >
       <div className="w-[85vw] overflow-y-auto">
-        <Table<SmPayDetailDto>
+        <Table<SMPayFormHistory>
           dataSource={dataSource}
           columns={columns}
           pagination={false}

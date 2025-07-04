@@ -18,18 +18,23 @@ import {
 
 import { TOOLTIP_CONTENT } from "@/constants/hover";
 
-import type { RuleInfo } from "@/types/sm-pay";
+import type { ChargeRule } from "@/types/smpay";
 
-// TODO : 삭제 예정
 type RuleSectionProps = {
   type: "show" | "write";
-  ruleInfo?: RuleInfo | null;
-  handleRuleInfoChange?: (value: RuleInfo) => void;
+  recommendRoas?: number;
+  upChargeRule: ChargeRule;
+  downChargeRule: ChargeRule;
+  handleUpChargeRuleChange?: (value: ChargeRule) => void;
+  handleDownChargeRuleChange?: (value: ChargeRule) => void;
 };
 const RuleSection = ({
   type,
-  ruleInfo,
-  handleRuleInfoChange,
+  recommendRoas,
+  upChargeRule,
+  downChargeRule,
+  handleUpChargeRuleChange,
+  handleDownChargeRuleChange,
 }: RuleSectionProps) => {
   return (
     <section>
@@ -50,21 +55,33 @@ const RuleSection = ({
             <div className="text-sm flex flex-col gap-2 py-4">
               <div>
                 기준 ROAS가{" "}
-                <span className="font-bold">{ruleInfo?.roas}% 이상</span>
+                <span className="font-bold">
+                  {upChargeRule?.standardRoasPercent}% 이상
+                </span>
                 이면 충전 금액을{" "}
                 <span className="text-blue-600">
-                  {ruleInfo?.increaseType === "flat" ? "정액으로" : "정률로"}
-                  {ruleInfo?.increase}%씩 증액
+                  {upChargeRule?.boundType === "FIXED_AMOUNT"
+                    ? "정액으로"
+                    : "정률로"}{" "}
+                  {upChargeRule?.changePercentOrValue}
+                  {upChargeRule?.boundType === "FIXED_AMOUNT" ? "원" : "%"} 씩
+                  증액
                 </span>
                 하고
               </div>
               <div>
                 기준 ROAS가{" "}
-                <span className="font-bold">{ruleInfo?.roas}% 미만</span>
+                <span className="font-bold">
+                  {upChargeRule.standardRoasPercent}% 미만
+                </span>
                 이면 충전 금액을{" "}
                 <span className="text-red-600">
-                  {ruleInfo?.decreaseType === "flat" ? "정액으로" : "정률로"}
-                  {ruleInfo?.decrease}%씩 감액
+                  {downChargeRule.boundType === "FIXED_AMOUNT"
+                    ? "정액으로"
+                    : "정률로"}{" "}
+                  {upChargeRule.changePercentOrValue}
+                  {downChargeRule.boundType === "FIXED_AMOUNT" ? "원" : "%"} 씩
+                  감액
                 </span>
                 합니다.
               </div>
@@ -78,20 +95,24 @@ const RuleSection = ({
           <DescriptionItem label="충전 규칙 설정">
             <div className="flex flex-col gap-4 py-4">
               <div className="flex items-center gap-2">
-                <span className="min-w-[100px]">기준 ROAS가</span>
+                <div className="flex items-center gap-2">
+                  <span className="min-w-[100px]">기준 ROAS가</span>
+                </div>
                 <NumberInput
                   className="w-[100px]"
-                  value={ruleInfo?.roas}
+                  value={upChargeRule?.standardRoasPercent}
                   onChange={(e) =>
-                    handleRuleInfoChange &&
-                    handleRuleInfoChange({
-                      ...(ruleInfo || {}),
-                      id: ruleInfo?.id || 0,
-                      roas: Number(e) || 0,
-                    } as RuleInfo)
+                    handleUpChargeRuleChange &&
+                    handleUpChargeRuleChange({
+                      ...upChargeRule,
+                      standardRoasPercent: Number(e) || 0,
+                    })
                   }
                 />
-                <span>%</span>
+                %
+                <span className="text-[#434343] font-bold">
+                  (권장 ROAS {recommendRoas || 0}%)
+                </span>
               </div>
 
               <div className="flex items-center gap-4">
@@ -105,32 +126,30 @@ const RuleSection = ({
                   >
                     <div className="flex items-center gap-1">
                       <RadioGroupItem
-                        value="flat"
+                        value="FIXED_AMOUNT"
                         id="above-flat"
-                        checked={ruleInfo?.increaseType === "flat"}
+                        checked={upChargeRule?.boundType === "FIXED_AMOUNT"}
                         onClick={() =>
-                          handleRuleInfoChange &&
-                          handleRuleInfoChange({
-                            ...(ruleInfo || {}),
-                            id: ruleInfo?.id || 0,
-                            increaseType: "flat",
-                          } as RuleInfo)
+                          handleUpChargeRuleChange &&
+                          handleUpChargeRuleChange({
+                            ...upChargeRule,
+                            boundType: "FIXED_AMOUNT",
+                          })
                         }
                       />
                       <Label htmlFor="above-flat">정액으로</Label>
                     </div>
                     <div className="flex items-center gap-1">
                       <RadioGroupItem
-                        value="rate"
+                        value="PERCENTAGE"
                         id="above-rate"
-                        checked={ruleInfo?.increaseType === "rate"}
+                        checked={upChargeRule?.boundType === "PERCENTAGE"}
                         onClick={() =>
-                          handleRuleInfoChange &&
-                          handleRuleInfoChange({
-                            ...(ruleInfo || {}),
-                            id: ruleInfo?.id || 0,
-                            increaseType: "rate",
-                          } as RuleInfo)
+                          handleUpChargeRuleChange &&
+                          handleUpChargeRuleChange({
+                            ...upChargeRule,
+                            boundType: "PERCENTAGE",
+                          })
                         }
                       />
                       <Label htmlFor="above-rate">정률로</Label>
@@ -138,17 +157,18 @@ const RuleSection = ({
                   </RadioGroup>
                   <NumberInput
                     className="w-[100px]"
-                    value={ruleInfo?.increase}
+                    value={upChargeRule?.changePercentOrValue}
                     onChange={(e) =>
-                      handleRuleInfoChange &&
-                      handleRuleInfoChange({
-                        ...(ruleInfo || {}),
-                        id: ruleInfo?.id || 0,
-                        increase: Number(e) || 0,
-                      } as RuleInfo)
+                      handleUpChargeRuleChange &&
+                      handleUpChargeRuleChange({
+                        ...upChargeRule,
+                        changePercentOrValue: Number(e) || 0,
+                      })
                     }
                   />
-                  <span>%씩</span>
+                  <span>
+                    {upChargeRule?.boundType === "FIXED_AMOUNT" ? "원" : "%"} 씩
+                  </span>
                   <span className="text-blue-600">증액하고</span>
                 </div>
               </div>
@@ -166,14 +186,13 @@ const RuleSection = ({
                       <RadioGroupItem
                         value="flat"
                         id="below-flat"
-                        checked={ruleInfo?.decreaseType === "flat"}
+                        checked={downChargeRule?.boundType === "FIXED_AMOUNT"}
                         onClick={() =>
-                          handleRuleInfoChange &&
-                          handleRuleInfoChange({
-                            ...(ruleInfo || {}),
-                            id: ruleInfo?.id || 0,
-                            decreaseType: "flat",
-                          } as RuleInfo)
+                          handleDownChargeRuleChange &&
+                          handleDownChargeRuleChange({
+                            ...downChargeRule,
+                            boundType: "FIXED_AMOUNT",
+                          })
                         }
                       />
                       <Label htmlFor="below-flat">정액으로</Label>
@@ -182,14 +201,13 @@ const RuleSection = ({
                       <RadioGroupItem
                         value="rate"
                         id="below-rate"
-                        checked={ruleInfo?.decreaseType === "rate"}
+                        checked={downChargeRule?.boundType === "PERCENTAGE"}
                         onClick={() =>
-                          handleRuleInfoChange &&
-                          handleRuleInfoChange({
-                            ...(ruleInfo || {}),
-                            id: ruleInfo?.id || 0,
-                            decreaseType: "rate",
-                          } as RuleInfo)
+                          handleDownChargeRuleChange &&
+                          handleDownChargeRuleChange({
+                            ...downChargeRule,
+                            boundType: "PERCENTAGE",
+                          })
                         }
                       />
                       <Label htmlFor="below-rate">정률로</Label>
@@ -197,17 +215,19 @@ const RuleSection = ({
                   </RadioGroup>
                   <NumberInput
                     className="w-[100px]"
-                    value={ruleInfo?.decrease}
+                    value={downChargeRule.changePercentOrValue}
                     onChange={(e) =>
-                      handleRuleInfoChange &&
-                      handleRuleInfoChange({
-                        ...(ruleInfo || {}),
-                        id: ruleInfo?.id || 0,
-                        decrease: Number(e) || 0,
-                      } as RuleInfo)
+                      handleDownChargeRuleChange &&
+                      handleDownChargeRuleChange({
+                        ...downChargeRule,
+                        changePercentOrValue: Number(e) || 0,
+                      })
                     }
                   />
-                  <span>%씩</span>
+                  <span>
+                    {downChargeRule?.boundType === "FIXED_AMOUNT" ? "원" : "%"}{" "}
+                    씩
+                  </span>
                   <span className="text-red-600">감액합니다.</span>
                 </div>
               </div>
@@ -218,24 +238,34 @@ const RuleSection = ({
             <div className="text-sm flex flex-col gap-2 py-4">
               <p>
                 기준 ROAS가{" "}
-                <span className="font-bold">{ruleInfo?.roas}% 이상</span>
+                <span className="font-bold">
+                  {upChargeRule.standardRoasPercent}% 이상
+                </span>
                 이면 충전 금액을{" "}
-                <span className="text-blue-600">
-                  {ruleInfo?.increaseType === "flat" ? "정액으로" : "정률로"}
-                  {ruleInfo?.increase}%씩 증액
+                <span className="text-blue-600 font-bold">
+                  {upChargeRule.boundType === "FIXED_AMOUNT"
+                    ? "정액으로"
+                    : "정률로"}{" "}
+                  {upChargeRule.changePercentOrValue}
+                  {upChargeRule.boundType === "FIXED_AMOUNT" ? "원" : "%"} 씩
+                  증액
                 </span>
                 하고
               </p>
               <p>
                 기준 ROAS가{" "}
-                <span className="font-bold">{ruleInfo?.roas}% 미만</span>
+                <span className="font-bold">
+                  {upChargeRule.standardRoasPercent}% 미만
+                </span>
                 이면 충전 금액을{" "}
-                <span className="text-red-600">
+                <span className="text-red-600 font-bold">
                   {" "}
-                  {ruleInfo?.decreaseType === "flat"
+                  {downChargeRule.boundType === "FIXED_AMOUNT"
                     ? "정액으로"
                     : "정률로"}{" "}
-                  {ruleInfo?.decrease}%씩 감액
+                  {downChargeRule.changePercentOrValue}
+                  {downChargeRule.boundType === "FIXED_AMOUNT" ? "원" : "%"} 씩
+                  감액
                 </span>
                 합니다.
               </p>

@@ -56,23 +56,6 @@ export type SmPayAdvertiserStatusDto = {
   advertiserFormId: number;
 };
 
-// 광고주 일별 통계
-export type DailyStat = {
-  id: number;
-  advertiserId: number; // 광고주 UID
-  impCnt: number; // 노출 수
-  clkCnt: number; // 클릭 수
-  salesAmt: number; // 광고비
-  avgRnk: number; // 평균 노출 순위
-  convAmt: number; // 전환 매출
-  cpc: number; // 클릭 단가
-  ccnt: number; // 전환 수
-  crto: number; // 전환율
-  cpConv: number; // 전환당 비용
-  ror: number; // roas
-  date: string; // 날짜
-};
-
 export type ChargeRule = {
   standardRoasPercent: number; //  1; // 기준 ROAS
   rangeType: string; // "UP";
@@ -106,38 +89,6 @@ export type SmPayStatIndicator = {
   monthlyConvAmt: number; // 월별 전환액 1000.0,
   dailySalesAmt: number; // 일별 매출액 100.0,
   recommendRoas: number; // 권장 ROAS  0.8,
-};
-
-/**
- * SM Pay 상세 내용
- * - API : 광고주 smPay 신청 이력 상세 조회(SAG026) response type
- * - API : 광고주 smPay 신청 이력 리스트 조회(SAG025)
- */
-export type SmPayDetailDto = {
-  no: number;
-  chargeRules: ChargeRule[];
-  advertiserFormId: number; // 1;
-  advertiserId: number; // 1;
-  advertiserStatus: SmPayAdvertiserStatus;
-  advertiserName: string; // "광고주명";
-  advertiserNickname: string; // "광고주 닉네임";
-  advertiserRepresentativeName: string; //  "광고주 대표자명";
-  advertiserPhoneNumber: string; //  "0101111111";
-  advertiserEmailAddress: string; //  "pgw111111@naver.com";
-  advertiserOperationPeriod: number; //  1;
-  advertiserDailyAverageRoas: number; // 0.01;
-  advertiserMonthlyConvAmt: number; // 0.01;
-  advertiserDailySalesAmt: number; // 0.01;
-  advertiserRecommendRoasPercent: number; // 0.01;
-  advertiserStandardRoasPercent: number; // 1;
-  advertiserRejectDescription: string; // "반려 사유";
-  initialAmount: number; // 1;
-  maxChargeLimit: number; // 1;
-  minChargeLimit: number; // 1;
-  reviewerMemo: string; // "심사자 메모";
-  approvalMemo: string; // "운영자 메모";
-  registerDt: string; //  null;
-  updateDt: string; // null;
 };
 
 // 심사 상세 > 최상위 그룹장 전용 심사 지표 조회 DTO
@@ -179,21 +130,6 @@ export type SmPayAdminAuditDto = {
   registerOrUpdateDt: string;
   isOperatorRead: boolean;
 };
-
-/**
- * [시스템 관리자] SM Pay 관리 > 운영 검토 요청 상세 > 신청 이력 리스트
- */
-export interface OverviewApplyListDto extends SmPayDetailDto {
-  id: number;
-  advertiserFormId: number;
-  advertiserId: number;
-  advertiserStatus: SmPayAdvertiserStatus;
-  advertiserName: string;
-  advertiserNickname: string;
-  accounts: OverviewApplyAccountDto[];
-  advertiserLoginId: string;
-  advertiserCustomerId: number;
-}
 
 export type OverviewApplyAccountDto = {
   advertiserFormAccountId: number;

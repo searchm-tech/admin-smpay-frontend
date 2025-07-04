@@ -22,7 +22,6 @@ import {
 } from "@/components/ui/sidebar";
 import { cn, getAuthType } from "@/lib/utils";
 import { useQueryMenu } from "@/hooks/queries/menu";
-import { COMMON_ITEMS } from "@/constants/dasboard";
 import {
   mapBackendMenuToFrontend,
   filterMenuByUserType,

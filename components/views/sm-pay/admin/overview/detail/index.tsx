@@ -9,8 +9,8 @@ import { Button } from "@/components/ui/button";
 import OperationMemoSection from "@/components/views/sm-pay/components/OperationMemoSection";
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
 import OperationAccountStatusSection from "@/components/views/sm-pay/components/OperationAccountStatusSection";
-import RuleSection2 from "@/components/views/sm-pay/components/RuleSection2";
-import ScheduleSection2 from "@/components/views/sm-pay/components/ScheduleSection2";
+import RuleSection2 from "@/components/views/sm-pay/components/RuleSection";
+import ScheduleSection2 from "@/components/views/sm-pay/components/ScheduleSection";
 import AdvertiserInfoSection from "./AdvertiserInfoSection";
 
 import RejectSendModal from "./RejectSendModal";
@@ -40,20 +40,6 @@ const SmPayAdminOverviewDetailView = ({ id }: Props) => {
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
   const [completeModalOpen, setCompleteModalOpen] = useState(false);
 
-  const [upChargeRule, setUpChargeRule] = useState<ChargeRule>({
-    standardRoasPercent: 0,
-    rangeType: "UP",
-    boundType: "FIXED_AMOUNT",
-    changePercentOrValue: 0,
-  });
-
-  const [downChargeRule, setDownChargeRule] = useState<ChargeRule>({
-    standardRoasPercent: 0,
-    rangeType: "DOWN",
-    boundType: "FIXED_AMOUNT",
-    changePercentOrValue: 0,
-  });
-
   const { mutate: patchRead, isPending: loadingPatchRead } =
     useSmPayAdminOverviewAlarm();
 
@@ -79,23 +65,29 @@ const SmPayAdminOverviewDetailView = ({ id }: Props) => {
     if (id && !isOperatorRead) {
       patchRead({ advertiserId: Number(id), isOperatorRead: true });
     }
-
-    if (chargeRule) {
-      const upChargeRule = chargeRule.find(
-        (rule) => rule.rangeType === "UP"
-      ) as ChargeRule;
-      const downChargeRule = chargeRule.find(
-        (rule) => rule.rangeType === "DOWN"
-      ) as ChargeRule;
-      setUpChargeRule(upChargeRule);
-      setDownChargeRule(downChargeRule);
-    }
-  }, [chargeRule, isOperatorRead]);
+  }, [isOperatorRead]);
 
   const prePaymentSchedule = {
     initialAmount: prePaymentScheduleData?.initialAmount || 0,
     maxChargeLimit: prePaymentScheduleData?.maxChargeLimit || 0,
     minChargeLimit: prePaymentScheduleData?.minChargeLimit || 0,
+  };
+
+  const upChargeRule = {
+    standardRoasPercent:
+      chargeRule?.find((rule) => rule.rangeType === "UP")
+        ?.standardRoasPercent || 0,
+    rangeType: "UP",
+    boundType: "FIXED_AMOUNT",
+    changePercentOrValue: 0,
+  };
+  const downChargeRule = {
+    standardRoasPercent:
+      chargeRule?.find((rule) => rule.rangeType === "DOWN")
+        ?.standardRoasPercent || 0,
+    rangeType: "DOWN",
+    boundType: "FIXED_AMOUNT",
+    changePercentOrValue: 0,
   };
 
   const approveParams: ParamsSmPayAdminOverviewOperatorDecision = {
@@ -153,7 +145,7 @@ const SmPayAdminOverviewDetailView = ({ id }: Props) => {
         />
       )}
 
-      <AdvertiserInfoSection advertiserData={smpayInfo} isHistory />
+      <AdvertiserInfoSection advertiserData={smpayInfo} />
 
       <RuleSection2
         type="show"

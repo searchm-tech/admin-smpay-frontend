@@ -1,8 +1,6 @@
 import { ApiError, del, get, post } from "@/lib/api";
 import { buildQueryParams } from "@/lib/utils";
 
-import type { TableParams } from "./types";
-import type { RuleInfo, ScheduleInfo } from "@/types/sm-pay";
 import type {
   RequestAdvertiserList,
   RequestAdvertiserSync,

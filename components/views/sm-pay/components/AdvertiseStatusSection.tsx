@@ -14,8 +14,8 @@ import { LinkTextButton } from "@/components/composite/button-components";
 
 import { useSmPayApplyList } from "@/hooks/queries/sm-pay";
 
-import type { SmPayDetailDto } from "@/types/smpay";
 import type { TableProps } from "@/types/table";
+import type { SMPayFormHistory } from "@/types/dto/smpay";
 
 type Props = {
   status: string;
@@ -68,7 +68,7 @@ const HistoryModal = ({ onClose, advertiserId }: HistoryModalProps) => {
   const router = useRouter();
 
   const { data: dataSource } = useSmPayApplyList(advertiserId || 0);
-  const columns: TableProps<SmPayDetailDto>["columns"] = [
+  const columns: TableProps<SMPayFormHistory>["columns"] = [
     {
       title: "광고주 신청서 ID",
       dataIndex: "advertiserFormId",
@@ -117,7 +117,7 @@ const HistoryModal = ({ onClose, advertiserId }: HistoryModalProps) => {
       cancelDisabled
     >
       <div className="w-[85vw] overflow-y-auto">
-        <Table<SmPayDetailDto> dataSource={dataSource} columns={columns} />
+        <Table<SMPayFormHistory> dataSource={dataSource} columns={columns} />
       </div>
     </Modal>
   );

@@ -13,11 +13,7 @@ import {
 
 import type { SmPayAdvertiserStatusDto as TSmPayData } from "@/types/smpay";
 
-import {
-  useSmPayAdvertiserAgreeNotification,
-  useSmPayRejectReason,
-  useSmPayStopInfo,
-} from "@/hooks/queries/sm-pay";
+import { useSmPayAdvertiserAgreeNotification } from "@/hooks/queries/sm-pay";
 import LoadingUI from "@/components/common/Loading";
 import { useState } from "react";
 
@@ -27,10 +23,8 @@ type PropsRejectDialog = {
   onClose: () => void;
   onConfirm: () => void;
 };
-// TODO : 공용???
-const RejectDialog = ({ onClose, onConfirm, id }: PropsRejectDialog) => {
-  const { data: rejectReason } = useSmPayRejectReason(id);
 
+const RejectDialog = ({ onClose, onConfirm, id }: PropsRejectDialog) => {
   const data = {
     date: dayjs(new Date().toISOString().slice(0, 10)).format("YYYY-MM-DD"),
     reason: (
@@ -61,9 +55,7 @@ const RejectDialog = ({ onClose, onConfirm, id }: PropsRejectDialog) => {
               {data.date}
             </DescriptionItem>
             <DescriptionItem label="심사자">최상위 그룹장</DescriptionItem>
-            <DescriptionItem label="반려 사유">
-              {parse(rejectReason.data)}
-            </DescriptionItem>
+            <DescriptionItem label="반려 사유">{""}</DescriptionItem>
           </Descriptions>
         </div>
       </div>
@@ -320,45 +312,6 @@ const ResendDialog = ({ onClose, onConfirm }: PropsResendDialog) => {
   );
 };
 
-interface StopInfoModalProps extends ModalProps {
-  id: string;
-}
-
-// TODO : 공용???
-const StopInfoModal = ({
-  open = false,
-  onClose,
-  onConfirm,
-  id,
-}: StopInfoModalProps) => {
-  const { data: stopInfo } = useSmPayStopInfo(id);
-
-  return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      onConfirm={onConfirm}
-      title="광고주 상태 일시중지"
-      confirmText="상세보기"
-      cancelText="취소"
-    >
-      <div className="min-w-[900px]">
-        <p>다음과 같은 사유로 일시중지되었습니다.</p>
-        <div className="mt-4 rounded-md bg-white">
-          <Descriptions columns={1}>
-            <DescriptionItem label="일시중지 일시">
-              {stopInfo.data.date}
-            </DescriptionItem>
-            <DescriptionItem label="일시중지 사유">
-              {stopInfo.data.reason}
-            </DescriptionItem>
-          </Descriptions>
-        </div>
-      </div>
-    </Modal>
-  );
-};
-
 export {
   RejectDialog,
   ApplyCancelDialog,
@@ -368,5 +321,4 @@ export {
   ResumeDialog,
   TerminationRequestDialog,
   ResendDialog,
-  StopInfoModal,
 };
