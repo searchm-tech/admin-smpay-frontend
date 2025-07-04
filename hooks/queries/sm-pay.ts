@@ -4,7 +4,6 @@ import {
   type UseMutationOptions,
 } from "@tanstack/react-query";
 
-import type { BooleanResponse } from "@/types/sm-pay";
 import type { RequestAgentUser } from "@/types/api/common";
 import type {
   ParamsSmPayAdminOverviewOperatorDecision,
@@ -62,13 +61,13 @@ import type {
   SmPayScreeningIndicator,
   SmPayReviewerMemo,
   SmPayApprovalMemo,
-  OverviewAccountBalanceDto,
 } from "@/types/smpay";
 
 import type {
   ChargeRuleDto,
   DailyStatDto,
   SMPayFormHistory,
+  OverviewAccountBalanceDto,
 } from "@/types/dto/smpay";
 
 // 광고주 상태 갯수 조회(SAG020) query

@@ -1,4 +1,4 @@
-import type { ActionButton, SmPayStatus } from "@/types/sm-pay";
+import type { ActionButton, SmPayStatus } from "@/types/smpay";
 import type { SmPayAdvertiserStatus } from "@/types/smpay";
 
 export const SM_PAY_STATUS_LIST: { label: string; value: string }[] = [

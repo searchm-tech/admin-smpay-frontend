@@ -17,7 +17,7 @@ import { ColumnTooltip } from "@/constants/table";
 
 import type { TableProps } from "antd";
 import type { FilterValue } from "antd/es/table/interface";
-import type { ActionButton } from "@/types/sm-pay";
+import type { ActionButton } from "@/types/smpay";
 import type { TableParams } from "@/types/table";
 import type {
   SmPayAdvertiserStatus,

@@ -14,7 +14,6 @@ import { useSidebar } from "@/components/ui/sidebar";
 import { SmPayAdvertiserStatusLabel } from "@/constants/status";
 
 import type {
-  SmPayAdminAuditDto,
   SmPayAdvertiserStatus,
   SmPayAdvertiserStautsOrderType,
 } from "@/types/smpay";
@@ -24,6 +23,7 @@ import type {
   TableParams,
   TableProps,
 } from "@/types/table";
+import type { SmPayAdminAuditDto } from "@/types/dto/smpay";
 import { cn } from "@/lib/utils";
 
 type PropsTableSection = {

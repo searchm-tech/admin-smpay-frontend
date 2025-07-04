@@ -21,11 +21,9 @@ import { useSmPayAdvertiserApplyList } from "@/hooks/queries/sm-pay";
 import { cn } from "@/lib/utils";
 
 import type { TableParams, TableProps, FilterValue } from "@/types/table";
-import type {
-  SmPayAdvertiserStatus,
-  SmPayAdvertiserApplyDto as TAdvertiser,
-} from "@/types/smpay";
+import type { SmPayAdvertiserStatus } from "@/types/smpay";
 import type { AdvertiserOrderType } from "@/types/adveriser";
+import type { SmPayAdvertiserApplyDto as TAdvertiser } from "@/types/dto/smpay";
 import { type ModalInfo, defaultTable } from "./constants";
 import { formatDate } from "@/utils/format";
 

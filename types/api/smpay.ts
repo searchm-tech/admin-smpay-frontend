@@ -1,16 +1,24 @@
 import {
   ChargeRule,
-  OverviewApplyAccountDto,
   PrePaymentSchedule,
-  SmPayAdminAuditDto,
-  SmPayAdvertiserApplyDto,
   SmPayAdvertiserStatus,
   SmPayAdvertiserStautsOrderType,
-  SmPayAuditDto,
 } from "@/types/smpay";
 
-import type { RequestAgentUser, ResponseWithPagination } from "./common";
-import type { ChargeRuleDto, SmPayAdvertiserStatusDto } from "../dto/smpay";
+import type {
+  RequestAgentUser,
+  RequestWithPagination,
+  ResponseWithPagination,
+} from "./common";
+
+import type {
+  ChargeRuleDto,
+  SmPayAdvertiserStatusDto,
+  OverviewApplyAccountDto,
+  SmPayAdminAuditDto,
+  SmPayAuditDto,
+  SmPayAdvertiserApplyDto,
+} from "../dto/smpay";
 
 // 광고주 상태 갯수 조회(SAG020) response type
 export interface ResponseSmPayStatusCount {
@@ -50,10 +58,7 @@ export type ResponseSmPayAdvertiserStatus = ResponseWithPagination & {
 };
 
 // 광고주 상태 리스트 페이지네이션 조회(SAG019) query params type
-export type SmPayAdvertiserApplyQuery = {
-  page: number;
-  size: number;
-  keyword: string;
+export type SmPayAdvertiserApplyQuery = RequestWithPagination & {
   orderType: SmPayAdvertiserStatus;
 };
 
@@ -64,12 +69,9 @@ export type RequestSmPayAdvertiserApply = {
 };
 
 // 광고주 smPay 신청 관리 리스트 조회(SAG022) response type
-export type ResponseSmPayAdvertiserApply = {
+export interface ResponseSmPayAdvertiserApply extends ResponseWithPagination {
   content: SmPayAdvertiserApplyDto[];
-  page: number;
-  size: number;
-  totalCount: number;
-};
+}
 
 // AgentUser 타입에 advertiserId 추가
 export type WithAdvertiserId = {

@@ -8,7 +8,7 @@ import { TooltipHover } from "@/components/composite/tooltip-components";
 
 import { TOOLTIP_CONTENT } from "@/constants/hover";
 
-import type { SmPayData } from "@/types/sm-pay";
+import type { SmPayData } from "@/types/smpay";
 
 type Props = {
   smPayData: SmPayData | null;

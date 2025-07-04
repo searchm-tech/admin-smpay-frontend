@@ -8,3 +8,9 @@ export type ResponseWithPagination = {
   size: number;
   totalCount: number;
 };
+
+export type RequestWithPagination = {
+  page: number;
+  size: number;
+  keyword: string;
+};

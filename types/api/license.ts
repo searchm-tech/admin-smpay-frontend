@@ -1,5 +1,6 @@
-import { TAdvertiserSync, TCustomer } from "../license";
-import { SmPayStatus } from "../sm-pay";
+import type { TAdvertiserSync, TCustomer } from "../license";
+import type { SmPayStatus } from "../smpay";
+import type { RequestWithPagination, ResponseWithPagination } from "./common";
 
 // 마케터 API 라이선스 등록 + 수정 (SAG008) request type
 export type TRequestLicenseCreate = {
@@ -31,18 +32,12 @@ export type TRequestLicenseDelete = {
 };
 
 // 광고주 리스트 조회 (SAG012) response type
-export type TResponseCustomersList = {
+export type TResponseCustomersList = ResponseWithPagination & {
   content: TCustomer[];
-  page: number;
-  size: number;
-  totalCount: number;
 };
 
 // 광고주 리스트 조회 (SAG013) request type
-export type TRequestCustomersList = {
-  page: number;
-  size: number;
-  keyword: string;
+export type TRequestCustomersList = RequestWithPagination & {
   orderType: CustomerOrderType;
 };
 

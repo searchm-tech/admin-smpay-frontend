@@ -1,4 +1,4 @@
-import type { SmPayData, SmPayJudgementStatus } from "@/types/sm-pay";
+import type { SmPayData } from "@/types/smpay";
 
 export interface PaginationParams {
   current: number;

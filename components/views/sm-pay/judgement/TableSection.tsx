@@ -20,8 +20,8 @@ import type {
 import type {
   SmPayAdvertiserStautsOrderType,
   SmPayAdvertiserStatus,
-  SmPayAuditDto,
 } from "@/types/smpay";
+import type { SmPayAuditDto } from "@/types/dto/smpay";
 
 type PropsTableSection = {
   tableParams: TableParams;

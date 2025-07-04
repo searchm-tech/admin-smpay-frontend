@@ -7,24 +7,19 @@ import type {
   TAdvertiserStatus,
   TAdvertiserSyncCompleteSync,
 } from "@/types/adveriser";
+import type { RequestWithPagination, ResponseWithPagination } from "./common";
 
 // 광고주 리스트 페이지네이션 조회 request type
-export type RequestAdvertiserList = {
-  page: number;
-  size: number;
-  keyword: string;
+export type RequestAdvertiserList = RequestWithPagination & {
   orderType: AdvertiserOrderType;
   agentId?: number;
   userId?: number;
 };
 
 // 광고주 리스트 페이지네이션 조회 response type
-export type ResponseAdvertiserList = {
+export interface ResponseAdvertiserList extends ResponseWithPagination {
   content: TAdvertiser[];
-  page: number;
-  size: number;
-  totalCount: number;
-};
+}
 
 export type RequestAdvertiserSyncStatus = {
   agentId: number;
@@ -60,18 +55,12 @@ export type ResponseAdvertiserSyncCompleteList = {
   sync: TAdvertiserSyncCompleteSync;
 };
 
-export type RequestAdvertiserBizMoneyList = {
-  page: number;
-  size: number;
-  keyword: string;
+export type RequestAdvertiserBizMoneyList = RequestWithPagination & {
   orderType: TAdvertiserBizMoneyOrderType;
   agentId?: number;
   userId?: number;
 };
 
-export type ResponseAdvertiserBizMoneyList = {
+export interface ResponseAdvertiserBizMoneyList extends ResponseWithPagination {
   content: TAdvertiserBizMoney[];
-  page: number;
-  size: number;
-  totalCount: number;
-};
+}

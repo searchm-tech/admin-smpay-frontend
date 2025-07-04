@@ -19,7 +19,7 @@ import { ColumnTooltip } from "@/constants/table";
 import { advertiser, optionAgency } from "./constants";
 
 import type { TableParams } from "@/types/table";
-import type { ActionButton, SmPayData, SmPayStatus } from "@/types/sm-pay";
+import type { ActionButton, SmPayData, SmPayStatus } from "@/types/smpay";
 import type { TableProps } from "antd";
 import type { FilterValue } from "antd/es/table/interface";
 

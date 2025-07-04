@@ -41,6 +41,7 @@ import {
   DailyStatDto,
   SmPayAdvertiserStatusDto,
   SMPayFormHistory,
+  OverviewAccountBalanceDto,
 } from "@/types/dto/smpay";
 
 import type {
@@ -48,7 +49,6 @@ import type {
   SmPayReviewerMemo,
   SmPayAdvertiserStautsOrderType,
   SmPayApprovalMemo,
-  OverviewAccountBalanceDto,
 } from "@/types/smpay";
 
 import { applyNoAscOrder } from "@/utils/sort";
