@@ -47,7 +47,7 @@ export const dialogContent = {
   "success-sync": (
     <div className="text-center">
       <p>등록되었습니다.</p>
-      <p>광고주 등록 후 최대 30분 이내에 광고 데이터 동기화가 완료됩니다.</p>
+      <p>광고주 등록 후 최대 1시간 이내에 광고 데이터 동기화가 완료됩니다.</p>
     </div>
   ),
 };

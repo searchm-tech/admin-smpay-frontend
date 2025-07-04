@@ -172,6 +172,38 @@ export const CreateLicTipDialog = ({ onClose }: CreateLicTipDialogProps) => {
   );
 };
 
+export const NaverLinkDialog = ({ onClose }: { onClose: () => void }) => {
+  return (
+    <Modal open title="등록 TIP!" onClose={onClose} footerDisabled>
+      <div className="w-[600px] h-[400px]">
+        <div>
+          <p className="mb-1">
+            CUSTOMER ID는
+            <span className="ml-2 font-bold text-blue-600 border-b border-blue-600">
+              네이버 검색광고 홈페이지 {">"} 내 정보 {">"} 기본정보 {">"}{" "}
+              권한설정
+            </span>
+            에서 확인하실 수 있습니다.
+          </p>
+        </div>
+
+        <div className="flex justify-center">
+          <Image
+            style={{
+              border: "1px solid black",
+            }}
+            className="mt-4"
+            src="/images/naver-service/guide.png"
+            alt="guide"
+            width={600}
+            height={320}
+          />
+        </div>
+      </div>
+    </Modal>
+  );
+};
+
 export type SyncFail = {
   date: string;
   reason: string;

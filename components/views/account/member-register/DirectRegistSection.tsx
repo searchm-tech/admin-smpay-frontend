@@ -168,9 +168,18 @@ const DirectRegistSection = ({ user }: TViewProps) => {
   };
 
   const handleSubmit = () => {
-    // 공통 필수 항목 체크
-    if (!emailId || !name || !phone || !password || !passwordConfirm) {
-      setDialog("err");
+    if (!emailId) {
+      setDialog("check-email-empty");
+      return;
+    }
+
+    if (!name) {
+      setDialog("name-empty");
+      return;
+    }
+
+    if (!password || !passwordConfirm) {
+      setDialog("password-empty");
       return;
     }
 
@@ -192,14 +201,24 @@ const DirectRegistSection = ({ user }: TViewProps) => {
       return;
     }
 
-    if (phone.length !== 11) {
+    if (phone && phone.length !== 11) {
       setDialog("phone-regex");
       return;
     }
 
     if (!isAdmin) {
-      if (!memberType || !departmentNode || !agencyInfo) {
-        setDialog("err");
+      if (!memberType) {
+        setDialog("member-type");
+        return;
+      }
+
+      if (!departmentNode) {
+        setDialog("department-select");
+        return;
+      }
+
+      if (!agencyInfo) {
+        setDialog("agency-select");
         return;
       }
 
@@ -432,7 +451,7 @@ const DirectRegistSection = ({ user }: TViewProps) => {
             preventSpaces
           />
         </DescriptionItem>
-        <DescriptionItem label="연락처 *">
+        <DescriptionItem label="연락처">
           <PhoneInput
             value={phone}
             onChange={(e) => setPhone(e.target.value)}

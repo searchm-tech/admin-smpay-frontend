@@ -46,6 +46,7 @@ import type {
   RequestGroupMasterInvite,
   RequestSignupEmail,
 } from "@/types/api/user";
+import { CircleAlert } from "lucide-react";
 
 const MailSendSection = ({ user }: TViewProps) => {
   const router = useRouter();
@@ -154,8 +155,13 @@ const MailSendSection = ({ user }: TViewProps) => {
   };
 
   const handleSubmit = () => {
-    if (!emailId || !name) {
-      setDialog("err");
+    if (!emailId) {
+      setDialog("check-email-empty");
+      return;
+    }
+
+    if (!name) {
+      setDialog("name-empty");
       return;
     }
 
@@ -172,8 +178,13 @@ const MailSendSection = ({ user }: TViewProps) => {
        * - 회원 초대 메일 발송
        */
 
-      if (!departmentNode || !memberType) {
-        setDialog("err");
+      if (!departmentNode) {
+        setDialog("department");
+        return;
+      }
+
+      if (!memberType) {
+        setDialog("member-type");
         return;
       }
 
@@ -216,7 +227,6 @@ const MailSendSection = ({ user }: TViewProps) => {
       setSelectedAgency(findAgency.agent);
     }
   };
-  console.log(agencyAllDto);
 
   return (
     <section className="py-4">

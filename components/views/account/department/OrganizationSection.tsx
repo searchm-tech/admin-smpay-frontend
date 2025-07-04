@@ -86,6 +86,7 @@ const OrganizationSection: React.FC = () => {
   const [errorDuplicateFolder, setErrorDuplicateFolder] = useState(false);
   const [errorMaxDepth, setErrorMaxDepth] = useState(false);
   const [errorNoData, setErrorNoData] = useState(false);
+  const [errorLength, setErrorLength] = useState(false);
   const isAdmin = getIsAdmin(session?.user.type);
 
   const [successSave, setSuccessSave] = useState(false);
@@ -244,6 +245,18 @@ const OrganizationSection: React.FC = () => {
 
         const isDuplicate = otherFolderNames.includes(newName);
 
+        if (!newName) {
+          setErrorNewFolder(true);
+          isSuccess = false;
+          return prevData;
+        }
+
+        if (newName.length > 20) {
+          setErrorLength(true);
+          isSuccess = false;
+          return prevData;
+        }
+
         if (isDuplicate) {
           setErrorDuplicateFolder(true);
           isSuccess = false;
@@ -327,44 +340,39 @@ const OrganizationSection: React.FC = () => {
     <Fragment>
       {loadingDepartments && <LoadingUI />}
       {errorNewFolder && (
-        <ConfirmDialog
-          open
-          content={<div>부서 이름을 입력해주세요.</div>}
+        <Dialog
+          content="부서 이름을 입력해주세요"
           onConfirm={() => setErrorNewFolder(false)}
         />
       )}
+      {errorLength && (
+        <Dialog
+          content="부서 이름은 최대 20자까지 입력할 수 있습니다."
+          onConfirm={() => setErrorLength(false)}
+        />
+      )}
       {errorDuplicateFolder && (
-        <ConfirmDialog
-          open
-          content={<div>동일한 이름의 폴더가 이미 존재합니다.</div>}
+        <Dialog
+          content="이미 존재하는 부서명입니다. 다른 부서명을 입력해주세요"
           onConfirm={() => setErrorDuplicateFolder(false)}
         />
       )}
       {errorMaxDepth && (
-        <ConfirmDialog
-          open
-          cancelDisabled
-          content={<div>최대 6 depth까지만 폴더를 생성할 수 있습니다.</div>}
+        <Dialog
+          content="최대 6 depth까지만 폴더를 생성할 수 있습니다."
           onConfirm={() => setErrorMaxDepth(false)}
         />
       )}
 
       {errorNoData && (
-        <ConfirmDialog
-          open
-          cancelDisabled
+        <Dialog
           onConfirm={handleInitAddTopFolder}
-          content={
-            <div>
-              현재 부서 정보가 없습니다. 최상위 부서를 먼저 생성하겠습니다.
-            </div>
-          }
+          content="현재 부서 정보가 없습니다. 최상위 부서를 먼저 생성하겠습니다."
         />
       )}
       {successSave && (
-        <ConfirmDialog
-          open
-          content={<div>부서 정보가 저장되었습니다.</div>}
+        <Dialog
+          content="부서 정보가 저장되었습니다."
           onConfirm={() => {
             setSuccessSave(false);
             setErrorNoData(false);
@@ -408,3 +416,19 @@ const OrganizationSection: React.FC = () => {
 };
 
 export default OrganizationSection;
+
+type DialogProps = {
+  content: string;
+  onConfirm: () => void;
+};
+
+const Dialog = ({ content, onConfirm }: DialogProps) => {
+  return (
+    <ConfirmDialog
+      open
+      content={content}
+      onConfirm={onConfirm}
+      cancelDisabled
+    />
+  );
+};

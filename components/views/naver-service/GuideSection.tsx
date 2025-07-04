@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 
-import { CreateLicTipDialog } from "./dialog";
+import { CreateLicTipDialog, NaverLinkDialog } from "./dialog";
 
 export const CreateGuideSection = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -105,12 +105,10 @@ export const CreateGuideSection = () => {
 export const AdvertiserGuideSection = () => {
   const [isOpen, setIsOpen] = useState(false);
 
-  {
-    isOpen && <CreateLicTipDialog onClose={() => setIsOpen(false)} />;
-  }
-
   return (
     <div className="mx-auto px-4 py-8 mb-8">
+      {isOpen && <NaverLinkDialog onClose={() => setIsOpen(false)} />}
+
       <h1 className="text-lg font-semibold mb-8 text-center">등록 TIP!</h1>
 
       <div className="flex items-center justify-center gap-4 md:gap-8 lg:gap-16">
@@ -133,9 +131,12 @@ export const AdvertiserGuideSection = () => {
             <p className="text-xs md:text-sm text-gray-600 max-w-[280px] md:max-w-[320px] lg:max-w-[360px]">
               CUSTOMER ID는 수치로 이루어진 고유 ID로
               <br />
-              <span className="text-blue-600">
+              <span
+                className="text-blue-600 cursor-pointer"
+                onClick={() => setIsOpen(true)}
+              >
                 네이버 검색광고 홈페이지 {">"} 내 정보 {">"} 기본정보 {">"}{" "}
-                정보조회
+                권한설정
               </span>
               에서 확인하실 수 있습니다.
             </p>
@@ -161,7 +162,7 @@ export const AdvertiserGuideSection = () => {
               광고주 광고계정 등기화
             </h3>
             <p className="text-xs md:text-sm text-gray-600 max-w-[280px] md:max-w-[320px] lg:max-w-[360px]">
-              광고주 등록 후 30분 이내에 광고주 등기화가 완료됩니다.
+              광고주 등록 후 최대 1시간 이내에 광고주 등기화가 완료됩니다.
             </p>
           </div>
         </div>
