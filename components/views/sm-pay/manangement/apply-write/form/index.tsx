@@ -8,11 +8,11 @@ import LoadingUI from "@/components/common/Loading";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 
 import AdvertiserInfoSection from "@/components/views/sm-pay/components/AdvertiserInfoSection";
-import RuleSection from "@/components/views/sm-pay/components/RuleSection";
+import { RuleSectionWrite } from "@/components/views/sm-pay/components/RuleSection";
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
 import AdvertiserSimulationModal from "@/components/views/sm-pay/components/AdvertiserSimulationModal";
 import StatIndicatorSection from "@/components/views/sm-pay/components/StatIndicatorSection";
-import ScheduleSection from "@/components/views/sm-pay/components/ScheduleSection";
+import { ScheduleSectionWrite } from "@/components/views/sm-pay/components/ScheduleSection";
 
 import {
   WRITE_MODAL_CONTENT,
@@ -134,7 +134,7 @@ const SMPayMasterApplyWriteForm = ({ id }: Props) => {
 
   return (
     <section className="mt-4">
-      {loadingSend && <LoadingUI title="... 동의 요청 중" />}
+      {loadingSend && <LoadingUI title="동의 요청 중..." />}
 
       {errorMessage && (
         <ConfirmDialog
@@ -169,8 +169,7 @@ const SMPayMasterApplyWriteForm = ({ id }: Props) => {
 
       <StatIndicatorSection advertiserId={id} statIndicator={statIndicator} />
 
-      <RuleSection
-        type="write"
+      <RuleSectionWrite
         recommendRoas={statIndicator?.recommendRoas}
         upChargeRule={upChargeRule}
         downChargeRule={downChargeRule}
@@ -178,8 +177,7 @@ const SMPayMasterApplyWriteForm = ({ id }: Props) => {
         handleDownChargeRuleChange={setDownChargeRule}
       />
 
-      <ScheduleSection
-        type="write"
+      <ScheduleSectionWrite
         prePaymentSchedule={prePaymentSchedule}
         handleScheduleChange={handleScheduleChange}
       />

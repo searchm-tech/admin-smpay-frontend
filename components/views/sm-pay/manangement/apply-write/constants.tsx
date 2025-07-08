@@ -5,8 +5,10 @@ import { TableParams } from "@/types/table";
 export const formSchema = z.object({
   name: z.string().min(1, "사업자명을 입력해주세요"),
   representativeName: z.string().min(1, "대표자명을 입력해주세요"),
-  representativeNumber: z.string().min(1, "사업자 등록 번호를 입력해주세요"),
-  // .regex(BUSINESS_NUMBER_REGEX, "올바른 사업자 등록 번호 형식이 아닙니다"),
+  representativeNumber: z
+    .string()
+    .min(1, "사업자 등록 번호를 입력해주세요")
+    .regex(BUSINESS_NUMBER_REGEX, "올바른 사업자 등록 번호 형식이 아닙니다"),
   phoneNumber: z.string().min(1, "휴대폰 번호를 입력해주세요"),
   // .regex(PHONE_REGEX, "올바른 휴대폰 번호 형식이 아닙니다"),
   email: z

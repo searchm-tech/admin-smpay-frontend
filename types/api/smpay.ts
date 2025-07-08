@@ -1,16 +1,25 @@
 import {
   ChargeRule,
-  OverviewApplyAccountDto,
   PrePaymentSchedule,
-  SmPayAdminAuditDto,
-  SmPayAdvertiserApplyDto,
   SmPayAdvertiserStatus,
   SmPayAdvertiserStautsOrderType,
-  SmPayAuditDto,
 } from "@/types/smpay";
 
-import type { RequestAgentUser, ResponseWithPagination } from "./common";
-import type { ChargeRuleDto, SmPayAdvertiserStatusDto } from "../dto/smpay";
+import type {
+  RequestAgentUser,
+  RequestWithPagination,
+  ResponseWithPagination,
+  WithAdvertiserId,
+} from "./common";
+
+import type {
+  ChargeRuleDto,
+  SmPayAdvertiserStatusDto,
+  OverviewApplyAccountDto,
+  SmPayAdminAuditDto,
+  SmPayAuditDto,
+  SmPayAdvertiserApplyDto,
+} from "../dto/smpay";
 
 // 광고주 상태 갯수 조회(SAG020) response type
 export interface ResponseSmPayStatusCount {
@@ -50,10 +59,7 @@ export type ResponseSmPayAdvertiserStatus = ResponseWithPagination & {
 };
 
 // 광고주 상태 리스트 페이지네이션 조회(SAG019) query params type
-export type SmPayAdvertiserApplyQuery = {
-  page: number;
-  size: number;
-  keyword: string;
+export type SmPayAdvertiserApplyQuery = RequestWithPagination & {
   orderType: SmPayAdvertiserStatus;
 };
 
@@ -64,24 +70,9 @@ export type RequestSmPayAdvertiserApply = {
 };
 
 // 광고주 smPay 신청 관리 리스트 조회(SAG022) response type
-export type ResponseSmPayAdvertiserApply = {
+export interface ResponseSmPayAdvertiserApply extends ResponseWithPagination {
   content: SmPayAdvertiserApplyDto[];
-  page: number;
-  size: number;
-  totalCount: number;
-};
-
-// AgentUser 타입에 advertiserId 추가
-export type WithAdvertiserId = {
-  user: RequestAgentUser;
-  advertiserId: number;
-};
-
-export type UserAgentAdvertiserId = {
-  agentId: number;
-  userId: number;
-  advertiserId: number;
-};
+}
 
 export interface RequestFormId extends WithAdvertiserId {
   formId: number | string;
@@ -150,13 +141,6 @@ export interface RequestSmPayWrite extends WithAdvertiserId {
   params: SmPayWriteParams;
 }
 
-// SM-Pay 심사 > 요청 목록 리스트
-export type ResponseSmPayAudit = ResponseWithPagination & {
-  content: (SmPayAuditDto & {
-    no: number;
-  })[];
-};
-
 export interface RequestSmPayRead extends WithAdvertiserId {
   isApprovalRead: boolean;
 }
@@ -167,9 +151,9 @@ export interface RequestSmPayAdminRead extends WithAdvertiserId {
 
 // 광고주 심상 승인 /거절 (최상위 그룹장 전용)(SAG036) params type
 export type ParamsSmPayApproval = {
-  decisionType: "APPROVE" | "REJECT";
-  statIndicator: StatIndicatorParams;
+  decisionType: "APPROVE" | "REJECT" | "";
   chargeRule: ChargeRule[];
+  statIndicator: StatIndicatorParams;
   prePaymentSchedule: PrePaymentSchedule;
   reviewerMemo: string;
   approvalMemo: string;
@@ -231,14 +215,14 @@ export type ResponseOverviewForm = {
   advertiserDailySalesAmt: number;
   advertiserRecommendRoasPercent: number;
   advertiserStandardRoasPercent: number;
-  advertiserRejectDescription: string | null;
+  advertiserRejectDescription: string;
   initialAmount: number;
   maxChargeLimit: number;
   minChargeLimit: number;
   reviewerMemo: string;
-  approvalMemo: string | null;
+  approvalMemo: string;
   registerDt: string;
-  updateDt: string | null;
+  updateDt: string;
 };
 
 /**
@@ -270,8 +254,8 @@ export type ResponseSMPayDetail = {
   minChargeLimit: number;
   reviewerMemo: string;
   approvalMemo: string;
-  registerDt: string | null;
-  updateDt: string | null;
+  registerDt: string;
+  updateDt: string;
 };
 
 // 광고주 일별 통계

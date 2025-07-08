@@ -1,7 +1,6 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-// TODO : accessToken, refreshToken 토큰 객체형태라서 추후 수정 필요
 const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
   debug: true, // ✅ 추가
@@ -24,8 +23,6 @@ const handler = NextAuth({
           type: c.type,
           name: c.name,
           phoneNumber: c.phoneNumber,
-          accessToken: c.accessToken,
-          refreshToken: c.refreshToken,
           uniqueCode: c.uniqueCode,
         };
       },
@@ -42,8 +39,6 @@ const handler = NextAuth({
         token.type = user.type;
         token.name = user.name;
         token.phoneNumber = user.phoneNumber;
-        token.accessToken = user.accessToken;
-        token.refreshToken = user.refreshToken;
         token.uniqueCode = user.uniqueCode;
       }
 
@@ -69,8 +64,6 @@ const handler = NextAuth({
         phoneNumber: token.phoneNumber,
         uniqueCode: token.uniqueCode,
       };
-      session.accessToken = token.accessToken;
-      session.refreshToken = token.refreshToken;
       return session;
     },
   },

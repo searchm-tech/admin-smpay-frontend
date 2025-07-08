@@ -12,7 +12,7 @@ import { useSmPayAdminOverviewAccountBalance } from "@/hooks/queries/sm-pay";
 
 import { TOOLTIP_CONTENT } from "@/constants/hover";
 
-import type { OverviewAccountBalanceDto } from "@/types/smpay";
+import type { OverviewAccountBalanceDto } from "@/types/dto/smpay";
 
 type Props = {
   advertiserId: number;

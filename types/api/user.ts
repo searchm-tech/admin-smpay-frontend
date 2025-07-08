@@ -3,6 +3,7 @@
 import type { TAgency } from "../agency";
 import type { AccountDto } from "../dto/user";
 import type { TAuthType, TResetPwdType, TSMPayUser, UserStatus } from "../user";
+import type { ResponseWithPagination, RequestWithPagination } from "./common";
 
 // agents/users/mail-verifications request type
 export type RequestMailVerify = {
@@ -105,12 +106,9 @@ export type RequestSignupEmail = {
 };
 
 // 대행사 회원 페이지네이션 조회 (AAG006) response type
-export type ResponseAgencyUsers = {
-  page: number;
-  size: number;
-  totalCount: number;
+export interface ResponseAgencyUsers extends ResponseWithPagination {
   content: AgencyUserDto[];
-};
+}
 
 // TODO : 실제 모델이랑 비교 필요
 export type AgencyUserDto = {
@@ -126,34 +124,22 @@ export type AgencyUserDto = {
 };
 
 // 확장된 응답 타입 (no 속성이 포함된 content)
-export type ResponseAgencyUsersWithNo = {
-  page: number;
-  size: number;
-  totalCount: number;
+export interface ResponseAgencyUsersWithNo extends ResponseWithPagination {
   content: (AgencyUserDto & { id: string })[];
-};
+}
 
 // 그룹장 회원 목록 조회 API (AAG007) response type
-export type ResponseGroupUser = {
-  page: number;
-  size: number;
-  totalCount: number;
+export interface ResponseGroupUser extends ResponseWithPagination {
   content: AccountDto[];
-};
+}
 
 // 대행사 회원 페이지네이션 조회 (AAG006) params type
-export type RequestAgencyUsers = {
-  page: number;
-  size: number;
-  keyword: string;
+export type RequestAgencyUsers = RequestWithPagination & {
   orderType: AgencyUsersOrder;
 };
 
 // 그룹장 회원 목록 조회 API params type
-export type GroupUserDtoParams = {
-  page: number;
-  size: number;
-  keyword: string;
+export type RequestGroupUser = RequestWithPagination & {
   orderType: AgencyUsersOrder;
 };
 

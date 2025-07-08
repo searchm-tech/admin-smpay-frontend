@@ -30,7 +30,7 @@ import type {
   RequestMemberDirect,
   RequestSignupEmail,
   RequestAgencyUsers,
-  GroupUserDtoParams,
+  RequestGroupUser,
   ResponseAgencyUsersWithNo,
   RequestAgencyUserStatus,
   RequestUserPwd,
@@ -193,7 +193,7 @@ export const useQueryAdminAgencyUsersList = (
 
 // 그룹장 회원 목록 조회 query
 export const useQueryGroupUserList = (
-  params: GroupUserDtoParams & { agentId: number; userId: number },
+  params: RequestGroupUser & { agentId: number; userId: number },
   options?: UseQueryOptions<ResponseGroupUser, Error>
 ) => {
   return useQuery({

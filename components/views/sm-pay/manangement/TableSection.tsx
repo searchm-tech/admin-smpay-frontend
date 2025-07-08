@@ -17,7 +17,7 @@ import { ColumnTooltip } from "@/constants/table";
 
 import type { TableProps } from "antd";
 import type { FilterValue } from "antd/es/table/interface";
-import type { ActionButton } from "@/types/sm-pay";
+import type { ActionButton } from "@/types/smpay";
 import type { TableParams } from "@/types/table";
 import type {
   SmPayAdvertiserStatus,
@@ -56,10 +56,8 @@ const TableSection = ({
   >(null);
   const [stopModalId, setStopModalId] = useState<number | null>(null);
 
-  const handleMoveDetailPage = (formId: number, advertiserId: number) => {
-    router.push(
-      `/sm-pay/management/apply-detail/${advertiserId}?formId=${formId}`
-    );
+  const handleMoveDetailPage = (advertiserId: number) => {
+    router.push(`/sm-pay/management/apply-detail/${advertiserId}`);
   };
 
   const handleTableChange: TableProps<SmPayAdvertiserStatusDto>["onChange"] = (
@@ -148,8 +146,8 @@ const TableSection = ({
               <Button
                 variant="greenOutline"
                 onClick={() => {
-                  const { advertiserFormId, advertiserId } = record;
-                  handleMoveDetailPage(advertiserFormId, advertiserId);
+                  const { advertiserId } = record;
+                  handleMoveDetailPage(advertiserId);
                 }}
               >
                 조회

@@ -12,8 +12,8 @@ import { ConfirmDialog } from "@/components/composite/modal-components";
 import LoadingUI from "@/components/common/Loading";
 import ContentHeader from "@/components/common/ContentHeader";
 
-import { dialogContent } from "./constants";
 import { useQueryLicense } from "@/hooks/queries/license";
+import { dialogContent } from "./constants";
 import { ApiError } from "@/lib/api";
 
 export type TLicenseInfo = {
@@ -25,12 +25,9 @@ export type TLicenseInfo = {
 };
 
 const NaverServiceView = () => {
-  const { data: session } = useSession();
+  const { data: session } = useSession(); // TODO : 광고주 동의 이후 수정 필요
 
-  const { isLoading, refetch } = useQueryLicense({
-    agentId: session?.user?.agentId ?? 0,
-    userId: session?.user?.userId ?? 0,
-  });
+  const { isLoading, refetch } = useQueryLicense();
 
   const [isAdvertiserStep, setIsAdvertiserStep] = useState(false);
   const [licenseInfo, setLicenseInfo] = useState<TLicenseInfo | null>(null);
@@ -54,6 +51,7 @@ const NaverServiceView = () => {
   const refetchLicense = () => {
     refetch().then((res) => {
       if (res.data) {
+        console.log(res.data);
         setLicenseInfo({
           userId: res.data.userId,
           agentId: session?.user.agentId ?? 0,

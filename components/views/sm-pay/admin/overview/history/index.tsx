@@ -8,8 +8,8 @@ import LoadingUI from "@/components/common/Loading";
 import OperationMemoSection from "@/components/views/sm-pay/components/OperationMemoSection";
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
 import StatIndicatorSection from "@/components/views/sm-pay/components/StatIndicatorSection";
-import ScheduleSection from "@/components/views/sm-pay/components/ScheduleSection";
-import RuleSection from "@/components/views/sm-pay/components/RuleSection";
+import { ScheduleSectionShow } from "@/components/views/sm-pay/components/ScheduleSection";
+import { RuleSectionShow } from "@/components/views/sm-pay/components/RuleSection";
 import AdvertiserInfoSection from "@/components/views/sm-pay/admin/overview/detail/AdvertiserInfoSection";
 import { RejectDialog } from "@/components/views/sm-pay/manangement/dialog";
 
@@ -102,12 +102,11 @@ const SmPayAdminOverviewHistoryDetailView = ({ id }: Props) => {
         statIndicator={statIndicator}
       />
 
-      <RuleSection
-        type="show"
+      <RuleSectionShow
         upChargeRule={upChargeRule}
         downChargeRule={downChargeRule}
       />
-      <ScheduleSection type="show" prePaymentSchedule={prePaymentSchedule} />
+      <ScheduleSectionShow prePaymentSchedule={prePaymentSchedule} />
       <JudgementMemoSection type="show" text={smpayInfo?.reviewerMemo || ""} />
       <OperationMemoSection type="show" text={smpayInfo?.approvalMemo || ""} />
 

@@ -9,13 +9,13 @@ import OperationMemoSection from "@/components/views/sm-pay/components/Operation
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
 import GuidSection from "@/components/views/sm-pay/components/GuideSection";
 import StatIndicatorSection from "@/components/views/sm-pay/components/StatIndicatorSection";
-import ScheduleSection from "@/components/views/sm-pay/components/ScheduleSection";
-import RuleSection from "@/components/views/sm-pay/components/RuleSection";
+import { ScheduleSectionShow } from "@/components/views/sm-pay/components/ScheduleSection";
+import { RuleSectionShow } from "@/components/views/sm-pay/components/RuleSection";
 import AdvertiserInfoSection from "@/components/views/sm-pay/components/AdvertiserInfoSection";
 
 import { RejectDialog } from "../../manangement/dialog";
 
-import { useSmPayDetail } from "@/hooks/queries/sm-pay";
+import { useSmPayFormDetail } from "@/hooks/queries/sm-pay";
 
 interface Props {
   id: string;
@@ -25,11 +25,11 @@ const SmPayApplyHistoryDetailView = ({ id }: Props) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const formId = searchParams.get("formId");
-  const orignFormId = searchParams.get("orignFormId");
+  // const orignFormId = searchParams.get("orignFormId"); TODO : 보류
 
   const [isReject, setIsReject] = useState(false);
 
-  const { data: smpayInfo, isPending: loading } = useSmPayDetail(
+  const { data: smpayInfo, isPending: loading } = useSmPayFormDetail(
     Number(id),
     Number(formId)
   );
@@ -87,12 +87,11 @@ const SmPayApplyHistoryDetailView = ({ id }: Props) => {
         statIndicator={statIndicator}
       />
 
-      <RuleSection
-        type="show"
+      <RuleSectionShow
         upChargeRule={upChargeRule}
         downChargeRule={downChargeRule}
       />
-      <ScheduleSection type="show" prePaymentSchedule={prePaymentSchedule} />
+      <ScheduleSectionShow prePaymentSchedule={prePaymentSchedule} />
       <JudgementMemoSection type="show" text={smpayInfo?.reviewerMemo || ""} />
       <OperationMemoSection type="show" text={smpayInfo?.approvalMemo || ""} />
 
@@ -101,8 +100,7 @@ const SmPayApplyHistoryDetailView = ({ id }: Props) => {
           variant="cancel"
           className="w-[150px]"
           onClick={() => {
-            const url = `/sm-pay/management/apply-detail/${id}/?formId=${orignFormId}`;
-            router.push(url);
+            router.back();
           }}
         >
           뒤로

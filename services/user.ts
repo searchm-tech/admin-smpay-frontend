@@ -9,7 +9,7 @@ import type {
   RequestGroupMasterInvite,
   RequestSignupEmail,
   RequestAgencyUsers,
-  GroupUserDtoParams,
+  RequestGroupUser,
   ResponseAgencyUsers,
   ResponseAgencyUsersWithNo,
   RequestAgencyUserStatus,
@@ -281,7 +281,7 @@ export const getAdminAgencyUsersListApi = async (
 
 // 그룹장 회원 목록 조회 API (AAG007)
 export const getGroupUserListApi = async (
-  params: GroupUserDtoParams & { agentId: number; userId: number }
+  params: RequestGroupUser & { agentId: number; userId: number }
 ): Promise<ResponseGroupUser> => {
   try {
     const { agentId, userId } = params;

@@ -1,4 +1,4 @@
-import { ActionButton } from "@/types/sm-pay";
+import { ActionButton } from "@/types/smpay";
 
 // sm-pay/apply-write
 

@@ -29,6 +29,11 @@ type Props = {
 const StatIndicatorSection = ({ advertiserId, statIndicator }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const operationPeriod = statIndicator?.operationPeriod || 0;
+  const dailyAverageRoas = statIndicator?.dailyAverageRoas || 0;
+  const monthlyConvAmt = statIndicator?.monthlyConvAmt || 0;
+  const dailySalesAmt = statIndicator?.dailySalesAmt || 0;
+
   return (
     <section>
       {isModalOpen && (
@@ -64,11 +69,7 @@ const StatIndicatorSection = ({ advertiserId, statIndicator }: Props) => {
         </DescriptionItem>
         <DescriptionItem
           styles={descriptionStyle}
-          label={
-            <div className="font-normal">
-              <p className="font-bold">광고 운영 기간</p>
-            </div>
-          }
+          label={<span className="font-bold">광고 운영 기간</span>}
         >
           <div className="flex items-center gap-2">
             <p>3개월 이상</p>
@@ -82,16 +83,14 @@ const StatIndicatorSection = ({ advertiserId, statIndicator }: Props) => {
           </div>
         </DescriptionItem>
         <DescriptionItem
-          // TODO :  적합 여부에 따라 색상 변경
-          styles={incongruityStyle}
+          styles={operationPeriod >= 3 ? conformityStyle : incongruityStyle}
           label={
             <span className="font-bold">
               {statIndicator?.operationPeriod || 0}개월
             </span>
           }
         >
-          {statIndicator?.operationPeriod &&
-          statIndicator?.operationPeriod >= 3 ? (
+          {operationPeriod >= 3 ? (
             <CircleCheckBig color="#34C759" />
           ) : (
             <X color="#FF3B30" />
@@ -105,16 +104,10 @@ const StatIndicatorSection = ({ advertiserId, statIndicator }: Props) => {
         </DescriptionItem>
 
         <DescriptionItem
-          // TODO :  적합 여부에 따라 색상 변경
-          styles={conformityStyle}
-          label={
-            <span className="font-bold">
-              {statIndicator?.dailyAverageRoas || 0}%
-            </span>
-          }
+          styles={dailyAverageRoas >= 400 ? conformityStyle : incongruityStyle}
+          label={<span className="font-bold">{dailyAverageRoas}%</span>}
         >
-          {statIndicator?.dailyAverageRoas &&
-          statIndicator?.dailyAverageRoas >= 400 ? (
+          {dailyAverageRoas >= 400 ? (
             <CircleCheckBig color="#34C759" />
           ) : (
             <X color="#FF3B30" />
@@ -129,15 +122,16 @@ const StatIndicatorSection = ({ advertiserId, statIndicator }: Props) => {
         </DescriptionItem>
 
         <DescriptionItem
-          styles={conformityStyle}
+          styles={
+            monthlyConvAmt >= 3000000 ? conformityStyle : incongruityStyle
+          }
           label={
             <span className="font-bold">
-              {Number(statIndicator?.monthlyConvAmt || 0).toLocaleString()}원
+              {Number(monthlyConvAmt || 0).toLocaleString()}원
             </span>
           }
         >
-          {statIndicator?.monthlyConvAmt &&
-          statIndicator?.monthlyConvAmt >= 3000000 ? (
+          {monthlyConvAmt >= 3000000 ? (
             <CircleCheckBig color="#34C759" />
           ) : (
             <X color="#FF3B30" />
@@ -151,15 +145,14 @@ const StatIndicatorSection = ({ advertiserId, statIndicator }: Props) => {
           10만원 이상
         </DescriptionItem>
         <DescriptionItem
-          styles={conformityStyle}
+          styles={dailySalesAmt >= 100000 ? conformityStyle : incongruityStyle}
           label={
             <span className="font-bold">
-              {Number(statIndicator?.dailySalesAmt || 0).toLocaleString()}원
+              {Number(dailySalesAmt).toLocaleString()}원
             </span>
           }
         >
-          {statIndicator?.dailySalesAmt &&
-          statIndicator?.dailySalesAmt >= 100000 ? (
+          {dailySalesAmt >= 100000 ? (
             <CircleCheckBig color="#34C759" />
           ) : (
             <X color="#FF3B30" />
@@ -199,6 +192,7 @@ const TableModal = ({ open, onClose, advertiserId }: TableModalProps) => {
     <Modal
       open={open}
       onConfirm={onClose}
+      onClose={onClose}
       cancelDisabled
       title="일별 성과 조회"
       width="95vw"

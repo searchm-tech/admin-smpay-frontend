@@ -1,8 +1,7 @@
-import {
-  useMutation,
-  UseMutationOptions,
-  useQuery,
-} from "@tanstack/react-query";
+import { useMutation, UseMutationOptions } from "@tanstack/react-query";
+import { useAuthMutation } from "../useAuthMutation";
+import { useAuthQuery } from "../useAuthQuery";
+
 import {
   deleteAgentsUserLicense,
   getAdvertiserSyncJobList,
@@ -12,21 +11,23 @@ import {
 } from "@/services/license";
 
 import type {
-  TRequestLicenseCreate,
   TRequestLicenseDelete,
   TResponseAdvertiserSyncJob,
-  TRequestAdvertiserSyncJobList,
   TRequestUpdateAdvertiserSyncStatus,
   TResponseLicense,
-  TRequestLicense,
+  TRequestLicenseCreateParams,
 } from "@/types/api/license";
+
+import { RequestAgentUser } from "@/types/api/common";
+import { AdvertiserJobType } from "@/types/license";
 
 // 마케터 API 라이선스 등록 + 수정 (SAG008) mutate
 export const useMuateLicense = (
-  options?: UseMutationOptions<null, Error, TRequestLicenseCreate>
+  options?: UseMutationOptions<null, Error, TRequestLicenseCreateParams>
 ) => {
-  return useMutation<null, Error, TRequestLicenseCreate>({
-    mutationFn: (data: TRequestLicenseCreate) => postAgentsUserLicense(data),
+  return useAuthMutation<null, Error, TRequestLicenseCreateParams>({
+    mutationFn: (variables, user) =>
+      postAgentsUserLicense({ params: variables, user }),
     ...options,
   });
 };
@@ -42,13 +43,11 @@ export const useMuateDeleteLicense = (
 };
 
 // 광고주 데이터 동기화 작업별 리스트 조회 (SAG016) query
-export const useQueryAdvertiserSyncJobList = (
-  params: TRequestAdvertiserSyncJobList
-) => {
-  return useQuery<TResponseAdvertiserSyncJob[]>({
-    queryKey: ["advertiserSyncJobList", params.agentId, params.userId],
-    queryFn: () => getAdvertiserSyncJobList(params),
-    enabled: !!params.agentId && !!params.userId,
+export const useQueryAdvertiserSyncJobList = (type: AdvertiserJobType) => {
+  return useAuthQuery<TResponseAdvertiserSyncJob[]>({
+    queryKey: ["advertiserSyncJobList"],
+    queryFn: (user: RequestAgentUser) =>
+      getAdvertiserSyncJobList({ user, type }),
     initialData: [],
   });
 };
@@ -65,11 +64,9 @@ export const useMuateAdvertiserSyncStatus = (
 };
 
 // 마케터 API 라이선스 조회 (SAG009) query
-export const useQueryLicense = (params: TRequestLicense) => {
-  return useQuery<TResponseLicense>({
-    queryKey: ["license", params.agentId, params.userId],
-    queryFn: () =>
-      getAgentsUserLicense(params.agentId.toString(), params.userId.toString()),
-    enabled: params.agentId > 0 && params.userId > 0,
+export const useQueryLicense = () => {
+  return useAuthQuery<TResponseLicense>({
+    queryKey: ["license"],
+    queryFn: (user: RequestAgentUser) => getAgentsUserLicense(user),
   });
 };

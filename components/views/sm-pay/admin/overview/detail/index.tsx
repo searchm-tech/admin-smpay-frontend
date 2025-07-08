@@ -9,8 +9,8 @@ import { Button } from "@/components/ui/button";
 import OperationMemoSection from "@/components/views/sm-pay/components/OperationMemoSection";
 import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
 import OperationAccountStatusSection from "@/components/views/sm-pay/components/OperationAccountStatusSection";
-import RuleSection2 from "@/components/views/sm-pay/components/RuleSection";
-import ScheduleSection2 from "@/components/views/sm-pay/components/ScheduleSection";
+import { RuleSectionShow } from "@/components/views/sm-pay/components/RuleSection";
+import { ScheduleSectionShow } from "@/components/views/sm-pay/components/ScheduleSection";
 import AdvertiserInfoSection from "./AdvertiserInfoSection";
 
 import RejectSendModal from "./RejectSendModal";
@@ -24,7 +24,6 @@ import {
   useSmPayAdminOverviewReviewerMemo,
   useSmPayAdminOverviewApprovalMemo,
 } from "@/hooks/queries/sm-pay";
-import type { ChargeRule } from "@/types/smpay";
 
 import type { ParamsSmPayAdminOverviewOperatorDecision } from "@/types/api/smpay";
 
@@ -35,7 +34,7 @@ type Props = {
 const SmPayAdminOverviewDetailView = ({ id }: Props) => {
   const agentId = useSearchParams().get("agentId");
   const userId = useSearchParams().get("userId");
-  const isOperatorRead = useSearchParams().get("isOperatorRead") === "true";
+  const read = useSearchParams().get("read");
 
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
   const [completeModalOpen, setCompleteModalOpen] = useState(false);
@@ -62,10 +61,10 @@ const SmPayAdminOverviewDetailView = ({ id }: Props) => {
     useSmPayAdminOverviewApprovalMemo(Number(id));
 
   useEffect(() => {
-    if (id && !isOperatorRead) {
+    if (id && read === "unread") {
       patchRead({ advertiserId: Number(id), isOperatorRead: true });
     }
-  }, [isOperatorRead]);
+  }, [id, read]);
 
   const prePaymentSchedule = {
     initialAmount: prePaymentScheduleData?.initialAmount || 0,
@@ -129,7 +128,6 @@ const SmPayAdminOverviewDetailView = ({ id }: Props) => {
             userId: Number(smpayInfo?.userId),
           }}
           onClose={() => setRejectModalOpen(false)}
-          onConfirm={() => setRejectModalOpen(false)}
         />
       )}
       {completeModalOpen && (
@@ -147,13 +145,12 @@ const SmPayAdminOverviewDetailView = ({ id }: Props) => {
 
       <AdvertiserInfoSection advertiserData={smpayInfo} />
 
-      <RuleSection2
-        type="show"
+      <RuleSectionShow
         upChargeRule={upChargeRule}
         downChargeRule={downChargeRule}
       />
 
-      <ScheduleSection2 type="show" prePaymentSchedule={prePaymentSchedule} />
+      <ScheduleSectionShow prePaymentSchedule={prePaymentSchedule} />
       <OperationAccountStatusSection
         advertiserId={Number(id)}
         initialAmount={prePaymentSchedule.initialAmount}

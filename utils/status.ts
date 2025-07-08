@@ -1,4 +1,4 @@
-import { SmPayStatus } from "@/types/sm-pay";
+import { SmPayStatus } from "@/types/smpay";
 import { TAuthType, UserStatus } from "@/types/user";
 
 export const smPayStatusMap: Record<SmPayStatus, string> = {

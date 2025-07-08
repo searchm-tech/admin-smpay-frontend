@@ -15,7 +15,6 @@ import type { ParamsSmPayAdminOverviewOperatorDecision } from "@/types/api/smpay
 type RejectSendModalProps = {
   open: boolean;
   onClose: () => void;
-  onConfirm: () => void;
   params: ParamsSmPayAdminOverviewOperatorDecision & {
     advertiserId: number;
     agentId: number;
@@ -23,18 +22,16 @@ type RejectSendModalProps = {
   };
 };
 
-const RejectSendModal = ({
-  open,
-  onClose,
-  onConfirm,
-  params,
-}: RejectSendModalProps) => {
+const RejectSendModal = ({ open, onClose, params }: RejectSendModalProps) => {
   const router = useRouter();
   const [rejectReason, setRejectReason] = useState("");
 
   const { mutate: postOperatorDecision, isPending: loadingOperatorDecision } =
     useSmPayAdminOverviewOperatorDecision({
-      onSuccess: () => router.push(`/sm-pay/admin/overview`),
+      onSuccess: () => {
+        onClose();
+        router.push(`/sm-pay/admin/overview`);
+      },
       onError: (error) => {
         console.error(error);
       },

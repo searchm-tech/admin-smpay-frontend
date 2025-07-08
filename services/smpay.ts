@@ -1,9 +1,6 @@
 // 광고주 smPay 신청 관리 리스트 조회(SAG022)
 
-import {
-  PropsRequestDecision,
-  WithAdvertiserIdAndAgentIdAndUserId,
-} from "@/hooks/queries/sm-pay";
+import { PropsRequestDecision } from "@/hooks/queries/sm-pay";
 import { ApiError, get, patch, post, put } from "@/lib/api";
 import {
   buildQueryParams,
@@ -11,7 +8,11 @@ import {
   transformTableResponse,
 } from "@/lib/utils";
 import type { RequestARSBankAccount } from "@/types/api/bank";
-import type { RequestAgentUser } from "@/types/api/common";
+import type {
+  RequestAgentUser,
+  UserAgentAdvertiserId,
+  WithAdvertiserId,
+} from "@/types/api/common";
 import {
   RequestSmPayAdvertiserApply,
   RequestSmPayAdvertiserDetailPut,
@@ -23,37 +24,33 @@ import {
   ResponseSmPayAdvertiserApply,
   ResponseSmPayAdvertiserStatIndicator,
   ResponseSmPayAdvertiserStatus,
-  ResponseSmPayAudit,
   ResponseSmPayStatusCount,
   ResponseSmPayAdminAudit,
   RequestSmPayAdminRead,
   ResponseOverviewForm,
   ResponseSMPayDetail,
   AdvertiserDetailDto,
-  WithAdvertiserId,
   PrePaymentScheduleDto,
-  UserAgentAdvertiserId,
   ResponseDailyStat,
   ResponseChargeRule,
 } from "@/types/api/smpay";
-import {
+import type {
   ChargeRuleDto,
   DailyStatDto,
   SmPayAdvertiserStatusDto,
   SMPayFormHistory,
+  OverviewAccountBalanceDto,
+  ApprovalMemoDto,
+  ReviewerMemoDto,
+  SmPayAuditListDto,
 } from "@/types/dto/smpay";
 
 import type {
   SmPayScreeningIndicator,
-  SmPayReviewerMemo,
   SmPayAdvertiserStautsOrderType,
-  SmPayApprovalMemo,
-  OverviewAccountBalanceDto,
 } from "@/types/smpay";
 
 import { applyNoAscOrder } from "@/utils/sort";
-
-//
 
 /**
  * 광고주 상태 갯수 조회(SAG020) API
@@ -276,7 +273,7 @@ export const postSmPay = async ({
  * 화면 > SM Pay 신청 상세
  */
 
-export const getSmPayDetail = async ({
+export const getSmPayFormDetail = async ({
   user,
   advertiserId,
   formId,
@@ -334,21 +331,27 @@ export const getSmPayApplyList = async ({
  * 광고주 심사 관리 리스트 조회(최상위 그룹장 전용)(SAG030)
  * - 화면 : [최상위 그룹장] > 심사 요청 목록
  */
-
 export const getSmPayAuditList = async ({
   user,
   queryParams,
-}: RequestSmPayAdvertiserStatus): Promise<ResponseSmPayAudit> => {
+}: RequestSmPayAdvertiserStatus): Promise<SmPayAuditListDto> => {
   const { agentId, userId } = user;
+  const apiOrderType = convertNoOrderType(
+    queryParams.orderType,
+    "ADVERTISER_REGISTER"
+  );
+
+  console.log("apiOrderType", apiOrderType);
+
   const paramsResult = buildQueryParams({
     page: queryParams.page,
     size: queryParams.size,
     keyword: queryParams.keyword,
-    orderType: queryParams.orderType,
+    orderType: apiOrderType,
   });
 
   try {
-    const response = await get<ResponseSmPayAudit>(
+    const response = await get<SmPayAuditListDto>(
       `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/audit/list?${paramsResult}`
     );
 
@@ -428,11 +431,11 @@ export const getSmPayAdvertiserScreeningIndicator = async ({
 export const getSmPayAdvertiserReviewerMemo = async ({
   user,
   advertiserId,
-}: WithAdvertiserId): Promise<SmPayReviewerMemo> => {
+}: WithAdvertiserId): Promise<ReviewerMemoDto> => {
   const { agentId, userId } = user;
 
   try {
-    const response = await get<SmPayReviewerMemo>(
+    const response = await get<ReviewerMemoDto>(
       `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/reviewer-memo`
     );
     return response;
@@ -444,13 +447,10 @@ export const getSmPayAdvertiserReviewerMemo = async ({
   }
 };
 
-// /service/api/v1/agents/1/users/1/advertisers/1/reviewer-decision
-
 /**
  * 광고주 심상 승인 /거절 (최상위 그룹장 전용)(SAG036)
  */
-
-type SmPayApprovalVariables = {
+type RequestApproval = {
   user: RequestAgentUser;
   advertiserId: number;
   params: ParamsSmPayApproval;
@@ -460,7 +460,7 @@ export const postSmPayApproval = async ({
   user,
   advertiserId,
   params,
-}: SmPayApprovalVariables): Promise<null> => {
+}: RequestApproval): Promise<null> => {
   const { agentId, userId } = user;
 
   try {
@@ -636,8 +636,8 @@ export const getSmPayAdminOverviewPrePaymentSchedule = async ({
  */
 export const patchSmPayAdminOverviewAlarm = async ({
   user,
-  advertiserId,
   isOperatorRead,
+  advertiserId,
 }: RequestSmPayAdminRead): Promise<null> => {
   const { agentId, userId } = user;
 
@@ -658,12 +658,11 @@ export const patchSmPayAdminOverviewAlarm = async ({
  * 광고주 detail 조회 (AAG020)
  * - 화면 : [시스템 관리자] SM Pay 관리 > 운영 검토 요청 상세
  */
-export const getSmPayAdminOverviewDetail = async ({
-  advertiserId,
-  agentId,
-  userId,
-}: WithAdvertiserIdAndAgentIdAndUserId): Promise<AdvertiserDetailDto> => {
+export const getSmPayAdminOverviewDetail = async (
+  params: UserAgentAdvertiserId
+): Promise<AdvertiserDetailDto> => {
   try {
+    const { agentId, userId, advertiserId } = params;
     const response = await get<AdvertiserDetailDto>(
       `/admin/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/details`
     );
@@ -681,12 +680,11 @@ export const getSmPayAdminOverviewDetail = async ({
  * - 화면 : [시스템 관리자] SM Pay 관리 > 운영 검토 요청 상세 > 신청 이력 리스트
  * - requestPath : agentId, userId, advertiserId (광고주)
  */
-export const getSmPayAdminOverviewApplyFormList = async ({
-  advertiserId,
-  agentId,
-  userId,
-}: UserAgentAdvertiserId): Promise<SMPayFormHistory[]> => {
+export const getSmPayAdminOverviewApplyFormList = async (
+  params: UserAgentAdvertiserId
+): Promise<SMPayFormHistory[]> => {
   try {
+    const { agentId, userId, advertiserId } = params;
     const response = await get<ResponseOverviewForm[]>(
       `/admin/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/apply-form-list`
     );
@@ -717,19 +715,16 @@ export const getSmPayAdminOverviewApplyFormList = async ({
  * - 화면 : [시스템 관리자] SM Pay 관리 > 운영 검토 요청 상세 > 신청 이력 상세
  */
 
-type RequestSmPayAdminOverviewApplyFormDetail = {
-  advertiserId: number;
+type ReqSmPayAdminOverviewApplyFormDetail = UserAgentAdvertiserId & {
   formId: number;
-  agentId: number;
-  userId: number;
 };
 
 export const getSmPayAdminOverviewApplyFormDetail = async ({
-  advertiserId,
   formId,
+  advertiserId,
   agentId,
   userId,
-}: RequestSmPayAdminOverviewApplyFormDetail): Promise<ResponseOverviewForm> => {
+}: ReqSmPayAdminOverviewApplyFormDetail): Promise<ResponseOverviewForm> => {
   try {
     const response = await get<ResponseOverviewForm>(
       `/admin/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/form/${formId}`
@@ -743,8 +738,6 @@ export const getSmPayAdminOverviewApplyFormDetail = async ({
   }
 };
 
-// /core/admin/api/v1/agents/1/users/1/advertisers/1/reviewer-memo
-
 /**
  * 광고주 심사자 참고용 메모 조회(AAG024)
  * - 화면 : [시스템 관리자] SM Pay 관리 > 운영 검토 요청 상세 > 심사자 참고용 메모 영역
@@ -753,11 +746,11 @@ export const getSmPayAdminOverviewApplyFormDetail = async ({
 export const getSmPayAdminOverviewReviewerMemo = async ({
   user,
   advertiserId,
-}: WithAdvertiserId): Promise<SmPayReviewerMemo> => {
+}: WithAdvertiserId): Promise<ReviewerMemoDto> => {
   const { agentId, userId } = user;
 
   try {
-    const response = await get<SmPayReviewerMemo>(
+    const response = await get<ReviewerMemoDto>(
       `/admin/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/reviewer-memo`
     );
     return response;
@@ -776,12 +769,36 @@ export const getSmPayAdminOverviewReviewerMemo = async ({
 export const getSmPayAdminOverviewApprovalMemo = async ({
   user,
   advertiserId,
-}: WithAdvertiserId): Promise<SmPayApprovalMemo> => {
+}: WithAdvertiserId): Promise<ApprovalMemoDto> => {
   const { agentId, userId } = user;
 
   try {
-    const response = await get<SmPayApprovalMemo>(
+    const response = await get<ApprovalMemoDto>(
       `/admin/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/approval-memo`
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+/**
+ * 광고주 최상위 그룹장 참고용 메모 조회(AAG025)
+ * - 화면 : SM Pay 관리 > 조회 > 참고용 메모 영역
+ */
+
+export const getSmPayDetailApprovalMemo = async ({
+  user,
+  advertiserId,
+}: WithAdvertiserId): Promise<ApprovalMemoDto> => {
+  const { agentId, userId } = user;
+
+  try {
+    const response = await get<ApprovalMemoDto>(
+      `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/approval-memo`
     );
     return response;
   } catch (error) {
@@ -803,10 +820,6 @@ export const postSmPayAdminOverviewOperatorDecision = async ({
   advertiserId,
   params,
 }: PropsRequestDecision): Promise<null> => {
-  console.log("agentId", agentId);
-  console.log("userId", userId);
-  console.log("advertiserId", advertiserId);
-  console.log("params", params);
   const {
     decisionType,
     chargeRule,

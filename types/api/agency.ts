@@ -1,18 +1,13 @@
 import type { TAgency, TAgencyData, TAgencyStatus } from "@/types/agency";
+import type { RequestWithPagination, ResponseWithPagination } from "./common";
 
 // 대행사 페이지네이션 리스트 조회 응답 타입
-export type ResponseAgencys = {
+export interface ResponseAgencys extends ResponseWithPagination {
   content: TAgencyData[];
-  page: number;
-  size: number;
-  totalCount: number;
-};
+}
 
 // 대행사 페이지네이션 리스트 조회 요청 타입
-export type RequestAgencys = {
-  page: number;
-  size: number;
-  keyword: string;
+export type RequestAgencys = RequestWithPagination & {
   orderType: TAgencyOrder;
 };
 

@@ -13,8 +13,8 @@ import AdvertiserSimulationModal from "@/components/views/sm-pay/components/Adve
 
 import AdvertiserInfoSection from "@/components/views/sm-pay/components/AdvertiserInfoSection";
 import StatIndicatorSection from "@/components/views/sm-pay/components/StatIndicatorSection";
-import RuleSection2 from "@/components/views/sm-pay/components/RuleSection";
-import ScheduleSection2 from "@/components/views/sm-pay/components/ScheduleSection";
+import { RuleSectionShow } from "@/components/views/sm-pay/components/RuleSection";
+import { ScheduleSectionShow } from "@/components/views/sm-pay/components/ScheduleSection";
 
 import ApproveModal from "./ApproveModal";
 import RejectSendModal from "./RejectSendModal";
@@ -23,16 +23,21 @@ import { RejectDialog } from "@/components/views/sm-pay/manangement/dialog";
 import {
   useSmPayRead,
   useSmPayScreeningIndicator,
-  useSmPayReviewerMemo,
+  useReviewerMemoDto,
   useSmPayAdvertiserChargeRule,
   useSmPayAdvertiserPrePaymentSchedule,
 } from "@/hooks/queries/sm-pay";
 
+import type { StatIndicatorParams } from "@/types/api/smpay";
 import type { ChargeRule, PrePaymentSchedule } from "@/types/smpay";
-import type {
-  ParamsSmPayApproval,
-  StatIndicatorParams,
-} from "@/types/api/smpay";
+
+export type JudgementModalProps = {
+  statIndicator: StatIndicatorParams;
+  chargeRule: ChargeRule[];
+  prePaymentSchedule: PrePaymentSchedule;
+  reviewerMemo: string;
+  approvalMemo: string;
+};
 
 type Props = {
   id: string;
@@ -48,28 +53,13 @@ const SmPayJudgementDetailView = ({ id }: Props) => {
   const [isReject, setIsReject] = useState(false);
   const [isSimulation, setIsSimulation] = useState(false);
 
-  const [statIndicator, setStatIndicator] = useState<StatIndicatorParams>({
-    operationPeriod: 0,
-    dailyAverageRoas: 0,
-    monthlyConvAmt: 0,
-    dailySalesAmt: 0,
-    recommendRoasPercent: 0,
-  });
-
   const [operationMemo, setOperationMemo] = useState("");
-
-  const [prePaymentSchedule, setPrePaymentSchedule] =
-    useState<PrePaymentSchedule>({
-      initialAmount: 0,
-      maxChargeLimit: 0,
-      minChargeLimit: 0,
-    });
 
   const { data: screeningIndicator, isPending: loadingScreeningIndicator } =
     useSmPayScreeningIndicator(Number(id));
 
   const { data: reviewerMemo, isPending: loadingReviewerMemo } =
-    useSmPayReviewerMemo(Number(id));
+    useReviewerMemoDto(Number(id));
 
   const { data: chargeRule, isPending: loadingChargeRule } =
     useSmPayAdvertiserChargeRule(Number(id));
@@ -84,33 +74,14 @@ const SmPayJudgementDetailView = ({ id }: Props) => {
     if (id && read === "unread") {
       patchRead({ advertiserId: Number(id), isApprovalRead: true });
     }
+  }, [id, read]);
 
-    if (screeningIndicator) {
-      setStatIndicator({
-        operationPeriod: screeningIndicator?.advertiserOperationPeriod || 0,
-        dailyAverageRoas: screeningIndicator?.advertiserDailyAverageRoas || 0,
-        monthlyConvAmt: screeningIndicator?.advertiserMonthlyConvAmt || 0,
-        dailySalesAmt: screeningIndicator?.advertiserDailySalesAmt || 0,
-        recommendRoasPercent:
-          screeningIndicator?.advertiserRecommendRoasPercent || 0,
-      });
-    }
-
-    if (prePaymentScheduleData) {
-      setPrePaymentSchedule({
-        initialAmount: prePaymentScheduleData.initialAmount,
-        maxChargeLimit: prePaymentScheduleData.maxChargeLimit,
-        minChargeLimit: prePaymentScheduleData.minChargeLimit,
-      });
-    }
-  }, [screeningIndicator, chargeRule, prePaymentScheduleData, id, read]);
-
-  const statIndicatorData = {
-    operationPeriod: statIndicator.operationPeriod,
-    dailyAverageRoas: statIndicator.dailyAverageRoas,
-    monthlyConvAmt: statIndicator.monthlyConvAmt,
-    dailySalesAmt: statIndicator.dailySalesAmt,
-    recommendRoas: statIndicator.recommendRoasPercent,
+  const statIndicator = {
+    operationPeriod: screeningIndicator?.advertiserOperationPeriod || 0,
+    dailyAverageRoas: screeningIndicator?.advertiserDailyAverageRoas || 0,
+    monthlyConvAmt: screeningIndicator?.advertiserMonthlyConvAmt || 0,
+    dailySalesAmt: screeningIndicator?.advertiserDailySalesAmt || 0,
+    recommendRoas: screeningIndicator?.advertiserRecommendRoasPercent || 0,
   };
 
   const upChargeRule = {
@@ -130,14 +101,26 @@ const SmPayJudgementDetailView = ({ id }: Props) => {
     changePercentOrValue: 0,
   };
 
+  const prePaymentSchedule = {
+    initialAmount: prePaymentScheduleData?.initialAmount || 0,
+    maxChargeLimit: prePaymentScheduleData?.maxChargeLimit || 0,
+    minChargeLimit: prePaymentScheduleData?.minChargeLimit || 0,
+  };
+
   const isLoading =
     loadingScreeningIndicator ||
     loadingReviewerMemo ||
     loadingChargeRule ||
     loadingPrePaymentSchedule;
 
-  const defaultParams: Partial<ParamsSmPayApproval> = {
-    statIndicator: statIndicator,
+  const defaultParams: JudgementModalProps = {
+    statIndicator: {
+      operationPeriod: statIndicator.operationPeriod,
+      dailyAverageRoas: statIndicator.dailyAverageRoas,
+      monthlyConvAmt: statIndicator.monthlyConvAmt,
+      dailySalesAmt: statIndicator.dailySalesAmt,
+      recommendRoasPercent: statIndicator.recommendRoas,
+    },
     chargeRule: [upChargeRule, downChargeRule],
     prePaymentSchedule,
     reviewerMemo: reviewerMemo?.description || "",
@@ -193,15 +176,14 @@ const SmPayJudgementDetailView = ({ id }: Props) => {
 
       <StatIndicatorSection
         advertiserId={Number(id)}
-        statIndicator={statIndicatorData}
+        statIndicator={statIndicator}
       />
 
-      <RuleSection2
-        type="show"
+      <RuleSectionShow
         upChargeRule={upChargeRule}
         downChargeRule={downChargeRule}
       />
-      <ScheduleSection2 type="show" prePaymentSchedule={prePaymentSchedule} />
+      <ScheduleSectionShow prePaymentSchedule={prePaymentSchedule} />
       <JudgementMemoSection
         type="show"
         text={reviewerMemo?.description || ""}

@@ -14,7 +14,6 @@ import { useSidebar } from "@/components/ui/sidebar";
 import { SmPayAdvertiserStatusLabel } from "@/constants/status";
 
 import type {
-  SmPayAdminAuditDto,
   SmPayAdvertiserStatus,
   SmPayAdvertiserStautsOrderType,
 } from "@/types/smpay";
@@ -24,7 +23,9 @@ import type {
   TableParams,
   TableProps,
 } from "@/types/table";
+import type { SmPayAdminAuditDto } from "@/types/dto/smpay";
 import { cn } from "@/lib/utils";
+import { LINK_LIST } from "./constants";
 
 type PropsTableSection = {
   tableParams: TableParams;
@@ -50,7 +51,6 @@ const TableSection = ({
     filters,
     sorter
   ) => {
-    console.log(sorter);
     let sortField: SmPayAdvertiserStautsOrderType = "ADVERTISER_REGISTER_DESC"; // 기본값
 
     if (sorter && !Array.isArray(sorter) && sorter.field && sorter.order) {
@@ -139,16 +139,12 @@ const TableSection = ({
       align: "center",
       sorter: true,
       render: (text, record) => {
-        const linkList = [
-          "OPERATION_REVIEW_SUCCESS",
-          "OPERATION_REJECT",
-          "OPERATION_REVIEW",
-        ];
-        const isLink = linkList.includes(record.advertiserType);
+        const isLink = LINK_LIST.includes(record.advertiserType);
 
         if (isLink) {
-          const query = !record.isOperatorRead ? "&isOperatorRead=false" : "";
-          const url = `/sm-pay/admin/overview/${record.advertiserId}?agentId=${record.agentId}&userId=${record.userId}${query}`;
+          const { advertiserId, isOperatorRead, agentId, userId } = record;
+          const baseUrl = `/sm-pay/admin/overview/${advertiserId}?agentId=${agentId}&userId=${userId}`;
+          const url = isOperatorRead ? baseUrl : `${baseUrl}&read=unread`;
 
           return (
             <div className="flex items-center justify-center gap-2">

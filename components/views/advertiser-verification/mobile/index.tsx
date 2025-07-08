@@ -22,9 +22,7 @@ type Props = {
 const MobilewView = ({ advertiserId }: Props) => {
   const { mutate: advertiserBankAccount, isPending: isSubmittingBankAccount } =
     useAdvertiserBankAccount({
-      onSuccess: () => {
-        setStep(3);
-      },
+      onSuccess: () => setStep(3),
     });
 
   const { mutate: arsCertification, isPending: isCertifyingARS } = useARS({

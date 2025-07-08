@@ -4,7 +4,6 @@ import {
   type UseMutationOptions,
 } from "@tanstack/react-query";
 
-import type { BooleanResponse } from "@/types/sm-pay";
 import type { RequestAgentUser } from "@/types/api/common";
 import type {
   ParamsSmPayAdminOverviewOperatorDecision,
@@ -15,7 +14,6 @@ import type {
   AdvertiserDetailDto,
   ParamsSmPayApproval,
   PrePaymentScheduleDto,
-  ResponseSmPayAudit,
   ResponseSmPayAdvertiserStatus,
   ResponseSmPayStatusCount,
   ResponseSmPayAdvertiserApply,
@@ -35,7 +33,7 @@ import {
   putSmPayAdvertiserDetail,
   getSmPayAdvertiserDailyStat,
   postSmPay,
-  getSmPayDetail,
+  getSmPayFormDetail,
   getSmPayApplyList,
   getSmPayAuditList,
   patchSmPayRead,
@@ -56,19 +54,21 @@ import {
   postSmPayAdminOverviewOperatorDecision,
   getSmPayAdminOverviewAccountBalance,
   postSmPayAdvertiserAgreeNotification,
+  getSmPayDetailApprovalMemo,
 } from "@/services/smpay";
 import type {
   SmPayStatIndicator,
   SmPayScreeningIndicator,
-  SmPayReviewerMemo,
-  SmPayApprovalMemo,
-  OverviewAccountBalanceDto,
 } from "@/types/smpay";
 
 import type {
   ChargeRuleDto,
   DailyStatDto,
   SMPayFormHistory,
+  OverviewAccountBalanceDto,
+  ApprovalMemoDto,
+  ReviewerMemoDto,
+  SmPayAuditListDto,
 } from "@/types/dto/smpay";
 
 // 광고주 상태 갯수 조회(SAG020) query
@@ -169,11 +169,11 @@ export const useSmPayWrite = (
 };
 
 // 광고주 smPay 신청 이력 상세 조회(SAG026) query
-export const useSmPayDetail = (advertiserId: number, formId: number) => {
+export const useSmPayFormDetail = (advertiserId: number, formId: number) => {
   return useAuthQuery<ResponseSMPayDetail>({
     queryKey: ["/smpay/detail", advertiserId, formId],
     queryFn: (user: RequestAgentUser) =>
-      getSmPayDetail({ user, advertiserId, formId }),
+      getSmPayFormDetail({ user, advertiserId, formId }),
     enabled: !!advertiserId && !!formId && !isNaN(formId),
   });
 };
@@ -189,7 +189,7 @@ export const useSmPayApplyList = (advertiserId: number) => {
 
 // 광고주 심사 관리 리스트 조회(최상위 그룹장 전용)(SAG030) query
 export const useSmPayAuditList = (params: QueryParams) => {
-  return useAuthQuery<ResponseSmPayAudit>({
+  return useAuthQuery<SmPayAuditListDto>({
     queryKey: ["/smpay/audit-list", params],
     queryFn: (user: RequestAgentUser) =>
       getSmPayAuditList({ user, queryParams: params }),
@@ -228,8 +228,8 @@ export const useSmPayScreeningIndicator = (advertiserId: number) => {
 };
 
 // 광고주 심사자 참고용 메모 조회 (최상위 그룹장 전용)(SAG035) query
-export const useSmPayReviewerMemo = (advertiserId: number) => {
-  return useAuthQuery<SmPayReviewerMemo>({
+export const useReviewerMemoDto = (advertiserId: number) => {
+  return useAuthQuery<ReviewerMemoDto>({
     queryKey: ["/smpay/reviewer-memo", advertiserId],
     queryFn: (user: RequestAgentUser) =>
       getSmPayAdvertiserReviewerMemo({ user, advertiserId }),
@@ -325,12 +325,6 @@ export const useSmPayAdminOverviewAlarm = (
   });
 };
 
-export type WithAdvertiserIdAndAgentIdAndUserId = {
-  advertiserId: number;
-  agentId: number;
-  userId: number;
-};
-
 // 광고주 detail 조회 (운영 관리자 전용) (AAG020)
 export const useSmPayAdminDetail = (
   advertiserId: number,
@@ -397,7 +391,7 @@ export const useSmPayAdminOverviewApplyFormDetail = (
 
 // 광고주 심사자 참고용 메모 조회 (운영 관리자 전용) (AAG025)
 export const useSmPayAdminOverviewReviewerMemo = (advertiserId: number) => {
-  return useAuthQuery<SmPayReviewerMemo>({
+  return useAuthQuery<ReviewerMemoDto>({
     queryKey: ["/smpay/admin-overview-reviewer-memo", advertiserId],
     queryFn: (user: RequestAgentUser) =>
       getSmPayAdminOverviewReviewerMemo({ user, advertiserId }),
@@ -406,19 +400,20 @@ export const useSmPayAdminOverviewReviewerMemo = (advertiserId: number) => {
 
 // 광고주 최상위 그룹장 참고용 메모 조회 (운영 관리자 전용) (AAG026)
 export const useSmPayAdminOverviewApprovalMemo = (advertiserId: number) => {
-  return useAuthQuery<SmPayApprovalMemo>({
+  return useAuthQuery<ApprovalMemoDto>({
     queryKey: ["/smpay/admin-overview-approval-memo", advertiserId],
     queryFn: (user: RequestAgentUser) =>
       getSmPayAdminOverviewApprovalMemo({ user, advertiserId }),
   });
 };
 
-// useSmPayApproval 훅에 전달될 variables 타입 정의 - TODO : 명칭 변경 필요
-type SmPayAdminOverviewOperatorDecisionVariables = {
-  advertiserId: number;
-  params: ParamsSmPayAdminOverviewOperatorDecision;
-  agentId: number;
-  userId: number;
+// 광고주 최상위 그룹장 참고용 메모 조회 (운영 관리자 전용) (AAG026)
+export const useSmPayDetailApprovalMemo = (advertiserId: number) => {
+  return useAuthQuery<ApprovalMemoDto>({
+    queryKey: ["/smpay/detail-approval-memo", advertiserId],
+    queryFn: (user: RequestAgentUser) =>
+      getSmPayDetailApprovalMemo({ user, advertiserId }),
+  });
 };
 
 export type PropsRequestDecision = {

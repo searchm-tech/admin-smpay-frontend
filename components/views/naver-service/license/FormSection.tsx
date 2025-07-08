@@ -34,7 +34,6 @@ import { DEFAULT_LICENSE_INFO } from "../constants";
 
 import type { TLicenseInfo } from "..";
 import type { UserWithUniqueCode } from "@/types/next-auth";
-import type { TRequestLicenseCreate } from "@/types/api/license";
 
 const formSchema = z.object({
   customerId: z.string().min(1, { message: "CUSTOMER ID를 입력해주세요." }),
@@ -58,11 +57,7 @@ const FormSection = ({
   const isUpdate = !!licenseInfo;
 
   const { refetch: refetchAdvertiserSyncJobList } =
-    useQueryAdvertiserSyncJobList({
-      agentId: user?.agentId ?? 0,
-      userId: user?.userId ?? 0,
-      type: "IN_PROGRESS",
-    });
+    useQueryAdvertiserSyncJobList("IN_PROGRESS");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -107,11 +102,8 @@ const FormSection = ({
       } else {
         // 등록 적용
         if (!user) return;
-        const { agentId, userId } = user;
 
-        const params: TRequestLicenseCreate = {
-          userId: userId,
-          agentId: agentId,
+        const params = {
           customerId: Number(data.customerId),
           apiKey: data.accessKey,
           secretKey: data.secretKey,

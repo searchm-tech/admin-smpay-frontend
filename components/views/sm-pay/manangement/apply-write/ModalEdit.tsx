@@ -158,8 +158,8 @@ const ModalEdit = ({
                           {...field}
                           onChange={(e) => {
                             const value = e.target.value;
-                            // const formattedValue = formatBusinessNumber(value);
-                            field.onChange(value);
+                            const formattedValue = formatBusinessNumber(value);
+                            field.onChange(formattedValue);
                           }}
                           maxLength={12}
                         />

@@ -49,9 +49,7 @@ const AdvertiserInfoSection = ({ advertiserId }: Props) => {
 
       <GuidSection
         viewType={
-          detailInfo?.status === "OPERATION_REJECT"
-            ? "reject"
-            : "master-judgement"
+          detailInfo?.status === "REJECT" ? "reject" : "master-judgement"
         }
       />
 
