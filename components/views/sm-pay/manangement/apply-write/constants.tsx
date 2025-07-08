@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { BUSINESS_NUMBER_REGEX } from "@/constants/reg";
+import { BUSINESS_NUMBER_REGEX, NONE_SPECIAL_REGEX } from "@/constants/reg";
 import { TableParams } from "@/types/table";
 
 export const formSchema = z.object({
@@ -8,7 +8,8 @@ export const formSchema = z.object({
   representativeNumber: z
     .string()
     .min(1, "사업자 등록 번호를 입력해주세요")
-    .regex(BUSINESS_NUMBER_REGEX, "올바른 사업자 등록 번호 형식이 아닙니다"),
+    .regex(BUSINESS_NUMBER_REGEX, "올바른 사업자 등록 번호 형식이 아닙니다")
+    .regex(NONE_SPECIAL_REGEX, "특수문자는 사용할 수 없습니다"),
   phoneNumber: z.string().min(1, "휴대폰 번호를 입력해주세요"),
   // .regex(PHONE_REGEX, "올바른 휴대폰 번호 형식이 아닙니다"),
   email: z
