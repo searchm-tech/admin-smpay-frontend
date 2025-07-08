@@ -17,7 +17,6 @@ import type {
   SmPayAdvertiserStatusDto,
   OverviewApplyAccountDto,
   SmPayAdminAuditDto,
-  SmPayAuditDto,
   SmPayAdvertiserApplyDto,
 } from "../dto/smpay";
 
