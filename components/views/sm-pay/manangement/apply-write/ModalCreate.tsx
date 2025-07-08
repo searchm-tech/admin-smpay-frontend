@@ -43,7 +43,7 @@ const ModalCreate = ({
 
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const { mutate: mutateUpate, isPending } = useSmPayAdvertiserUpdate({
+  const { mutate: mutateCreate, isPending } = useSmPayAdvertiserUpdate({
     onSuccess: () => setIsSuccess(true),
   });
 
@@ -60,7 +60,7 @@ const ModalCreate = ({
       phoneNumber: data.phoneNumber,
       email: data.email,
     };
-    mutateUpate({ advertiserId, params });
+    mutateCreate({ advertiserId, params });
   };
 
   if (isPending) {
@@ -140,7 +140,7 @@ const ModalCreate = ({
                           onChange={(e) => {
                             const value = e.target.value;
                             const formattedValue = formatBusinessNumber(value);
-                            field.onChange(value);
+                            field.onChange(formattedValue);
                           }}
                           maxLength={12}
                         />

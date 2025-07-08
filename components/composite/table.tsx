@@ -33,10 +33,6 @@ function Table<T extends object>({
   const [renderLoading, setRenderLoading] = useState(true);
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [dataSource]);
-
-  useEffect(() => {
     const timer = setTimeout(() => {
       setRenderLoading(false);
     }, 1000); // 1초 후 데이터 세팅

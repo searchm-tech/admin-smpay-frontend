@@ -55,8 +55,6 @@ export type ActionButton =
   | "resume" // 재개
   | "resend"; // 재발송
 
-
-
 export interface SmPayData {
   id: number; // For table key
   no: number; // No
@@ -100,7 +98,6 @@ export type PrePaymentSchedule = {
   minChargeLimit: number; // 1; -> 일 최소 충전 한도 값은 없으므로 0으로 해도 되는지
 };
 
-
 export type SmPayStatIndicator = {
   operationPeriod: number; // 운영 기간
   dailyAverageRoas: number; // 일별 평균 ROAS 1.0,
@@ -118,16 +115,4 @@ export type SmPayScreeningIndicator = {
   advertiserMonthlyConvAmt: number;
   advertiserDailySalesAmt: number;
   advertiserRecommendRoasPercent: number;
-};
-
-// 심사 상세 > 광고주 심사자 참고용 메모 조회 DTO
-export type SmPayReviewerMemo = {
-  advertiserReviewerMemosId: number;
-  description: string;
-};
-
-// 심사 상세 > 광고주 최상위 그룹장 참고용 메모 조회 DTO
-export type SmPayApprovalMemo = {
-  advertiserApprovalMemosId: number;
-  description: string;
 };

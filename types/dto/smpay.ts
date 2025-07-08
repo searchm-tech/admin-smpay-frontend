@@ -1,3 +1,4 @@
+import { ResponseWithPagination } from "../api/common";
 import type { ResponseDailyStat } from "../api/smpay";
 import type { SmPayAdvertiserStatus } from "../smpay";
 
@@ -90,6 +91,13 @@ export type SmPayAuditDto = {
   advertiserFormId: number;
 };
 
+// SM-Pay 심사 > 요청 목록 리스트 DTO
+export type SmPayAuditListDto = ResponseWithPagination & {
+  content: (SmPayAuditDto & {
+    no: number;
+  })[];
+};
+
 // SMPay 신청 > 광고주 목록 광고주 데이터 DTO
 export type SmPayAdvertiserApplyDto = {
   advertiserId: number;
@@ -99,4 +107,16 @@ export type SmPayAdvertiserApplyDto = {
   advertiserName: string;
   advertiserType: SmPayAdvertiserStatus;
   registerOrUpdateDt: string;
+};
+
+// 광고주 심사자 참고용 메모 조회 DTO
+export type ReviewerMemoDto = {
+  advertiserReviewerMemosId: number;
+  description: string;
+};
+
+// 운영 검토 시 참고용 메모
+export type ApprovalMemoDto = {
+  advertiserApprovalMemosId: number;
+  description: string;
 };

@@ -1,27 +1,25 @@
-import { ApiError, del, get, post, put } from "@/lib/api";
-import { buildQueryParams } from "@/lib/utils";
+import { ApiError, del, get, post } from "@/lib/api";
+import type { RequestAgentUser } from "@/types/api/common";
 import type {
-  TRequestLicenseCreate,
   TRequestLicenseDelete,
-  TRequestCustomersList,
-  TResponseCustomersList,
   TResponseLicense,
   TRequestUpdateAdvertiserSyncStatus,
-  TRequestAdvertiserSyncJobList,
   TResponseAdvertiserSyncJob,
+  TRequestLicenseCreateParams,
 } from "@/types/api/license";
+import type { AdvertiserJobType } from "@/types/license";
+
+type TRequestLicenseCreate = {
+  params: TRequestLicenseCreateParams;
+  user: RequestAgentUser;
+};
 
 // 마케터 API 라이선스 등록 + 수정 (SAG008)
-export const postAgentsUserLicense = async (
-  data: TRequestLicenseCreate
-): Promise<null> => {
-  const { agentId, userId, customerId, apiKey, secretKey } = data;
-
-  const params = {
-    customerId,
-    apiKey,
-    secretKey,
-  };
+export const postAgentsUserLicense = async ({
+  params,
+  user,
+}: TRequestLicenseCreate): Promise<null> => {
+  const { agentId, userId } = user;
 
   try {
     const response: null = await post(
@@ -39,10 +37,10 @@ export const postAgentsUserLicense = async (
 
 // 마케터 API 라이선스 조회 (SAG009)
 export const getAgentsUserLicense = async (
-  agentId: string,
-  userId: string
+  params: RequestAgentUser
 ): Promise<TResponseLicense> => {
-  console.log("실행???");
+  const { agentId, userId } = params;
+
   try {
     const response: TResponseLicense = await get(
       `/service/api/v1/agents/${agentId}/users/${userId}/api-license`
@@ -75,32 +73,6 @@ export const deleteAgentsUserLicense = async (
   }
 };
 
-// 광고주 리스트 조회 (SAG012)
-export const getCustomersList = async (
-  params: TRequestCustomersList & { agentId: number; userId: number }
-): Promise<TResponseCustomersList> => {
-  const { agentId, userId } = params;
-
-  const queryParams = buildQueryParams({
-    page: params.page,
-    size: params.size,
-    keyword: params.keyword,
-    orderType: params.orderType,
-  });
-
-  try {
-    const response: TResponseCustomersList = await get(
-      `/service/api/v1/agents/${agentId}/users/${userId}/advertiser-list?${queryParams}`
-    );
-    return response;
-  } catch (error) {
-    if (error instanceof ApiError) {
-      throw error;
-    }
-    throw error;
-  }
-};
-
 // 광고주 데이터 동기화 작업 상태 변경 (SAG015)
 export const postAdvertiserSyncStatus = async (
   data: TRequestUpdateAdvertiserSyncStatus
@@ -122,10 +94,16 @@ export const postAdvertiserSyncStatus = async (
 };
 
 // 광고주 데이터 동기화 작업별 리스트 조회 (SAG016)
-export const getAdvertiserSyncJobList = async (
-  params: TRequestAdvertiserSyncJobList
-): Promise<TResponseAdvertiserSyncJob[]> => {
-  const { agentId, userId, type } = params;
+type TRequestAdvertiserSyncJobList = {
+  user: RequestAgentUser;
+  type: AdvertiserJobType;
+};
+
+export const getAdvertiserSyncJobList = async ({
+  user,
+  type,
+}: TRequestAdvertiserSyncJobList): Promise<TResponseAdvertiserSyncJob[]> => {
+  const { agentId, userId } = user;
 
   try {
     const response: TResponseAdvertiserSyncJob[] = await get(

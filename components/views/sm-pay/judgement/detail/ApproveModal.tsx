@@ -1,14 +1,17 @@
 import { useState } from "react";
-import { Modal } from "@/components/composite/modal-components";
-import { ParamsSmPayApproval } from "@/types/api/smpay";
-import { useSmPayApproval } from "@/hooks/queries/sm-pay";
 import LoadingUI from "@/components/common/Loading";
+import { Modal } from "@/components/composite/modal-components";
+
+import { useSmPayApproval } from "@/hooks/queries/sm-pay";
+
+import type { ParamsSmPayApproval } from "@/types/api/smpay";
+import type { JudgementModalProps } from ".";
 
 type ApproveModalProps = {
   advertiserId: number;
   onClose: () => void;
   onConfirm: () => void;
-  params: Partial<ParamsSmPayApproval>;
+  params: JudgementModalProps;
 };
 
 const ApproveModal = ({
@@ -28,23 +31,13 @@ const ApproveModal = ({
 
   const handleConfirm = () => {
     const defaultParams: ParamsSmPayApproval = {
-      statIndicator: params?.statIndicator || {
-        operationPeriod: 0,
-        dailyAverageRoas: 0,
-        monthlyConvAmt: 0,
-        dailySalesAmt: 0,
-        recommendRoasPercent: 0,
-      },
-      chargeRule: params?.chargeRule || [],
-      prePaymentSchedule: params?.prePaymentSchedule || {
-        initialAmount: 0,
-        maxChargeLimit: 0,
-        minChargeLimit: 0,
-      },
+      statIndicator: params.statIndicator,
+      chargeRule: params.chargeRule,
+      prePaymentSchedule: params.prePaymentSchedule,
       reviewerMemo: params?.reviewerMemo || "",
       approvalMemo: params?.approvalMemo || "",
-      rejectStatusMemo: params?.rejectStatusMemo || "",
-      decisionType: params?.decisionType || "APPROVE",
+      rejectStatusMemo: "",
+      decisionType: "APPROVE",
     };
     postSmPayApproval({
       advertiserId: advertiserId,

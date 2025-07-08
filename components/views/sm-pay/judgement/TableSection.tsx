@@ -1,7 +1,6 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { LinkTextButton } from "@/components/composite/button-components";
@@ -9,7 +8,6 @@ import Table from "@/components/composite/table";
 
 import { SmPayAdvertiserStatusLabel } from "@/constants/status";
 import { formatDate } from "@/utils/format";
-import { buildUrl } from "./constants";
 
 import type {
   ColumnsType,
@@ -39,8 +37,6 @@ const TableSection = ({
   dataSource,
 }: PropsTableSection) => {
   const router = useRouter();
-
-  const [stopModalId, setStopModalId] = useState<string>("");
 
   const columns: ColumnsType<SmPayAuditDto> = [
     {
@@ -84,12 +80,9 @@ const TableSection = ({
 
           <LinkTextButton
             onClick={() => {
-              const { advertiserId, advertiserFormId, isApprovalRead } = record;
-              const url = buildUrl(
-                advertiserId,
-                advertiserFormId,
-                isApprovalRead
-              );
+              const { advertiserId, isApprovalRead } = record;
+              const baseUrl = `/sm-pay/judgement/${advertiserId}`;
+              const url = isApprovalRead ? baseUrl : `${baseUrl}?read=unread`;
               router.push(url);
             }}
           >
@@ -122,25 +115,26 @@ const TableSection = ({
     filters,
     sorter
   ) => {
-    let orderType: SmPayAdvertiserStautsOrderType = "ADVERTISER_REGISTER_DESC"; // 기본값
+    let sortField: SmPayAdvertiserStautsOrderType = "ADVERTISER_REGISTER_DESC";
 
     if (sorter && !Array.isArray(sorter) && sorter.field && sorter.order) {
       const field = sorter.field as string;
       const order = sorter.order === "ascend" ? "ASC" : "DESC";
 
       const fieldMap: Record<string, string> = {
-        no: "ADVERTISER_REGISTER",
-        advertiserName: "ADVERTISER_NAME",
+        no: "NO",
         advertiserCustomerId: "ADVERTISER_CUSTOMER_ID",
-        userId: "ADVERTISER_ID",
+        advertiserLoginId: "ADVERTISER_ID",
+        advertiserNickname: "ADVERTISER_NICK_NAME",
+        advertiserName: "USER_NAME",
         advertiserType: "ADVERTISER_STATUS",
-        descriptionRegisterDt: "ADVERTISER_REGISTER",
+        registerOrUpdateDt: "ADVERTISER_REGISTER",
       };
 
       const mappedField = fieldMap[field];
 
       if (mappedField) {
-        orderType = `${mappedField}_${order}` as SmPayAdvertiserStautsOrderType;
+        sortField = `${mappedField}_${order}` as SmPayAdvertiserStautsOrderType;
       }
     }
 
@@ -151,7 +145,7 @@ const TableSection = ({
         pageSize: pagination.pageSize ?? 10,
       },
       filters: filters as Record<string, FilterValue>,
-      orderType: orderType,
+      sortField: sortField,
     });
   };
 

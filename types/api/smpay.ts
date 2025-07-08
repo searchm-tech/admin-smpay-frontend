@@ -9,6 +9,7 @@ import type {
   RequestAgentUser,
   RequestWithPagination,
   ResponseWithPagination,
+  WithAdvertiserId,
 } from "./common";
 
 import type {
@@ -72,18 +73,6 @@ export type RequestSmPayAdvertiserApply = {
 export interface ResponseSmPayAdvertiserApply extends ResponseWithPagination {
   content: SmPayAdvertiserApplyDto[];
 }
-
-// AgentUser 타입에 advertiserId 추가
-export type WithAdvertiserId = {
-  user: RequestAgentUser;
-  advertiserId: number;
-};
-
-export type UserAgentAdvertiserId = {
-  agentId: number;
-  userId: number;
-  advertiserId: number;
-};
 
 export interface RequestFormId extends WithAdvertiserId {
   formId: number | string;
@@ -152,13 +141,6 @@ export interface RequestSmPayWrite extends WithAdvertiserId {
   params: SmPayWriteParams;
 }
 
-// SM-Pay 심사 > 요청 목록 리스트
-export type ResponseSmPayAudit = ResponseWithPagination & {
-  content: (SmPayAuditDto & {
-    no: number;
-  })[];
-};
-
 export interface RequestSmPayRead extends WithAdvertiserId {
   isApprovalRead: boolean;
 }
@@ -169,9 +151,9 @@ export interface RequestSmPayAdminRead extends WithAdvertiserId {
 
 // 광고주 심상 승인 /거절 (최상위 그룹장 전용)(SAG036) params type
 export type ParamsSmPayApproval = {
-  decisionType: "APPROVE" | "REJECT";
-  statIndicator: StatIndicatorParams;
+  decisionType: "APPROVE" | "REJECT" | "";
   chargeRule: ChargeRule[];
+  statIndicator: StatIndicatorParams;
   prePaymentSchedule: PrePaymentSchedule;
   reviewerMemo: string;
   approvalMemo: string;
@@ -233,14 +215,14 @@ export type ResponseOverviewForm = {
   advertiserDailySalesAmt: number;
   advertiserRecommendRoasPercent: number;
   advertiserStandardRoasPercent: number;
-  advertiserRejectDescription: string | null;
+  advertiserRejectDescription: string;
   initialAmount: number;
   maxChargeLimit: number;
   minChargeLimit: number;
   reviewerMemo: string;
-  approvalMemo: string | null;
+  approvalMemo: string;
   registerDt: string;
-  updateDt: string | null;
+  updateDt: string;
 };
 
 /**
@@ -272,8 +254,8 @@ export type ResponseSMPayDetail = {
   minChargeLimit: number;
   reviewerMemo: string;
   approvalMemo: string;
-  registerDt: string | null;
-  updateDt: string | null;
+  registerDt: string;
+  updateDt: string;
 };
 
 // 광고주 일별 통계

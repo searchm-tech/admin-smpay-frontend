@@ -64,19 +64,6 @@ const SignInView = ({ code }: SignInViewProps) => {
       }
 
       try {
-        // 세션이 존재하고 인증된 상태인지 확인
-        if (status === "authenticated" && session?.user) {
-          const { user } = session;
-          // 토큰 만료 검사 (session에 토큰 만료 정보가 있다고 가정)
-          // 실제 토큰 객체 구조에 따라 수정 필요
-          if (session.accessToken) {
-            // 토큰이 유효하면 권한에 맞는 페이지로 리다이렉트
-            const redirectPath = getRedirectPath(user.type);
-            router.replace(redirectPath);
-            return;
-          }
-        }
-
         // localStorage에서도 토큰 확인
         const storedAccessToken = localStorage.getItem("accessToken");
         const storedRefreshToken = localStorage.getItem("refreshToken");
@@ -97,7 +84,7 @@ const SignInView = ({ code }: SignInViewProps) => {
     };
 
     checkTokenAndRedirect();
-  }, [session, status, router]);
+  }, [status, router]);
 
   const handleRememberChange = (checked: boolean) => {
     setIsRememberUsername(checked);
@@ -152,8 +139,6 @@ const SignInView = ({ code }: SignInViewProps) => {
         // TODO : next-auth 토큰 갱신 관련하여 학습 후, 토큰 관리를 어떻게 할지 확인 할 것.
         await signIn("credentials", {
           ...user,
-          accessToken: accessToken,
-          refreshToken: refreshToken,
           callbackUrl: redirectPath,
         });
 
@@ -164,7 +149,7 @@ const SignInView = ({ code }: SignInViewProps) => {
       console.error("onSubmit error", error);
       let message = "로그인 실패";
       if (error instanceof ApiError) {
-        console.log("error", error);
+        console.error("error", error);
         message = error.message;
 
         if (error.code === "103") {

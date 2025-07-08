@@ -21,12 +21,11 @@ import {
 } from "@/hooks/queries/advertiser";
 import { useMutateAdvertiserSync } from "@/hooks/queries/advertiser";
 
-import type { TableProps } from "antd";
-import type { FilterValue } from "antd/es/table/interface";
 import type { TAdvertiser, TSyncType } from "@/types/adveriser";
 import type { AdvertiserOrderType } from "@/types/adveriser";
 import type { UserWithUniqueCode } from "@/types/next-auth";
 import type { TableParamsAdvertiser } from ".";
+import type { FilterValue, TableProps } from "@/types/table";
 
 type TableSectionProps = {
   user?: UserWithUniqueCode;
@@ -103,13 +102,7 @@ const TableSection = ({
         record.jobStatus === "STOP", // Column configuration not to be checked
       name: record.name,
     }),
-    renderCell: (
-      checked: boolean,
-      record: TAdvertiser,
-      index: number,
-      originNode: React.ReactNode
-    ) => {
-      console.log("record", record);
+    renderCell: (checked: boolean, record: TAdvertiser) => {
       return (
         <Checkbox
           checked={checked}
@@ -176,7 +169,7 @@ const TableSection = ({
     },
     {
       title: "광고주명",
-      dataIndex: "name", // TODO : SM Pay 신청에서 광고주명 등록해야함.
+      dataIndex: "name",
       align: "center",
     },
     {
@@ -193,7 +186,7 @@ const TableSection = ({
       dataIndex: "syncType",
       sorter: true,
       align: "center",
-      render: (value: TSyncType, record: TAdvertiser) => {
+      render: (value: TSyncType) => {
         return <p>{syncTypeMap[value]}</p>;
       },
     },
@@ -214,7 +207,7 @@ const TableSection = ({
     filters,
     sorter
   ) => {
-    let sortField: AdvertiserOrderType = "ADVERTISER_REGISTER_TIME_DESC"; // 기본값
+    let sortField: AdvertiserOrderType = "ADVERTISER_REGISTER_TIME_DESC";
 
     if (sorter && !Array.isArray(sorter) && sorter.field && sorter.order) {
       const field = sorter.field as string;
@@ -222,7 +215,6 @@ const TableSection = ({
 
       // field 이름을 API에서 요구하는 형식으로 변환
       const fieldMap: Record<string, string> = {
-        advertiserId: "ADVERTISER_ID",
         syncType: "ADVERTISER_SYNC",
         registerOrUpdateDt: "ADVERTISER_REGISTER_TIME",
         isAdvertiserRegister: "ADVERTISER_REGISTER",
@@ -241,8 +233,7 @@ const TableSection = ({
         pageSize: pagination.pageSize ?? 10,
       },
       filters: filters as Record<string, FilterValue>,
-      keyword: tableParams.keyword, // 기존 keyword 유지
-      sortOrder: undefined, // TAgencyOrder를 사용하므로 불필요
+      keyword: tableParams.keyword,
       sortField: sortField,
     });
   };
@@ -322,8 +313,7 @@ const TableSection = ({
   const fetchAdvertiserSyncCompleteList = async () => {
     if (!user) return;
     getAdvertiserSyncJobList({
-      agentId: user.agentId,
-      userId: user.userId,
+      user,
       type: "DONE",
     }).then(async (res) => {
       const list = res.map((item) => item.advertiserId);

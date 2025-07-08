@@ -82,7 +82,6 @@ const TableSection = ({
       },
       filters: filters as Record<string, FilterValue>,
       sortField: sortField,
-      sortOrder: undefined, // TAgencyOrder를 사용하므로 불필요
       keyword: tableParams.keyword, // 기존 keyword 유지
     });
   };
