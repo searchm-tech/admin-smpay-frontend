@@ -150,7 +150,7 @@ const ModalCreate = ({
                   )}
                 />
               </DescriptionItem>
-              <DescriptionItem label="광고주 휴대폰 번호">
+              <DescriptionItem label="광고주 휴대폰 번호 *">
                 <FormField
                   control={form.control}
                   name="phoneNumber"
@@ -164,7 +164,7 @@ const ModalCreate = ({
                   )}
                 />
               </DescriptionItem>
-              <DescriptionItem label="광고주 이메일 주소">
+              <DescriptionItem label="광고주 이메일 주소 *">
                 <FormField
                   control={form.control}
                   name="email"

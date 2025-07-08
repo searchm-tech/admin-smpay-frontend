@@ -22,7 +22,7 @@ import { signInApi } from "@/services/auth";
 import { getAgencyDomainNameApi } from "@/services/agency";
 
 import { ApiError } from "@/lib/api";
-import { getRedirectPath } from "@/lib/utils";
+import { getIsAdmin, getRedirectPath } from "@/lib/utils";
 
 import { STORAGE_KEYS, createFormSchema, defaultValues } from "./constants";
 
@@ -64,12 +64,14 @@ const SignInView = ({ code }: SignInViewProps) => {
       }
 
       try {
+        setLoading(true);
         // localStorage에서도 토큰 확인
         const storedAccessToken = localStorage.getItem("accessToken");
         const storedRefreshToken = localStorage.getItem("refreshToken");
 
         if (storedAccessToken && storedRefreshToken) {
-          router.replace("/");
+          const redirectPath = getRedirectPath(session?.user?.type);
+          router.replace(redirectPath);
           return;
         }
       } catch (error) {
@@ -80,11 +82,12 @@ const SignInView = ({ code }: SignInViewProps) => {
         await signOut();
       } finally {
         setIsCheckingToken(false);
+        setLoading(false);
       }
     };
 
     checkTokenAndRedirect();
-  }, [status, router]);
+  }, [status, router, session]);
 
   const handleRememberChange = (checked: boolean) => {
     setIsRememberUsername(checked);

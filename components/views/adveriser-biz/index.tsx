@@ -46,7 +46,7 @@ const AdvertiserBizView = () => {
       <section className="flex items-center gap-2">
         <SearchInput
           className="w-[200px]"
-          placeholder="광고주 로그인 ID 검색"
+          placeholder="광고주를 검색해주세요."
           value={search}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setSearch(e.target.value)
