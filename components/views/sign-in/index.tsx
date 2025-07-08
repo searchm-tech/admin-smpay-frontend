@@ -161,11 +161,11 @@ const SignInView = ({ code }: SignInViewProps) => {
         }
 
         if (error.code === "101") {
-          setErrMessage("아이디 또는 비밀번호가 잘못 되었습니다.");
+          setErrMessage("비밀번호가 잘못 되었습니다.");
           return;
         }
       }
-      setErrMessage(message);
+      setErrMessage("가입되지 않은 정보입니다.");
     } finally {
       setLoading(false);
     }
