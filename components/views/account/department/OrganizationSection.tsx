@@ -84,7 +84,7 @@ const OrganizationSection: React.FC = () => {
 
   const [errorNewFolder, setErrorNewFolder] = useState(false);
   const [errorDuplicateFolder, setErrorDuplicateFolder] = useState(false);
-  const [errorMaxDepth, setErrorMaxDepth] = useState(false);
+  const [errorMaxDepth, setErrorMaxDepth] = useState("");
   const [errorNoData, setErrorNoData] = useState(false);
   const [errorLength, setErrorLength] = useState(false);
   const isAdmin = getIsAdmin(session?.user.type);
@@ -174,11 +174,11 @@ const OrganizationSection: React.FC = () => {
         // 시스템 관리자 일 경우 : 8 depth 제한 체크
         // 최상위 그룹장 일 경우 : 7 depth 제한 체크
         if (parentDepth >= 7 && !isAdmin) {
-          setErrorMaxDepth(true);
+          setErrorMaxDepth("최대 6 depth까지만 폴더를 생성할 수 있습니다.");
           return prevData;
         } else {
           if (parentDepth >= 8 && isAdmin) {
-            setErrorMaxDepth(true);
+            setErrorMaxDepth("최대 7 depth까지만 폴더를 생성할 수 있습니다.");
             return prevData;
           }
         }
@@ -359,8 +359,8 @@ const OrganizationSection: React.FC = () => {
       )}
       {errorMaxDepth && (
         <Dialog
-          content="최대 6 depth까지만 폴더를 생성할 수 있습니다."
-          onConfirm={() => setErrorMaxDepth(false)}
+          content={errorMaxDepth}
+          onConfirm={() => setErrorMaxDepth("")}
         />
       )}
 
