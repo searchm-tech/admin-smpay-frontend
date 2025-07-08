@@ -90,7 +90,9 @@ const SmPayJudgementDetailView = ({ id }: Props) => {
         ?.standardRoasPercent || 0,
     rangeType: "UP",
     boundType: "FIXED_AMOUNT",
-    changePercentOrValue: 0,
+    changePercentOrValue:
+      chargeRule?.find((rule) => rule.rangeType === "UP")
+        ?.changePercentOrValue || 0,
   };
   const downChargeRule = {
     standardRoasPercent:
@@ -98,7 +100,9 @@ const SmPayJudgementDetailView = ({ id }: Props) => {
         ?.standardRoasPercent || 0,
     rangeType: "DOWN",
     boundType: "FIXED_AMOUNT",
-    changePercentOrValue: 0,
+    changePercentOrValue:
+      chargeRule?.find((rule) => rule.rangeType === "DOWN")
+        ?.changePercentOrValue || 0,
   };
 
   const prePaymentSchedule = {
