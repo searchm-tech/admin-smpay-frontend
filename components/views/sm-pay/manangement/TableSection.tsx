@@ -24,6 +24,7 @@ import type {
   SmPayAdvertiserStautsOrderType,
 } from "@/types/smpay";
 import type { SmPayAdvertiserStatusDto } from "@/types/dto/smpay";
+import { AdvertiserAgreementSendDialog } from "./dialog";
 
 interface TableSectionProps {
   tableParams: TableParams;
@@ -242,6 +243,13 @@ const TableSection = ({
 
   return (
     <section>
+      {applySubmitData && (
+        <AdvertiserAgreementSendDialog
+          onClose={() => setApplySubmitData(null)}
+          onConfirm={() => setApplySubmitData(null)}
+          data={applySubmitData}
+        />
+      )}
       <Table<SmPayAdvertiserStatusDto>
         columns={columns}
         rowKey="no"
