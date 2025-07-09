@@ -20,8 +20,9 @@ export interface TreeNodeProps {
 
 type Props = {
   agentId: number | null;
+  agentName: string | null;
 };
-const DepartmentSection: React.FC<Props> = ({ agentId }) => {
+const DepartmentSection: React.FC<Props> = ({ agentId, agentName }) => {
   const {
     data: departments = [],
     isFetching: loadingDepartmentsQuery,
@@ -41,13 +42,18 @@ const DepartmentSection: React.FC<Props> = ({ agentId }) => {
 
   // departments가 변경될 때마다 treeData 업데이트
   useEffect(() => {
-    setTreeData(departments.map(convertToTreeNode));
+    if (departments.length > 0) {
+      setTreeData(departments.map(convertToTreeNode));
+    } else if (treeData.length > 0) {
+      setTreeData([]);
+    }
   }, [departments]);
 
   return (
     <div className="w-full">
       {isOpen && (
         <ManagementModal
+          agentName={agentName}
           agentId={agentId}
           onClose={() => setIsOpen(false)}
           onConfirm={handleSaveAfter}
@@ -64,14 +70,19 @@ const DepartmentSection: React.FC<Props> = ({ agentId }) => {
           ) : (
             <div className="flex flex-col justify-center items-center h-full gap-4">
               <p>부서 정보가 없습니다.</p>
-              <p>대행사를 선택해주세요.</p>
+              {!agentId && <p>대행사를 선택해주세요.</p>}
+              {agentId && <p>부서를 추가해주세요.</p>}
             </div>
           )}
         </div>
       </div>
 
       <div className="flex justify-center w-full">
-        <Button onClick={() => setIsOpen(true)} className="w-[150px] h-10 my-4">
+        <Button
+          onClick={() => setIsOpen(true)}
+          className="w-[150px] h-10 my-4"
+          disabled={!agentId}
+        >
           부서 관리 수정
         </Button>
       </div>
