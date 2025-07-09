@@ -1,12 +1,4 @@
-import { cn } from "@/lib/utils";
-import type { TDepartmentFolder, TParamsDepartments } from "@/types/department";
-import type { OrganizationTreeNode } from "@/types/tree";
-import { useDraggable, useDroppable } from "@dnd-kit/core";
-
 import { useState } from "react";
-
-import { ConfirmDialog } from "@/components/composite/modal-components";
-
 import {
   CircleCheckBig,
   FilePenLine,
@@ -18,7 +10,17 @@ import {
   User,
   X,
 } from "lucide-react";
+
+import { useDraggable, useDroppable } from "@dnd-kit/core";
+
+import { ConfirmDialog } from "@/components/composite/modal-components";
+
+import { cn } from "@/lib/utils";
+
 import { TreeNodeProps } from "./OrganizationSection";
+
+import type { TDepartmentFolder, TParamsDepartments } from "@/types/department";
+import type { OrganizationTreeNode } from "@/types/tree";
 
 // BE 부서 조회 데이터 -> 트리 노드
 export const convertToTreeNode = (
@@ -105,7 +107,7 @@ export const findNode = (
 ): [
   OrganizationTreeNode | null,
   OrganizationTreeNode[] | null,
-  OrganizationTreeNode | null
+  OrganizationTreeNode | null,
 ] => {
   for (const node of nodes) {
     if (node.id === id) {
@@ -162,26 +164,6 @@ export const DroppableFolder: React.FC<{
     </div>
   );
 };
-
-// 순서 변경을 위한 드롭 영역 컴포넌트
-// export const DroppableOrderZone: React.FC<{
-//   id: string;
-//   position: "before" | "after";
-// }> = ({ id, position }) => {
-//   const { setNodeRef, isOver } = useDroppable({
-//     id: `${id}-${position}`,
-//   });
-
-//   return (
-//     <div
-//       ref={setNodeRef}
-//       className={cn(
-//         "h-1 transition-colors duration-200",
-//         isOver && "bg-blue-400 h-2"
-//       )}
-//     />
-//   );
-// };
 
 // 트리 노드 컴포넌트
 export const TreeNodeComponent: React.FC<TreeNodeProps> = ({
@@ -408,9 +390,124 @@ export const TreeNodeComponent: React.FC<TreeNodeProps> = ({
       ) : (
         <div>{content}</div>
       )}
+    </div>
+  );
+};
 
-      {/* 순서 변경을 위한 하단 드롭 영역 */}
-      {/* {level > 0 && <DroppableOrderZone id={node.id} position="after" />} */}
+interface EditTreeNodeProps {
+  node: OrganizationTreeNode;
+  level: number;
+}
+export const EditTreeNodeComponent: React.FC<EditTreeNodeProps> = ({
+  node,
+  level,
+}) => {
+  const [isOpen, setIsOpen] = useState(true);
+  const [showDeleteError, setShowDeleteError] = useState(false);
+
+  // level 0 폴더와 AGENCY_GROUP_MASTER 사용자는 드래그 비활성화
+  const shouldDisableDrag =
+    (level === 0 && node.type === "folder") ||
+    (node.type === "user" && node.userData?.type === "AGENCY_GROUP_MASTER");
+
+  const { attributes, setNodeRef, transform, isDragging } = useDraggable({
+    id: node.id,
+    data: {
+      type: node.type,
+    },
+    disabled: shouldDisableDrag,
+  });
+
+  const handleToggle = () => {
+    if (node.type === "folder") {
+      setIsOpen(!isOpen);
+    }
+  };
+
+  // 이동하는 트리
+  const style: React.CSSProperties | undefined = transform
+    ? {
+        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+        backgroundColor: "white",
+        position: "relative" as const,
+        zIndex: 999,
+      }
+    : undefined;
+
+  const content = (
+    <div
+      ref={setNodeRef}
+      className={`flex items-center gap-2 py-2 px-2 rounded-md ${
+        node.type === "folder" ? "hover:bg-gray-50" : "cursor-default"
+      } ${isDragging ? "opacity-50" : ""}`}
+      style={{
+        paddingLeft: `${level * 24}px`,
+        ...(isDragging ? { border: "2px solid #4A90E2" } : {}),
+        ...style,
+      }}
+    >
+      {node.type === "folder" ? (
+        isOpen ? (
+          <FolderOpen className={classNameLeft} onClick={handleToggle} />
+        ) : (
+          <Folder className={classNameLeft} onClick={handleToggle} />
+        )
+      ) : (
+        <User className={classNameLeft} />
+      )}
+      <div
+        {...(shouldDisableDrag ? {} : attributes)}
+        className="flex-1 flex items-center gap-2 cursor-default"
+      >
+        <span>{node.name}</span>
+        {node.type === "user" &&
+          node.userData?.type === "AGENCY_GROUP_MASTER" && (
+            <span className="text-xs text-red-500 ml-1">(최상위 그룹장)</span>
+          )}
+        {node.type === "folder" && (
+          <div className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full flex items-center gap-1">
+            <User className="w-3 h-3" />
+            {countUsersInNode(node)}명
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="w-full">
+      {showDeleteError && (
+        <ConfirmDialog
+          open
+          content={
+            <div className="text-center">
+              <p>하위 그룹원이 있으면 그룹을 삭제할 수 없습니다.</p>
+              <p>그룹원을 이동한 후 다시 시도해주세요.</p>
+            </div>
+          }
+          onConfirm={() => setShowDeleteError(false)}
+          cancelDisabled
+        />
+      )}
+
+      {node.type === "folder" ? (
+        <DroppableFolder id={node.id} isOpen={isOpen}>
+          {content}
+          {isOpen && node.children && (
+            <div className="w-full">
+              {node.children.map((child) => (
+                <EditTreeNodeComponent
+                  key={child.id}
+                  node={child}
+                  level={level + 1}
+                />
+              ))}
+            </div>
+          )}
+        </DroppableFolder>
+      ) : (
+        <div>{content}</div>
+      )}
     </div>
   );
 };

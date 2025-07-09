@@ -1,19 +1,17 @@
 "use client";
 
-import { LabelBullet } from "@/components/composite/label-bullet";
-import OrganizationSection from "./OrganizationSection";
+import { getIsAdmin } from "@/lib/utils";
+import { useSession } from "next-auth/react";
+import DepartmentMemberView from "./member";
+import DepartmentAdminView from "./admin";
 
 // 폴더 이동 가능
 // 인원은 이동 만
 const DepartmentView = () => {
-  return (
-    <div>
-      <LabelBullet labelClassName="text-lg font-bold">
-        부서 및 회원 관리
-      </LabelBullet>
-      <OrganizationSection />
-    </div>
-  );
+  const { data: session } = useSession();
+  const isAdmin = getIsAdmin(session?.user?.type);
+
+  return isAdmin ? <DepartmentAdminView /> : <DepartmentMemberView />;
 };
 
 export default DepartmentView;
