@@ -407,7 +407,13 @@ export const useSmPayAdminOverviewApprovalMemo = (advertiserId: number) => {
   });
 };
 
-// 광고주 최상위 그룹장 참고용 메모 조회 (운영 관리자 전용) (AAG026)
+//
+/**
+ * 광고주 최상위 그룹장 참고용 메모 조회 (운영 관리자 전용) (AAG026)
+ * - 화면 : 없음
+ * - formId를 통한 데이터로 모두 사용하고 있음
+ * - TODO : 추후 사용할 수 있으므로, 대기
+ */
 export const useSmPayDetailApprovalMemo = (advertiserId: number) => {
   return useAuthQuery<ApprovalMemoDto>({
     queryKey: ["/smpay/detail-approval-memo", advertiserId],

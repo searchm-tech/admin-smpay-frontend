@@ -341,8 +341,6 @@ export const getSmPayAuditList = async ({
     "ADVERTISER_REGISTER"
   );
 
-  console.log("apiOrderType", apiOrderType);
-
   const paramsResult = buildQueryParams({
     page: queryParams.page,
     size: queryParams.size,

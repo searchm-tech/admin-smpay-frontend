@@ -14,17 +14,15 @@ import {
 } from "@/constants/status";
 
 import { ColumnTooltip } from "@/constants/table";
-
-import type { TableProps } from "antd";
-import type { FilterValue } from "antd/es/table/interface";
+import { AdvertiserAgreementSendDialog } from "./dialog";
+import type { TableProps, FilterValue, TableParams } from "@/types/table";
 import type { ActionButton } from "@/types/smpay";
-import type { TableParams } from "@/types/table";
+
 import type {
   SmPayAdvertiserStatus,
   SmPayAdvertiserStautsOrderType,
 } from "@/types/smpay";
 import type { SmPayAdvertiserStatusDto } from "@/types/dto/smpay";
-import { AdvertiserAgreementSendDialog } from "./dialog";
 
 interface TableSectionProps {
   tableParams: TableParams;
@@ -57,8 +55,13 @@ const TableSection = ({
   >(null);
   const [stopModalId, setStopModalId] = useState<number | null>(null);
 
-  const handleMoveDetailPage = (advertiserId: number) => {
-    router.push(`/sm-pay/management/apply-detail/${advertiserId}`);
+  const handleMoveDetailPage = (
+    advertiserId: number,
+    advertiserFormId: number
+  ) => {
+    router.push(
+      `/sm-pay/management/apply-detail/${advertiserId}?formId=${advertiserFormId}`
+    );
   };
 
   const handleTableChange: TableProps<SmPayAdvertiserStatusDto>["onChange"] = (
@@ -147,8 +150,8 @@ const TableSection = ({
               <Button
                 variant="greenOutline"
                 onClick={() => {
-                  const { advertiserId } = record;
-                  handleMoveDetailPage(advertiserId);
+                  const { advertiserId, advertiserFormId } = record;
+                  handleMoveDetailPage(advertiserId, advertiserFormId);
                 }}
               >
                 조회

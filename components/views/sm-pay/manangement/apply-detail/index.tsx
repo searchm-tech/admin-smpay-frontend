@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import LoadingUI from "@/components/common/Loading";
@@ -14,13 +14,7 @@ import AdvertiserInfoSection from "@/components/views/sm-pay/components/Advertis
 
 import { RejectDialog } from "@/components/views/sm-pay/manangement/dialog";
 
-import {
-  useSmPayAdvertiserChargeRule,
-  useSmPayAdvertiserPrePaymentSchedule,
-  useReviewerMemoDto,
-  useSmPayScreeningIndicator,
-  useSmPayDetailApprovalMemo,
-} from "@/hooks/queries/sm-pay";
+import { useSmPayFormDetail } from "@/hooks/queries/sm-pay";
 
 interface Props {
   id: string;
@@ -28,66 +22,58 @@ interface Props {
 
 const SmPayApplyDetailView = ({ id }: Props) => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const formId = searchParams.get("formId");
 
   const [isReject, setIsReject] = useState(false);
 
-  const { data: chargeRule, isPending: loadingChargeRule } =
-    useSmPayAdvertiserChargeRule(Number(id));
-
-  const { data: screeningIndicator, isPending: loadingScreeningIndicator } =
-    useSmPayScreeningIndicator(Number(id));
-
-  const { data: prePaymentScheduleData, isPending: loadingPrePaymentSchedule } =
-    useSmPayAdvertiserPrePaymentSchedule(Number(id));
-
-  const { data: reviewerMemo, isPending: loadingReviewerMemo } =
-    useReviewerMemoDto(Number(id));
-
-  const { data: approvalMemo, isPending: loadingApprovalMemo } =
-    useSmPayDetailApprovalMemo(Number(id));
+  const { data: smpayInfo, isPending: loading } = useSmPayFormDetail(
+    Number(id),
+    Number(formId)
+  );
 
   const prePaymentSchedule = {
-    initialAmount: prePaymentScheduleData?.initialAmount || 0,
-    maxChargeLimit: prePaymentScheduleData?.maxChargeLimit || 0,
-    minChargeLimit: prePaymentScheduleData?.minChargeLimit || 0,
+    initialAmount: smpayInfo?.initialAmount || 0,
+    maxChargeLimit: smpayInfo?.maxChargeLimit || 0,
+    minChargeLimit: smpayInfo?.minChargeLimit || 0,
   };
 
   const statIndicator = {
-    operationPeriod: screeningIndicator?.advertiserOperationPeriod || 0,
-    dailyAverageRoas: screeningIndicator?.advertiserDailyAverageRoas || 0,
-    monthlyConvAmt: screeningIndicator?.advertiserMonthlyConvAmt || 0,
-    dailySalesAmt: screeningIndicator?.advertiserDailySalesAmt || 0,
-    recommendRoas: screeningIndicator?.advertiserRecommendRoasPercent || 0,
+    operationPeriod: smpayInfo?.advertiserOperationPeriod || 0,
+    dailyAverageRoas: smpayInfo?.advertiserDailyAverageRoas || 0,
+    monthlyConvAmt: smpayInfo?.advertiserMonthlyConvAmt || 0,
+    dailySalesAmt: smpayInfo?.advertiserDailySalesAmt || 0,
+    recommendRoas: smpayInfo?.advertiserRecommendRoasPercent || 0,
   };
 
-  const upChargeRule = {
-    standardRoasPercent:
-      chargeRule?.find((rule) => rule.rangeType === "UP")
-        ?.standardRoasPercent || 0,
+  const upChargeRule = smpayInfo?.chargeRules.find(
+    (rule) => rule.rangeType === "UP"
+  ) || {
+    standardRoasPercent: 0,
     rangeType: "UP",
-    boundType: "FIXED_AMOUNT",
+    boundType:
+      smpayInfo?.chargeRules.find((rule) => rule.rangeType === "UP")
+        ?.boundType || "FIXED_AMOUNT",
     changePercentOrValue:
-      chargeRule?.find((rule) => rule.rangeType === "UP")
+      smpayInfo?.chargeRules.find((rule) => rule.rangeType === "UP")
         ?.changePercentOrValue || 0,
   };
-  const downChargeRule = {
-    standardRoasPercent:
-      chargeRule?.find((rule) => rule.rangeType === "DOWN")
-        ?.standardRoasPercent || 0,
+  const downChargeRule = smpayInfo?.chargeRules.find(
+    (rule) => rule.rangeType === "DOWN"
+  ) || {
+    standardRoasPercent: 0,
     rangeType: "DOWN",
-    boundType: "FIXED_AMOUNT",
+    boundType:
+      smpayInfo?.chargeRules.find((rule) => rule.rangeType === "DOWN")
+        ?.boundType || "FIXED_AMOUNT",
     changePercentOrValue:
-      chargeRule?.find((rule) => rule.rangeType === "DOWN")
+      smpayInfo?.chargeRules.find((rule) => rule.rangeType === "DOWN")
         ?.changePercentOrValue || 0,
   };
 
   return (
     <div>
-      {(loadingChargeRule ||
-        loadingScreeningIndicator ||
-        loadingPrePaymentSchedule ||
-        loadingReviewerMemo ||
-        loadingApprovalMemo) && <LoadingUI title="SM Pay 정보 조회 중..." />}
+      {loading && <LoadingUI title="SM Pay 정보 조회 중..." />}
 
       {isReject && (
         <RejectDialog
@@ -109,15 +95,9 @@ const SmPayApplyDetailView = ({ id }: Props) => {
         downChargeRule={downChargeRule}
       />
       <ScheduleSectionShow prePaymentSchedule={prePaymentSchedule} />
-      <JudgementMemoSection
-        type="show"
-        text={reviewerMemo?.description || ""}
-      />
+      <JudgementMemoSection type="show" text={smpayInfo?.reviewerMemo || ""} />
 
-      <OperationMemoSection
-        type="show"
-        text={approvalMemo?.description || ""}
-      />
+      <OperationMemoSection type="show" text={smpayInfo?.approvalMemo || ""} />
 
       <div className="flex justify-center gap-4 py-5">
         <Button

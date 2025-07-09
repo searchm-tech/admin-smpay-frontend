@@ -238,7 +238,7 @@ export const RuleSectionWrite = ({
                 {upChargeRule.boundType === "FIXED_AMOUNT"
                   ? "정액으로"
                   : "정률로"}{" "}
-                {upChargeRule.changePercentOrValue}
+                {upChargeRule.changePercentOrValue.toLocaleString()}
                 {upChargeRule.boundType === "FIXED_AMOUNT" ? "원" : "%"} 씩 증액
               </span>
               하고
@@ -254,7 +254,7 @@ export const RuleSectionWrite = ({
                 {downChargeRule.boundType === "FIXED_AMOUNT"
                   ? "정액으로"
                   : "정률로"}{" "}
-                {downChargeRule.changePercentOrValue}
+                {downChargeRule.changePercentOrValue.toLocaleString()}
                 {downChargeRule.boundType === "FIXED_AMOUNT" ? "원" : "%"} 씩
                 감액
               </span>
