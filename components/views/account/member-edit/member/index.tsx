@@ -38,11 +38,14 @@ const MemberView = ({ userId, agentId }: Props) => {
   const {
     data: userInfoData,
     isLoading,
+    error,
     refetch,
   } = useQueryUserInfo({
     userId,
     agentId,
   });
+
+  console.log("error", error);
 
   const { mutate: patchUserInfo, isPending: isPatchUserInfoPending } =
     useMutationUserInfo({
@@ -55,6 +58,7 @@ const MemberView = ({ userId, agentId }: Props) => {
   const [userInfo, setUserInfo] = useState<TSMPayUser | null>(null);
   const [agency, setAgency] = useState<TAgency | null>(null);
   const [department, setDepartment] = useState<TDepartment | null>(null);
+  const [isNoneDepartment, setIsNoneDepartment] = useState<boolean>(false);
 
   const handleChangeUserInfo = (key: keyof TSMPayUser, value: string) => {
     setUserInfo({ ...userInfo, [key]: value } as TSMPayUser);
@@ -108,6 +112,12 @@ const MemberView = ({ userId, agentId }: Props) => {
       setDepartment(userInfoData.user.department);
     }
   }, [userInfoData]);
+
+  useEffect(() => {
+    if (error) {
+      setIsNoneDepartment(true);
+    }
+  }, [error]);
 
   return (
     <div className="my-5">
@@ -202,6 +212,19 @@ const MemberView = ({ userId, agentId }: Props) => {
           content={<span className="text-base font-bold">{errorDialog}</span>}
           onClose={() => setErrorDialog("")}
           onConfirm={() => setErrorDialog("")}
+        />
+      )}
+
+      {isNoneDepartment && (
+        <ConfirmDialog
+          open
+          cancelDisabled
+          onConfirm={() => router.push("/account/department")}
+          content={
+            <span className="text-base">
+              부서 정보가 없습니다. 부서를 먼저 등록해주세요.
+            </span>
+          }
         />
       )}
     </div>
