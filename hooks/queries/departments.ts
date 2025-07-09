@@ -28,6 +28,18 @@ export const useQueryDepartments = (
   });
 };
 
+export const useQueryDepartmentsByAgentId = (
+  agentId: number,
+  options?: Partial<UseQueryOptions<TDepartmentFolder[], Error>>
+) => {
+  return useQuery({
+    queryKey: ["departmentsByAgentId", agentId],
+    queryFn: () => getDepartmentsApi(agentId),
+    enabled: !!agentId,
+    ...options,
+  });
+};
+
 // 대행사 부서 수정 mutation
 export const useMutationDepartments = (
   options?: Partial<UseMutationOptions<null, Error, TDepartmentsPutParams>>
