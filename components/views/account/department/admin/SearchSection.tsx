@@ -3,7 +3,7 @@ import Select from "@/components/composite/select-components";
 import { useQueryAgencyAll } from "@/hooks/queries/agency";
 
 type Props = {
-  handleSelectAgent: (agentId: number) => void;
+  handleSelectAgent: (agentId: number, agentName: string) => void;
   selectedAgentId: number | null;
 };
 const SearchSection = ({ handleSelectAgent, selectedAgentId }: Props) => {
@@ -24,7 +24,10 @@ const SearchSection = ({ handleSelectAgent, selectedAgentId }: Props) => {
         options={agentList}
         value={selectedAgentId?.toString()}
         onChange={(value) => {
-          handleSelectAgent(Number(value));
+          const agent = agencyAllDto.find(
+            (agent) => agent.agent.agentId.toString() === value
+          );
+          handleSelectAgent(Number(value), agent?.agent.name || "");
         }}
       />
     </SearchBox>

@@ -9,9 +9,11 @@ import SearchSection from "./SearchSection";
 // 인원은 이동 만
 const DepartmentAdminView = () => {
   const [selectedAgentId, setSelectedAgentId] = useState<number | null>(null);
+  const [agentName, setAgentName] = useState<string | null>(null);
 
-  const handleSelectAgent = (agentId: number) => {
+  const handleSelectAgent = (agentId: number, agentName: string) => {
     setSelectedAgentId(agentId);
+    setAgentName(agentName);
   };
   return (
     <div>
@@ -23,7 +25,7 @@ const DepartmentAdminView = () => {
         handleSelectAgent={handleSelectAgent}
         selectedAgentId={selectedAgentId}
       />
-      <DepartmentSection agentId={selectedAgentId} />
+      <DepartmentSection agentId={selectedAgentId} agentName={agentName} />
     </div>
   );
 };

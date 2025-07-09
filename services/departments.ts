@@ -14,6 +14,7 @@ export type TDepartmentsPutParams = {
 
 export const putDepartmentsApi = async (params: TDepartmentsPutParams) => {
   const { agentId, departments } = params;
+  console.log("departments", departments);
 
   try {
     const response = await put(`/api/v1/agents/${agentId}/departments`, {

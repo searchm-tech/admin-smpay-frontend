@@ -31,6 +31,7 @@ import {
 
 import type { OrganizationTreeNode } from "@/types/tree";
 import type { TDepartmentsPutParams } from "@/services/departments";
+import { Button } from "@/components/ui/button";
 
 export interface TreeNodeProps {
   node: OrganizationTreeNode;
@@ -59,11 +60,19 @@ const getAllFolderNames = (nodes: OrganizationTreeNode[]): string[] => {
 
 type Props = {
   agentId: number | null;
+  agentName: string | null;
   onClose: () => void;
   onConfirm: () => void;
 };
-const ManagementModal: React.FC<Props> = ({ agentId, onClose, onConfirm }) => {
+const ManagementModal: React.FC<Props> = ({
+  agentId,
+  agentName,
+  onClose,
+  onConfirm,
+}) => {
   const { data: session } = useSession();
+  console.log("session", session);
+  console.log("agentId", agentId);
   const { data: departments = [], isFetching: loadingDepartmentsQuery } =
     useQueryDepartmentsByAgentId(agentId || 0, { enabled: !!agentId });
 
@@ -71,7 +80,6 @@ const ManagementModal: React.FC<Props> = ({ agentId, onClose, onConfirm }) => {
     useMutationDepartments({
       onSuccess: () => {
         setSuccessSave(true);
-        setErrorNoData(false);
         onConfirm();
       },
       onError: (error) => {
@@ -84,7 +92,6 @@ const ManagementModal: React.FC<Props> = ({ agentId, onClose, onConfirm }) => {
   const [errorNewFolder, setErrorNewFolder] = useState(false);
   const [errorDuplicateFolder, setErrorDuplicateFolder] = useState(false);
   const [errorMaxDepth, setErrorMaxDepth] = useState("");
-  const [errorNoData, setErrorNoData] = useState(false);
   const [errorLength, setErrorLength] = useState(false);
 
   const [successSave, setSuccessSave] = useState(false);
@@ -270,6 +277,7 @@ const ManagementModal: React.FC<Props> = ({ agentId, onClose, onConfirm }) => {
 
   const handleSave = async () => {
     if (!agentId) return;
+
     const params: TDepartmentsPutParams = {
       agentId: agentId.toString(),
       departments: convertTreeToParams(treeData),
@@ -277,13 +285,13 @@ const ManagementModal: React.FC<Props> = ({ agentId, onClose, onConfirm }) => {
     mutateDepartments(params);
   };
 
-  const handleInitAddTopFolder = (agentId: number | null) => {
+  const handleInitAddTopFolder = () => {
     if (!agentId) return;
     const params: TDepartmentsPutParams = {
       agentId: agentId.toString(),
       departments: [
         {
-          departmentName: "최상위 부서",
+          departmentName: `${agentName} 대행사` || "최상위 부서",
           displayOrder: 1,
           userIds: [session?.user.userId || 0],
           children: [
@@ -298,6 +306,15 @@ const ManagementModal: React.FC<Props> = ({ agentId, onClose, onConfirm }) => {
       ],
     };
     mutateDepartments(params);
+  };
+
+  const handleClose = () => {
+    if (treeData.length === 0 && agentId !== session?.user.agentId) {
+      onClose();
+      return;
+    } else {
+      setIsCancel(true);
+    }
   };
 
   const loadingDepartments =
@@ -332,8 +349,11 @@ const ManagementModal: React.FC<Props> = ({ agentId, onClose, onConfirm }) => {
     <Modal
       open
       title="부서 수정"
-      onClose={() => setIsCancel(true)}
+      onClose={handleClose}
       onConfirm={() => handleSave()}
+      confirmDisabled={
+        treeData.length === 0 && agentId !== session?.user.agentId
+      }
     >
       {loadingDepartments && <LoadingUI />}
       {errorNewFolder && (
@@ -361,18 +381,11 @@ const ManagementModal: React.FC<Props> = ({ agentId, onClose, onConfirm }) => {
         />
       )}
 
-      {errorNoData && (
-        <Dialog
-          onConfirm={() => handleInitAddTopFolder(agentId)}
-          content="현재 부서 정보가 없습니다. 최상위 부서를 먼저 생성하겠습니다."
-        />
-      )}
       {successSave && (
         <Dialog
           content="부서 정보가 저장되었습니다."
           onConfirm={() => {
             setSuccessSave(false);
-            setErrorNoData(false);
           }}
         />
       )}
@@ -399,6 +412,23 @@ const ManagementModal: React.FC<Props> = ({ agentId, onClose, onConfirm }) => {
                 onDeleteFolder={handleDeleteFolder}
               />
             ))}
+
+            {treeData.length === 0 && (
+              <div className="flex justify-center items-center w-full h-full">
+                {agentId === session?.user.agentId && (
+                  <Button onClick={handleInitAddTopFolder}>
+                    대행사 부서 추가
+                  </Button>
+                )}
+
+                {agentId !== session?.user.agentId && (
+                  <p className="text-lg text-gray-500">
+                    {agentName} 대행사의 최상위 그룹장이 부서를 추가할 수
+                    있습니다.
+                  </p>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </DndContext>
