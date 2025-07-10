@@ -1,5 +1,4 @@
-import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useState, Fragment } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -14,7 +13,8 @@ import Table from "@/components/composite/table";
 import { LinkTextButton } from "@/components/composite/button-components";
 
 import LoadingUI from "@/components/common/Loading";
-import GuidSection from "./GuideSection";
+import GuidSection, { RejectDescription } from "./GuideSection";
+import HistoryDetailModal from "./HistoryDetailModal";
 
 import {
   formatBusinessNumber,
@@ -33,9 +33,13 @@ import type { SMPayFormHistory } from "@/types/dto/smpay";
 
 type Props = {
   advertiserId: number;
+  isShowHistory?: boolean;
 };
 
-const AdvertiserInfoSection = ({ advertiserId }: Props) => {
+const AdvertiserInfoSection = ({
+  advertiserId,
+  isShowHistory = true,
+}: Props) => {
   const { data: detailInfo, isPending: isLoading } =
     useSmPayAdvertiserDetail(advertiserId);
 
@@ -47,11 +51,13 @@ const AdvertiserInfoSection = ({ advertiserId }: Props) => {
     <div>
       {isLoading && <LoadingUI title="광고주 정보 조회 중..." />}
 
-      <GuidSection
-        viewType={
-          detailInfo?.status === "REJECT" ? "reject" : "master-judgement"
-        }
-      />
+      {detailInfo?.status !== "REJECT" && (
+        <GuidSection viewType="master-judgement" />
+      )}
+
+      {detailInfo?.status === "REJECT" && (
+        <RejectDescription description={detailInfo?.description || ""} />
+      )}
 
       <section>
         {isHistoryModal && (
@@ -67,12 +73,14 @@ const AdvertiserInfoSection = ({ advertiserId }: Props) => {
             광고주 상태
           </LabelBullet>
 
-          <Button
-            onClick={() => setIsHistoryModal(true)}
-            disabled={dataSource && dataSource.length === 0}
-          >
-            SM Pay 지난 이력 보기
-          </Button>
+          {isShowHistory && (
+            <Button
+              onClick={() => setIsHistoryModal(true)}
+              disabled={dataSource && dataSource.length === 0}
+            >
+              SM Pay 지난 이력 보기
+            </Button>
+          )}
         </div>
 
         <Descriptions columns={1}>
@@ -128,9 +136,7 @@ const HistoryModal = ({
   advertiserId,
   dataSource,
 }: HistoryModalProps) => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const originFormId = searchParams.get("formId");
+  const [formId, setFormId] = useState<number | null>(null);
 
   const columns: TableProps<SMPayFormHistory>["columns"] = [
     {
@@ -163,12 +169,7 @@ const HistoryModal = ({
       key: "advertiserName",
       align: "center",
       render: (text: string, record) => (
-        <LinkTextButton
-          onClick={() => {
-            const url = `/sm-pay/management/history/${advertiserId}?formId=${record.advertiserFormId}&orignFormId=${originFormId}`;
-            router.push(url);
-          }}
-        >
+        <LinkTextButton onClick={() => setFormId(record.advertiserFormId)}>
           {text}
         </LinkTextButton>
       ),
@@ -192,22 +193,33 @@ const HistoryModal = ({
       },
     },
   ];
+
   return (
-    <Modal
-      open
-      title="SM Pay 지난 이력 보기"
-      onClose={onClose}
-      onConfirm={onClose}
-      cancelDisabled
-    >
-      <div className="w-[85vw] overflow-y-auto">
-        <Table<SMPayFormHistory>
-          dataSource={dataSource}
-          columns={columns}
-          pagination={false}
-          scroll={{ y: 300 }}
+    <Fragment>
+      {formId && (
+        <HistoryDetailModal
+          onClose={() => setFormId(null)}
+          advertiserId={advertiserId || 0}
+          formId={formId}
         />
-      </div>
-    </Modal>
+      )}
+
+      <Modal
+        open
+        title="SM Pay 지난 이력 보기"
+        onClose={onClose}
+        onConfirm={onClose}
+        cancelDisabled
+      >
+        <div className="w-[85vw] overflow-y-auto">
+          <Table<SMPayFormHistory>
+            dataSource={dataSource}
+            columns={columns}
+            pagination={false}
+            scroll={{ y: 300 }}
+          />
+        </div>
+      </Modal>
+    </Fragment>
   );
 };

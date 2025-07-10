@@ -18,6 +18,8 @@ import type {
   OverviewApplyAccountDto,
   SmPayAdminAuditDto,
   SmPayAdvertiserApplyDto,
+  AdvertiserDetailDto,
+  AdvertiserDescriptionDto,
 } from "../dto/smpay";
 
 // 광고주 상태 갯수 조회(SAG020) response type
@@ -78,22 +80,9 @@ export interface RequestFormId extends WithAdvertiserId {
 }
 
 // 광고주 detail 조회(SAG024) response type
-export type AdvertiserDetailDto = {
-  advertiserId: number;
-  userId: number;
-  customerId: number;
-  agentId: number;
-  id: string;
-  nickName: string;
-  name: string;
-  representativeName: string;
-  businessRegistrationNumber: string;
-  phoneNumber: string;
-  emailAddress: string;
-  status: SmPayAdvertiserStatus;
-  roleId: number;
-  isLossPrivileges: boolean;
-  advertiserFormId: number;
+export type ResponseAdvertiserDetail = {
+  advertiser: AdvertiserDetailDto;
+  description: AdvertiserDescriptionDto;
 };
 
 // 광고주 detail 등록 및 수정(SAG023) request type

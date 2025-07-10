@@ -120,3 +120,29 @@ export type ApprovalMemoDto = {
   advertiserApprovalMemosId: number;
   description: string;
 };
+
+export type AdvertiserDescriptionDto = {
+  description: string;
+  advertiserId: number;
+  advertiserStatusMemosId: string;
+};
+
+// 광고주 detail 조회 DTO
+export type AdvertiserDetailDto = {
+  advertiserId: number;
+  userId: number;
+  customerId: number;
+  agentId: number;
+  id: string;
+  nickName: string;
+  name: string;
+  representativeName: string;
+  businessRegistrationNumber: string;
+  phoneNumber: string;
+  emailAddress: string;
+  status: SmPayAdvertiserStatus;
+  roleId: number;
+  isLossPrivileges: boolean;
+  advertiserFormId: number;
+  description: AdvertiserDescriptionDto;
+};

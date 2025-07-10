@@ -1,5 +1,4 @@
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -13,6 +12,8 @@ import { Modal } from "@/components/composite/modal-components";
 import Table from "@/components/composite/table";
 import { LinkTextButton } from "@/components/composite/button-components";
 
+import HistoryDetailModal from "./HistoryDetailModal";
+
 import {
   formatBusinessNumber,
   formatDate,
@@ -24,15 +25,18 @@ import { useQueryAgencyDetail } from "@/hooks/queries/agency";
 
 import type { TableProps } from "@/types/table";
 import type { SmPayAdvertiserStatus } from "@/types/smpay";
-import type { AdvertiserDetailDto } from "@/types/api/smpay";
 import type { ResponseAgencyBills } from "@/types/api/agency";
-import { SMPayFormHistory } from "@/types/dto/smpay";
+import type { SMPayFormHistory, AdvertiserDetailDto } from "@/types/dto/smpay";
 
 type Props = {
   advertiserData?: AdvertiserDetailDto;
+  isShowHistory?: boolean;
 };
 
-const AdvertiserInfoSection = ({ advertiserData }: Props) => {
+const AdvertiserInfoSection = ({
+  advertiserData,
+  isShowHistory = true,
+}: Props) => {
   const [isHistoryModal, setIsHistoryModal] = useState(false);
 
   const { data: dataSource } = useSmPayAdminOverviewApplyFormList(
@@ -63,12 +67,14 @@ const AdvertiserInfoSection = ({ advertiserData }: Props) => {
             광고주 상태
           </LabelBullet>
 
-          <Button
-            onClick={() => setIsHistoryModal(true)}
-            disabled={dataSource && dataSource.length === 0}
-          >
-            SM Pay 지난 이력 보기
-          </Button>
+          {isShowHistory && (
+            <Button
+              onClick={() => setIsHistoryModal(true)}
+              disabled={dataSource && dataSource.length === 0}
+            >
+              SM Pay 지난 이력 보기
+            </Button>
+          )}
         </div>
 
         <Descriptions columns={1}>
@@ -155,7 +161,7 @@ const HistoryModal = ({
   advertiserData,
   dataSource,
 }: HistoryModalProps) => {
-  const router = useRouter();
+  const [formId, setFormId] = useState<number | null>(null);
 
   const columns: TableProps<SMPayFormHistory>["columns"] = [
     {
@@ -188,19 +194,7 @@ const HistoryModal = ({
       key: "advertiserName",
       align: "center",
       render: (text: string, record) => (
-        <LinkTextButton
-          onClick={() => {
-            const { advertiserId, agentId, userId } = advertiserData || {};
-            const queryString = new URLSearchParams({
-              formId: record.advertiserFormId.toString(),
-              agentId: agentId?.toString() || "",
-              userId: userId?.toString() || "",
-            });
-
-            const url = `/sm-pay/admin/overview/history/${advertiserId}?${queryString.toString()}`;
-            router.push(url);
-          }}
-        >
+        <LinkTextButton onClick={() => setFormId(record.advertiserFormId)}>
           {text}
         </LinkTextButton>
       ),
@@ -224,21 +218,31 @@ const HistoryModal = ({
     },
   ];
   return (
-    <Modal
-      open
-      title="SM Pay 지난 이력 보기"
-      onClose={onClose}
-      onConfirm={onClose}
-      cancelDisabled
-    >
-      <div className="w-[85vw] overflow-y-auto">
-        <Table<SMPayFormHistory>
-          dataSource={dataSource}
-          columns={columns}
-          pagination={false}
-          scroll={{ y: 300 }}
+    <Fragment>
+      {formId && (
+        <HistoryDetailModal
+          onClose={() => setFormId(null)}
+          advertiserId={advertiserData?.advertiserId || 0}
+          formId={formId}
         />
-      </div>
-    </Modal>
+      )}
+
+      <Modal
+        open
+        title="SM Pay 지난 이력 보기"
+        onClose={onClose}
+        onConfirm={onClose}
+        cancelDisabled
+      >
+        <div className="w-[85vw] overflow-y-auto">
+          <Table<SMPayFormHistory>
+            dataSource={dataSource}
+            columns={columns}
+            pagination={false}
+            scroll={{ y: 300 }}
+          />
+        </div>
+      </Modal>
+    </Fragment>
   );
 };

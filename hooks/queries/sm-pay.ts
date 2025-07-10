@@ -11,7 +11,6 @@ import type {
   SmPayAdvertiserApplyQuery,
   PutSmPayAdvertiserDetail,
   SmPayWriteParams,
-  AdvertiserDetailDto,
   ParamsSmPayApproval,
   PrePaymentScheduleDto,
   ResponseSmPayAdvertiserStatus,
@@ -69,6 +68,7 @@ import type {
   ApprovalMemoDto,
   ReviewerMemoDto,
   SmPayAuditListDto,
+  AdvertiserDetailDto,
 } from "@/types/dto/smpay";
 
 // 광고주 상태 갯수 조회(SAG020) query

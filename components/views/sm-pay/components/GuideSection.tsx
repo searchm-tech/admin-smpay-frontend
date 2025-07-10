@@ -6,12 +6,14 @@ import { GuideBox } from "@/components/common/Box";
 import { IconBadge } from "@/components/composite/icon-components";
 import { GuideButton } from "@/components/composite/button-components";
 import { useGuideModalStore } from "@/store/useGuideModalStore";
+import { useState } from "react";
+import RejectModal from "./RejectModal";
+import type { AdvertiserDescriptionDto } from "@/types/dto/smpay";
 
 export type ViewType =
   | "guide"
   | "write"
   | "submit"
-  | "reject"
   | "master-judgement"
   | "smpay-guide";
 
@@ -141,18 +143,6 @@ const GuidSection = ({ viewType, className, onClick }: GuidSectionProps) => {
         </GuideButton>
       </section>
     ),
-    reject: (
-      <div className="w-full flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <TriangleAlert color="#FF0000" size={18} />
-          <span>광고주의 심사가 반려되었습니다. 반려 사유를 확인하세요.</span>
-        </div>
-
-        <GuideButton color="#F57272" onClick={onClick || (() => {})}>
-          심사 반려 사유 확인
-        </GuideButton>
-      </div>
-    ),
 
     "smpay-guide": (
       <div className="w-full flex items-start gap-2 text-[13px]">
@@ -198,5 +188,37 @@ const GuideCard = ({ title, description }: GuideCardProps) => {
       <p className="font-bold mb-1 ">{title}</p>
       <p className="text-[#007AFF] text-[11px] font-normal">{description}</p>
     </div>
+  );
+};
+
+export const RejectDescription = ({
+  description,
+}: {
+  description: AdvertiserDescriptionDto;
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <GuideBox className="bg-[#FFD6D6]">
+      <div className="w-full flex items-center justify-between">
+        {isOpen && (
+          <RejectModal
+            open={isOpen}
+            onClose={() => setIsOpen(false)}
+            onConfirm={() => setIsOpen(false)}
+            description={"ㅁㅁㅁㅁㅁ"}
+          />
+        )}
+        <div className="flex items-center gap-2">
+          <TriangleAlert color="#FF0000" size={18} />
+          <span className="text-[#FF0000]">
+            광고주의 심사가 반려되었습니다. 반려 사유를 확인하세요.
+          </span>
+        </div>
+
+        <GuideButton color="#F57272" onClick={() => setIsOpen(true)}>
+          심사 반려 사유 확인
+        </GuideButton>
+      </div>
+    </GuideBox>
   );
 };
