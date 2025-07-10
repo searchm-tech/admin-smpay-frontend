@@ -29,10 +29,10 @@ import {
   RequestSmPayAdminRead,
   ResponseOverviewForm,
   ResponseSMPayDetail,
-  AdvertiserDetailDto,
   PrePaymentScheduleDto,
   ResponseDailyStat,
   ResponseChargeRule,
+  ResponseAdvertiserDetail,
 } from "@/types/api/smpay";
 import type {
   ChargeRuleDto,
@@ -43,6 +43,7 @@ import type {
   ApprovalMemoDto,
   ReviewerMemoDto,
   SmPayAuditListDto,
+  AdvertiserDetailDto,
 } from "@/types/dto/smpay";
 
 import type {
@@ -163,10 +164,13 @@ export const getSmPayAdvertiserDetail = async ({
   const { agentId, userId } = user;
 
   try {
-    const response = await get<AdvertiserDetailDto>(
+    const response = await get<ResponseAdvertiserDetail>(
       `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/details`
     );
-    return response;
+    return {
+      ...response.advertiser,
+      description: response.description,
+    };
   } catch (error) {
     if (error instanceof ApiError) {
       throw error;
