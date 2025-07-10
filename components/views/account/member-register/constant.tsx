@@ -33,6 +33,7 @@ export const convertToDepartmentTreeNode = (
 };
 
 // 그룹 마스터용 변환 함수 - 단일 부서를 폴더로 변환
+// TODO : 다시 확인 후, 삭제 예정
 export const convertToDepartmentTreeNodeGroupMaster = (
   dept: TSubDepartmentsResponse
 ): DepartmentTreeNode => {

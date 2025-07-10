@@ -43,15 +43,8 @@ const ModalDepartment = ({ setIsOpen, onSelect }: ModalDepartmentProps) => {
     setIsOpen(false);
   };
 
-  // 그룹 마스터인지 확인
-  const isGroupManager = user?.type === "AGENCY_GROUP_MANAGER";
-
   const filteredData = filterTreeData(
-    isGroupManager
-      ? subDepartments
-        ? [convertToDepartmentTreeNodeGroupMaster(subDepartments)]
-        : []
-      : subDepartments?.children.map(convertToDepartmentTreeNode) || [],
+    subDepartments?.children.map(convertToDepartmentTreeNode) || [],
     search
   );
 
