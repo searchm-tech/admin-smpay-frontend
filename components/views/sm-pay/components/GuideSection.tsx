@@ -1,14 +1,15 @@
 "use client";
 
+import { useState } from "react";
 import { TriangleAlert } from "lucide-react";
 
 import { GuideBox } from "@/components/common/Box";
 import { IconBadge } from "@/components/composite/icon-components";
 import { GuideButton } from "@/components/composite/button-components";
-import { useGuideModalStore } from "@/store/useGuideModalStore";
-import { useState } from "react";
 import RejectModal from "./RejectModal";
-import type { AdvertiserDescriptionDto } from "@/types/dto/smpay";
+import RejectOperationModal from "./RejectOperationModal";
+
+import { useGuideModalStore } from "@/store/useGuideModalStore";
 
 export type ViewType =
   | "guide"
@@ -193,8 +194,10 @@ const GuideCard = ({ title, description }: GuideCardProps) => {
 
 export const RejectDescription = ({
   description,
+  date,
 }: {
-  description: AdvertiserDescriptionDto;
+  description: string;
+  date: string;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   return (
@@ -205,7 +208,8 @@ export const RejectDescription = ({
             open={isOpen}
             onClose={() => setIsOpen(false)}
             onConfirm={() => setIsOpen(false)}
-            description={"ㅁㅁㅁㅁㅁ"}
+            description={description}
+            date={date}
           />
         )}
         <div className="flex items-center gap-2">
@@ -217,6 +221,42 @@ export const RejectDescription = ({
 
         <GuideButton color="#F57272" onClick={() => setIsOpen(true)}>
           심사 반려 사유 확인
+        </GuideButton>
+      </div>
+    </GuideBox>
+  );
+};
+
+export const RejectOperationDescription = ({
+  description,
+  date,
+}: {
+  description: string;
+  date: string;
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <GuideBox className="bg-[#FFD6D6]">
+      <div className="w-full flex items-center justify-between">
+        {isOpen && (
+          <RejectOperationModal
+            open={isOpen}
+            onClose={() => setIsOpen(false)}
+            onConfirm={() => setIsOpen(false)}
+            description={description}
+            date={date}
+          />
+        )}
+        <div className="flex items-center gap-2">
+          <TriangleAlert color="#FF0000" size={18} />
+          <span className="text-[#FF0000]">
+            SM Pay 운영 검토가 거절되었습니다. 거절 사유를 확인하세요.
+          </span>
+        </div>
+
+        <GuideButton color="#F57272" onClick={() => setIsOpen(true)}>
+          거절 사유 확인
         </GuideButton>
       </div>
     </GuideBox>

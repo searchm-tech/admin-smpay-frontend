@@ -1,5 +1,4 @@
 "use client";
-import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
@@ -12,8 +11,6 @@ import { ScheduleSectionShow } from "@/components/views/sm-pay/components/Schedu
 import { RuleSectionShow } from "@/components/views/sm-pay/components/RuleSection";
 import AdvertiserInfoSection from "@/components/views/sm-pay/components/AdvertiserInfoSection";
 
-import { RejectDialog } from "@/components/views/sm-pay/manangement/dialog";
-
 import { useSmPayFormDetail } from "@/hooks/queries/sm-pay";
 
 interface Props {
@@ -25,49 +22,47 @@ const SmPayApplyDetailView = ({ id }: Props) => {
   const searchParams = useSearchParams();
   const formId = searchParams.get("formId");
 
-  const [isReject, setIsReject] = useState(false);
-
-  const { data: smpayInfo, isPending: loading } = useSmPayFormDetail(
+  const { data: formInfo, isPending: loading } = useSmPayFormDetail(
     Number(id),
     Number(formId)
   );
 
   const prePaymentSchedule = {
-    initialAmount: smpayInfo?.initialAmount || 0,
-    maxChargeLimit: smpayInfo?.maxChargeLimit || 0,
-    minChargeLimit: smpayInfo?.minChargeLimit || 0,
+    initialAmount: formInfo?.initialAmount || 0,
+    maxChargeLimit: formInfo?.maxChargeLimit || 0,
+    minChargeLimit: formInfo?.minChargeLimit || 0,
   };
 
   const statIndicator = {
-    operationPeriod: smpayInfo?.advertiserOperationPeriod || 0,
-    dailyAverageRoas: smpayInfo?.advertiserDailyAverageRoas || 0,
-    monthlyConvAmt: smpayInfo?.advertiserMonthlyConvAmt || 0,
-    dailySalesAmt: smpayInfo?.advertiserDailySalesAmt || 0,
-    recommendRoas: smpayInfo?.advertiserRecommendRoasPercent || 0,
+    operationPeriod: formInfo?.advertiserOperationPeriod || 0,
+    dailyAverageRoas: formInfo?.advertiserDailyAverageRoas || 0,
+    monthlyConvAmt: formInfo?.advertiserMonthlyConvAmt || 0,
+    dailySalesAmt: formInfo?.advertiserDailySalesAmt || 0,
+    recommendRoas: formInfo?.advertiserRecommendRoasPercent || 0,
   };
 
-  const upChargeRule = smpayInfo?.chargeRules.find(
+  const upChargeRule = formInfo?.chargeRules.find(
     (rule) => rule.rangeType === "UP"
   ) || {
     standardRoasPercent: 0,
     rangeType: "UP",
     boundType:
-      smpayInfo?.chargeRules.find((rule) => rule.rangeType === "UP")
+      formInfo?.chargeRules.find((rule) => rule.rangeType === "UP")
         ?.boundType || "FIXED_AMOUNT",
     changePercentOrValue:
-      smpayInfo?.chargeRules.find((rule) => rule.rangeType === "UP")
+      formInfo?.chargeRules.find((rule) => rule.rangeType === "UP")
         ?.changePercentOrValue || 0,
   };
-  const downChargeRule = smpayInfo?.chargeRules.find(
+  const downChargeRule = formInfo?.chargeRules.find(
     (rule) => rule.rangeType === "DOWN"
   ) || {
     standardRoasPercent: 0,
     rangeType: "DOWN",
     boundType:
-      smpayInfo?.chargeRules.find((rule) => rule.rangeType === "DOWN")
+      formInfo?.chargeRules.find((rule) => rule.rangeType === "DOWN")
         ?.boundType || "FIXED_AMOUNT",
     changePercentOrValue:
-      smpayInfo?.chargeRules.find((rule) => rule.rangeType === "DOWN")
+      formInfo?.chargeRules.find((rule) => rule.rangeType === "DOWN")
         ?.changePercentOrValue || 0,
   };
 
@@ -75,15 +70,11 @@ const SmPayApplyDetailView = ({ id }: Props) => {
     <div>
       {loading && <LoadingUI title="SM Pay 정보 조회 중..." />}
 
-      {isReject && (
-        <RejectDialog
-          id={id}
-          onClose={() => setIsReject(false)}
-          onConfirm={() => setIsReject(false)}
-        />
-      )}
-
-      <AdvertiserInfoSection advertiserId={Number(id)} />
+      <AdvertiserInfoSection
+        advertiserId={Number(id)}
+        description={formInfo?.advertiserRejectDescription || ""}
+        date={formInfo?.registerDt || ""}
+      />
 
       <StatIndicatorSection
         advertiserId={Number(id)}
@@ -95,9 +86,9 @@ const SmPayApplyDetailView = ({ id }: Props) => {
         downChargeRule={downChargeRule}
       />
       <ScheduleSectionShow prePaymentSchedule={prePaymentSchedule} />
-      <JudgementMemoSection type="show" text={smpayInfo?.reviewerMemo || ""} />
+      <JudgementMemoSection type="show" text={formInfo?.reviewerMemo || ""} />
 
-      <OperationMemoSection type="show" text={smpayInfo?.approvalMemo || ""} />
+      <OperationMemoSection type="show" text={formInfo?.approvalMemo || ""} />
 
       <div className="flex justify-center gap-4 py-5">
         <Button
