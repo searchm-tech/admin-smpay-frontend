@@ -13,7 +13,10 @@ import Table from "@/components/composite/table";
 import { LinkTextButton } from "@/components/composite/button-components";
 
 import LoadingUI from "@/components/common/Loading";
-import GuidSection, { RejectDescription } from "./GuideSection";
+import GuidSection, {
+  RejectDescription,
+  RejectOperationDescription,
+} from "./GuideSection";
 import HistoryDetailModal from "./HistoryDetailModal";
 
 import {
@@ -34,11 +37,15 @@ import type { SMPayFormHistory } from "@/types/dto/smpay";
 type Props = {
   advertiserId: number;
   isShowHistory?: boolean;
+  description?: string;
+  date?: string;
 };
 
 const AdvertiserInfoSection = ({
   advertiserId,
   isShowHistory = true,
+  description,
+  date,
 }: Props) => {
   const { data: detailInfo, isPending: isLoading } =
     useSmPayAdvertiserDetail(advertiserId);
@@ -51,12 +58,19 @@ const AdvertiserInfoSection = ({
     <div>
       {isLoading && <LoadingUI title="광고주 정보 조회 중..." />}
 
-      {detailInfo?.status !== "REJECT" && (
+      {!["REJECT", "OPERATION_REJECT"].includes(detailInfo?.status || "") && (
         <GuidSection viewType="master-judgement" />
       )}
 
       {detailInfo?.status === "REJECT" && (
-        <RejectDescription description={detailInfo?.description || ""} />
+        <RejectDescription description={description || ""} date={date || ""} />
+      )}
+
+      {detailInfo?.status === "OPERATION_REJECT" && (
+        <RejectOperationDescription
+          description={description || ""}
+          date={date || ""}
+        />
       )}
 
       <section>

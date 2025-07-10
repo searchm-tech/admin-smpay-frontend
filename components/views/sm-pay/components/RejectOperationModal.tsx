@@ -11,7 +11,7 @@ type Props = {
   date?: string;
 };
 
-const RejectModal = ({
+const RejectOperationModal = ({
   open,
   onClose,
   onConfirm,
@@ -28,14 +28,14 @@ const RejectModal = ({
       cancelText="닫기"
     >
       <div className="w-[60vw]">
-        <p>다음과 같은 사유로 일시중지되었습니다.</p>
+        <p>다음과 같은 사유로 SM Pay 운영 검토가 거절되었습니다.</p>
         <div className="mt-4 rounded-md bg-white">
           <Descriptions columns={1}>
-            <DescriptionItem label="심사 반려 일시">
+            <DescriptionItem label="운영 검토 거절 일시">
               {formatDate(date || "")}
             </DescriptionItem>
             {/* <DescriptionItem label="심사자">최상위 그룹장명</DescriptionItem> */}
-            <DescriptionItem label="반려 사유">
+            <DescriptionItem label="거절 사유">
               <div>{description}</div>
             </DescriptionItem>
           </Descriptions>
@@ -45,4 +45,4 @@ const RejectModal = ({
   );
 };
 
-export default RejectModal;
+export default RejectOperationModal;
