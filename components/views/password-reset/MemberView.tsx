@@ -120,8 +120,6 @@ const MemberView = ({ userId, agentId }: Props) => {
       )}
 
       <Title />
-
-      <Title />
       <div className="mx-auto text-center text-[#545F71] font-extrabold flex flex-col gap-2">
         <p>비밀번호를 재설정할 수 있는 페이지입니다.</p>
         <p>아래 안내에 따라 새로운 비밀번호를 입력해주세요.</p>
