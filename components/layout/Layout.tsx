@@ -13,6 +13,7 @@ import SmPayGuideModal from "./GuideModal";
 import { useGuideModalStore } from "@/store/useGuideModalStore";
 import { useSessionStore } from "@/store/useSessionStore";
 import ChannelTalkBoot from "../common/ChannelTalkBoot";
+import LoadingUI from "../common/Loading";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();

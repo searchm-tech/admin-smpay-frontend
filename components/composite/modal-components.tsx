@@ -107,7 +107,7 @@ export const Modal = ({
           minWidth: "500px",
         }}
       >
-        <AlertDialogHeader className="px-8 py-4 bg-[#EB680E] text-white">
+        <AlertDialogHeader className="px-8 py-4">
           <AlertDialogTitle className="flex justify-between items-center my-0">
             <span className="font-bold">{title}</span>
             {!iconDisabled && (
