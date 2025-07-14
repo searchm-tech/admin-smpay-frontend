@@ -78,16 +78,6 @@ const config: Config = {
           "800": "#8D8D8D", // Gray 800 (141, 141, 141)
           "300": "#D2D2D2", // Gray 300 (210, 210, 210)
         },
-        sidebar: {
-          DEFAULT: "#253951",
-          foreground: "hsl(var(--sidebar-foreground))",
-          primary: "hsl(var(--sidebar-primary))",
-          "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
-          accent: "hsl(var(--sidebar-accent))",
-          "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
-          border: "hsl(var(--sidebar-border))",
-          ring: "hsl(var(--sidebar-ring))",
-        },
       },
     },
   },

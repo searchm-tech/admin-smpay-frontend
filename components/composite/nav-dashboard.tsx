@@ -73,7 +73,7 @@ export function NavDashboard() {
   }, [backendMenu, session?.user, menuType]);
 
   return (
-    <SidebarGroup>
+    <SidebarGroup className="h-full w-full bg-[var(--sidebar)] py-4">
       <SidebarMenu>
         {menuItems.map((item) =>
           item.items && item.items.length > 0 ? (
@@ -99,7 +99,7 @@ export function NavDashboard() {
                     <span className="font-medium group-data-[collapsible=icon]:hidden">
                       {item.title}
                     </span>
-                    <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90 group-data-[collapsible=icon]:hidden" />
+                    <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                   </SidebarMenuButton>
                 </CollapsibleTrigger>
                 <CollapsibleContent>
@@ -111,10 +111,7 @@ export function NavDashboard() {
                           <SidebarMenuSubButton
                             asChild
                             isActive={isSubActive}
-                            className={cn(
-                              "cursor-pointer h-9 px-4 rounded-md hover:text-red-500",
-                              isSubActive && "bg-[#C9C0C0] text-red-500" // active 시
-                            )}
+                            className={cn("cursor-pointer h-9 px-4 rounded-xl")}
                           >
                             <a href={subItem.url}>
                               <span>{subItem.title}</span>
