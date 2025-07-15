@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import {
   ChevronDown,
   User,
@@ -10,6 +10,8 @@ import {
   HelpCircle,
   Info,
   LogOut,
+  CircleDollarSign,
+  Rocket,
 } from "lucide-react";
 
 import {
@@ -72,6 +74,28 @@ export function UserMenu({ user }: { user: TSMPayUser }) {
               <span>비밀번호 변경</span>
             </Link>
           </DropdownMenuItem>
+          {!isAdmin && (
+            <Fragment>
+              <DropdownMenuItem className="cursor-pointer">
+                <Link
+                  href="/naver-service"
+                  className="flex items-center space-x-2 w-full"
+                >
+                  <Rocket size={16} />
+                  <span>네이버 서비스 설정</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer">
+                <Link
+                  href="/advertiser-biz"
+                  className="flex items-center space-x-2 w-full"
+                >
+                  <CircleDollarSign size={16} />
+                  <span>광고주별 비즈머니 조회</span>
+                </Link>
+              </DropdownMenuItem>
+            </Fragment>
+          )}
         </DropdownMenuGroup>
 
         <DropdownMenuSeparator className="bg-gray-300" />
