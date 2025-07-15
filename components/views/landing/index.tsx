@@ -124,7 +124,7 @@ export default function Component() {
             <Link href="#user-guide-section">SM Pay 이용 가이드</Link>
           </Button>
           <Button className="hidden sm:inline-flex bg-gray-900 text-white hover:bg-gray-800">
-            <Link href="/agency-login">대행사 접속 링크</Link>
+            <Link href="/landing/agency-login">대행사 접속 링크</Link>
           </Button>
           <Button variant="ghost" size="icon" className="md:hidden">
             <Menu className="size-5" />
@@ -139,14 +139,17 @@ export default function Component() {
           className="w-full py-12 md:py-24 lg:py-32 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url('/images/hero-background.png')` }}
         >
-          <div className="container px-4 md:px-6 text-center">
-            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl/none max-w-4xl mx-auto text-white">
-              광고 효율은 높이고, 결제 부담은 낮춘 새로운 광고비 결제 방식
+          <div className="w-full flex flex-col items-center justify-center px-4 md:px-6 text-center">
+            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl leading-tight break-keep max-w-5xl mx-auto text-white">
+              광고 효율은 높이고, 결제 부담은 낮춘
+              <br />
+              새로운 광고비 결제 방식
             </h1>
             <p className="mt-4 text-lg text-gray-200 md:text-xl max-w-3xl mx-auto">
               부담스러운 광고비, SM Pay가 미리 결제해드립니다. SM Pay는 광고비를
               선결제해주는 광고비 최적화 솔루션으로, 광고 효율 기반의 자동 상환
-              시스템을 통해 유연한 광고 운영을 지원합니다.
+              시스템을 통해 <br />
+              유연한 광고 운영을 지원합니다.
             </p>
           </div>
         </section>
@@ -249,13 +252,16 @@ export default function Component() {
                 자동화된 시스템
               </span>
               을 제공합니다. 이제 반복적인 광고 관리 업무는 SM PAY에 맡기고,
-              중요한 광고 전략에 집중하세요. 팀장급 사용자라면 하위 마케터들의
-              광고 성과까지 한눈에 관리할 수 있어{" "}
+              중요한 광고 전략에 집중하세요. <br />
+              팀장급 사용자라면 하위 마케터들의 광고 성과까지 한눈에 관리할 수
+              있어
+              <br />
               <span className="font-semibold text-blue-600">
                 조직 단위의 효율적인 운영
               </span>
-              이 가능합니다. 목표 이상의 성과를 달성하고 매출 성장을 실현할 수
-              있도록, SM PAY가 든든한 파트너가 되어드리겠습니다.
+              이 가능합니다. <br />
+              목표 이상의 성과를 달성하고 매출 성장을 실현할 수 있도록, <br />
+              SM PAY가 든든한 파트너가 되어드리겠습니다.
             </p>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 mt-12">
               <div className="flex flex-col items-center space-y-3 transition-all duration-300 hover:scale-105">
@@ -309,7 +315,9 @@ export default function Component() {
                 광고 운영 전반을 자동화
               </span>
               합니다. 광고 성과 데이터를 기반으로 예산을 자동 증감 조정하고,
+              <br />
               실시간 트렌드에 따라 키워드와 소재를 자동 확장·생성함으로써
+              <br />
               최소한의 운영 부담으로 최대의 성과를 낼 수 있는 환경을 제공합니다.
             </p>
             <div className="grid md:grid-cols-2 gap-8 mt-12 text-left">
@@ -329,8 +337,8 @@ export default function Component() {
                 </CardTitle>
                 <CardDescription className="mt-2 text-gray-600">
                   SM PAY는 대화형·생성형 AI 기술을 활용해 상품, 시즌, 트렌드,
-                  이슈별 키워드를 자동 확장하고, 이를 바탕으로 광고 소재와
-                  콘텐츠를 자동 생성합니다.
+                  이슈별 키워드를 자동 확장하고, <br />
+                  이를 바탕으로 광고 소재와 콘텐츠를 자동 생성합니다.
                 </CardDescription>
               </Card>
             </div>

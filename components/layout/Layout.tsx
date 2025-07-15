@@ -32,7 +32,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     pathname === "/sign-up" ||
     pathname === "/example" ||
     pathname === "/error" ||
-    pathname === "/";
+    pathname === "/" ||
+    pathname === "/landing/agency-login";
 
   const isErrorPage = pathname === "/not-found" || pathname === "/error";
 
