@@ -111,9 +111,9 @@ export default function Component() {
             className="flex items-center justify-center text-xl font-bold text-gray-900"
           >
             <Image
-              src="/images/logo-searchm.png"
-              alt="searchm"
-              width={145}
+              src="/images/SMPay_logo.png"
+              alt="SM PAY"
+              width={100}
               height={44}
             />
           </Link>
