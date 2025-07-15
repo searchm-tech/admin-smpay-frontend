@@ -1,3 +1,4 @@
+import Script from "next/script";
 import { Noto_Sans_KR } from "next/font/google";
 
 import QueryProvider from "@/lib/providers/QueryProvider";
@@ -8,7 +9,6 @@ import "./globals.css";
 import "antd/dist/reset.css"; // antd 리셋 css
 
 import type { Metadata } from "next";
-import Script from "next/script";
 
 const notoSansKr = Noto_Sans_KR({
   subsets: ["latin"],
@@ -17,8 +17,37 @@ const notoSansKr = Noto_Sans_KR({
 });
 
 export const metadata: Metadata = {
-  title: "SM Pay",
-  description: "SM Pay Admin",
+  title:
+    "SM Pay - 광고 효율은 높이고, 결제 부담은 낮춘 새로운 광고비 결제 방식",
+  description:
+    "부담스러운 광고비, SM Pay가 미리 결제해드립니다. 광고비를 선결제해주는 광고비 최적화 솔루션으로, 광고 효율 기반의 자동 상환 시스템을 통해 유연한 광고 운영을 지원합니다.",
+  keywords:
+    "SM Pay, 광고비 결제, 광고비 선결제, 광고비 최적화, 광고 운영, 자동 상환",
+  openGraph: {
+    title:
+      "SM Pay - 광고 효율은 높이고, 결제 부담은 낮춘 새로운 광고비 결제 방식",
+    description:
+      "부담스러운 광고비, SM Pay가 미리 결제해드립니다. 광고비를 선결제해주는 광고비 최적화 솔루션으로, 광고 효율 기반의 자동 상환 시스템을 통해 유연한 광고 운영을 지원합니다.",
+    type: "website",
+    locale: "ko_KR",
+    siteName: "SM Pay",
+    images: [
+      {
+        url: "/images/og-image.png", // 썸네일 이미지 경로
+        width: 1200,
+        height: 630,
+        alt: "SM Pay - 광고비 결제 솔루션",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title:
+      "SM Pay - 광고 효율은 높이고, 결제 부담은 낮춘 새로운 광고비 결제 방식",
+    description:
+      "부담스러운 광고비, SM Pay가 미리 결제해드립니다. 광고비를 선결제해주는 광고비 최적화 솔루션으로, 광고 효율 기반의 자동 상환 시스템을 통해 유연한 광고 운영을 지원합니다.",
+    images: ["/images/og-image.png"],
+  },
 };
 
 export default function RootLayout({
