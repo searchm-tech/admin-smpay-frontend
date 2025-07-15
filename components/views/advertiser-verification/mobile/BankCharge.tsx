@@ -25,9 +25,14 @@ const BankCharge = ({
   const { bankList } = useBankStore();
   const { mutate: accountCertificationChage, isPending: isCertifyingCharge } =
     useBanckCertification({
-      onSuccess: () => {
-        alert("계좌 인증이 완료 되었습니다.");
-        setChargeAccount({ ...chargeBank, isCertified: true });
+      onSuccess: (res) => {
+        if (res === true) {
+          alert("계좌 인증이 완료 되었습니다.");
+          setChargeAccount({ ...chargeBank, isCertified: true });
+        } else {
+          alert("계좌 인증에 실패했습니다.");
+          setChargeAccount({ ...chargeBank, isCertified: false });
+        }
       },
       onError: (error) => {
         alert("계좌 인증에 실패했습니다.");

@@ -34,9 +34,14 @@ const AccountSale = ({
 
   const { mutate: bankCertificationSales, isPending: isCertifyingSales } =
     useBanckCertification({
-      onSuccess: () => {
-        setSalesBank({ ...salesBank, isCertified: true });
-        alert("계좌 인증이 완료 되었습니다.");
+      onSuccess: (res) => {
+        if (res === true) {
+          setSalesBank({ ...salesBank, isCertified: true });
+          alert("계좌 인증이 완료 되었습니다.");
+        } else {
+          setSalesBank({ ...salesBank, isCertified: false });
+          alert("계좌 인증에 실패했습니다.");
+        }
       },
       onError: (error) => {
         setSalesBank({ ...salesBank, isCertified: false });

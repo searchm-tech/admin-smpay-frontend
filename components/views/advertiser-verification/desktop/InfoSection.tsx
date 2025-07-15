@@ -55,9 +55,14 @@ const InfoSection = ({
 
   const { mutate: accountCertificationChage, isPending: isCertifyingCharge } =
     useBanckCertification({
-      onSuccess: () => {
-        setIsCertifiedCharge(true);
-        setCertifiedMessage("charge");
+      onSuccess: (res) => {
+        if (res === true) {
+          setIsCertifiedCharge(true);
+          setCertifiedMessage("charge");
+        } else {
+          setMessage("계좌 인증에 실패했습니다.");
+          setIsCertifiedCharge(false);
+        }
       },
       onError: (error) => {
         setMessage("계좌 인증에 실패했습니다.");
