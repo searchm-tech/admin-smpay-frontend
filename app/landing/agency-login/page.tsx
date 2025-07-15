@@ -15,8 +15,8 @@ export default function AgencyLoginPage() {
   const agencies = [
     {
       id: "agency-1",
-      name: "SM Pay",
-      logo: "/images/SMPay_logo.png",
+      name: "searchM",
+      logo: "/images/logo-searchm.png",
       status: "active",
       loginUrl: "/sign-in",
     },
@@ -59,9 +59,9 @@ export default function AgencyLoginPage() {
           className="flex items-center justify-center text-xl font-bold text-gray-900 hover:text-blue-600 transition-colors"
         >
           <Image
-            src="/images/logo-searchm.png"
-            alt="searchm"
-            width={145}
+            src="/images/SMPay_logo.png"
+            alt="SM PAY"
+            width={100}
             height={44}
           />
         </Link>
@@ -128,11 +128,11 @@ export default function AgencyLoginPage() {
               <CardContent className="p-8 text-center h-48 flex flex-col justify-center items-center relative">
                 {agency.status === "active" ? (
                   <>
-                    <div className="mb-4 p-4 rounded-xl group-hover:bg-blue-50 transition-colors">
+                    <div className="p-4 rounded-xl group-hover:bg-blue-50 transition-colors">
                       <img
                         src={agency.logo || "/placeholder.svg"}
                         alt={`${agency.name} 로고`}
-                        className="h-12 w-auto mx-auto object-contain"
+                        className="h-14 w-auto mx-auto object-contain"
                       />
                     </div>
                     <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
@@ -144,8 +144,8 @@ export default function AgencyLoginPage() {
                   </>
                 ) : (
                   <>
-                    <div className="mb-4 p-4 rounded-xl">
-                      <Clock className="size-12 text-gray-400 mx-auto" />
+                    <div className="p-4 rounded-xl">
+                      <Clock className="size-14 text-gray-400 mx-auto" />
                     </div>
                     <h3 className="text-lg font-medium text-gray-500">
                       준비 중입니다
