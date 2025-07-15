@@ -104,38 +104,30 @@ export default function Component() {
   return (
     <div className="flex flex-col min-h-dvh bg-gray-50 text-gray-900">
       {/* Top Header Row */}
-      <header className="px-4 lg:px-6 h-16 flex items-center justify-between border-b bg-white shadow-sm">
-        <Link
-          href="/"
-          className="flex items-center justify-center text-xl font-bold text-gray-900"
-        >
-          <Image
-            src="/images/SMPay_logo.png"
-            alt="SM PAY"
-            width={100}
-            height={44}
-          />
-        </Link>
-        <div className="flex items-center gap-4">
-          <Button
-            variant="ghost"
-            className="hidden sm:inline-flex text-gray-900 hover:bg-gray-100"
+      <header className="h-[88px] border-b bg-white shadow-sm sticky top-0 z-50">
+        <div className="h-[64px] px-4 py-2 lg:px-6 flex items-center justify-between gap-4">
+          <Link
+            href="/"
+            className="flex items-center justify-center text-xl font-bold text-gray-900"
           >
-            <Link href="#user-guide-section">SM Pay 이용 가이드</Link>
-          </Button>
-          <Button className="hidden sm:inline-flex bg-gray-900 text-white hover:bg-gray-800">
-            <Link href="/landing/agency-login">대행사 접속 링크</Link>
-          </Button>
-          <Button variant="ghost" size="icon" className="md:hidden">
-            <Menu className="size-5" />
-            <span className="sr-only">Toggle navigation</span>
-          </Button>
+            <Image
+              src="/images/logo-searchm.png"
+              alt="searchm"
+              width={145}
+              height={44}
+            />
+          </Link>
+          <div className="flex items-center gap-4">
+            <Button className="hidden sm:inline-flex bg-gray-900 text-white hover:bg-gray-800">
+              <Link href="/landing/agency-login">대행사 접속 링크</Link>
+            </Button>
+            <Button variant="ghost" size="icon" className="md:hidden">
+              <Menu className="size-5" />
+              <span className="sr-only">Toggle navigation</span>
+            </Button>
+          </div>
         </div>
-      </header>
 
-      <main className="flex-1">
-        {/* Hero Section - Updated with background image and text colors */}
-        {/* Second Header Row for Internal Navigation */}
         <nav
           ref={navRef}
           className="w-full bg-blue-800 py-3 px-4 md:px-6 flex justify-center items-center shadow-md"
@@ -173,6 +165,12 @@ export default function Component() {
             </Link>
           </div>
         </nav>
+      </header>
+
+      <main className="flex-1">
+        {/* Hero Section - Updated with background image and text colors */}
+        {/* Second Header Row for Internal Navigation */}
+
         <section
           className="w-full py-12 md:py-24 lg:py-32 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url('/images/hero-background.png')` }}
