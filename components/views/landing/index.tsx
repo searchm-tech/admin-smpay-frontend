@@ -104,7 +104,7 @@ export default function Component() {
   return (
     <div className="flex flex-col min-h-dvh bg-gray-50 text-gray-900">
       {/* Top Header Row */}
-      <header className="h-[88px] border-b bg-white shadow-sm sticky top-0 z-50">
+      <header className="h-[96px] border-b bg-white shadow-sm sticky top-0 z-50">
         <div className="h-[64px] px-4 py-2 lg:px-6 flex items-center justify-between gap-4">
           <Link
             href="/"
@@ -130,9 +130,9 @@ export default function Component() {
 
         <nav
           ref={navRef}
-          className="w-full bg-blue-800 py-3 px-4 md:px-6 flex justify-center items-center shadow-md"
+          className="w-full bg-blue-800 py-4 px-4 md:px-6 flex justify-center items-center shadow-md"
         >
-          <div className="container flex items-center justify-center gap-6 text-white text-sm font-medium">
+          <div className="container flex items-center justify-center gap-6 text-white text-base font-medium">
             <Link
               href="#sm-pay-intro"
               className="hover:underline underline-offset-4 transition-colors"
@@ -176,12 +176,13 @@ export default function Component() {
           style={{ backgroundImage: `url('/images/hero-background.png')` }}
         >
           <div className="w-full flex flex-col items-center justify-center px-4 md:px-6 text-center">
-            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl leading-tight break-keep max-w-5xl mx-auto text-white">
-              광고 효율은 높이고, 결제 부담은 낮춘
-              <br />
-              새로운 광고비 결제 방식
+            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl break-keep max-w-5xl mx-auto text-white">
+              <div className="leading-[1.4]">
+                광고 효율은 높이고, 결제 부담은 낮춘
+              </div>
+              <div className="leading-[1.4] mt-4">새로운 광고비 결제 방식</div>
             </h1>
-            <p className="mt-4 text-lg text-gray-200 md:text-xl max-w-3xl mx-auto">
+            <p className="mt-4 text-lg text-gray-200 md:text-xl max-w-3xl mx-auto leading-[1.6]">
               부담스러운 광고비, SM Pay가 미리 결제해드립니다. SM Pay는 광고비를
               선결제해주는 광고비 최적화 솔루션으로, 광고 효율 기반의 자동 상환
               시스템을 통해 <br />
