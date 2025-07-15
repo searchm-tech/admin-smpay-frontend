@@ -145,3 +145,22 @@ export const getAdvertiserBizMoneyList = async (
     throw error;
   }
 };
+
+/**
+ * 마케터와 연결된 광고주 리스트 조회(SAG038)
+ * - 화면 : 충전 회수 현황 > 광고주 세부 선택 [광고주 선택 리스트 부분]
+ */
+export const getAdvertiserListByUserId = async (params: {
+  agentId: number;
+  userIds: number[];
+}) => {
+  const { agentId, userIds } = params;
+
+  // 반복 파라미터 방식으로 변경
+  const userIdParams = userIds.map((id) => `userIds=${id}`).join("&");
+  console.log("userIdParams", userIdParams);
+  const response: ResponseAdvertiserList = await get(
+    `/service/api/v1/agents/${agentId}/users/advertisers/search?${userIdParams}`
+  );
+  return response;
+};
