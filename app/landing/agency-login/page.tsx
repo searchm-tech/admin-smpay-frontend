@@ -66,12 +66,6 @@ export default function AgencyLoginPage() {
           />
         </Link>
         <div className="flex items-center gap-4">
-          <Button
-            variant="ghost"
-            className="hidden sm:inline-flex text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all"
-          >
-            <Link href="/">SM Pay 이용 가이드</Link>
-          </Button>
           <Button className="hidden sm:inline-flex bg-gray-900 text-white hover:bg-gray-800">
             <Link href="/landing/agency-login">대행사 접속 링크</Link>
           </Button>
