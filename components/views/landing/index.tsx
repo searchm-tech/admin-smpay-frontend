@@ -135,25 +135,6 @@ export default function Component() {
 
       <main className="flex-1">
         {/* Hero Section - Updated with background image and text colors */}
-        <section
-          className="w-full py-12 md:py-24 lg:py-32 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `url('/images/hero-background.png')` }}
-        >
-          <div className="w-full flex flex-col items-center justify-center px-4 md:px-6 text-center">
-            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl leading-tight break-keep max-w-5xl mx-auto text-white">
-              광고 효율은 높이고, 결제 부담은 낮춘
-              <br />
-              새로운 광고비 결제 방식
-            </h1>
-            <p className="mt-4 text-lg text-gray-200 md:text-xl max-w-3xl mx-auto">
-              부담스러운 광고비, SM Pay가 미리 결제해드립니다. SM Pay는 광고비를
-              선결제해주는 광고비 최적화 솔루션으로, 광고 효율 기반의 자동 상환
-              시스템을 통해 <br />
-              유연한 광고 운영을 지원합니다.
-            </p>
-          </div>
-        </section>
-
         {/* Second Header Row for Internal Navigation */}
         <nav
           ref={navRef}
@@ -192,11 +173,29 @@ export default function Component() {
             </Link>
           </div>
         </nav>
+        <section
+          className="w-full py-12 md:py-24 lg:py-32 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url('/images/hero-background.png')` }}
+        >
+          <div className="w-full flex flex-col items-center justify-center px-4 md:px-6 text-center">
+            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl leading-tight break-keep max-w-5xl mx-auto text-white">
+              광고 효율은 높이고, 결제 부담은 낮춘
+              <br />
+              새로운 광고비 결제 방식
+            </h1>
+            <p className="mt-4 text-lg text-gray-200 md:text-xl max-w-3xl mx-auto">
+              부담스러운 광고비, SM Pay가 미리 결제해드립니다. SM Pay는 광고비를
+              선결제해주는 광고비 최적화 솔루션으로, 광고 효율 기반의 자동 상환
+              시스템을 통해 <br />
+              유연한 광고 운영을 지원합니다.
+            </p>
+          </div>
+        </section>
 
         {/* What is SM Pay? Section - New Feel */}
         <section
           id="sm-pay-intro"
-          className="w-full py-12 md:py-24 lg:py-32 bg-white"
+          className="w-full flex justify-center py-12 md:py-24 lg:py-32 bg-white"
         >
           <div className="container px-4 md:px-6 text-center">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
@@ -240,7 +239,7 @@ export default function Component() {
         {/* Core Features Section - New Feel */}
         <section
           id="features"
-          className="w-full py-12 md:py-24 lg:py-32 bg-gray-50"
+          className="w-full py-12 md:py-24 lg:py-32 bg-gray-50 flex justify-center"
         >
           <div className="container px-4 md:px-6 text-center">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
@@ -303,7 +302,7 @@ export default function Component() {
         {/* AI Automation Section - New Feel */}
         <section
           id="ai-automation"
-          className="w-full py-12 md:py-24 lg:py-32 bg-white"
+          className="w-full py-12 md:py-24 lg:py-32 bg-white flex justify-center"
         >
           <div className="container px-4 md:px-6 text-center">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
@@ -348,7 +347,7 @@ export default function Component() {
         {/* Application Process Section - New Feel */}
         <section
           id="application-process"
-          className="w-full py-12 md:py-24 lg:py-32 bg-gray-50"
+          className="w-full py-12 md:py-24 lg:py-32 bg-gray-50 flex justify-center"
         >
           <div className="container px-4 md:px-6 text-center">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
@@ -403,7 +402,7 @@ export default function Component() {
         {/* User Guide Section - Integrated Content */}
         <section
           id="user-guide-section"
-          className="w-full py-12 md:py-24 lg:py-32 bg-gray-800 text-white"
+          className="w-full py-12 md:py-24 lg:py-32 bg-gray-800 text-white flex justify-center"
         >
           <div className="container px-4 md:px-6 text-center">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
