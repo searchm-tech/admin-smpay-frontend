@@ -52,15 +52,15 @@ export default function AgencyLoginPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
       {/* Header */}
-      <header className="px-4 lg:px-6 h-16 flex items-center justify-between border-b bg-white/80 backdrop-blur-sm shadow-sm sticky top-0 z-50">
+      <header className="px-4 lg:px-6 h-[64px] flex items-center justify-between border-b bg-white/80 backdrop-blur-sm shadow-sm sticky top-0 z-50">
         <Link
           href="/"
           className="flex items-center justify-center text-xl font-bold text-gray-900 hover:text-blue-600 transition-colors"
         >
           <Image
-            src="/images/SMPay_logo.png"
-            alt="SM PAY"
-            width={100}
+            src="/images/logo-searchm.png"
+            alt="searchm"
+            width={145}
             height={44}
           />
         </Link>
