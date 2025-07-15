@@ -1,4 +1,4 @@
-import Copyright from "@/components/layout/Copyright";
+// import Copyright from "@/components/layout/Copyright";
 import { Button } from "@/components/ui/button";
 
 type FooterSectionProps = {
@@ -26,7 +26,7 @@ const FooterSection = ({
           초기화
         </Button>
       </div>
-      <Copyright className="py-[50px] text-[#545F71]" />
+      {/* <Copyright className="py-[50px] text-[#545F71]" /> */}
     </section>
   );
 };

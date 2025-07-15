@@ -20,9 +20,10 @@ import ModalPwdSetting from "./ModalPwdSetting";
 import { useSessionStore } from "@/store/useSessionStore";
 import { signInApi } from "@/services/auth";
 import { getAgencyDomainNameApi } from "@/services/agency";
+import { useWindowSize } from "@/hooks/useWindowSize";
 
 import { ApiError } from "@/lib/api";
-import { getIsAdmin, getRedirectPath } from "@/lib/utils";
+import { getRedirectPath } from "@/lib/utils";
 
 import { STORAGE_KEYS, createFormSchema, defaultValues } from "./constants";
 
@@ -36,6 +37,7 @@ const SignInView = ({ code }: SignInViewProps) => {
   const router = useRouter();
   const { data: session, status } = useSession();
   const { setAccessToken, setRefreshToken } = useSessionStore();
+  const { device } = useWindowSize();
 
   const [loading, setLoading] = useState(false);
   const [pwdModal, setPwdModal] = useState(false);
@@ -199,6 +201,10 @@ const SignInView = ({ code }: SignInViewProps) => {
     return <LoadingUI title="인증 정보 확인 중..." />;
   }
 
+  if (device === "mobile") {
+    return <MobileError />;
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       {loading && <LoadingUI title="로그인 중..." />}
@@ -206,8 +212,16 @@ const SignInView = ({ code }: SignInViewProps) => {
       {pwdModal && <ModalPwdSetting onClose={() => setPwdModal(false)} />}
 
       <div className="max-w-md w-full space-y-8">
-        <div className="w-full flex justify-center">
-          <Title />
+        <div className="w-full flex flex-col justify-center items-center gap-2">
+          <Image
+            src="/images/logo_signin.png"
+            alt="logo"
+            width={214}
+            height={83}
+          />
+          <p className="text-base font-medium">
+            온라인 광고 후부 자동 결제 솔루션
+          </p>
         </div>
 
         <Form {...form}>
@@ -270,5 +284,23 @@ const ErrorMessage = ({ message }: { message: string }) => {
     <span className="text-red-500 text-sm mt-2 block text-center font-medium">
       {message}
     </span>
+  );
+};
+
+import Image from "next/image";
+
+// 404 오류 페이지
+const MobileError = () => {
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen text-center p-4">
+      <Image src="/images/error-page.png" alt="logo" width={100} height={100} />
+
+      <p className="mt-4 text-[20px] font-medium">
+        모바일 환경에서는 로그인이 불가능합니다.
+      </p>
+      <p className="my-6 text-[15px] font-medium">
+        PC 환경에서 로그인 해주세요.
+      </p>
+    </div>
   );
 };

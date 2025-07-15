@@ -1,4 +1,5 @@
 import { Fragment, useState } from "react";
+import { ExternalLink } from "lucide-react";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 import { useQueryAgencyDomainName } from "@/hooks/queries/agency";
 
@@ -41,7 +42,14 @@ const ShortcutButton = ({ code }: Props) => {
           onConfirm={() => setError("")}
         />
       )}
-      <button onClick={handleDownloadShortcut}>바탕화면 바로가기 만들기</button>
+      <button
+        onClick={handleDownloadShortcut}
+        className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-blue-600 bg-white border border-blue-200 rounded-lg hover:bg-blue-50 hover:border-blue-300 transition-all duration-200 shadow-sm"
+      >
+        <ExternalLink size={14} />
+        <span>바로가기</span>
+        <span className="text-blue-500">+</span>
+      </button>
     </Fragment>
   );
 };
