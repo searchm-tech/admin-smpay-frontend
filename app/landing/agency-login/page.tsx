@@ -17,32 +17,32 @@ export default function AgencyLoginPage() {
       name: "SM Pay",
       logo: "/images/SMPay_logo.png",
       status: "active",
-      loginUrl: "/login/agency-1",
+      loginUrl: "/sign-in",
     },
     {
       id: "agency-2",
-      name: "스마트애드솔루션",
+      name: "",
       logo: "/placeholder.svg?height=80&width=120",
       status: "coming-soon",
       loginUrl: "/login/agency-2",
     },
     {
       id: "agency-3",
-      name: "크리에이티브미디어",
+      name: "",
       logo: "/placeholder.svg?height=80&width=120",
       status: "coming-soon",
       loginUrl: "/login/agency-3",
     },
     {
       id: "agency-4",
-      name: "글로벌마케팅그룹",
+      name: "",
       logo: "/placeholder.svg?height=80&width=120",
       status: "coming-soon",
       loginUrl: "/login/agency-4",
     },
     {
       id: "agency-5",
-      name: "계약 예정 대행사",
+      name: "",
       logo: null,
       status: "coming-soon",
       loginUrl: null,
@@ -69,7 +69,7 @@ export default function AgencyLoginPage() {
             variant="ghost"
             className="hidden sm:inline-flex text-gray-700 hover:text-blue-600 hover:bg-blue-50 transition-all"
           >
-            <Link href="/#user-guide-section">SM Pay 이용 가이드</Link>
+            <Link href="/">SM Pay 이용 가이드</Link>
           </Button>
           <Button className="hidden sm:inline-flex bg-gray-900 text-white hover:bg-gray-800">
             <Link href="/landing/agency-login">대행사 접속 링크</Link>
