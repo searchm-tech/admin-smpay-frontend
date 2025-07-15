@@ -9,6 +9,7 @@ import Select from "@/components/composite/select-components";
 import { SearchInput } from "@/components/composite/input-components";
 
 import DetailSelectModal from "./DetailSelectModal";
+import ManagementModal from "./modal/ManagementModal";
 
 const FilterSection = () => {
   const [date, setDate] = useState<Date | undefined>();
@@ -17,11 +18,12 @@ const FilterSection = () => {
 
   return (
     <section className="pt-2 pb-5 border-b border-[#656565]">
-      <DetailSelectModal
-        open={isOpen}
-        onClose={() => setIsOpen(false)}
-        onConfirm={() => {}}
-      />
+      {isOpen && (
+        <ManagementModal
+          onClose={() => setIsOpen(false)}
+          onConfirm={() => {}}
+        />
+      )}
 
       <div className="flex gap-2">
         <div className="flex items-center gap-2">
