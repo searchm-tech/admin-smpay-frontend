@@ -1,6 +1,11 @@
-import { Sidebar, SidebarContent } from "@/components/ui/sidebar";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+} from "@/components/ui/sidebar";
 
 import { NavDashboard } from "@/components/composite/nav-dashboard";
+import Copyright from "@/components/layout/Copyright";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -12,6 +17,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavDashboard />
       </SidebarContent>
+
+      <SidebarFooter>
+        <Copyright className="py-4" />
+      </SidebarFooter>
     </Sidebar>
   );
 }

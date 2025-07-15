@@ -16,7 +16,7 @@ import {
 import Title from "@/components/common/Title";
 import LoadingUI from "@/components/common/Loading";
 import { DescriptionPwd } from "@/components/common/Box";
-import ErrorView, { ErrorComponent } from "../error";
+import { ErrorComponent } from "../error";
 
 import { userAuthTypeMap } from "@/utils/status";
 import { PASSWORD_REGEX } from "@/constants/reg";
