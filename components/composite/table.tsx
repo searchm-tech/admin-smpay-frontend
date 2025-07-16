@@ -35,7 +35,7 @@ function Table<T extends object>({
   useEffect(() => {
     const timer = setTimeout(() => {
       setRenderLoading(false);
-    }, 1000); // 1초 후 데이터 세팅
+    }, 100); // 0.1초 후 데이터 세팅
 
     return () => clearTimeout(timer);
   }, []);

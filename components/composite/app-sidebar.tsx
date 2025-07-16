@@ -2,12 +2,15 @@ import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
+  useSidebar,
 } from "@/components/ui/sidebar";
 
 import { NavDashboard } from "@/components/composite/nav-dashboard";
 import Copyright from "@/components/layout/Copyright";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { state } = useSidebar();
+  console.log(state);
   return (
     <Sidebar
       collapsible="icon"
@@ -18,9 +21,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavDashboard />
       </SidebarContent>
 
-      <SidebarFooter>
-        <Copyright className="py-4" />
-      </SidebarFooter>
+      {state === "expanded" && (
+        <SidebarFooter>
+          <Copyright className="py-4" />
+        </SidebarFooter>
+      )}
     </Sidebar>
   );
 }

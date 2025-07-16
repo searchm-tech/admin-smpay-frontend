@@ -28,7 +28,7 @@ export default function Chart2({
   showRightYAxis?: boolean;
 }) {
   return (
-    <div className="w-full h-[53vh]">
+    <div className="w-full h-[45vh] mt-12">
       <ResponsiveContainer width="100%" height="100%">
         <ComposedChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />

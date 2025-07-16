@@ -100,22 +100,3 @@ export const SubDescItem = ({ children }: SubDescItemProps) => {
 
 Descriptions.Item = DescriptionItem;
 Descriptions.SubDescItem = SubDescItem;
-
-// 사용 예시:
-/*
-<Descriptions columns={3} bordered={true} className="my-4">
-  <Descriptions.Item label="이름" className="text-gray-600">
-    홍길동
-  </Descriptions.Item>
-  <Descriptions.Item label="나이">30세</Descriptions.Item>
-  <Descriptions.Item label="주소">서울시 강남구</Descriptions.Item>
-  <Descriptions.Item label="상세 설명" span={2}>
-    긴 설명 텍스트
-  </Descriptions.Item>
-</Descriptions>
-
-// label width 변경 예시:
-<Descriptions styles={{ label: { width: 300 } }}>
-  ...
-</Descriptions>
-*/

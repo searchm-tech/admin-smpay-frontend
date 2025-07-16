@@ -220,7 +220,7 @@ const SignInView = ({ code }: SignInViewProps) => {
             height={83}
           />
           <p className="text-base font-medium">
-            온라인 광고 후부 자동 결제 솔루션
+            온라인 광고 후불 자동 결제 솔루션
           </p>
         </div>
 

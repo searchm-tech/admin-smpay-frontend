@@ -21,6 +21,7 @@ import type {
   RequestAdvertiserBizMoneyList,
   ResponseAdvertiserBizMoneyList,
 } from "@/types/api/advertiser";
+import { TAdvertiser } from "@/types/adveriser";
 
 // 광고주 리스트 페이지네이션 조회 (SAG012) query
 // TODO : useAuthQuery 로 변경 필요
@@ -87,9 +88,9 @@ export const useQueryAdvertiserBizMoneyList = (
 // 마케터와 연결된 광고주 리스트 조회(SAG038)
 export const useQueryAdvertiserListByUserId = (
   params: { agentId: number; userIds: number[] },
-  options?: UseQueryOptions<any, Error>
+  options?: UseQueryOptions<TAdvertiser[], Error>
 ) => {
-  return useQuery<any>({
+  return useQuery<TAdvertiser[], Error>({
     queryKey: ["advertiserListByUserId", params],
     queryFn: () => getAdvertiserListByUserId(params),
     enabled: params.userIds.length > 0 && !!params.agentId,

@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { Menu } from "lucide-react";
 
 import { Separator } from "@/components/ui/separator";
 import { useSidebar } from "@/components/ui/sidebar";
@@ -30,15 +31,11 @@ const Header = () => {
 
   return (
     <header className="fixed top-0 left-0 z-10 w-full flex justify-between items-center space-x-4 text-sm pr-4 h-[60px] bg-white text-[#222] border-t border-b border-[#e5e7eb]">
-      <div className="flex items-center">
-        <div className="cursor-pointer mt-1" onClick={toggleSidebar}>
-          <Image
-            src="/images/icon_menu.png"
-            alt="icon_menu"
-            width={20}
-            height={20}
-          />
-        </div>
+      <div className="flex items-center gap-2">
+        <Menu
+          className="w-6 h-6 mt-1.5 ml-4 cursor-pointer"
+          onClick={toggleSidebar}
+        />
 
         <Image
           className="cursor-pointer"

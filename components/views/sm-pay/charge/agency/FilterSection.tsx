@@ -12,7 +12,7 @@ import ManagementModal from "./modal/ManagementModal";
 
 const FilterSection = () => {
   const [date, setDate] = useState<Date | undefined>();
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [keyword, setKeyword] = useState<string>("");
 
   return (

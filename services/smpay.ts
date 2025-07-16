@@ -1,5 +1,3 @@
-// 광고주 smPay 신청 관리 리스트 조회(SAG022)
-
 import { PropsRequestDecision } from "@/hooks/queries/sm-pay";
 import { ApiError, get, patch, post, put } from "@/lib/api";
 import {
@@ -218,8 +216,6 @@ export const getSmPayAdvertiserStatIndicator = async ({
     throw error;
   }
 };
-
-// /core/service/api/v1/agents/1/users/1/advertisers/1/daily-stat
 
 /**
  * 광고주 일 별 성과 조회(28일)(SAG027)
@@ -535,6 +531,77 @@ export const getSmPayAdvertiserPrePaymentSchedule = async ({
 };
 
 /**
+ * 광고주 최상위 그룹장 참고용 메모 조회(AAG025)
+ * - 화면 : SM Pay 관리 > 조회 > 참고용 메모 영역
+ */
+
+export const getSmPayDetailApprovalMemo = async ({
+  user,
+  advertiserId,
+}: WithAdvertiserId): Promise<ApprovalMemoDto> => {
+  const { agentId, userId } = user;
+
+  try {
+    const response = await get<ApprovalMemoDto>(
+      `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/approval-memo`
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+/**
+ * 광고주 동의 이메일, 문자발송(SAG037)
+ * - 화면 : [대행사] SM Pay 관리 > 목록 리스트 > 광고주 동의 전송 버튼
+ */
+export const postSmPayAdvertiserAgreeNotification = async ({
+  user,
+  advertiserId,
+}: WithAdvertiserId): Promise<null> => {
+  const { agentId, userId } = user;
+
+  try {
+    const response = await post<null>(
+      `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/send-agree-notification`
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+/**
+ * 광고주 은행 계좌 등록 및 운영 제출(AD002)
+ * - 화면 : 광고주 동의 > ARS 인증 버튼
+ */
+export const postSmPayAdvertiserBankAccount = async ({
+  advertiserId,
+  accounts,
+}: RequestARSBankAccount): Promise<null> => {
+  try {
+    const response = await post<null>(
+      `/api/v1/advertisers/${advertiserId}/register-account`,
+      { accounts: [...accounts] }
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+// ------------- admin
+
+/**
  * 광고주 심사 관리 리스트 조회 (운영 관리자 전용) (AAG018)
  * - 화면 : [시스템 관리자] SM Pay 관리 > 운영 검토 요청 목록
  */
@@ -788,30 +855,6 @@ export const getSmPayAdminOverviewApprovalMemo = async ({
 };
 
 /**
- * 광고주 최상위 그룹장 참고용 메모 조회(AAG025)
- * - 화면 : SM Pay 관리 > 조회 > 참고용 메모 영역
- */
-
-export const getSmPayDetailApprovalMemo = async ({
-  user,
-  advertiserId,
-}: WithAdvertiserId): Promise<ApprovalMemoDto> => {
-  const { agentId, userId } = user;
-
-  try {
-    const response = await get<ApprovalMemoDto>(
-      `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/approval-memo`
-    );
-    return response;
-  } catch (error) {
-    if (error instanceof ApiError) {
-      throw error;
-    }
-    throw error;
-  }
-};
-
-/**
  * 광고주 운영 심사 승인/반려(AAG026)
  * - 화면 : [시스템 관리자] SM Pay 관리 > 운영 검토 요청 상세
  * - requestPath : adverUserId, adverAgentId
@@ -875,42 +918,47 @@ export const getSmPayAdminOverviewAccountBalance = async ({
 };
 
 /**
- * 광고주 동의 이메일, 문자발송(SAG037)
- * - 화면 : [대행사] SM Pay 관리 > 목록 리스트 > 광고주 동의 전송 버튼
+ * 광고주 상태 페이지네이션 조회(AAG031)
+ * - 화면 : [시스템 관리자] SM Pay 관리 > 광고주 운영 현황
  */
-export const postSmPayAdvertiserAgreeNotification = async ({
+
+export const getSmPayAdminOverviewStatusList = async ({
   user,
-  advertiserId,
-}: WithAdvertiserId): Promise<null> => {
+  queryParams,
+}: RequestSmPayAdvertiserStatus): Promise<ResponseSmPayAdvertiserStatus> => {
   const { agentId, userId } = user;
 
-  try {
-    const response = await post<null>(
-      `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/send-agree-notification`
-    );
-    return response;
-  } catch (error) {
-    if (error instanceof ApiError) {
-      throw error;
-    }
-    throw error;
-  }
-};
+  const { page, size, orderType } = queryParams;
 
-/**
- * 광고주 은행 계좌 등록 및 운영 제출(AD002)
- * - 화면 : 광고주 동의 > ARS 인증 버튼
- */
-export const postSmPayAdvertiserBankAccount = async ({
-  advertiserId,
-  accounts,
-}: RequestARSBankAccount): Promise<null> => {
+  const apiOrderType = convertNoOrderType(
+    queryParams.orderType,
+    "ADVERTISER_REGISTER"
+  );
+
+  const paramsResult = buildQueryParams({
+    page,
+    size,
+    orderType: apiOrderType,
+  });
+
   try {
-    const response = await post<null>(
-      `/api/v1/advertisers/${advertiserId}/register-account`,
-      { accounts: [...accounts] }
+    const response = await get<ResponseSmPayAdvertiserStatus>(
+      `/admin/api/v1/agents/${agentId}/users/${userId}/advertisers/status-list?${paramsResult}`
     );
-    return response;
+
+    let content: SmPayAdvertiserStatusDto[] = response.content.map(
+      (item, index) => ({
+        ...item,
+        no: (page - 1) * size + index + 1,
+      })
+    );
+
+    content = applyNoAscOrder(content, orderType);
+
+    return {
+      ...response,
+      content,
+    };
   } catch (error) {
     if (error instanceof ApiError) {
       throw error;

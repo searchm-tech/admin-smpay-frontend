@@ -3,10 +3,8 @@ import type {
   TAdvertiserBizMoney,
   TAdvertiserBizMoneyOrderType,
 } from "@/types/adveriser";
-import type { UserWithUniqueCode } from "@/types/next-auth";
-import type { TableParams } from "@/types/table";
-import type { TableProps } from "antd";
-import type { FilterValue } from "antd/es/table/interface";
+import type { FilterValue, TableParams, TableProps } from "@/types/table";
+
 import { formatDate } from "@/utils/format";
 
 export interface TableParamsAdvertiserBizMoney extends TableParams {
