@@ -59,6 +59,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <head>
+        <link rel="icon" href="/favicon.ico" />
         <Script id="channel-talk-loader" strategy="afterInteractive">
           {/* 채널톡 코드 : 임시 주석 처리 */}
           {/* {`

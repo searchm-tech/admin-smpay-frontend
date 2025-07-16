@@ -68,7 +68,7 @@
     --brand-green: #0ca635; /* Green (12, 166, 53) */
 
     /* shadcn 기본 컬러 오버라이드 (HSL 포맷 유지) */
-    --primary: 24 88% 49%; /* #EB680E */
+    --primary: 215 89% 54%; /* #1976F6 */
     --primary-foreground: 0 0% 100%; /* white */
     --background: 0 0% 100%; /* white */
     --foreground: 0 0% 0%; /* black */
