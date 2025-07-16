@@ -1,4 +1,4 @@
-import type { ActionButton, SmPayStatus } from "@/types/smpay";
+import type { ActionButton } from "@/types/smpay";
 import type { SmPayAdvertiserStatus } from "@/types/smpay";
 
 export const SM_PAY_STATUS_LIST: { label: string; value: string }[] = [
@@ -47,28 +47,6 @@ export const STATUS_ACTION_BUTTONS: Record<
   TERMINATE_WAIT: ["view"], // 해지 대기: 조회
   TERMINATE: ["view"], // 해지: 조회
 } as const;
-
-/**
- * 테이블 상태 라벨
- * - admin : 광고주 운영 현황
- * - 대행새 : SM Pay 관리
- * - TODO : 이전 버전이므로 삭제 필요
- */
-export const STATUS_LABELS: Record<SmPayStatus, string> = {
-  ADVERTISER_AGREEMENT_PENDING: "광고주 동의 대기",
-  ADVERTISER_AGREEMENT_EXPIRED: "광고주 동의 기한 만료",
-  REVIEW_PENDING: "심사 대기",
-  REVIEW_REJECTED: "심사 반려",
-  OPERATION_REVIEW_PENDING: "운영 검토 대기",
-  OPERATION_REVIEW_REJECTED: "운영 검토 거절",
-  OPERATION_REVIEW_COMPLETED: "운영 검토 완료",
-  SUSPENDED: "일시중지",
-  TERMINATION_PENDING: "해지 대기",
-  TERMINATED: "해지",
-  APPLICATION_CANCELLED: "신청 취소",
-  WITHDRAWAL_ACCOUNT_REGISTRATION_FAILED: "출금계좌 등록 실패",
-  OPERATING: "운영 중",
-};
 
 export const MEMBER_TYPE_OPTS = [
   { label: "그룹장", value: "AGENCY_GROUP_MANAGER" },
