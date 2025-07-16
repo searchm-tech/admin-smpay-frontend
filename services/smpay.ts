@@ -31,6 +31,7 @@ import {
   ResponseDailyStat,
   ResponseChargeRule,
   ResponseAdvertiserDetail,
+  QueryParams,
 } from "@/types/api/smpay";
 import type {
   ChargeRuleDto,
@@ -921,13 +922,10 @@ export const getSmPayAdminOverviewAccountBalance = async ({
  * 광고주 상태 페이지네이션 조회(AAG031)
  * - 화면 : [시스템 관리자] SM Pay 관리 > 광고주 운영 현황
  */
-
-export const getSmPayAdminOverviewStatusList = async ({
-  user,
-  queryParams,
-}: RequestSmPayAdvertiserStatus): Promise<ResponseSmPayAdvertiserStatus> => {
-  const { agentId, userId } = user;
-
+// /core/admin/api/v1/agents/users/advertisers/status-list?page=1&size=10&agentId=1&advertiserId=1&orderType=ADVERTISER_REGISTER_DES
+export const getSmPayAdminOverviewStatusList = async (
+  queryParams: QueryParams
+): Promise<ResponseSmPayAdvertiserStatus> => {
   const { page, size, orderType } = queryParams;
 
   const apiOrderType = convertNoOrderType(
@@ -935,15 +933,24 @@ export const getSmPayAdminOverviewStatusList = async ({
     "ADVERTISER_REGISTER"
   );
 
+  // const userId = [155].map((id) => `userId=${id}`).join("&");
+  // const agentId = [42].map((id) => `agentId=${id}`).join("&");
+
   const paramsResult = buildQueryParams({
     page,
     size,
     orderType: apiOrderType,
   });
 
+  // console.log("userId", userId);
+  // console.log("agentId", agentId);
+  // console.log("paramsResult", paramsResult);
+
+  // const strParams = `${userId}&${agentId}&${paramsResult}`;
+
   try {
     const response = await get<ResponseSmPayAdvertiserStatus>(
-      `/admin/api/v1/agents/${agentId}/users/${userId}/advertisers/status-list?${paramsResult}`
+      `/admin/api/v1/agents/users/advertisers/status-list?${paramsResult}`
     );
 
     let content: SmPayAdvertiserStatusDto[] = response.content.map(
@@ -966,3 +973,22 @@ export const getSmPayAdminOverviewStatusList = async ({
     throw error;
   }
 };
+
+/**
+ * 광고주 상태 갯수 조회(AAG028)
+ * - 화면 : [시스템 관리자] SM Pay 관리 > 광고주 운영 현황 > 상태 개수 영역
+ */
+export const getSmPayAdminOverviewStatusCount =
+  async (): Promise<ResponseSmPayStatusCount> => {
+    try {
+      const response = await get<ResponseSmPayStatusCount>(
+        "/admin/api/v1/agents/users/advertisers/status-count-list"
+      );
+      return response;
+    } catch (error) {
+      if (error instanceof ApiError) {
+        throw error;
+      }
+      throw error;
+    }
+  };

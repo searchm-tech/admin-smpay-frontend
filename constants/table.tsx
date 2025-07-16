@@ -9,6 +9,7 @@ const defaultTableParams = {
     total: 0,
   },
   filters: {},
+  sortField: "ADVERTISER_REGISTER_DESC",
 };
 
 // TODO : 삭제 예정

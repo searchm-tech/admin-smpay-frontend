@@ -1,5 +1,5 @@
 import type { AdvertiserJobType, TAdvertiserSync, TCustomer } from "../license";
-import type { SmPayStatus } from "../smpay";
+import { SmPayAdvertiserStatus } from "../smpay";
 
 export type TRequestLicenseCreateParams = {
   customerId: number;
@@ -38,7 +38,7 @@ export type TResponseAdvertiserSyncJob = {
   businessRegistrationNumber: string;
   phoneNumber: string;
   emailAddress: string;
-  status: SmPayStatus; // TODO : 다시 확인 "WAIT_REVIEW";
+  status: SmPayAdvertiserStatus; // TODO : 다시 확인 "WAIT_REVIEW";
   name: string;
   roleId: number;
   sync: TAdvertiserSync;
