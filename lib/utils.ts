@@ -54,7 +54,7 @@ export function convertNoOrderType(
 export function transformTableResponse<
   T,
   R = T & { id: number },
-  ResponseType = any
+  ResponseType = any,
 >(
   response: ResponseType & { content: T[] },
   queryParams: { page: number; size: number },

@@ -1,5 +1,6 @@
 import { ApiError, del, get, post } from "@/lib/api";
 import { buildQueryParams } from "@/lib/utils";
+import { TAdvertiser } from "@/types/adveriser";
 
 import type {
   RequestAdvertiserList,
@@ -154,13 +155,15 @@ export const getAdvertiserBizMoneyList = async (
 export const getAdvertiserListByUserId = async (params: {
   agentId: number;
   userIds: number[];
-}): Promise<ResponseAdvertiserList> => {
+}): Promise<TAdvertiser[]> => {
   const { agentId, userIds } = params;
 
   // 반복 파라미터 방식으로 변경
   const userIdParams = userIds.map((id) => `userIds=${id}`).join("&");
-  const response: ResponseAdvertiserList = await get(
+  const response: TAdvertiser[] = await get(
     `/service/api/v1/agents/${agentId}/users/advertisers/search?${userIdParams}`
   );
+
+  console.log("response", response);
   return response;
 };

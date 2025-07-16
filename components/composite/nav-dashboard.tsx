@@ -73,7 +73,7 @@ export function NavDashboard() {
   }, [backendMenu, session?.user, menuType]);
 
   return (
-    <SidebarGroup className="h-full w-full bg-[var(--sidebar)] py-4">
+    <SidebarGroup className="h-full w-full bg-[var(--sidebar)] py-4 relative">
       <SidebarMenu>
         {menuItems.map((item) =>
           item.items && item.items.length > 0 ? (
@@ -96,10 +96,12 @@ export function NavDashboard() {
                     }
                   >
                     {item.icon && <item.icon />}
-                    <span className="font-medium group-data-[collapsible=icon]:hidden">
+                    <span className="font-medium group-data-[collapsible=icon]:hidden transition-opacity duration-300">
                       {item.title}
                     </span>
-                    <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                    {state !== "collapsed" && (
+                      <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                    )}
                   </SidebarMenuButton>
                 </CollapsibleTrigger>
                 <CollapsibleContent>
@@ -114,7 +116,9 @@ export function NavDashboard() {
                             className={cn("cursor-pointer h-9 px-4 rounded-xl")}
                           >
                             <a href={subItem.url}>
-                              <span>{subItem.title}</span>
+                              <span className="group-data-[collapsible=icon]:hidden transition-opacity duration-300">
+                                {subItem.title}
+                              </span>
                             </a>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
@@ -136,7 +140,7 @@ export function NavDashboard() {
                   onClick={() => handleClick(item.url, false)}
                 >
                   {item.icon && <item.icon />}
-                  <span className="group-data-[collapsible=icon]:hidden">
+                  <span className="group-data-[collapsible=icon]:hidden transition-opacity duration-300">
                     {item.title}
                   </span>
                 </div>

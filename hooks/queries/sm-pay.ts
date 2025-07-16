@@ -54,6 +54,7 @@ import {
   getSmPayAdminOverviewAccountBalance,
   postSmPayAdvertiserAgreeNotification,
   getSmPayDetailApprovalMemo,
+  getSmPayAdminOverviewStatusList,
 } from "@/services/smpay";
 import type {
   SmPayStatIndicator,
@@ -460,5 +461,14 @@ export const useSmPayAdvertiserAgreeNotification = (
         advertiserId: variables,
       }),
     ...options,
+  });
+};
+
+// 광고주 운영 현황 리스트 조회 (운영 관리자 전용) (AAG031)
+export const useSmPayAdminOverviewStatusList = (params: QueryParams) => {
+  return useAuthQuery<ResponseSmPayAdvertiserStatus>({
+    queryKey: ["/smpay/admin-overview-status-list", params],
+    queryFn: (user: RequestAgentUser) =>
+      getSmPayAdminOverviewStatusList({ user, queryParams: params }),
   });
 };
