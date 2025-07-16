@@ -10,6 +10,7 @@ import {
   postAdvertiserSync,
   delAdvertiserSync,
   getAdvertiserBizMoneyList,
+  getAdvertiserListByUserId,
 } from "@/services/advertiser";
 
 import type {
@@ -79,6 +80,19 @@ export const useQueryAdvertiserBizMoneyList = (
     queryKey: ["advertiserBizMoneyList", params],
     queryFn: () => getAdvertiserBizMoneyList(params),
     enabled: !!params.agentId && !!params.userId,
+    ...options,
+  });
+};
+
+// 마케터와 연결된 광고주 리스트 조회(SAG038)
+export const useQueryAdvertiserListByUserId = (
+  params: { agentId: number; userIds: number[] },
+  options?: UseQueryOptions<any, Error>
+) => {
+  return useQuery<any>({
+    queryKey: ["advertiserListByUserId", params],
+    queryFn: () => getAdvertiserListByUserId(params),
+    enabled: params.userIds.length > 0 && !!params.agentId,
     ...options,
   });
 };

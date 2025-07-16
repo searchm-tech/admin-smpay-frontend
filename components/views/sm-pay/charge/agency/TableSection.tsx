@@ -18,7 +18,6 @@ import {
 import type { ColumnsType } from "antd/es/table";
 
 export const columns: ColumnsType<ChargeTableRow> = [
-
   {
     key: "manager",
     title: "담당자",

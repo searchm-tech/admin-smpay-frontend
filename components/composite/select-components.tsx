@@ -50,7 +50,9 @@ const Select = ({
               {option.label}
             </span>
             {option.disabled && (
-              <span className="ml-2 text-xs no-underline">(선택 불가)</span>
+              <span className="ml-2 text-xs no-underline">
+                (최상위 그룹장 등록 완료)
+              </span>
             )}
           </ShadcnSelectItem>
         ))}

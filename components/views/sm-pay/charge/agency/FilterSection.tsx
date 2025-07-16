@@ -8,12 +8,11 @@ import { CalendarPopover } from "@/components/ui/calendar";
 import Select from "@/components/composite/select-components";
 import { SearchInput } from "@/components/composite/input-components";
 
-import DetailSelectModal from "./DetailSelectModal";
 import ManagementModal from "./modal/ManagementModal";
 
 const FilterSection = () => {
   const [date, setDate] = useState<Date | undefined>();
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [keyword, setKeyword] = useState<string>("");
 
   return (
@@ -21,7 +20,7 @@ const FilterSection = () => {
       {isOpen && (
         <ManagementModal
           onClose={() => setIsOpen(false)}
-          onConfirm={() => {}}
+          onConfirm={() => setIsOpen(false)}
         />
       )}
 
