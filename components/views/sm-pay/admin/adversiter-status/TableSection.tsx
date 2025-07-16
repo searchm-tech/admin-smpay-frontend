@@ -1,46 +1,49 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
+import dayjs from "dayjs";
+
 import { SelectSearch } from "@/components/composite/select-search";
 import { Button } from "@/components/ui/button";
 import Table from "@/components/composite/table";
 import { useSidebar } from "@/components/ui/sidebar";
 import { LinkTextButton } from "@/components/composite/button-components";
 
-import FilterItem from "@/components/common/FilterItem";
-
 import { useWindowSize } from "@/hooks/useWindowSize";
 
-import { formatDate } from "@/utils/format";
 import { cn } from "@/lib/utils";
 
-import { STATUS_ACTION_BUTTONS, STATUS_LABELS } from "@/constants/status";
+import {
+  SmPayAdvertiserStatusLabel,
+  STATUS_ACTION_BUTTONS,
+} from "@/constants/status";
 import { ColumnTooltip } from "@/constants/table";
 import { advertiser, optionAgency } from "./constants";
 
 import type { TableParams } from "@/types/table";
-import type { ActionButton, SmPayData, SmPayStatus } from "@/types/smpay";
+import type {
+  ActionButton,
+  SmPayAdvertiserStatus,
+  SmPayAdvertiserStautsOrderType,
+} from "@/types/smpay";
 import type { TableProps } from "antd";
 import type { FilterValue } from "antd/es/table/interface";
+import { SmPayAdvertiserStatusDto } from "@/types/dto/smpay";
+import { AdvertiserAgreementSendDialog } from "../../manangement/dialog";
 
 interface TableSectionProps {
   tableParams: TableParams;
   setTableParams: (params: TableParams) => void;
   total: number;
   loadingData: boolean;
-  smpayList: SmPayData[];
-  handleStatusChange: (status: string) => void;
-  selectedStatus: string;
+  dataSource: SmPayAdvertiserStatusDto[];
 }
-
 const TableSection = ({
   tableParams,
   setTableParams,
   total,
   loadingData,
-  smpayList,
-  handleStatusChange,
-  selectedStatus,
+  dataSource,
 }: TableSectionProps) => {
   const router = useRouter();
 
@@ -52,85 +55,109 @@ const TableSection = ({
     useState<string>();
 
   const [openDialog, setOpenDialog] = useState<ActionButton | null>(null);
+  const [resumeId, setResumeId] = useState<number | null>(null);
+  const [terminationRequestId, setTerminationRequestId] = useState<
+    number | null
+  >(null);
   const [applySubmitId, setApplySubmitId] = useState<number | null>(null);
+  const [applySubmitData, setApplySubmitData] =
+    useState<SmPayAdvertiserStatusDto | null>(null);
   const [rejectModalId, setRejectModalId] = useState<number | null>(null);
+  const [rejectOperationModalId, setRejectOperationModalId] = useState<
+    number | null
+  >(null);
   const [stopModalId, setStopModalId] = useState<number | null>(null);
 
-  const handleTableChange: TableProps<SmPayData>["onChange"] = (
+  const handleTableChange: TableProps<SmPayAdvertiserStatusDto>["onChange"] = (
     pagination,
     filters,
     sorter
   ) => {
-    const newParams: TableParams = {
+    let orderType: SmPayAdvertiserStautsOrderType = "ADVERTISER_REGISTER_DESC"; // 기본값
+
+    if (sorter && !Array.isArray(sorter) && sorter.field && sorter.order) {
+      const field = sorter.field as string;
+      const order = sorter.order === "ascend" ? "ASC" : "DESC";
+
+      const fieldMap: Record<string, string> = {
+        no: "NO",
+        advertiserName: "ADVERTISER_NAME",
+        advertiserCustomerId: "ADVERTISER_CUSTOMER_ID",
+        userId: "ADVERTISER_ID",
+        advertiserType: "ADVERTISER_STATUS",
+        descriptionRegisterDt: "ADVERTISER_REGISTER",
+      };
+
+      const mappedField = fieldMap[field];
+
+      if (mappedField) {
+        orderType = `${mappedField}_${order}` as SmPayAdvertiserStautsOrderType;
+      }
+    }
+
+    setTableParams({
+      ...tableParams,
       pagination: {
-        current: pagination.current || 1,
-        pageSize: pagination.pageSize || 10,
+        current: pagination.current ?? 1,
+        pageSize: pagination.pageSize ?? 10,
         total: pagination.total || 0,
       },
       filters: filters as Record<string, FilterValue>,
-      ...(!Array.isArray(sorter) && {
-        sortField: sorter.field?.toString(),
-        sortOrder: sorter.order,
-      }),
-    };
-    setTableParams(newParams);
+      orderType: orderType,
+    });
   };
 
-  const handleMoveDetailPage = (id: number) => {
-    router.push(`/sm-pay/admin/adversiter-status/${id}`);
+  const handleMoveDetailPage = (
+    advertiserId: number,
+    advertiserFormId: number,
+    advertiserCustomerId: number,
+    agentId: number,
+    userId: number
+  ) => {
+    router.push(
+      `/sm-pay/admin/adversiter-status/${advertiserId}?formId=${advertiserFormId}&advertiserCustomerId=${advertiserCustomerId}&agentId=${agentId}&userId=${userId}`
+    );
   };
 
-  const columns: TableProps<SmPayData>["columns"] = [
+  const columns: TableProps<SmPayAdvertiserStatusDto>["columns"] = [
     {
       title: "No",
       dataIndex: "no",
       align: "center",
       sorter: true,
-      fixed: "left",
-      width: 100,
+    },
+    {
+      title: "대행사",
+      dataIndex: "agentName",
+      align: "center",
+      sorter: true,
+      render: (value) => value || "-",
     },
     {
       title: "담당자",
-      dataIndex: "manager",
+      dataIndex: "userName",
       align: "center",
       sorter: true,
+      render: (value) => value || "-",
     },
     {
       title: "CUSTOMER ID",
-      dataIndex: "customerId",
+      dataIndex: "advertiserCustomerId",
       align: "center",
       sorter: true,
     },
     {
-      title: "로그인 ID",
-      dataIndex: "loginId",
+      title: "광고주 로그인 ID",
+      dataIndex: "advertiserLoginId",
       align: "center",
       sorter: true,
-      render: (text: string, record: SmPayData) => (
-        <LinkTextButton
-          onClick={() => {
-            router.push(`/sm-pay/admin/adversiter-status/${record.no}`);
-          }}
-        >
-          {text}
-        </LinkTextButton>
-      ),
     },
-    {
-      title: "광고주 닉네임",
-      dataIndex: "nickname",
-      align: "center",
-      sorter: true,
-      render: (text: string, record: SmPayData) => (
-        <LinkTextButton
-          onClick={() => {
-            router.push(`/sm-pay/admin/adversiter-status/${record.no}`);
-          }}
-        >
-          {text}
-        </LinkTextButton>
-      ),
-    },
+    // {
+    //   title: "광고주 닉네임",  TODO : 확인 필요
+    //   dataIndex: "advertiserNickname",
+    //   align: "center",
+    //   sorter: true,
+    // },
     {
       title: ColumnTooltip.advertiserName,
       dataIndex: "advertiserName",
@@ -139,133 +166,121 @@ const TableSection = ({
     },
     {
       title: ColumnTooltip.status,
-      width: 120,
-      dataIndex: "status",
+      dataIndex: "advertiserType",
       align: "center",
       sorter: true,
-      render: (value: SmPayStatus, record: SmPayData) => {
-        if (value === "REVIEW_REJECTED") {
-          return (
-            <LinkTextButton onClick={() => setRejectModalId(record.no)}>
-              {STATUS_LABELS[value]}
-            </LinkTextButton>
-          );
-        }
-
-        if (value === "OPERATION_REVIEW_REJECTED") {
-          return (
-            <LinkTextButton onClick={() => setRejectModalId(record.no)}>
-              {STATUS_LABELS[value]}
-            </LinkTextButton>
-          );
-        }
-
-        if (value === "SUSPENDED") {
-          return (
-            <LinkTextButton onClick={() => setStopModalId(record.no)}>
-              {STATUS_LABELS[value]}
-            </LinkTextButton>
-          );
-        }
-
-        return <span>{STATUS_LABELS[value]}</span>;
-      },
+      render: (value: SmPayAdvertiserStatus) => (
+        <span>{SmPayAdvertiserStatusLabel[value]}</span>
+      ),
     },
-
     {
       title: "기능",
       dataIndex: "action",
       align: "center",
-      // render: (_, record) => {
-      //   const availableActions = STATUS_ACTION_BUTTONS[record.status];
+      render: (_, record) => {
+        const availableActions = STATUS_ACTION_BUTTONS[record.advertiserType];
+        return (
+          <div className="flex justify-center gap-2">
+            {availableActions.includes("view") && (
+              <Button
+                variant="greenOutline"
+                onClick={() => {
+                  const {
+                    advertiserId,
+                    advertiserFormId,
+                    advertiserCustomerId,
+                    agentId,
+                    userId,
+                  } = record;
+                  handleMoveDetailPage(
+                    advertiserId,
+                    advertiserFormId,
+                    advertiserCustomerId,
+                    agentId,
+                    userId
+                  );
+                }}
+              >
+                조회
+              </Button>
+            )}
 
-      //   return (
-      //     <div className="flex items-center gap-2">
-      //       {availableActions.includes("view") && (
-      //         <Button
-      //           variant="greenOutline"
-      //           onClick={() => handleMoveDetailPage(record.no)}
-      //         >
-      //           조회
-      //         </Button>
-      //       )}
+            {availableActions.includes("resend") && (
+              <Button
+                variant="blueOutline"
+                onClick={() => setOpenDialog("resend")}
+              >
+                재발송
+              </Button>
+            )}
 
-      //       {availableActions.includes("resend") && (
-      //         <Button
-      //           variant="blueOutline"
-      //           onClick={() => setOpenDialog("resend")}
-      //         >
-      //           재발송
-      //         </Button>
-      //       )}
+            {availableActions.includes("suspend") && (
+              <Button
+                variant="redOutline"
+                onClick={() => setOpenDialog("suspend")}
+              >
+                일시 중지
+              </Button>
+            )}
 
-      //       {availableActions.includes("suspend") && (
-      //         <Button
-      //           variant="redOutline"
-      //           onClick={() => setOpenDialog("suspend")}
-      //         >
-      //           일시 중지
-      //         </Button>
-      //       )}
+            {availableActions.includes("termination_request") && (
+              <Button
+                variant="redOutline"
+                onClick={() =>
+                  setTerminationRequestId(record.advertiserCustomerId)
+                }
+              >
+                해지 신청
+              </Button>
+            )}
 
-      //       {availableActions.includes("termination_request") && (
-      //         <Button
-      //           variant="redOutline"
-      //           onClick={() => setOpenDialog("termination_request")}
-      //         >
-      //           해지 신청
-      //         </Button>
-      //       )}
+            {availableActions.includes("resume") && (
+              <Button
+                variant="blueOutline"
+                onClick={() => setResumeId(record.advertiserCustomerId)}
+              >
+                재개
+              </Button>
+            )}
 
-      //       {availableActions.includes("resume") && (
-      //         <Button
-      //           variant="blueOutline"
-      //           onClick={() => setOpenDialog("resume")}
-      //         >
-      //           재개
-      //         </Button>
-      //       )}
+            {availableActions.includes("advertiser_agreement_send") && (
+              <Button
+                variant="blueOutline"
+                onClick={() => setApplySubmitData(record)}
+              >
+                광고주 동의 전송
+              </Button>
+            )}
 
-      //       {availableActions.includes("advertiser_agreement_send") && (
-      //         <Button
-      //           variant="blueOutline"
-      //           onClick={() => {
-      //             setApplySubmitId(record.no);
-      //             setOpenDialog("advertiser_agreement_send");
-      //           }}
-      //         >
-      //           광고주 등의 전송
-      //         </Button>
-      //       )}
+            {availableActions.includes("reapply") && (
+              <Button
+                variant="blueOutline"
+                onClick={() => setOpenDialog("reapply")}
+              >
+                재신청
+              </Button>
+            )}
 
-      //       {availableActions.includes("reapply") && (
-      //         <Button
-      //           variant="blueOutline"
-      //           onClick={() => console.log(record.no)}
-      //         >
-      //           재신청
-      //         </Button>
-      //       )}
-
-      //       {availableActions.includes("application_cancel") && (
-      //         <Button
-      //           variant="redOutline"
-      //           onClick={() => setOpenDialog("application_cancel")}
-      //         >
-      //           신청 취소
-      //         </Button>
-      //       )}
-      //     </div>
-      //   );
-      // },
+            {availableActions.includes("application_cancel") && (
+              <Button
+                variant="redOutline"
+                onClick={() => setOpenDialog("application_cancel")}
+              >
+                신청 취소
+              </Button>
+            )}
+          </div>
+        );
+      },
     },
     {
       title: "최종 수정일시",
-      dataIndex: "lastModifiedAt",
+      dataIndex: "registerOrUpdateDt",
       width: 200,
       align: "center",
       sorter: true,
-      render: (date: string) => formatDate(date),
+      render: (date: string) =>
+        date ? dayjs(date).format("YYYY-MM-DD HH:mm") : "-",
     },
   ];
 
@@ -317,10 +332,17 @@ const TableSection = ({
         ))} */}
       </div>
       <div className={cn(tableWidthClass, "overflow-x-auto ")}>
-        <Table<SmPayData>
+        {applySubmitData && (
+          <AdvertiserAgreementSendDialog
+            onClose={() => setApplySubmitData(null)}
+            onConfirm={() => setApplySubmitData(null)}
+            data={applySubmitData}
+          />
+        )}
+        <Table<SmPayAdvertiserStatusDto>
           columns={columns}
-          rowKey="id"
-          dataSource={smpayList}
+          rowKey="no"
+          dataSource={dataSource}
           pagination={{
             ...tableParams.pagination,
             total,
@@ -329,7 +351,6 @@ const TableSection = ({
           }}
           loading={loadingData}
           onChange={handleTableChange}
-          scroll={{ x: 2000 }}
         />
       </div>
     </section>

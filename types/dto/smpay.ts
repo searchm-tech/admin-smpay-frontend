@@ -32,6 +32,8 @@ export type SmPayAdvertiserStatusDto = {
   advertiserId: number;
   userId: number;
   userName: string;
+  agentId: number;
+  agentName: string;
   advertiserCustomerId: number;
   advertiserLoginId: string;
   advertiserName: string;
@@ -39,7 +41,7 @@ export type SmPayAdvertiserStatusDto = {
   description: string;
   descriptionRegisterDt: string;
   registerOrUpdateDt: string;
-  isMyAdvertiser: true;
+  isMyAdvertiser: boolean;
   advertiserFormId: number;
 };
 
