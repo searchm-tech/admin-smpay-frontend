@@ -6,13 +6,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 // import LoadingUI from "@/components/common/Loading";
 import { Button } from "@/components/ui/button";
 
-import StatIndicatorSection from "../../../components/StatIndicatorSection";
 import { RuleSectionShow } from "../../../components/RuleSection";
 import { ScheduleSectionShow } from "../../../components/ScheduleSection";
 import JudgementMemoSection from "../../../components/JudgementMemoSection";
 import OperationMemoSection from "../../../components/OperationMemoSection";
-
-// import OperationAccountStatusSection from "@/components/views/sm-pay/components/OperationAccountStatusSection";
 
 import RejectModal from "./RejectModal";
 import {
@@ -23,20 +20,9 @@ import {
   useSmPayAdminOverviewPrePaymentSchedule,
   useSmPayAdminOverviewReviewerMemo,
 } from "@/hooks/queries/sm-pay";
-import { useQueryAgencyDetail } from "@/hooks/queries/agency";
-import {
-  AdvertiserDescriptionDto,
-  AdvertiserDetailDto,
-} from "@/types/dto/smpay";
-import { ResponseAgencyBills } from "@/types/api/agency";
-import { LabelBullet } from "@/components/composite/label-bullet";
-import {
-  DescriptionItem,
-  Descriptions,
-} from "@/components/composite/description-components";
-import { Label } from "@/components/ui/label";
-import { SmPayAdvertiserStatusLabel } from "@/constants/status";
-import { formatBusinessNumber, formatPhoneNumber } from "@/utils/format";
+
+import AdvertiserInfoSection from "../../overview/detail/AdvertiserInfoSection";
+import AccountSection from "../../../components/AccountSection";
 
 type Props = {
   id: string;
@@ -117,59 +103,12 @@ const SmPayAdminAdversiterStatusDetailView = ({ id }: Props) => {
         />
       )}
 
-      <div>
-        <section>
-          <div className="flex items-center gap-4 py-4">
-            <LabelBullet labelClassName="text-base font-bold">
-              광고주 상태
-            </LabelBullet>
-          </div>
+      <AdvertiserInfoSection
+        advertiserData={smpayInfo}
+        isShowAgentInfo={false}
+      />
 
-          <Descriptions columns={1}>
-            <DescriptionItem label="광고주 상태">
-              <Label>
-                {smpayInfo && SmPayAdvertiserStatusLabel[smpayInfo.status]}
-              </Label>
-            </DescriptionItem>
-          </Descriptions>
-        </section>
-
-        <section className="w-full flex gap-4">
-          <div className="flex-1">
-            <div className="flex items-center gap-4 py-4">
-              <LabelBullet labelClassName="text-base font-bold">
-                광고주 기본 정보
-              </LabelBullet>
-            </div>
-            <Descriptions columns={1}>
-              <DescriptionItem label="광고주명">
-                <Label>{smpayInfo?.name}</Label>
-              </DescriptionItem>
-              <DescriptionItem label="대표자명">
-                <Label>{smpayInfo?.representativeName}</Label>
-              </DescriptionItem>
-              <DescriptionItem label="사업자 등록번호">
-                <Label>
-                  {formatBusinessNumber(
-                    smpayInfo?.businessRegistrationNumber || ""
-                  )}
-                </Label>
-              </DescriptionItem>
-              <DescriptionItem label="광고주 휴대폰 번호">
-                <Label>{formatPhoneNumber(smpayInfo?.phoneNumber || "")}</Label>
-              </DescriptionItem>
-              <DescriptionItem label="광고주 이메일 주소">
-                <Label>{smpayInfo?.emailAddress}</Label>
-              </DescriptionItem>
-            </Descriptions>
-          </div>
-        </section>
-      </div>
-
-      {/* <StatIndicatorSection
-        advertiserId={Number(id)}
-        statIndicator={statIndicator}
-      /> */}
+      <AccountSection accounList={advertiserData?.accounts || []} />
 
       <RuleSectionShow
         upChargeRule={upChargeRule}

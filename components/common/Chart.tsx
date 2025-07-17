@@ -38,9 +38,13 @@ function formatKoreanUnit(value: number) {
 export default function Chart({
   showRightYAxis = false,
   data,
+  dataKey,
+  name,
 }: {
   showRightYAxis?: boolean;
   data: any;
+  dataKey: string;
+  name: string;
 }) {
   return (
     <div className="w-full h-[45vh]">
@@ -69,9 +73,9 @@ export default function Chart({
           <Legend />
           <Bar
             yAxisId="left"
-            dataKey="salesAmt"
-            name="광고비"
-            barSize={20}
+            dataKey={dataKey}
+            name={name}
+            barSize={30}
             fill="#2D5FFF"
             activeBar={<HighlightBar />}
           />

@@ -31,11 +31,13 @@ import type { SMPayFormHistory, AdvertiserDetailDto } from "@/types/dto/smpay";
 type Props = {
   advertiserData?: AdvertiserDetailDto;
   isShowHistory?: boolean;
+  isShowAgentInfo?: boolean;
 };
 
 const AdvertiserInfoSection = ({
   advertiserData,
   isShowHistory = true,
+  isShowAgentInfo = true,
 }: Props) => {
   const [isHistoryModal, setIsHistoryModal] = useState(false);
 
@@ -88,30 +90,34 @@ const AdvertiserInfoSection = ({
       </section>
 
       <section className="w-full flex gap-4">
-        <div className="flex-1">
-          <div className="flex items-center gap-4 py-4">
-            <LabelBullet labelClassName="text-base font-bold">
-              대행사 및 대행사 담당자 기본 정보
-            </LabelBullet>
+        {isShowAgentInfo && (
+          <div className="flex-1">
+            <div className="flex items-center gap-4 py-4">
+              <LabelBullet labelClassName="text-base font-bold">
+                대행사 및 대행사 담당자 기본 정보
+              </LabelBullet>
+            </div>
+            <Descriptions columns={1}>
+              <DescriptionItem label="대행사명">
+                <Label>{agencyData?.agent.name}</Label>
+              </DescriptionItem>
+              <DescriptionItem label="대표자 명">
+                <Label>{agencyData?.agent.representativeName}</Label>
+              </DescriptionItem>
+              <DescriptionItem label="담당자 명">
+                <Label>{agencyInfo?.name}</Label>
+              </DescriptionItem>
+              <DescriptionItem label="담당자 이메일 주소">
+                <Label>{agencyInfo?.emailAddress}</Label>
+              </DescriptionItem>
+              <DescriptionItem label="담당자 연락처">
+                <Label>
+                  {formatPhoneNumber(agencyInfo?.phoneNumber || "")}
+                </Label>
+              </DescriptionItem>
+            </Descriptions>
           </div>
-          <Descriptions columns={1}>
-            <DescriptionItem label="대행사명">
-              <Label>{agencyData?.agent.name}</Label>
-            </DescriptionItem>
-            <DescriptionItem label="대표자 명">
-              <Label>{agencyData?.agent.representativeName}</Label>
-            </DescriptionItem>
-            <DescriptionItem label="담당자 명">
-              <Label>{agencyInfo?.name}</Label>
-            </DescriptionItem>
-            <DescriptionItem label="담당자 이메일 주소">
-              <Label>{agencyInfo?.emailAddress}</Label>
-            </DescriptionItem>
-            <DescriptionItem label="담당자 연락처">
-              <Label>{formatPhoneNumber(agencyInfo?.phoneNumber || "")}</Label>
-            </DescriptionItem>
-          </Descriptions>
-        </div>
+        )}
 
         <div className="flex-1">
           <div className="flex items-center gap-4 py-4">
