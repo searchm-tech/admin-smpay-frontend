@@ -1,33 +1,8 @@
 import type { ColumnsType } from "@/types/table";
-import type { ReportDto } from "@/types/dto/report";
-import { format } from "date-fns";
+import type { AdGroupReportDto } from "@/types/dto/report";
+import { formatOnlyDate } from "../constants";
 
-export function calcRowSpan<T>(data: T[], key: keyof T): number[] {
-  const rowSpanArr = Array(data.length).fill(1);
-  let prevValue: any = null;
-  let startIdx = 0;
-  for (let i = 0; i < data.length; i++) {
-    if (data[i][key] !== prevValue) {
-      if (i - startIdx > 1) {
-        rowSpanArr[startIdx] = i - startIdx;
-        for (let j = startIdx + 1; j < i; j++) {
-          rowSpanArr[j] = 0;
-        }
-      }
-      prevValue = data[i][key];
-      startIdx = i;
-    }
-  }
-  if (data.length - startIdx > 1) {
-    rowSpanArr[startIdx] = data.length - startIdx;
-    for (let j = startIdx + 1; j < data.length; j++) {
-      rowSpanArr[j] = 0;
-    }
-  }
-  return rowSpanArr;
-}
-
-export const columns: ColumnsType<ReportDto> = [
+export const columns: ColumnsType<AdGroupReportDto> = [
   // {
   //   key: "agentName",
   //   title: "대행사",
@@ -54,15 +29,15 @@ export const columns: ColumnsType<ReportDto> = [
     align: "center",
     render: (value) => (value ? value : ""),
   },
-  {
-    key: "advertiserNickName",
-    title: "광고주 닉네임",
-    dataIndex: "advertiserNickName",
-    align: "center",
-  },
+  // {
+  //   key: "advertiserNickName",
+  //   title: "광고주 닉네임",
+  //   dataIndex: "advertiserNickName",
+  //   align: "center",
+  // },
   {
     key: "advertiserName",
-    title: "광고주명",
+    title: "광고주",
     dataIndex: "advertiserName",
     align: "center",
   },
@@ -82,8 +57,14 @@ export const columns: ColumnsType<ReportDto> = [
   },
   {
     key: "campaignName",
-    title: "캠페인명",
+    title: "캠페인",
     dataIndex: "campaignName",
+    align: "center",
+  },
+  {
+    key: "adGroupName",
+    title: "광고그룹",
+    dataIndex: "adGroupName",
     align: "center",
   },
   {
@@ -91,7 +72,7 @@ export const columns: ColumnsType<ReportDto> = [
     title: "날짜",
     dataIndex: "date",
     align: "center",
-    render: (value) => (value ? formatDate(value) : ""),
+    render: (value) => (value ? formatOnlyDate(value) : ""),
   },
   {
     key: "impCnt",
@@ -156,7 +137,3 @@ export const columns: ColumnsType<ReportDto> = [
     render: (value) => (value ? `${value.toLocaleString()}%` : "0%"),
   },
 ];
-
-export const formatDate = (date: Date) => {
-  return format(date, "yyyy-MM-dd");
-};

@@ -1,12 +1,12 @@
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 import { FileDown } from "lucide-react";
 
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-import { SearchInput } from "@/components/composite/input-components";
+import ManagementModal from "../modal/ManagementModal";
+import { ConfirmDialog } from "@/components/composite/modal-components";
 import { CalendarRangeComponent } from "@/components/composite/calendar-component";
-import { formatDate } from "../ad-group/constants";
-import type { DateRange } from "react-day-picker";
 
 import {
   getLast7Days,
@@ -15,13 +15,14 @@ import {
   getThisMonth,
   getThisWeek,
   getYesterday,
-} from "./constants";
-import ManagementModal from "../modal/ManagementModal";
-import type { TableParams } from "@/types/table";
+  formatOnlyDate,
+} from "../constants";
+
 import { postCampaignReportExcel } from "@/services/report";
-import { useSession } from "next-auth/react";
+
 import { useUserListStore } from "@/store/useUserListStore";
-import { ConfirmDialog } from "@/components/composite/modal-components";
+
+import type { DateRange } from "react-day-picker";
 
 type Props = {
   startDate: Date | undefined;
@@ -55,12 +56,12 @@ const FilterSection = ({
 
     const blob = await postCampaignReportExcel(session.user, {
       userIds: userList,
-      startDate: startDate ? formatDate(startDate) : "",
-      endDate: endDate ? formatDate(endDate) : "",
+      startDate: startDate ? formatOnlyDate(startDate) : "",
+      endDate: endDate ? formatOnlyDate(endDate) : "",
     });
 
     // 다운로드 트리거
-    const fileName = "report.xlsx";
+    const fileName = "캠페인 보고서.xlsx";
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
@@ -110,7 +111,7 @@ const FilterSection = ({
           onChange={(data) => handleDate(data)}
           customText={
             startDate && endDate
-              ? `${formatDate(startDate)} ~ ${formatDate(endDate)}`
+              ? `${formatOnlyDate(startDate)} ~ ${formatOnlyDate(endDate)}`
               : "날짜를 선택해주세요"
           }
         />
