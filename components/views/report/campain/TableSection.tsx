@@ -7,18 +7,27 @@ import { useSidebar } from "@/components/ui/sidebar";
 import { useWindowSize } from "@/hooks/useWindowSize";
 import { cn } from "@/lib/utils";
 
+import { calcRowSpan } from "../constants";
+import { columns } from "./constants";
+
 import type { ReportDto } from "@/types/dto/report";
 import type { CampaignListResponse as TResult } from "@/types/api/report";
-
-import { calcRowSpan, columns } from "../ad-group/constants";
+import type { TableParams } from "@/types/table";
 
 const defaultCheckedList = columns.map((item) => item.key);
 
 type Props = {
   isLoading: boolean;
   result?: TResult;
+  tableParams: TableParams;
+  setTableParams: (params: TableParams) => void;
 };
-const TableSection = ({ isLoading, result }: Props) => {
+const TableSection = ({
+  isLoading,
+  result,
+  tableParams,
+  setTableParams,
+}: Props) => {
   const { width } = useWindowSize();
   const { state } = useSidebar();
 
@@ -117,7 +126,21 @@ const TableSection = ({ isLoading, result }: Props) => {
         <Table<ReportDto>
           columns={newColumns}
           dataSource={dataSource}
-          total={result?.campaignData.totalCount || 0}
+          pagination={{
+            ...tableParams.pagination,
+            showSizeChanger: true,
+            pageSizeOptions: ["10", "20", "50", "100"],
+            onChange: (page: number, pageSize?: number) => {
+              setTableParams({
+                ...tableParams,
+                pagination: {
+                  ...tableParams.pagination,
+                  current: page,
+                  pageSize: pageSize ?? tableParams.pagination?.pageSize ?? 10,
+                },
+              });
+            },
+          }}
           scroll={{ x: 2000 }}
           loading={isLoading}
           rowClassName={(record) =>

@@ -21,9 +21,43 @@ export interface ReportDto {
   roas: number; // ROAS (ex: 400)
 }
 
+export interface Summary {
+  totalImpCnt: number;
+  totalClkCnt: number;
+  totalCtr: number;
+  totalSalesAmt: number;
+  totalCcnt: number;
+  totalCrto: number;
+  totalConvAmt: number;
+  totalRoas: number;
+}
+
 export type CampaignData = {
   content: ReportDto[];
   page: number;
   size: number;
   totalCount: number;
 };
+
+export interface AdGroupData {
+  content: AdGroupReportDto[];
+  page: number;
+  size: number;
+  totalCount: number;
+}
+
+export interface AdGroupReportDto extends ReportDto {
+  adGroupName: string;
+}
+
+export interface KeywordData {
+  content: KeywordReportDto[];
+  page: number;
+  size: number;
+  totalCount: number;
+}
+
+export interface KeywordReportDto extends ReportDto {
+  adGroupName: string;
+  keywordName: string;
+}

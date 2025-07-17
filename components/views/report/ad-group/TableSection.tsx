@@ -1,8 +1,5 @@
 import { useMemo, useState } from "react";
-import { SquareCheckBig, SquareX, TriangleAlert } from "lucide-react";
-import { format } from "date-fns";
 
-import { Button } from "@/components/ui/button";
 import Table from "@/components/composite/table";
 import CheckboxLabel from "@/components/composite/checkbox-label";
 
@@ -10,139 +7,36 @@ import { useSidebar } from "@/components/ui/sidebar";
 import { useWindowSize } from "@/hooks/useWindowSize";
 import { cn } from "@/lib/utils";
 
-import { calcRowSpan } from "./constants";
-import type { ColumnsType } from "antd/es/table";
-import type { ReportDto } from "@/types/dto/report";
+import { calcRowSpan } from "../constants";
+import { columns } from "../ad-group/constants";
 
-export const columns: ColumnsType<ReportDto> = [
-  {
-    key: "userName",
-    title: "담당자",
-    dataIndex: "userName",
-    align: "center",
-  },
-  {
-    key: "customerId",
-    title: "CUSTOMER ID",
-    dataIndex: "customerId",
-    align: "center",
-  },
-  {
-    key: "advertiserName",
-    title: "광고주",
-    dataIndex: "advertiserName",
-    align: "center",
-  },
-  {
-    key: "campaignType",
-    title: "캠페인 유형",
-    dataIndex: "campaignType",
-    align: "center",
-  },
-  {
-    key: "campaignName",
-    title: "캠페인",
-    dataIndex: "campaignName",
-    align: "center",
-  },
-  {
-    key: "adGroupName",
-    title: "광고그룹",
-    dataIndex: "adGroupName",
-    align: "center",
-  },
-  {
-    key: "date",
-    title: "날짜",
-    dataIndex: "date",
-    align: "center",
-    render: (value) => (value ? format(new Date(value), "yyyy-MM-dd") : ""),
-  },
-  {
-    key: "impCnt",
-    title: "노출수",
-    dataIndex: "impCnt",
-    align: "center",
-    render: (value) => value?.toLocaleString() ?? "",
-  },
-  {
-    key: "clkCnt",
-    title: "클릭수",
-    dataIndex: "clkCnt",
-    align: "center",
-    render: (value) => value?.toLocaleString() ?? "",
-  },
-  {
-    key: "ctr",
-    title: "CTR",
-    dataIndex: "ctr",
-    align: "center",
-    render: (value) =>
-      value !== undefined ? `${(value * 100).toFixed(2)}%` : "",
-  },
-  {
-    key: "cpc",
-    title: "CPC",
-    dataIndex: "salesAmt",
-    align: "center",
-    render: (value, row) => {
-      // CPC = 광고비 / 클릭수
-      if (row.clkCnt && row.salesAmt !== undefined) {
-        return (row.salesAmt / row.clkCnt).toLocaleString(undefined, {
-          maximumFractionDigits: 2,
-        });
-      }
-      return "-";
-    },
-  },
-  {
-    key: "salesAmt",
-    title: "광고비",
-    dataIndex: "salesAmt",
-    align: "center",
-    render: (value) => value?.toLocaleString() ?? "",
-  },
-  {
-    key: "ccnt",
-    title: "전환수",
-    dataIndex: "ccnt",
-    align: "center",
-    render: (value) => value?.toLocaleString() ?? "",
-  },
-  {
-    key: "crto",
-    title: "전환율",
-    dataIndex: "crto",
-    align: "center",
-    render: (value) =>
-      value !== undefined ? `${(value * 100).toFixed(2)}%` : "",
-  },
-  {
-    key: "convAmt",
-    title: "전환매출액",
-    dataIndex: "convAmt",
-    align: "center",
-    render: (value) => value?.toLocaleString() ?? "",
-  },
-  {
-    key: "roas",
-    title: "ROAS",
-    dataIndex: "roas",
-    align: "center",
-    render: (value) =>
-      value !== undefined ? `${value.toLocaleString()}%` : "",
-  },
-];
+import type { AdGroupReportDto } from "@/types/dto/report";
+import type { AdGroupListResponse as TResult } from "@/types/api/report";
+import type { TableParams } from "@/types/table";
 
 const defaultCheckedList = columns.map((item) => item.key);
 
-const TableSection = () => {
+type Props = {
+  isLoading: boolean;
+  result?: TResult;
+  tableParams: TableParams;
+  setTableParams: (params: TableParams) => void;
+};
+const TableSection = ({
+  isLoading,
+  result,
+  tableParams,
+  setTableParams,
+}: Props) => {
   const { width } = useWindowSize();
   const { state } = useSidebar();
 
   const [checkedList, setCheckedList] = useState(defaultCheckedList || []);
 
-  const rowSpanArr = useMemo(() => calcRowSpan<ReportDto>([], "userName"), []);
+  const rowSpanArr = useMemo(
+    () => calcRowSpan<AdGroupReportDto>([], "userName"),
+    []
+  );
   const newColumns = useMemo(
     () =>
       columns.map((item) => {
@@ -150,7 +44,7 @@ const TableSection = () => {
           return {
             ...item,
             hidden: !checkedList.includes(item.key as string),
-            onCell: (_: ReportDto, index?: number) => ({
+            onCell: (_: AdGroupReportDto, index?: number) => ({
               rowSpan: typeof index === "number" ? rowSpanArr[index] : 1,
             }),
           };
@@ -177,11 +71,45 @@ const TableSection = () => {
     return "w-full";
   }, [width, state]);
 
+  const { summary } = result || {};
+
+  // summary를 AdGroupReportDto 형태로 변환
+  const summaryRow: AdGroupReportDto | undefined = summary
+    ? {
+        agentId: 0,
+        agentName: "",
+        userId: 0,
+        userName: "",
+        departmentId: 0,
+        departmentName: "합계",
+        customerId: 0,
+        advertiserNickName: "",
+        advertiserName: "",
+        campaignType: "",
+        campaignName: "",
+        date: "",
+        impCnt: summary.totalImpCnt ?? 0,
+        clkCnt: summary.totalClkCnt ?? 0,
+        ctr: summary.totalCtr ?? 0,
+        salesAmt: summary.totalSalesAmt ?? 0,
+        ccnt: summary.totalCcnt ?? 0,
+        crto: summary.totalCrto ?? 0,
+        convAmt: summary.totalConvAmt ?? 0,
+        roas: summary.totalRoas ?? 0,
+        adGroupName: "",
+      }
+    : undefined;
+
+  // dataSource에 summaryRow를 맨 앞에 추가
+  const dataSource = summaryRow
+    ? [summaryRow, ...(result?.adGroupData.content || [])]
+    : result?.adGroupData.content || [];
+
   return (
     <section>
       <div className="w-full flex flex-wrap gap-4  py-4 mb-2 border-b border-[#656565]">
         {columns
-          .filter((col) => col.key !== "situation")
+          .filter((col) => col.key !== "departmentName")
           .map((item) => (
             <CheckboxLabel
               key={item.key}
@@ -199,11 +127,30 @@ const TableSection = () => {
       </div>
 
       <div className={cn(tableWidthClass, "overflow-x-auto ")}>
-        <Table<ReportDto>
+        <Table<AdGroupReportDto>
           columns={newColumns}
-          dataSource={[]} // TODO: 실제 데이터로 교체 필요
-          total={0}
+          dataSource={dataSource}
+          pagination={{
+            ...tableParams.pagination,
+            showSizeChanger: true,
+            pageSizeOptions: ["10", "20", "50", "100"],
+            onChange: (page: number, pageSize?: number) => {
+              setTableParams({
+                ...tableParams,
+                pagination: {
+                  ...tableParams.pagination,
+                  current: page,
+                  pageSize: pageSize ?? tableParams.pagination?.pageSize ?? 10,
+                },
+              });
+            },
+          }}
+          total={result?.adGroupData.totalCount || 0}
           scroll={{ x: 2000 }}
+          loading={isLoading}
+          rowClassName={(record) =>
+            record.departmentName === "합계" ? "summary-row" : ""
+          }
         />
       </div>
     </section>
