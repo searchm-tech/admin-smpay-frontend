@@ -145,8 +145,6 @@ const InfoSection = ({
     });
   };
 
-  console.log("arsCertified", arsCertified);
-
   return (
     <section className="w-full mt-10 py-6 border-dotted border-gray-400 border-b-2 border-t-2">
       {isCertifyingARS && <LoadingUI title="ARS 인증 중" />}

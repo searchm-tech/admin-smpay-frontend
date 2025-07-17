@@ -25,8 +25,6 @@ export const getAdvertiserList = async (
     orderType: params.orderType,
   });
 
-  console.log("queryParams", queryParams);
-
   const response: ResponseAdvertiserList = await get(
     `/service/api/v1/agents/${agentId}/users/${userId}/advertiser-list?${queryParams}`
   );
@@ -164,6 +162,5 @@ export const getAdvertiserListByUserId = async (params: {
     `/service/api/v1/agents/${agentId}/users/advertisers/search?${userIdParams}`
   );
 
-  console.log("response", response);
   return response;
 };

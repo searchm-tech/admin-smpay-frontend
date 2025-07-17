@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import FilterSection from "./FilterSection";
 import TableSection from "./TableSection";
+import GuidSection from "./GuidSection";
 
 import { useKeywordReport } from "@/hooks/queries/report";
 import { useUserListStore } from "@/store/useUserListStore";
@@ -65,6 +66,7 @@ const ReportKeywordView = () => {
 
   return (
     <div>
+      <GuidSection />
       <FilterSection
         startDate={startDate as Date}
         endDate={endDate as Date}

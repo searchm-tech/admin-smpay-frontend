@@ -63,8 +63,6 @@ const ReportAdGroupView = () => {
 
   const loading = isLoading || !isFetched;
 
-  console.log(response);
-
   return (
     <div>
       <FilterSection

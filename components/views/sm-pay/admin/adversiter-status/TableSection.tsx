@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import dayjs from "dayjs";
@@ -6,12 +6,6 @@ import dayjs from "dayjs";
 import { SelectSearch } from "@/components/composite/select-search";
 import { Button } from "@/components/ui/button";
 import Table from "@/components/composite/table";
-import { useSidebar } from "@/components/ui/sidebar";
-import { LinkTextButton } from "@/components/composite/button-components";
-
-import { useWindowSize } from "@/hooks/useWindowSize";
-
-import { cn } from "@/lib/utils";
 
 import {
   SmPayAdvertiserStatusLabel,
@@ -46,9 +40,6 @@ const TableSection = ({
   dataSource,
 }: TableSectionProps) => {
   const router = useRouter();
-
-  const { width } = useWindowSize();
-  const { state } = useSidebar();
 
   const [selectedAgencyValue, setSelectedAgencyValue] = useState<string>();
   const [selectedAdvertiserValue, setSelectedAdvertiserValue] =
@@ -284,20 +275,6 @@ const TableSection = ({
     },
   ];
 
-  const tableWidthClass = useMemo(() => {
-    // expanded 1440 -> 1160px
-    if (state === "expanded" && width <= 1440) {
-      return "max-w-[1200px]";
-    }
-
-    // collapsed 1440 -> 1330px
-    if (state === "collapsed" && width <= 1440) {
-      return "max-w-[1360px]";
-    }
-
-    return "w-full";
-  }, [width, state]);
-
   return (
     <section className="pt-4">
       <div className="flex gap-2 border-1 border-b border-dashed border-gray-300 pb-4">
@@ -331,7 +308,7 @@ const TableSection = ({
           />
         ))} */}
       </div>
-      <div className={cn(tableWidthClass, "overflow-x-auto ")}>
+      <div className="overflow-x-auto">
         {applySubmitData && (
           <AdvertiserAgreementSendDialog
             onClose={() => setApplySubmitData(null)}

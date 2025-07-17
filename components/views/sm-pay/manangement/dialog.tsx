@@ -63,15 +63,11 @@ type PropsApplyCancelDialog = {
   onConfirm: () => void;
 };
 const ApplyCancelDialog = ({ onClose, onConfirm }: PropsApplyCancelDialog) => {
-  const handleConfirm = () => {
-    console.log("apply cancel");
-    onConfirm();
-  };
   return (
     <ConfirmDialog
       open
       onClose={onClose}
-      onConfirm={handleConfirm}
+      onConfirm={onConfirm}
       content={
         <div className="flex flex-col items-center pb-4 font-medium">
           <span>SM Pay 신청을 취소하시겠습니까?</span>
@@ -170,10 +166,7 @@ type PropsSuspendDialog = {
 };
 
 const SuspendDialog = ({ onClose, onConfirm }: PropsSuspendDialog) => {
-  const handleConfirm = () => {
-    console.log("suspend");
-    onConfirm();
-  };
+  const handleConfirm = () => onConfirm();
   return (
     <ConfirmDialog
       open

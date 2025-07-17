@@ -71,8 +71,7 @@ const ManagementModal: React.FC<Props> = ({
   onConfirm,
 }) => {
   const { data: session } = useSession();
-  console.log("session", session);
-  console.log("agentId", agentId);
+
   const { data: departments = [], isFetching: loadingDepartmentsQuery } =
     useQueryDepartmentsByAgentId(agentId || 0, { enabled: !!agentId });
 

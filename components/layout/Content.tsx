@@ -13,12 +13,13 @@ import SmPayGuideModal from "./GuideModal";
 import { useGuideModalStore } from "@/store/useGuideModalStore";
 import { useSessionStore } from "@/store/useSessionStore";
 import ChannelTalkBoot from "../common/ChannelTalkBoot";
-import LoadingUI from "../common/Loading";
+import Container from "./Container";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const { isOpen: isGuideOpen, setIsOpen: setGuideOpen } = useGuideModalStore();
+
   const { setTokens } = useSessionStore();
 
   const [isExpireModalOpen, setIsExpireModalOpen] = useState(false);
@@ -99,9 +100,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
           <SidebarInset>
             <main className="flex-1 flex flex-col mt-[74px]">
-              <div className="flex-1 overflow-y-auto px-4 h-[100vh]">
-                {children}
-              </div>
+              <Container>{children}</Container>
               <Footer />
             </main>
           </SidebarInset>

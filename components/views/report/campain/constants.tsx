@@ -87,7 +87,20 @@ export const columns: ColumnsType<ReportDto> = [
     title: "CTR",
     dataIndex: "ctr",
     align: "center",
-    render: (value) => (value ? `${(value * 100).toFixed(2)}%` : "0.00%"),
+    render: (value) => {
+      if (!value) return "0원";
+      return value.toLocaleString() + "원";
+    },
+  },
+  {
+    key: "cpc",
+    title: "CPC",
+    dataIndex: "cpc",
+    align: "center",
+    render: (value) => {
+      if (!value) return "0원";
+      return value.toLocaleString() + "원";
+    },
   },
   {
     key: "salesAmt",
@@ -111,7 +124,10 @@ export const columns: ColumnsType<ReportDto> = [
     title: "전환율",
     dataIndex: "crto",
     align: "center",
-    render: (value) => (value ? `${(value * 100).toFixed(2)}%` : "0.00%"),
+    render: (value) => {
+      if (!value) return "0원";
+      return value.toLocaleString() + "원";
+    },
   },
   {
     key: "convAmt",

@@ -3,10 +3,6 @@ import { useMemo, useState } from "react";
 import Table from "@/components/composite/table";
 import CheckboxLabel from "@/components/composite/checkbox-label";
 
-import { useSidebar } from "@/components/ui/sidebar";
-import { useWindowSize } from "@/hooks/useWindowSize";
-import { cn } from "@/lib/utils";
-
 import { calcRowSpan } from "../constants";
 import { columns } from "../ad-group/constants";
 
@@ -28,9 +24,6 @@ const TableSection = ({
   tableParams,
   setTableParams,
 }: Props) => {
-  const { width } = useWindowSize();
-  const { state } = useSidebar();
-
   const [checkedList, setCheckedList] = useState(defaultCheckedList || []);
 
   const rowSpanArr = useMemo(
@@ -57,20 +50,6 @@ const TableSection = ({
     [checkedList, rowSpanArr]
   );
 
-  const tableWidthClass = useMemo(() => {
-    // expanded 1440 -> 1160px
-    if (state === "expanded" && width <= 1440) {
-      return "max-w-[1200px]";
-    }
-
-    // collapsed 1440 -> 1330px
-    if (state === "collapsed" && width <= 1440) {
-      return "max-w-[1360px]";
-    }
-
-    return "w-full";
-  }, [width, state]);
-
   const { summary } = result || {};
 
   // summary를 AdGroupReportDto 형태로 변환
@@ -94,6 +73,7 @@ const TableSection = ({
         salesAmt: summary.totalSalesAmt ?? 0,
         ccnt: summary.totalCcnt ?? 0,
         crto: summary.totalCrto ?? 0,
+        cpc: summary.totalCpc ?? 0,
         convAmt: summary.totalConvAmt ?? 0,
         roas: summary.totalRoas ?? 0,
         adGroupName: "",
@@ -126,7 +106,7 @@ const TableSection = ({
           ))}
       </div>
 
-      <div className={cn(tableWidthClass, "overflow-x-auto ")}>
+      <div className="overflow-x-auto">
         <Table<AdGroupReportDto>
           columns={newColumns}
           dataSource={dataSource}

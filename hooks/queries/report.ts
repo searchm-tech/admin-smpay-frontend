@@ -22,6 +22,7 @@ const defaultSummary: Summary = {
   totalCrto: 0,
   totalConvAmt: 0,
   totalRoas: 0,
+  totalCpc: 0,
 };
 
 //  캠페인 보고서 통계 조회(SAG047)
