@@ -97,7 +97,6 @@ function CalendarPopover({
   className,
   customText,
 }: CalendarPopoverProps) {
-  console.log(date);
   const outputText = useMemo(() => {
     if (customText) return customText;
     if (date) return format(date, "PPP");

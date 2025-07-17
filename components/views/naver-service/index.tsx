@@ -51,7 +51,6 @@ const NaverServiceView = () => {
   const refetchLicense = () => {
     refetch().then((res) => {
       if (res.data) {
-        console.log(res.data);
         setLicenseInfo({
           userId: res.data.userId,
           agentId: session?.user.agentId ?? 0,

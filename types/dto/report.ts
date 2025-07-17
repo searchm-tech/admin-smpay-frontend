@@ -19,6 +19,7 @@ export interface ReportDto {
   crto: number; // 전환율 (ex: 0.12)
   convAmt: number; // 전환매출액
   roas: number; // ROAS (ex: 400)
+  cpc: number; // CPC (ex: 1000)
 }
 
 export interface Summary {
@@ -30,6 +31,7 @@ export interface Summary {
   totalCrto: number;
   totalConvAmt: number;
   totalRoas: number;
+  totalCpc: number;
 }
 
 export type CampaignData = {

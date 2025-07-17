@@ -23,8 +23,6 @@ const SmPayAdminAdversiterStatusView = () => {
     orderType: tableParams.sortField as SmPayAdvertiserStautsOrderType,
   });
 
-  console.log("advertiserList", advertiserList);
-
   const handleStatusChange = (status: string) => {
     setSelectedStatus(status);
     setTableParams((prev) => ({

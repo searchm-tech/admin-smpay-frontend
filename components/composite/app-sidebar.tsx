@@ -10,7 +10,7 @@ import Copyright from "@/components/layout/Copyright";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { state } = useSidebar();
-  console.log(state);
+
   return (
     <Sidebar
       collapsible="icon"

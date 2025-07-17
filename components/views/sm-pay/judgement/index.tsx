@@ -16,7 +16,6 @@ const SmPayJudgementView = () => {
   const [search, setSearch] = useState<string>("");
 
   const [tableParams, setTableParams] = useState<TableParams>(defaultParams);
-  console.log("tableParams", tableParams);
 
   const { data: smpayAduitRes, isPending: loadingData } = useSmPayAuditList({
     page: tableParams.pagination?.current || 1,

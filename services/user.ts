@@ -288,8 +288,6 @@ export const getGroupUserListApi = async (
 
     const apiOrderType = convertNoOrderType(params.orderType, "REGISTER_DT");
 
-    console.log("apiOrderType", apiOrderType);
-
     const queryParams = buildQueryParams({
       page: params.page,
       size: params.size,

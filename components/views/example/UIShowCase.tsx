@@ -152,10 +152,7 @@ const UIShowCase = () => {
         <CardContent className="flex gap-2">
           <CalendarPopover
             date={date}
-            onChange={(data) => {
-              console.log("data", data);
-              setDate(data);
-            }}
+            onChange={(data) => setDate(data)}
             customText={
               date ? format(date, "yyyy-MM-dd") : "날짜를 선택해주세요"
             }

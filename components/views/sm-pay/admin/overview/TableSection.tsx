@@ -1,5 +1,5 @@
 "use client";
-import { useMemo } from "react";
+
 import { useRouter } from "next/navigation";
 
 import { Badge } from "@/components/ui/badge";
@@ -7,9 +7,6 @@ import { LinkTextButton } from "@/components/composite/button-components";
 import Table from "@/components/composite/table";
 
 import { formatDate } from "@/utils/format";
-
-import { useWindowSize } from "@/hooks/useWindowSize";
-import { useSidebar } from "@/components/ui/sidebar";
 
 import { SmPayAdvertiserStatusLabel } from "@/constants/status";
 
@@ -24,7 +21,7 @@ import type {
   TableProps,
 } from "@/types/table";
 import type { SmPayAdminAuditDto } from "@/types/dto/smpay";
-import { cn } from "@/lib/utils";
+
 import { LINK_LIST } from "./constants";
 
 type PropsTableSection = {
@@ -43,8 +40,6 @@ const TableSection = ({
   dataSource,
 }: PropsTableSection) => {
   const router = useRouter();
-  const { width } = useWindowSize();
-  const { state } = useSidebar();
 
   const handleTableChange: TableProps<SmPayAdminAuditDto>["onChange"] = (
     pagination,
@@ -184,22 +179,8 @@ const TableSection = ({
     },
   ];
 
-  const tableWidthClass = useMemo(() => {
-    // expanded 1440 -> 1070px
-    if (state === "expanded" && width <= 1440) {
-      return "max-w-[1070px]"; // 이걸로 고정
-    }
-
-    // collapsed 1440 -> 1220px
-    if (state === "collapsed" && width <= 1440) {
-      return "max-w-[1220px]";
-    }
-
-    return "w-full";
-  }, [width, state]);
-
   return (
-    <div className={cn(tableWidthClass, "overflow-x-auto ")}>
+    <div className="overflow-x-auto">
       <Table<SmPayAdminAuditDto>
         columns={columns}
         rowKey="id"

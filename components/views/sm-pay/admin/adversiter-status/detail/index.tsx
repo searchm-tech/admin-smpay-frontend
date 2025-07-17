@@ -58,8 +58,6 @@ const SmPayAdminAdversiterStatusDetailView = ({ id }: Props) => {
     Number(userId)
   );
 
-  console.log("advertiserData", advertiserData);
-
   const { data: chargeRule, isPending: loadingChargeRule } =
     useSmPayAdminOverviewChargeRule(Number(id));
 

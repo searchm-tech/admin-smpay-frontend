@@ -3,10 +3,6 @@ import { useMemo, useState } from "react";
 import Table from "@/components/composite/table";
 import CheckboxLabel from "@/components/composite/checkbox-label";
 
-import { useSidebar } from "@/components/ui/sidebar";
-import { useWindowSize } from "@/hooks/useWindowSize";
-import { cn } from "@/lib/utils";
-
 import { calcRowSpan } from "../constants";
 import { columns } from "./constants";
 
@@ -28,9 +24,6 @@ const TableSection = ({
   tableParams,
   setTableParams,
 }: Props) => {
-  const { width } = useWindowSize();
-  const { state } = useSidebar();
-
   const [checkedList, setCheckedList] = useState(defaultCheckedList || []);
 
   const rowSpanArr = useMemo(() => calcRowSpan<ReportDto>([], "userName"), []);
@@ -53,20 +46,6 @@ const TableSection = ({
       }),
     [checkedList, rowSpanArr]
   );
-
-  const tableWidthClass = useMemo(() => {
-    // expanded 1440 -> 1160px
-    if (state === "expanded" && width <= 1440) {
-      return "max-w-[1200px]";
-    }
-
-    // collapsed 1440 -> 1330px
-    if (state === "collapsed" && width <= 1440) {
-      return "max-w-[1360px]";
-    }
-
-    return "w-full";
-  }, [width, state]);
 
   const { summary } = result || {};
 
@@ -93,6 +72,7 @@ const TableSection = ({
         crto: summary.totalCrto ?? 0,
         convAmt: summary.totalConvAmt ?? 0,
         roas: summary.totalRoas ?? 0,
+        cpc: summary.totalCpc ?? 0,
       }
     : undefined;
 
@@ -122,7 +102,7 @@ const TableSection = ({
           ))}
       </div>
 
-      <div className={cn(tableWidthClass, "overflow-x-auto ")}>
+      <div className="overflow-x-auto">
         <Table<ReportDto>
           columns={newColumns}
           dataSource={dataSource}
