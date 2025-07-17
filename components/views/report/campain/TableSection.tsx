@@ -1,5 +1,4 @@
 import { useMemo, useState } from "react";
-import { format } from "date-fns";
 
 import Table from "@/components/composite/table";
 import CheckboxLabel from "@/components/composite/checkbox-label";
@@ -8,139 +7,24 @@ import { useSidebar } from "@/components/ui/sidebar";
 import { useWindowSize } from "@/hooks/useWindowSize";
 import { cn } from "@/lib/utils";
 
-import { type ChargeTableRow } from "./constants";
-import type { ColumnsType } from "antd/es/table";
-import { calcRowSpan } from "../ad-group/constants";
+import type { ReportDto } from "@/types/dto/report";
+import type { CampaignListResponse as TResult } from "@/types/api/report";
 
-export const columns: ColumnsType<ChargeTableRow> = [
-  {
-    key: "agentName",
-    title: "대행사",
-    dataIndex: "agentName",
-    align: "center",
-  },
-  {
-    key: "departmentName",
-    title: "부서",
-    dataIndex: "departmentName",
-    align: "center",
-  },
-  {
-    key: "userName",
-    title: "담당자",
-    dataIndex: "userName",
-    align: "center",
-  },
-  {
-    key: "customerId",
-    title: "고객ID",
-    dataIndex: "customerId",
-    align: "center",
-  },
-  {
-    key: "advertiserNickName",
-    title: "광고주 닉네임",
-    dataIndex: "advertiserNickName",
-    align: "center",
-  },
-  {
-    key: "advertiserName",
-    title: "광고주명",
-    dataIndex: "advertiserName",
-    align: "center",
-  },
-  {
-    key: "campaignType",
-    title: "캠페인유형",
-    dataIndex: "campaignType",
-    align: "center",
-  },
-  {
-    key: "campaignName",
-    title: "캠페인명",
-    dataIndex: "campaignName",
-    align: "center",
-  },
-  {
-    key: "date",
-    title: "날짜",
-    dataIndex: "date",
-    align: "center",
-    render: (value) => (value ? format(new Date(value), "yyyy-MM-dd") : ""),
-  },
-  {
-    key: "impCnt",
-    title: "노출수",
-    dataIndex: "impCnt",
-    align: "center",
-    render: (value) => value?.toLocaleString() ?? "",
-  },
-  {
-    key: "clkCnt",
-    title: "클릭수",
-    dataIndex: "clkCnt",
-    align: "center",
-    render: (value) => value?.toLocaleString() ?? "",
-  },
-  {
-    key: "ctr",
-    title: "CTR",
-    dataIndex: "ctr",
-    align: "center",
-    render: (value) =>
-      value !== undefined ? `${(value * 100).toFixed(2)}%` : "",
-  },
-  {
-    key: "salesAmt",
-    title: "광고비",
-    dataIndex: "salesAmt",
-    align: "center",
-    render: (value) => value?.toLocaleString() ?? "",
-  },
-  {
-    key: "ccnt",
-    title: "전환수",
-    dataIndex: "ccnt",
-    align: "center",
-    render: (value) => value?.toLocaleString() ?? "",
-  },
-  {
-    key: "crto",
-    title: "전환율",
-    dataIndex: "crto",
-    align: "center",
-    render: (value) =>
-      value !== undefined ? `${(value * 100).toFixed(2)}%` : "",
-  },
-  {
-    key: "convAmt",
-    title: "전환매출액",
-    dataIndex: "convAmt",
-    align: "center",
-    render: (value) => value?.toLocaleString() ?? "",
-  },
-  {
-    key: "roas",
-    title: "ROAS",
-    dataIndex: "roas",
-    align: "center",
-    render: (value) =>
-      value !== undefined ? `${value.toLocaleString()}%` : "",
-  },
-];
+import { calcRowSpan, columns } from "../ad-group/constants";
 
 const defaultCheckedList = columns.map((item) => item.key);
 
-const TableSection = () => {
+type Props = {
+  isLoading: boolean;
+  result?: TResult;
+};
+const TableSection = ({ isLoading, result }: Props) => {
   const { width } = useWindowSize();
   const { state } = useSidebar();
 
   const [checkedList, setCheckedList] = useState(defaultCheckedList || []);
 
-  const rowSpanArr = useMemo(
-    () => calcRowSpan<ChargeTableRow>([], "userName"),
-    []
-  );
+  const rowSpanArr = useMemo(() => calcRowSpan<ReportDto>([], "userName"), []);
   const newColumns = useMemo(
     () =>
       columns.map((item) => {
@@ -148,7 +32,7 @@ const TableSection = () => {
           return {
             ...item,
             hidden: !checkedList.includes(item.key as string),
-            onCell: (_: ChargeTableRow, index?: number) => ({
+            onCell: (_: ReportDto, index?: number) => ({
               rowSpan: typeof index === "number" ? rowSpanArr[index] : 1,
             }),
           };
@@ -175,11 +59,44 @@ const TableSection = () => {
     return "w-full";
   }, [width, state]);
 
+  const { summary } = result || {};
+
+  // summary를 ReportDto 형태로 변환
+  const summaryRow: ReportDto | undefined = summary
+    ? {
+        agentId: 0,
+        agentName: "",
+        userId: 0,
+        userName: "",
+        departmentId: 0,
+        departmentName: "합계",
+        customerId: 0,
+        advertiserNickName: "",
+        advertiserName: "",
+        campaignType: "",
+        campaignName: "",
+        date: "",
+        impCnt: summary.totalImpCnt ?? 0,
+        clkCnt: summary.totalClkCnt ?? 0,
+        ctr: summary.totalCtr ?? 0,
+        salesAmt: summary.totalSalesAmt ?? 0,
+        ccnt: summary.totalCcnt ?? 0,
+        crto: summary.totalCrto ?? 0,
+        convAmt: summary.totalConvAmt ?? 0,
+        roas: summary.totalRoas ?? 0,
+      }
+    : undefined;
+
+  // dataSource에 summaryRow를 맨 앞에 추가
+  const dataSource = summaryRow
+    ? [summaryRow, ...(result?.campaignData.content || [])]
+    : result?.campaignData.content || [];
+
   return (
     <section>
       <div className="w-full flex flex-wrap gap-4  py-4 mb-2 border-b border-[#656565]">
         {columns
-          .filter((col) => col.key !== "situation")
+          .filter((col) => col.key !== "departmentName")
           .map((item) => (
             <CheckboxLabel
               key={item.key}
@@ -197,11 +114,15 @@ const TableSection = () => {
       </div>
 
       <div className={cn(tableWidthClass, "overflow-x-auto ")}>
-        <Table<ChargeTableRow>
+        <Table<ReportDto>
           columns={newColumns}
-          dataSource={[]}
-          total={0}
+          dataSource={dataSource}
+          total={result?.campaignData.totalCount || 0}
           scroll={{ x: 2000 }}
+          loading={isLoading}
+          rowClassName={(record) =>
+            record.departmentName === "합계" ? "summary-row" : ""
+          }
         />
       </div>
     </section>
