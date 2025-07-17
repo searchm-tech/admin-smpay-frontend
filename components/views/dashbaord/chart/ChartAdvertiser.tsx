@@ -9,6 +9,7 @@ import {
   useQueryDashboardAllAdvertiserOperationStatusChart as queryAllChart,
 } from "@/hooks/queries/dashboard";
 import { LabelBullet } from "@/components/composite/label-bullet";
+import { CardLoading } from "../card/CardLoading";
 
 const radioOptions = [
   { value: "all", label: "전체 광고주" },
@@ -17,31 +18,49 @@ const radioOptions = [
 
 const ChartAdvertiser = () => {
   const [radioValue, setRadioValue] = useState("all");
-  const { data: chartData, isFetching } = queryChart();
-  const { data: allChartData, isFetching: isFetchingAll } = queryAllChart();
+  const { data: chartData, isFetching, isFetched } = queryChart();
+  const {
+    data: allChartData,
+    isFetching: isFetchingAll,
+    isFetched: isFetchedAll,
+  } = queryAllChart();
+
+
+
+  const isLoading = isFetching || !isFetched;
+  const isLoadingAll = isFetchingAll || !isFetchedAll;
 
   return (
-    <Card>
-      <CardHeader>
-        <LabelBullet labelClassName="text-base font-bold">
-          광고비 추이
-        </LabelBullet>
-      </CardHeader>
-      <CardContent>
-        <RadioGroup
-          value={radioValue}
-          onValueChange={setRadioValue}
-          className="flex gap-4 my-4"
-        >
-          {radioOptions.map((opt) => (
-            <div key={opt.value} className="flex items-center gap-1">
-              <RadioGroupItem value={opt.value} id={opt.value} />
-              <Label htmlFor={opt.value}>{opt.label}</Label>
-            </div>
-          ))}
-        </RadioGroup>
-        <Chart data={radioValue === "all" ? allChartData : chartData} />
-      </CardContent>
+    <Card className="relative">
+      {(isLoading || isLoadingAll) && <CardLoading />}
+      <div
+        className={isLoading ? "blur-sm pointer-events-none select-none" : ""}
+      >
+        <CardHeader>
+          <LabelBullet labelClassName="text-base font-bold">
+            광고비 추이
+          </LabelBullet>
+        </CardHeader>
+        <CardContent>
+          <RadioGroup
+            value={radioValue}
+            onValueChange={setRadioValue}
+            className="flex gap-4 my-4"
+          >
+            {radioOptions.map((opt) => (
+              <div key={opt.value} className="flex items-center gap-1">
+                <RadioGroupItem value={opt.value} id={opt.value} />
+                <Label htmlFor={opt.value}>{opt.label}</Label>
+              </div>
+            ))}
+          </RadioGroup>
+          <Chart
+            data={radioValue === "all" ? allChartData : chartData}
+            dataKey="salesAmt"
+            name="광고비"
+          />
+        </CardContent>
+      </div>
     </Card>
   );
 };
