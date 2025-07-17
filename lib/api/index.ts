@@ -91,6 +91,10 @@ let refreshTokenPromise: Promise<any> | null = null;
 // 응답 인터셉터 (토큰 만료 시 재발급 및 세션 동기화)
 apiClient.interceptors.response.use(
   (response) => {
+    // Blob 다운로드 예외처리
+    if (response.config.responseType === "blob") {
+      return response;
+    }
     if (response?.data?.code === "80") {
       // 권한 없음 - 직접 모달 처리를 위해 전역 이벤트 발생
       window.dispatchEvent(
@@ -194,6 +198,18 @@ export const post = async <T = any>(
     if (error instanceof ApiError) throw error;
     throw new ApiError("UNKNOWN", error.message);
   }
+};
+
+export const postBlob = async (
+  url: string,
+  data?: any,
+  config?: any
+): Promise<Blob> => {
+  const response = await apiClient.post(url, data, {
+    ...config,
+    responseType: "blob",
+  });
+  return response.data;
 };
 
 export const patch = async <T = any>(

@@ -10,10 +10,11 @@ import { useSidebar } from "@/components/ui/sidebar";
 import { useWindowSize } from "@/hooks/useWindowSize";
 import { cn } from "@/lib/utils";
 
-import { calcRowSpan, type ChargeTableRow } from "./constants";
+import { calcRowSpan } from "./constants";
 import type { ColumnsType } from "antd/es/table";
+import type { ReportDto } from "@/types/dto/report";
 
-export const columns: ColumnsType<ChargeTableRow> = [
+export const columns: ColumnsType<ReportDto> = [
   {
     key: "userName",
     title: "담당자",
@@ -141,10 +142,7 @@ const TableSection = () => {
 
   const [checkedList, setCheckedList] = useState(defaultCheckedList || []);
 
-  const rowSpanArr = useMemo(
-    () => calcRowSpan<ChargeTableRow>([], "userName"),
-    []
-  );
+  const rowSpanArr = useMemo(() => calcRowSpan<ReportDto>([], "userName"), []);
   const newColumns = useMemo(
     () =>
       columns.map((item) => {
@@ -152,7 +150,7 @@ const TableSection = () => {
           return {
             ...item,
             hidden: !checkedList.includes(item.key as string),
-            onCell: (_: ChargeTableRow, index?: number) => ({
+            onCell: (_: ReportDto, index?: number) => ({
               rowSpan: typeof index === "number" ? rowSpanArr[index] : 1,
             }),
           };
@@ -201,7 +199,7 @@ const TableSection = () => {
       </div>
 
       <div className={cn(tableWidthClass, "overflow-x-auto ")}>
-        <Table<ChargeTableRow>
+        <Table<ReportDto>
           columns={newColumns}
           dataSource={[]} // TODO: 실제 데이터로 교체 필요
           total={0}
