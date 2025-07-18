@@ -32,6 +32,8 @@ import {
   ResponseChargeRule,
   ResponseAdvertiserDetail,
   QueryParams,
+  ResponseSmPayChargeRecovery,
+  ChargeRecoveryParams,
 } from "@/types/api/smpay";
 import type {
   ChargeRuleDto,
@@ -922,7 +924,6 @@ export const getSmPayAdminOverviewAccountBalance = async ({
  * 광고주 상태 페이지네이션 조회(AAG031)
  * - 화면 : [시스템 관리자] SM Pay 관리 > 광고주 운영 현황
  */
-// /core/admin/api/v1/agents/users/advertisers/status-list?page=1&size=10&agentId=1&advertiserId=1&orderType=ADVERTISER_REGISTER_DES
 export const getSmPayAdminOverviewStatusList = async (
   queryParams: QueryParams
 ): Promise<ResponseSmPayAdvertiserStatus> => {
@@ -992,3 +993,41 @@ export const getSmPayAdminOverviewStatusCount =
       throw error;
     }
   };
+
+// 충전/회수 이력 리스트 조회(AAG034)
+export const getSmPayAdminChargeRecoveryList = async (
+  reqParams: ChargeRecoveryParams
+): Promise<ResponseSmPayChargeRecovery> => {
+  const {
+    page,
+    size,
+    agentUniqueCode,
+    advertiserCustomerId,
+    startDate,
+    endDate,
+    isNotRecoveryAdvertiser,
+  } = reqParams;
+
+  const queryParam = buildQueryParams({ page, size });
+  const requestBody = {
+    agentUniqueCode,
+    advertiserCustomerId: advertiserCustomerId || undefined,
+    startDate,
+    endDate,
+    isNotRecoveryAdvertiser,
+  };
+
+  try {
+    const response = await post<ResponseSmPayChargeRecovery>(
+      `/admin/api/v1/agents/users/advertisers/charge-recovery-list?${queryParam}`,
+      requestBody
+    );
+
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};

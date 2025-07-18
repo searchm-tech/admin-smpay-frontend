@@ -9,6 +9,10 @@ import {
   format,
 } from "date-fns";
 
+/**
+ * TODO : 날짜 관련 모두 format 파일로 옮김
+ */
+
 export const getYesterday = (baseDate: Date = new Date()): DateRange => {
   const yesterday = subDays(baseDate, 1);
   return { from: yesterday, to: yesterday };

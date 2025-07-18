@@ -20,6 +20,7 @@ import type {
   SmPayAdvertiserApplyDto,
   AdvertiserDetailDto,
   AdvertiserDescriptionDto,
+  SmPayChargeRecoveryDto,
 } from "../dto/smpay";
 
 // 광고주 상태 갯수 조회(SAG020) response type
@@ -270,4 +271,20 @@ export type ResponseChargeRule = {
   changePercentOrValue: number;
   rangeType: "UP" | "DOWN";
   boundType: "FIXED_AMOUNT" | "PERCENT";
+};
+
+// 충전/회수 이력 리스트 조회(AAG034) response type
+export type ResponseSmPayChargeRecovery = ResponseWithPagination & {
+  content: SmPayChargeRecoveryDto[];
+};
+
+// 충전/회수 이력 리스트 조회(AAG034) request type
+export type ChargeRecoveryParams = {
+  page: number;
+  size: number;
+  agentUniqueCode: string;
+  advertiserCustomerId: number;
+  startDate: string;
+  endDate: string;
+  isNotRecoveryAdvertiser: boolean;
 };

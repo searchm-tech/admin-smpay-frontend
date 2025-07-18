@@ -127,7 +127,7 @@ export function getRedirectPath(userType?: TAuthType | null): string {
 
   // 관리자는 관리자 페이지로
   if (getIsAdmin(userType)) {
-    return "/sm-pay/charge";
+    return "/sm-pay/admin/charge";
   }
 
   // 기본적으로 sm-pay 메인 페이지로

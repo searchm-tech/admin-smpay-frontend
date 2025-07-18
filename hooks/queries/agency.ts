@@ -9,6 +9,8 @@ import {
   getAgencyApi,
   getAgencyDetail,
   getAgencyDomainNameApi,
+  getSmPayAdminAgencyList,
+  getSmPayAdminChargeRecoveryAgencyList,
   patchAgencyStatus,
   postAgencyRegister,
   putAgencyDetail,
@@ -118,6 +120,28 @@ export const useMutationAgencyBillUpdate = (
 ) => {
   return useMutation<null, Error, RequestPutAgencyBill>({
     mutationFn: (params: RequestPutAgencyBill) => putAgencyDetail(params),
+    ...options,
+  });
+};
+
+// 신청 이력 있는 대행사 리스트 조회(AAG029) query
+export const useQuerySmPayAdminAgencyList = (
+  options?: UseQueryOptions<TAgency[], Error>
+) => {
+  return useQuery<TAgency[]>({
+    queryKey: ["smPayAdminAgencyList"],
+    queryFn: () => getSmPayAdminAgencyList(),
+    ...options,
+  });
+};
+
+// 충전/회수 이력 있는 대행사 리스트 조회(AAG032) query
+export const useQuerySmPayAdminChargeRecoveryAgencyList = (
+  options?: UseQueryOptions<TAgency[], Error>
+) => {
+  return useQuery<TAgency[]>({
+    queryKey: ["smPayAdminChargeRecoveryAgencyList"],
+    queryFn: () => getSmPayAdminChargeRecoveryAgencyList(),
     ...options,
   });
 };

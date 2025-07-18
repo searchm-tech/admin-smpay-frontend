@@ -62,7 +62,9 @@ export function SelectSearch({
             className
           )}
         >
-          {selectedOption ? selectedOption.label : placeholder}
+          <span className="truncate">
+            {selectedOption ? selectedOption.label : placeholder}
+          </span>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -78,7 +80,7 @@ export function SelectSearch({
               <CommandItem
                 className="cursor-pointer mb-1"
                 key={option.value}
-                value={option.value}
+                value={option.label}
                 onSelect={() => {
                   onValueChange(option.value);
                   setOpen(false);
