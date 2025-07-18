@@ -571,12 +571,14 @@ export type ResponseSmPayAdvertiserBankAccount = {
 
 export const postSmPayAdvertiserBankAccount = async ({
   advertiserId,
+  withdrawAccountId,
   accounts,
 }: RequestARSBankAccount): Promise<ResponseSmPayAdvertiserBankAccount> => {
+  console.log("withdrawAccountId", withdrawAccountId);
   try {
     const response = await post<ResponseSmPayAdvertiserBankAccount>(
       `/api/v1/advertisers/${advertiserId}/register-account`,
-      { accounts: [...accounts] }
+      { accounts: [...accounts], withdrawAccountId }
     );
     return response;
   } catch (error) {
