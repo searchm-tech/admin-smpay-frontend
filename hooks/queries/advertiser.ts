@@ -14,6 +14,7 @@ import {
   getAdvertiserListByUserId,
   getSmPayAdminAdvertiserList,
   getSmPayAdminChargeRecoveryAdvertiserList,
+  getAdvertiserListByUserIdHasChargeHistory,
 } from "@/services/advertiser";
 
 import type {
@@ -26,6 +27,8 @@ import type {
 } from "@/types/api/advertiser";
 import type { TAdvertiser } from "@/types/adveriser";
 import type { AdvertiserDetailDto } from "@/types/dto/smpay";
+import { useAuthQuery } from "@/hooks/useAuthQuery";
+import { RequestAgentUser } from "@/types/api/common";
 
 // 광고주 리스트 페이지네이션 조회 (SAG012) query
 // TODO : useAuthQuery 로 변경 필요
@@ -99,6 +102,19 @@ export const useQueryAdvertiserListByUserId = (
     queryFn: () => getAdvertiserListByUserId(params),
     enabled: params.userIds.length > 0 && !!params.agentId,
     ...options,
+  });
+};
+
+// 마케터와 연결된 충전/회수 이력 있는 광고주 리스트 조회(SAG050)
+export const useQueryAdvertiserListByUserIdHasChargeHistory = (params: {
+  agentId: number;
+  userIds: number[];
+}) => {
+  return useAuthQuery<TAdvertiser[]>({
+    queryKey: ["advertiserListByUserIdHasChargeHistory", params],
+    queryFn: (user: RequestAgentUser) =>
+      getAdvertiserListByUserIdHasChargeHistory(user, params),
+    enabled: params.userIds.length > 0 && !!params.agentId,
   });
 };
 
