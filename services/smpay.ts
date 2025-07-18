@@ -563,7 +563,6 @@ export const postSmPayAdvertiserAgreeNotification = async ({
  * 광고주 은행 계좌 등록 및 운영 제출(AD002)
  * - 화면 : 광고주 동의 > ARS 인증 버튼
  */
-
 export type ResponseSmPayAdvertiserBankAccount = {
   withdrawAccountId: number;
   result: boolean;
@@ -574,7 +573,6 @@ export const postSmPayAdvertiserBankAccount = async ({
   withdrawAccountId,
   accounts,
 }: RequestARSBankAccount): Promise<ResponseSmPayAdvertiserBankAccount> => {
-  console.log("withdrawAccountId", withdrawAccountId);
   try {
     const response = await post<ResponseSmPayAdvertiserBankAccount>(
       `/api/v1/advertisers/${advertiserId}/register-account`,

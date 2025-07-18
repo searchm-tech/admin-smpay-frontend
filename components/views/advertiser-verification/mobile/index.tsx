@@ -21,20 +21,21 @@ type Props = {
 
 const MobilewView = ({ advertiserId }: Props) => {
   const [withdrawAccountId, setWithdrawAccountId] = useState<number>(0);
+  console.log("withdrawAccountId", withdrawAccountId);
 
   const { mutate: advertiserBankAccount, isPending: isSubmittingBankAccount } =
     useAdvertiserBankAccount({
       onSuccess: (res) => {
         setStep(3);
-        setWithdrawAccountId(res.withdrawAccountId);
       },
     });
 
   const { mutate: arsCertification, isPending: isCertifyingARS } = useARS({
     onSuccess: (response) => {
-      if (response) {
+      if (response && response.result) {
         alert("ARS 인증이 완료되었습니다.");
         setArsCertified(true);
+        setWithdrawAccountId(response.withdrawAccountId);
       } else {
         alert("ARS 인증을 실패하였습니다.");
         setArsCertified(false);

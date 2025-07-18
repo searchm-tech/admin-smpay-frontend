@@ -10,6 +10,7 @@ import type {
   AdvertiserRecommendDto,
   ChartAdvertiserDto,
   AdvertiserRecommendListDto,
+  ChargeRecoveryResultDto,
 } from "@/types/dto/dashboard";
 
 /**
@@ -113,3 +114,18 @@ export const getDashboardChargeRecoveryAmount = async (
   );
   return response;
 };
+
+/**
+ * 대시보드 전 날 미수 광고주 리스트 조회(SAG053)
+ * - 화면 : 대시보드 > 미수 광고주 리스트
+ */
+  export const getDashboardUnpaidAdvertiserList = async (
+    params: RequestAgentUser
+  ): Promise<ChargeRecoveryResultDto[]> => {
+    const { agentId, userId } = params;
+
+    const response: ChargeRecoveryResultDto[] = await get(
+      `/service/api/v1/agents/${agentId}/users/${userId}/advertiser-recovery-fail`
+    );
+    return response;
+  };

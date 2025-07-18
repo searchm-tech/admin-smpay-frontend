@@ -16,6 +16,7 @@ import type {
   RequestAccountCertification,
   RequestARSBankAccount,
   RequestARS,
+  ResponseARS,
 } from "@/types/api/bank";
 import {
   postSmPayAdvertiserBankAccount,
@@ -69,7 +70,7 @@ export const useAdvertiserBankAccount = (
 
 // ARS 인증 및 출금계좌 등록 (AS001)
 export const useARS = (
-  options?: UseMutationOptions<boolean, Error, RequestARS>
+  options?: UseMutationOptions<ResponseARS, Error, RequestARS>
 ) => {
   return useMutation({
     mutationFn: (params: RequestARS) => postARS(params),

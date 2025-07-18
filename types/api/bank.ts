@@ -31,3 +31,8 @@ export type RequestARS = {
   bankCode: string;
   accountNumber: string;
 };
+
+export type ResponseARS = {
+  result: boolean;
+  withdrawAccountId: number;
+};

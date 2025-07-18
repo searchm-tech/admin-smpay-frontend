@@ -33,6 +33,7 @@ type InfoSectionProps = {
   setChargeAccount: (account: BankInfo) => void;
   setSalesAccount: (account: BankInfo) => void;
   setArsCertified: (arsCertified: boolean) => void;
+  setWithdrawAccountId: (withdrawAccountId: number) => void;
 };
 const InfoSection = ({
   advertiserId,
@@ -42,6 +43,7 @@ const InfoSection = ({
   setChargeAccount,
   setSalesAccount,
   setArsCertified,
+  setWithdrawAccountId,
 }: InfoSectionProps) => {
   const { bankList } = useBankStore();
   const [isCertifiedCharge, setIsCertifiedCharge] = useState(false);
@@ -83,8 +85,9 @@ const InfoSection = ({
 
   const { mutate: arsCertification, isPending: isCertifyingARS } = useARS({
     onSuccess: (response) => {
-      if (response) {
+      if (response && response.result) {
         setMessage("ARS 인증이 완료되었습니다.");
+        setWithdrawAccountId(response.withdrawAccountId);
         setArsCertified(true);
       } else {
         setMessage("ARS 인증을 실패하였습니다.");

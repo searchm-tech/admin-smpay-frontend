@@ -6,6 +6,7 @@ import {
   getDashboardAllAdvertiserOperationStatusChart,
   getDashboardChargeRecoveryAmount,
   getDashboardRecommendedAdvertiserList,
+  getDashboardUnpaidAdvertiserList,
 } from "@/services/dashboard";
 
 import type {
@@ -15,6 +16,7 @@ import type {
 import type { RequestAgentUser } from "@/types/api/common";
 import type {
   AdvertiserRecommendDto,
+  ChargeRecoveryResultDto,
   ChartAdvertiserDto,
 } from "@/types/dto/dashboard";
 
@@ -70,5 +72,14 @@ export const useQueryDashboardChargeRecoveryAmount = () => {
   return useAuthQuery<ResponseDashboardChargeRecoveryAmount, Error>({
     queryKey: ["dashboardChargeRecoveryAmount"],
     queryFn: (user: RequestAgentUser) => getDashboardChargeRecoveryAmount(user),
+  });
+};
+
+// 대시보드 미수 광고주 리스트 조회(SAG053)
+export const useQueryDashboardUnclaimedList = () => {
+  return useAuthQuery<ChargeRecoveryResultDto[], Error>({
+    queryKey: ["dashboardUnclaimedList"],
+    queryFn: (user: RequestAgentUser) => getDashboardUnpaidAdvertiserList(user),
+    initialData: [],
   });
 };
