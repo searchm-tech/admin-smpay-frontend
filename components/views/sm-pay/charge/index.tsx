@@ -26,7 +26,7 @@ const SMPayChargeAgencyView = () => {
 
   const [startDate, setStartDate] = useState<Date | undefined>();
   const [endDate, setEndDate] = useState<Date | undefined>();
-  const [isNotRecovery, setIsNotRecovery] = useState<boolean>(true);
+  const [isNotRecovery, setIsNotRecovery] = useState<boolean>(false);
   const [advertiserId, setAdvertiserId] = useState<number>(0);
 
   const { data, isFetching } = useSmPayChargeRecoveryListAgency({

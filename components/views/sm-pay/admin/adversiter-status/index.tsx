@@ -10,17 +10,27 @@ import type { SmPayAdvertiserStautsOrderType } from "@/types/smpay";
 import { defaultTableParams } from "@/constants/table";
 import { useSmPayAdminOverviewStatusList } from "@/hooks/queries/sm-pay";
 import FilterSection from "./FilterSection";
+import { useQuerySmPayAdminAgencyList } from "@/hooks/queries/agency";
+import {
+  useQueryAdvertiserListByUserId,
+  useQuerySmPayAdminAdvertiserList,
+} from "@/hooks/queries/advertiser";
 
 const SmPayAdminAdversiterStatusView = () => {
   const [tableParams, setTableParams] =
     useState<TableParams>(defaultTableParams);
   const [selectedStatus, setSelectedStatus] = useState<string>("ALL");
 
+  const [selectedAgency, setSelectedAgency] = useState<string>("");
+  const [selectedAdvertiser, setSelectedAdvertiser] = useState<string>("");
+
   const { data: advertiserList, isLoading } = useSmPayAdminOverviewStatusList({
     page: tableParams.pagination?.current || 1,
     size: tableParams.pagination?.pageSize || 10,
     keyword: "",
     orderType: tableParams.sortField as SmPayAdvertiserStautsOrderType,
+    agentId: selectedAgency,
+    advertiserId: selectedAdvertiser,
   });
 
   const handleStatusChange = (status: string) => {
@@ -35,6 +45,21 @@ const SmPayAdminAdversiterStatusView = () => {
       },
     }));
   };
+
+  const handleReset = () => {
+    setSelectedAgency("");
+    setSelectedAdvertiser("");
+  };
+
+  const handleSelectAgency = (value: string) => {
+    setSelectedAgency(value);
+    setSelectedAdvertiser("");
+  };
+  const handleSelectAdvertiser = (value: string) => {
+    setSelectedAdvertiser(value);
+    setSelectedAgency("");
+  };
+
   return (
     <div>
       <GuidSection viewType="smpay-guide" />
@@ -43,6 +68,11 @@ const SmPayAdminAdversiterStatusView = () => {
         onStatusChange={handleStatusChange}
       />
       <TableSection
+        selectedAgency={selectedAgency}
+        selectedAdvertiser={selectedAdvertiser}
+        handleSelectAgency={handleSelectAgency}
+        handleSelectAdvertiser={handleSelectAdvertiser}
+        handleReset={handleReset}
         tableParams={tableParams}
         setTableParams={setTableParams}
         total={advertiserList?.totalCount || 0}

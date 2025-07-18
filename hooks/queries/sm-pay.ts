@@ -483,7 +483,13 @@ export const useSmPayAdminOverviewAccountBalance = (userId: number) => {
 };
 
 // 광고주 운영 현황 리스트 조회 (운영 관리자 전용) (AAG031)
-export const useSmPayAdminOverviewStatusList = (params: QueryParams) => {
+export type PropsSmPayAdminOverviewStatusList = QueryParams & {
+  agentId: string;
+  advertiserId: string;
+};
+export const useSmPayAdminOverviewStatusList = (
+  params: PropsSmPayAdminOverviewStatusList
+) => {
   return useQuery<ResponseSmPayAdvertiserStatus>({
     queryKey: ["/smpay/admin-overview-status-list", params],
     queryFn: () => getSmPayAdminOverviewStatusList(params),

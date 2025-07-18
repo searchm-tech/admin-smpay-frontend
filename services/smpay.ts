@@ -1,4 +1,7 @@
-import { PropsRequestDecision } from "@/hooks/queries/sm-pay";
+import {
+  PropsRequestDecision,
+  PropsSmPayAdminOverviewStatusList,
+} from "@/hooks/queries/sm-pay";
 import { ApiError, get, patch, post, put } from "@/lib/api";
 import {
   buildQueryParams,
@@ -601,7 +604,7 @@ export const getSmPayChargeRecoveryListAgency = async (
   const queryParam = buildQueryParams({ page, size });
   const requestParams = {
     agentUniqueCode,
-    advertiserCustomerId,
+    advertiserCustomerId: advertiserCustomerId || "",
     startDate,
     endDate,
     isNotRecoveryAdvertiser,
@@ -966,7 +969,7 @@ export const getSmPayAdminOverviewAccountBalance = async ({
  * - 화면 : [시스템 관리자] SM Pay 관리 > 광고주 운영 현황
  */
 export const getSmPayAdminOverviewStatusList = async (
-  queryParams: QueryParams
+  queryParams: PropsSmPayAdminOverviewStatusList
 ): Promise<ResponseSmPayAdvertiserStatus> => {
   const { page, size, orderType } = queryParams;
 
@@ -975,20 +978,13 @@ export const getSmPayAdminOverviewStatusList = async (
     "ADVERTISER_REGISTER"
   );
 
-  // const userId = [155].map((id) => `userId=${id}`).join("&");
-  // const agentId = [42].map((id) => `agentId=${id}`).join("&");
-
   const paramsResult = buildQueryParams({
     page,
     size,
     orderType: apiOrderType,
+    agentId: queryParams.agentId,
+    advertiserId: queryParams.advertiserId,
   });
-
-  // console.log("userId", userId);
-  // console.log("agentId", agentId);
-  // console.log("paramsResult", paramsResult);
-
-  // const strParams = `${userId}&${agentId}&${paramsResult}`;
 
   try {
     const response = await get<ResponseSmPayAdvertiserStatus>(

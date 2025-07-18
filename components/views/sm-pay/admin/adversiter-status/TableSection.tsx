@@ -24,15 +24,27 @@ import type { TableProps } from "antd";
 import type { FilterValue } from "antd/es/table/interface";
 import { SmPayAdvertiserStatusDto } from "@/types/dto/smpay";
 import { AdvertiserAgreementSendDialog } from "../../manangement/dialog";
+import { useQuerySmPayAdminAgencyList } from "@/hooks/queries/agency";
+import { useQuerySmPayAdminAdvertiserList } from "@/hooks/queries/advertiser";
 
 interface TableSectionProps {
+  selectedAgency: string;
+  selectedAdvertiser: string;
   tableParams: TableParams;
   setTableParams: (params: TableParams) => void;
   total: number;
   loadingData: boolean;
   dataSource: SmPayAdvertiserStatusDto[];
+  handleSelectAgency: (value: string) => void;
+  handleSelectAdvertiser: (value: string) => void;
+  handleReset: () => void;
 }
 const TableSection = ({
+  selectedAgency,
+  selectedAdvertiser,
+  handleSelectAgency,
+  handleSelectAdvertiser,
+  handleReset,
   tableParams,
   setTableParams,
   total,
@@ -41,9 +53,9 @@ const TableSection = ({
 }: TableSectionProps) => {
   const router = useRouter();
 
-  const [selectedAgencyValue, setSelectedAgencyValue] = useState<string>();
-  const [selectedAdvertiserValue, setSelectedAdvertiserValue] =
-    useState<string>();
+  const { data: agencyList = [] } = useQuerySmPayAdminAgencyList();
+
+  const { data: advertiserList = [] } = useQuerySmPayAdminAdvertiserList();
 
   const [openDialog, setOpenDialog] = useState<ActionButton | null>(null);
   const [resumeId, setResumeId] = useState<number | null>(null);
@@ -97,7 +109,6 @@ const TableSection = ({
       orderType: orderType,
     });
   };
-
   const handleMoveDetailPage = (
     advertiserId: number,
     advertiserFormId: number,
@@ -279,35 +290,30 @@ const TableSection = ({
     <section className="pt-4">
       <div className="flex gap-2 border-1 border-b border-dashed border-gray-300 pb-4">
         <SelectSearch
-          options={optionAgency}
-          value={selectedAgencyValue}
-          onValueChange={setSelectedAgencyValue}
+          options={agencyList?.map((agency) => ({
+            label: `${agency.name} | ${agency.representativeName}`,
+            value: agency.agentId.toString(),
+          }))}
+          value={selectedAgency}
+          onValueChange={handleSelectAgency}
           placeholder="대행사를 선택하세요."
         />
 
         <SelectSearch
-          options={advertiser}
-          value={selectedAdvertiserValue}
-          onValueChange={setSelectedAdvertiserValue}
+          options={advertiserList?.map((advertiser) => ({
+            label: `${advertiser.id} | ${advertiser.name}`,
+            value: advertiser.advertiserId.toString(),
+          }))}
+          value={selectedAdvertiser}
+          onValueChange={handleSelectAdvertiser}
           placeholder="광고주를 선택하세요."
         />
 
-        <Button variant="outline">초기화</Button>
+        <Button variant="outline" onClick={handleReset}>
+          초기화
+        </Button>
       </div>
 
-      <div className="p-4 flex flex-wrap items-center gap-x-6 gap-y-4">
-        {/* {statusData?.data.map((filter) => (
-          <FilterItem
-            key={filter.name}
-            value={filter.status}
-            label={filter.name}
-            count={filter.count}
-            fixedColor={filter.status === "ALL" ? "#363C45" : undefined}
-            selectedFilter={selectedStatus}
-            handleFilterChange={handleStatusChange}
-          />
-        ))} */}
-      </div>
       <div className="overflow-x-auto">
         {applySubmitData && (
           <AdvertiserAgreementSendDialog
