@@ -59,6 +59,7 @@ import {
   getSmPayAdminOverviewStatusList,
   getSmPayAdminOverviewStatusCount,
   getSmPayAdminChargeRecoveryList,
+  getSmPayChargeRecoveryListAgency,
 } from "@/services/smpay";
 import type {
   SmPayStatIndicator,
@@ -281,6 +282,34 @@ export const useSmPayAdvertiserPrePaymentSchedule = (advertiserId: number) => {
   });
 };
 
+// 광고주 동의 이메일, 문자발송 (SAG037)
+export const useSmPayAdvertiserAgreeNotification = (
+  options?: UseMutationOptions<null, Error, number>
+) => {
+  return useAuthMutation<null, Error, number>({
+    mutationFn: (variables, user) =>
+      postSmPayAdvertiserAgreeNotification({
+        user,
+        advertiserId: variables,
+      }),
+    ...options,
+  });
+};
+
+// 충전 회수 이력 리스트 조회(SAG051) query
+export const useSmPayChargeRecoveryListAgency = (
+  params: ChargeRecoveryParams
+) => {
+  return useAuthQuery<ResponseSmPayChargeRecovery>({
+    queryKey: ["/smpay/charge-recovery-list-agency", params],
+    queryFn: (user: RequestAgentUser) =>
+      getSmPayChargeRecoveryListAgency(user, params),
+    enabled: !!params.agentUniqueCode,
+  });
+};
+
+// ---- admin ----
+
 // 광고주 심사 관리 리스트 조회 (운영 관리자 전용) (AAG018)
 export const useSmPayAdminAuditList = (params: QueryParams) => {
   return useAuthQuery<ResponseSmPayAdminAudit>({
@@ -394,25 +423,6 @@ export const useSmPayAdminOverviewApplyFormDetail = (
   });
 };
 
-// 광고주 심사자 참고용 메모 조회 (운영 관리자 전용) (AAG025)
-export const useSmPayAdminOverviewReviewerMemo = (advertiserId: number) => {
-  return useAuthQuery<ReviewerMemoDto>({
-    queryKey: ["/smpay/admin-overview-reviewer-memo", advertiserId],
-    queryFn: (user: RequestAgentUser) =>
-      getSmPayAdminOverviewReviewerMemo({ user, advertiserId }),
-  });
-};
-
-// 광고주 최상위 그룹장 참고용 메모 조회 (운영 관리자 전용) (AAG026)
-export const useSmPayAdminOverviewApprovalMemo = (advertiserId: number) => {
-  return useAuthQuery<ApprovalMemoDto>({
-    queryKey: ["/smpay/admin-overview-approval-memo", advertiserId],
-    queryFn: (user: RequestAgentUser) =>
-      getSmPayAdminOverviewApprovalMemo({ user, advertiserId }),
-  });
-};
-
-//
 /**
  * 광고주 최상위 그룹장 참고용 메모 조회 (운영 관리자 전용) (AAG026)
  * - 화면 : 없음
@@ -445,26 +455,30 @@ export const useSmPayAdminOverviewOperatorDecision = (
   });
 };
 
+// 광고주 심사자 참고용 메모 조회 (운영 관리자 전용) (AAG025)
+export const useSmPayAdminOverviewReviewerMemo = (advertiserId: number) => {
+  return useAuthQuery<ReviewerMemoDto>({
+    queryKey: ["/smpay/admin-overview-reviewer-memo", advertiserId],
+    queryFn: (user: RequestAgentUser) =>
+      getSmPayAdminOverviewReviewerMemo({ user, advertiserId }),
+  });
+};
+
+// 광고주 최상위 그룹장 참고용 메모 조회 (운영 관리자 전용) (AAG026)
+export const useSmPayAdminOverviewApprovalMemo = (advertiserId: number) => {
+  return useAuthQuery<ApprovalMemoDto>({
+    queryKey: ["/smpay/admin-overview-approval-memo", advertiserId],
+    queryFn: (user: RequestAgentUser) =>
+      getSmPayAdminOverviewApprovalMemo({ user, advertiserId }),
+  });
+};
+
 // 운영 계좌 잔액 조회 (운영 관리자 전용) (AAG027)
 export const useSmPayAdminOverviewAccountBalance = (userId: number) => {
   return useAuthQuery<OverviewAccountBalanceDto>({
     queryKey: ["/smpay/admin-overview-account-balance", userId],
     queryFn: (user: RequestAgentUser) =>
       getSmPayAdminOverviewAccountBalance(user),
-  });
-};
-
-// 광고주 동의 이메일, 문자발송 (SAG037)
-export const useSmPayAdvertiserAgreeNotification = (
-  options?: UseMutationOptions<null, Error, number>
-) => {
-  return useAuthMutation<null, Error, number>({
-    mutationFn: (variables, user) =>
-      postSmPayAdvertiserAgreeNotification({
-        user,
-        advertiserId: variables,
-      }),
-    ...options,
   });
 };
 

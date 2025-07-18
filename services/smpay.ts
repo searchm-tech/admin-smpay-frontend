@@ -534,30 +534,6 @@ export const getSmPayAdvertiserPrePaymentSchedule = async ({
 };
 
 /**
- * 광고주 최상위 그룹장 참고용 메모 조회(AAG025)
- * - 화면 : SM Pay 관리 > 조회 > 참고용 메모 영역
- */
-
-export const getSmPayDetailApprovalMemo = async ({
-  user,
-  advertiserId,
-}: WithAdvertiserId): Promise<ApprovalMemoDto> => {
-  const { agentId, userId } = user;
-
-  try {
-    const response = await get<ApprovalMemoDto>(
-      `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/approval-memo`
-    );
-    return response;
-  } catch (error) {
-    if (error instanceof ApiError) {
-      throw error;
-    }
-    throw error;
-  }
-};
-
-/**
  * 광고주 동의 이메일, 문자발송(SAG037)
  * - 화면 : [대행사] SM Pay 관리 > 목록 리스트 > 광고주 동의 전송 버튼
  */
@@ -602,7 +578,74 @@ export const postSmPayAdvertiserBankAccount = async ({
   }
 };
 
+/**
+ * 충전 회수 이력 리스트 조회(SAG051)
+ * - 화면 : [대행사] SM Pay 관리 > 충전 회수 현황
+ */
+export const getSmPayChargeRecoveryListAgency = async (
+  user: RequestAgentUser,
+  reqParams: ChargeRecoveryParams
+): Promise<ResponseSmPayChargeRecovery> => {
+  const { agentId, userId } = user;
+
+  const {
+    page,
+    size,
+    agentUniqueCode,
+    advertiserCustomerId,
+    startDate,
+    endDate,
+    isNotRecoveryAdvertiser,
+  } = reqParams;
+
+  const queryParam = buildQueryParams({ page, size });
+  const requestParams = {
+    agentUniqueCode,
+    advertiserCustomerId,
+    startDate,
+    endDate,
+    isNotRecoveryAdvertiser,
+  };
+
+  try {
+    const response = await post<ResponseSmPayChargeRecovery>(
+      `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/charge-recovery-list?${queryParam}`,
+      requestParams
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
 // ------------- admin
+
+/**
+ * 광고주 최상위 그룹장 참고용 메모 조회(AAG025)
+ * - 화면 : SM Pay 관리 > 조회 > 참고용 메모 영역
+ */
+
+export const getSmPayDetailApprovalMemo = async ({
+  user,
+  advertiserId,
+}: WithAdvertiserId): Promise<ApprovalMemoDto> => {
+  const { agentId, userId } = user;
+
+  try {
+    const response = await get<ApprovalMemoDto>(
+      `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/approval-memo`
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
 
 /**
  * 광고주 심사 관리 리스트 조회 (운영 관리자 전용) (AAG018)
@@ -786,7 +829,6 @@ export const getSmPayAdminOverviewApplyFormList = async (
  * 광고주 smPay 신청 이력 상세 조회(AAG022)
  * - 화면 : [시스템 관리자] SM Pay 관리 > 운영 검토 요청 상세 > 신청 이력 상세
  */
-
 type ReqSmPayAdminOverviewApplyFormDetail = UserAgentAdvertiserId & {
   formId: number;
 };
@@ -814,7 +856,6 @@ export const getSmPayAdminOverviewApplyFormDetail = async ({
  * 광고주 심사자 참고용 메모 조회(AAG024)
  * - 화면 : [시스템 관리자] SM Pay 관리 > 운영 검토 요청 상세 > 심사자 참고용 메모 영역
  */
-
 export const getSmPayAdminOverviewReviewerMemo = async ({
   user,
   advertiserId,

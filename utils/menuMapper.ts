@@ -13,7 +13,11 @@ const MENU_CONFIG = {
       "SM Pay 심사": "/sm-pay/judgement",
       "SM Pay 운영 검토": "/sm-pay/admin/overview",
       "광고주 운영 현황": "/sm-pay/admin/adversiter-status",
-      "충전 회수 현황": "/sm-pay/admin/charge",
+      "충전 회수 현황": {
+        ADMIN: "/sm-pay/admin/charge",
+        AGENCY: "/sm-pay/charge",
+        MEMBER: "/sm-pay/charge",
+      },
     },
   },
   "광고 성과 리포트": {
@@ -87,13 +91,21 @@ function getMenuUrl(
   if (typeof config === "object" && config !== null) {
     // 권한별 URL이 정의된 경우
     if (getIsAdmin(userType)) {
-      return config.ADMIN || config.MASTER || Object.values(config)[0];
+      const url = config.ADMIN || config.MASTER || Object.values(config)[0];
+      console.log("Admin URL:", url);
+      return url;
     } else if (getIsGroupMaster(userType)) {
-      return config.MASTER || config.AGENCY || Object.values(config)[0];
+      const url = config.MASTER || config.AGENCY || Object.values(config)[0];
+      console.log("Master URL:", url);
+      return url;
     } else if (getIsAgency(userType)) {
-      return config.AGENCY || config.MEMBER || Object.values(config)[0];
+      const url = config.AGENCY || config.MEMBER || Object.values(config)[0];
+      console.log("Agency URL:", url);
+      return url;
     } else {
-      return config.AGENCY || config.MEMBER || Object.values(config)[0];
+      const url = config.AGENCY || config.MEMBER || Object.values(config)[0];
+      console.log("Default URL:", url);
+      return url;
     }
   }
 

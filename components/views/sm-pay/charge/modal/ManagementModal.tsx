@@ -3,14 +3,16 @@
 import { useRouter } from "next/navigation";
 import React, { Fragment, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import { isEqual } from "lodash";
 
 import LoadingUI from "@/components/common/Loading";
 import { Modal } from "@/components/composite/modal-components";
-import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 
 import { useQueryDepartmentsByAgentId } from "@/hooks/queries/departments";
-import { useQueryAdvertiserListByUserId } from "@/hooks/queries/advertiser";
+import { useQueryAdvertiserListByUserIdHasChargeHistory } from "@/hooks/queries/advertiser";
+import { useUserListStore } from "@/store/useUserListStore";
 
 import {
   convertToTreeNode,
@@ -27,17 +29,43 @@ export interface TreeNodeProps {
 }
 
 type Props = {
+  open: boolean;
   onClose: () => void;
-  onConfirm: () => void;
+  advertiserId: number;
+  onConfirm: (advertiserId: number) => void;
 };
-const ManagementModal: React.FC<Props> = ({ onClose, onConfirm }) => {
+
+// 트리 전체 노드 id 구하는 함수 (컴포넌트 밖으로 이동)
+const getAllTreeNodeIds = (treeData: OrganizationTreeNode[]): string[] => {
+  const ids: string[] = [];
+  const traverse = (nodes: OrganizationTreeNode[]) => {
+    nodes.forEach((node) => {
+      ids.push(node.id);
+      if (node.children) traverse(node.children);
+    });
+  };
+  traverse(treeData);
+  return ids;
+};
+
+const ManagementModal: React.FC<Props> = ({
+  open,
+  onClose,
+  advertiserId,
+  onConfirm,
+}) => {
   const router = useRouter();
+
   const { data: session } = useSession();
   const { agentId } = session?.user || {};
 
+  const { setUserList, userList } = useUserListStore();
+
   const [treeData, setTreeData] = useState<OrganizationTreeNode[]>([]);
   const [nodeIds, setNodeIds] = useState<Set<string>>(new Set());
-  const [advertiserIds, setAdvertiserIds] = useState<string[]>([]);
+  const [selectedAdvertiserId, setSelectedAdvertiserId] = useState<string>(
+    advertiserId.toString()
+  );
 
   const { data: departments = [], isFetching: loadingDepartmentsQuery } =
     useQueryDepartmentsByAgentId(agentId || 0, {
@@ -48,36 +76,21 @@ const ManagementModal: React.FC<Props> = ({ onClose, onConfirm }) => {
     getAllSelectedLeafOriginIds(node, nodeIds)
   );
 
-  const { data: advertisers = [] } = useQueryAdvertiserListByUserId({
-    agentId: agentId || 0,
-    userIds: allLeafOriginIds.map((id) => Number(id)),
-  });
+  const { data: advertisers = [] } =
+    useQueryAdvertiserListByUserIdHasChargeHistory({
+      agentId: agentId || 0,
+      userIds: allLeafOriginIds.map((id) => Number(id)),
+    });
 
   const handleClose = () => onClose();
 
-  // 광고주 전체 체크박스 상태 계산
-  const allIds = (advertisers as TAdvertiser[]).map((a) =>
-    a.advertiserId.toString()
-  );
-  const allChecked =
-    allIds.length > 0 && allIds.every((id) => advertiserIds.includes(id));
-  const isIndeterminate =
-    advertiserIds.length > 0 && advertiserIds.length < allIds.length;
-
-  // 전체 체크박스 핸들러
-  const handleSelectAll = (checked: boolean) => {
-    if (checked) setAdvertiserIds(allIds);
-    else setAdvertiserIds([]);
-  };
-
-  // 개별 체크박스 핸들러 (토글)
-  const handleSelectAdvertiser = (advertiserId: string) => {
-    setAdvertiserIds((prev) =>
-      prev.includes(advertiserId)
-        ? prev.filter((id) => id !== advertiserId)
-        : [...prev, advertiserId]
-    );
-  };
+  // 모달이 열릴 때 트리 전체 선택 → 광고주 전체 선택
+  useEffect(() => {
+    if (treeData.length === 0) return;
+    // 1. 트리 전체 노드 선택
+    const allNodeIds = getAllTreeNodeIds(treeData);
+    setNodeIds(new Set(allNodeIds));
+  }, [treeData]);
 
   useEffect(() => {
     if (departments.length > 0) {
@@ -85,14 +98,23 @@ const ManagementModal: React.FC<Props> = ({ onClose, onConfirm }) => {
     }
   }, [departments]);
 
+  useEffect(() => {
+    const next = allLeafOriginIds.map(Number);
+    if (!isEqual(userList, next)) {
+      setUserList(next);
+    }
+  }, [allLeafOriginIds, setUserList, userList]);
+
   const loadingDepartments = loadingDepartmentsQuery;
+
+  console.log("selectedAdvertiserId", selectedAdvertiserId);
 
   return (
     <Modal
-      open
+      open={open}
       title="광고주 세부 선택"
       onClose={handleClose}
-      onConfirm={onConfirm}
+      onConfirm={() => onConfirm(Number(selectedAdvertiserId))}
       confirmDisabled={
         treeData.length === 0 && agentId !== session?.user.agentId
       }
@@ -102,6 +124,7 @@ const ManagementModal: React.FC<Props> = ({ onClose, onConfirm }) => {
       <div className="flex gap-4 h-[80vh] w-[80vw]">
         <div className="flex flex-col w-1/2 ">
           <div className="flex-1 w-full mx-auto p-4 border rounded-lg bg-white overflow-y-auto">
+            <div className="mb-2 font-bold">부서 및 마케터 선택</div>
             {treeData.map((node) => (
               <TreeNodeComponent
                 key={node.id}
@@ -136,52 +159,33 @@ const ManagementModal: React.FC<Props> = ({ onClose, onConfirm }) => {
             )}
 
             {advertisers.length > 0 && (
-              <Fragment>
-                <div className="flex items-center gap-2 mb-2">
-                  <Checkbox
-                    checked={
-                      allChecked
-                        ? true
-                        : isIndeterminate
-                          ? "indeterminate"
-                          : false
-                    }
-                    onCheckedChange={handleSelectAll}
-                  />
-                  <span className="text-sm text-gray-800 mr-2">
-                    광고주 전체
-                  </span>
-                </div>
-
+              <RadioGroup
+                value={selectedAdvertiserId}
+                onValueChange={setSelectedAdvertiserId}
+              >
                 {advertisers.map((adv: TAdvertiser, idx: number) => (
-                  <Fragment key={adv.advertiserId || idx}>
-                    <div
-                      key={adv.advertiserId || idx}
-                      className="flex items-center gap-2 mb-2"
+                  <div
+                    key={adv.advertiserId || idx}
+                    className="flex items-center space-x-2 p-2 rounded hover:bg-gray-50"
+                  >
+                    <RadioGroupItem
+                      value={adv.advertiserId.toString()}
+                      id={`advertiser-${adv.advertiserId}`}
+                    />
+                    <label
+                      htmlFor={`advertiser-${adv.advertiserId}`}
+                      className="text-sm text-gray-800 cursor-pointer flex-1"
                     >
-                      <Checkbox
-                        checked={advertiserIds.includes(
-                          adv.advertiserId.toString()
-                        )}
-                        onCheckedChange={() =>
-                          handleSelectAdvertiser(adv.advertiserId.toString())
-                        }
-                      />
-                      <span className="text-sm text-gray-800">
-                        {adv.customerId}
-                      </span>
-                      <span className="text-sm text-gray-800">|</span>
-                      <span className="text-sm text-gray-800">
-                        {adv.name || "-"}
-                      </span>
-
-                      <span className="text-xs text-gray-500">
+                      <span className="font-medium">{adv.customerId}</span>
+                      <span className="mx-2">|</span>
+                      <span>{adv.name || "-"}</span>
+                      <span className="text-xs text-gray-500 ml-2">
                         ({adv.nickname || "광고주명 없음"})
                       </span>
-                    </div>
-                  </Fragment>
+                    </label>
+                  </div>
                 ))}
-              </Fragment>
+              </RadioGroup>
             )}
           </div>
         </div>
