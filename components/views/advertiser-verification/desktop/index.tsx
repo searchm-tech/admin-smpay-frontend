@@ -32,12 +32,12 @@ const DesktopView = ({ advertiserId }: DesktopViewProps) => {
     useAdvertiserBankAccount({
       onSuccess: (res) => {
         setOpenDialog("submit");
-        setWithdrawAccountId(res.withdrawAccountId);
       },
     });
 
   const [arsCertified, setArsCertified] = useState(false); // TODO : ARS 하고 false 변경
   const [withdrawAccountId, setWithdrawAccountId] = useState<number>(0);
+  console.log("withdrawAccountId", withdrawAccountId);
 
   const [agreement, setAgreement] = useState<AgreementInfo>(
     DEFAULT_AGREEMENT_INFO
@@ -122,6 +122,7 @@ const DesktopView = ({ advertiserId }: DesktopViewProps) => {
         setChargeAccount={setChargeAccount}
         setSalesAccount={setSalesAccount}
         setArsCertified={setArsCertified}
+        setWithdrawAccountId={setWithdrawAccountId}
       />
       <FooterSection
         handleReset={handleReset}
