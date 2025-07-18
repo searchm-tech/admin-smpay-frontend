@@ -74,13 +74,13 @@ const HistoryDetailModal = ({ onClose, advertiserId, formId }: Props) => {
     standardRoasPercent: smpayInfo?.advertiserStandardRoasPercent || 0,
     rangeType: "UP",
     boundType: "FIXED_AMOUNT",
-    changePercentOrValue: 0,
+    changePercentOrValue: smpayInfo?.advertiserStandardRoasPercent || 0,
   };
   const downChargeRule = {
     standardRoasPercent: smpayInfo?.advertiserStandardRoasPercent || 0,
     rangeType: "DOWN",
     boundType: "FIXED_AMOUNT",
-    changePercentOrValue: 0,
+    changePercentOrValue: smpayInfo?.advertiserStandardRoasPercent || 0,
   };
   const advertiserData: AdvertiserDetailDto = {
     advertiserId: smpayInfo?.advertiserId || 0,

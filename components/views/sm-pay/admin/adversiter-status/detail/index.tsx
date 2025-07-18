@@ -23,6 +23,7 @@ import {
 
 import AdvertiserInfoSection from "../../overview/detail/AdvertiserInfoSection";
 import AccountSection from "../../../components/AccountSection";
+import LoadingUI from "@/components/common/Loading";
 
 type Props = {
   id: string;
@@ -43,9 +44,12 @@ const SmPayAdminAdversiterStatusDetailView = ({ id }: Props) => {
     Number(agentId),
     Number(userId)
   );
+  console.log(advertiserData);
 
   const { data: chargeRule, isPending: loadingChargeRule } =
     useSmPayAdminOverviewChargeRule(Number(id));
+
+  console.log(chargeRule);
 
   const { data: prePaymentScheduleData, isPending: loadingPrePaymentSchedule } =
     useSmPayAdminOverviewPrePaymentSchedule(Number(id));
@@ -74,7 +78,9 @@ const SmPayAdminAdversiterStatusDetailView = ({ id }: Props) => {
         ?.standardRoasPercent || 0,
     rangeType: "UP",
     boundType: "FIXED_AMOUNT",
-    changePercentOrValue: 0,
+    changePercentOrValue:
+      chargeRule?.find((rule) => rule.rangeType === "UP")
+        ?.changePercentOrValue || 0,
   };
   const downChargeRule = {
     standardRoasPercent:
@@ -82,7 +88,9 @@ const SmPayAdminAdversiterStatusDetailView = ({ id }: Props) => {
         ?.standardRoasPercent || 0,
     rangeType: "DOWN",
     boundType: "FIXED_AMOUNT",
-    changePercentOrValue: 0,
+    changePercentOrValue:
+      chargeRule?.find((rule) => rule.rangeType === "DOWN")
+        ?.changePercentOrValue || 0,
   };
 
   const isLoading =
@@ -94,7 +102,7 @@ const SmPayAdminAdversiterStatusDetailView = ({ id }: Props) => {
 
   return (
     <div className="flex flex-col gap-4">
-      {/* {isPending && <LoadingUI title="SM Pay 정보 조회 중..." />} */}
+      {isLoading && <LoadingUI title="SM Pay 정보 조회 중..." />}
       {rejectModalOpen && (
         <RejectModal
           open={rejectModalOpen}

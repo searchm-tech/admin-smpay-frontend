@@ -41,6 +41,8 @@ const SmPayApplyDetailView = ({ id }: Props) => {
     recommendRoas: formInfo?.advertiserRecommendRoasPercent || 0,
   };
 
+  console.log("formInfo", formInfo);
+
   const upChargeRule = formInfo?.chargeRules.find(
     (rule) => rule.rangeType === "UP"
   ) || {
