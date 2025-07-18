@@ -4,6 +4,7 @@ import type {
   ResponseAdvertiserOperationStatusChart,
   ResponseAdvertiserRecommandList,
   ResponseDashboardAdvertiserStatus,
+  ResponseDashboardChargeRecoveryAmount,
 } from "@/types/api/dashboard";
 import type {
   AdvertiserRecommendDto,
@@ -96,4 +97,19 @@ export const getDashboardRecommendedAdvertiserList = async (
     customerId: item.customerId,
   }));
   return result;
+};
+
+/**
+ * 대시보드 전 날 충전/회수 금액 조회(SAG052)
+ * - 화면 : 대시보드 > 충전/회수 금액
+ */
+export const getDashboardChargeRecoveryAmount = async (
+  params: RequestAgentUser
+): Promise<ResponseDashboardChargeRecoveryAmount> => {
+  const { agentId, userId } = params;
+
+  const response: ResponseDashboardChargeRecoveryAmount = await get(
+    `/service/api/v1/agents/${agentId}/users/${userId}/charge-recovery-amount`
+  );
+  return response;
 };

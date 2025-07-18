@@ -23,6 +23,7 @@ export type BankInfo = {
 export type RequestARSBankAccount = {
   accounts: BankInfo[];
   advertiserId: number;
+  withdrawAccountId: number;
 };
 
 export type RequestARS = {

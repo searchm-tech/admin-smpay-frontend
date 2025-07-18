@@ -20,9 +20,14 @@ type Props = {
 };
 
 const MobilewView = ({ advertiserId }: Props) => {
+  const [withdrawAccountId, setWithdrawAccountId] = useState<number>(0);
+
   const { mutate: advertiserBankAccount, isPending: isSubmittingBankAccount } =
     useAdvertiserBankAccount({
-      onSuccess: () => setStep(3),
+      onSuccess: (res) => {
+        setStep(3);
+        setWithdrawAccountId(res.withdrawAccountId);
+      },
     });
 
   const { mutate: arsCertification, isPending: isCertifyingARS } = useARS({
@@ -98,6 +103,7 @@ const MobilewView = ({ advertiserId }: Props) => {
 
     advertiserBankAccount({
       advertiserId: Number(advertiserId),
+      withdrawAccountId: Number(withdrawAccountId),
       accounts: [
         {
           bankCode: chargeBank.bank,

@@ -4,10 +4,14 @@ import {
   getDashboardAdvertiserOperationStatusChart,
   getDashboardAdvertiserStatus,
   getDashboardAllAdvertiserOperationStatusChart,
+  getDashboardChargeRecoveryAmount,
   getDashboardRecommendedAdvertiserList,
 } from "@/services/dashboard";
 
-import type { ResponseDashboardAdvertiserStatus } from "@/types/api/dashboard";
+import type {
+  ResponseDashboardAdvertiserStatus,
+  ResponseDashboardChargeRecoveryAmount,
+} from "@/types/api/dashboard";
 import type { RequestAgentUser } from "@/types/api/common";
 import type {
   AdvertiserRecommendDto,
@@ -58,5 +62,13 @@ export const useQueryDashboardRecommendedAdvertiserList = () => {
     queryFn: (user: RequestAgentUser) =>
       getDashboardRecommendedAdvertiserList(user),
     initialData: [],
+  });
+};
+
+// 대시보드 전 날 충전/회수 금액 조회(SAG052)
+export const useQueryDashboardChargeRecoveryAmount = () => {
+  return useAuthQuery<ResponseDashboardChargeRecoveryAmount, Error>({
+    queryKey: ["dashboardChargeRecoveryAmount"],
+    queryFn: (user: RequestAgentUser) => getDashboardChargeRecoveryAmount(user),
   });
 };

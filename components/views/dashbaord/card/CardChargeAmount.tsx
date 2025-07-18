@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { CardLoading } from "./CardLoading";
 
@@ -9,22 +8,20 @@ const data = {
   icon: "👜",
   iconBg: "bg-orange-100",
 };
-const CardChargeAmount = () => {
-  const [showLoading, setShowLoading] = useState(true);
 
-  useEffect(() => {
-    const timer = setTimeout(() => setShowLoading(false), 2000);
-    return () => clearTimeout(timer);
-  }, []);
-
+type Props = {
+  isLoading: boolean;
+  chargeAmount: number;
+};
+const CardChargeAmount = ({ isLoading, chargeAmount = 0 }: Props) => {
   return (
     <Card
       key={data.title}
       className="relative rounded-xl shadow bg-white p-6 flex flex-col justify-between min-h-[180px]"
     >
-      {showLoading && <CardLoading />}
+      {isLoading && <CardLoading />}
       <div
-        className={showLoading ? "blur-sm pointer-events-none select-none" : ""}
+        className={isLoading ? "blur-sm pointer-events-none select-none" : ""}
       >
         <div className="flex justify-between items-center w-full">
           <span className="text-lg font-bold">전일 충전 금액</span>
@@ -35,8 +32,10 @@ const CardChargeAmount = () => {
 
         <div className="mt-12 flex flex-col items-start">
           <div className="flex items-end space-x-2">
-            <span className="text-3xl font-extrabold">{data.value}</span>
-            <span className="text-lg font-semibold mb-1">{data.unit}</span>
+            <span className="text-3xl font-extrabold">
+              {chargeAmount.toLocaleString()}
+            </span>
+            <span className="text-lg font-semibold mb-1">원</span>
           </div>
         </div>
       </div>

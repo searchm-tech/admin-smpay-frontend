@@ -17,7 +17,10 @@ import type {
   RequestARSBankAccount,
   RequestARS,
 } from "@/types/api/bank";
-import { postSmPayAdvertiserBankAccount } from "@/services/smpay";
+import {
+  postSmPayAdvertiserBankAccount,
+  ResponseSmPayAdvertiserBankAccount,
+} from "@/services/smpay";
 
 // 은행 리스트 전체 조회(AC001)
 export const useBankList = () => {
@@ -51,7 +54,11 @@ export const useAdvertiserMailVerification = (
 
 // 광고주 은행 계좌 등록 및 운영 제출(AD002)
 export const useAdvertiserBankAccount = (
-  options?: UseMutationOptions<null, Error, RequestARSBankAccount>
+  options?: UseMutationOptions<
+    ResponseSmPayAdvertiserBankAccount,
+    Error,
+    RequestARSBankAccount
+  >
 ) => {
   return useMutation({
     mutationFn: (params: RequestARSBankAccount) =>

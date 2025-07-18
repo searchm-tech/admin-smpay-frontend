@@ -19,3 +19,8 @@ export type ResponseAdvertiserRecommandList = {
   list: AdvertiserRecommendListDto[];
   userName: string;
 };
+
+export type ResponseDashboardChargeRecoveryAmount = {
+  chargeAmount: number;
+  recoveryAmount: number;
+};
