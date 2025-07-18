@@ -30,10 +30,14 @@ const DesktopView = ({ advertiserId }: DesktopViewProps) => {
 
   const { mutate: advertiserBankAccount, isPending: isSubmittingBankAccount } =
     useAdvertiserBankAccount({
-      onSuccess: () => setOpenDialog("submit"),
+      onSuccess: (res) => {
+        setOpenDialog("submit");
+        setWithdrawAccountId(res.withdrawAccountId);
+      },
     });
 
   const [arsCertified, setArsCertified] = useState(false); // TODO : ARS 하고 false 변경
+  const [withdrawAccountId, setWithdrawAccountId] = useState<number>(0);
 
   const [agreement, setAgreement] = useState<AgreementInfo>(
     DEFAULT_AGREEMENT_INFO
@@ -84,6 +88,7 @@ const DesktopView = ({ advertiserId }: DesktopViewProps) => {
 
     advertiserBankAccount({
       advertiserId: Number(advertiserId),
+      withdrawAccountId: Number(withdrawAccountId),
       accounts: [
         {
           bankCode: chargeAccount.bank,

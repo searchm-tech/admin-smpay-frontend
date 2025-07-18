@@ -10,11 +10,6 @@ import type { SmPayAdvertiserStautsOrderType } from "@/types/smpay";
 import { defaultTableParams } from "@/constants/table";
 import { useSmPayAdminOverviewStatusList } from "@/hooks/queries/sm-pay";
 import FilterSection from "./FilterSection";
-import { useQuerySmPayAdminAgencyList } from "@/hooks/queries/agency";
-import {
-  useQueryAdvertiserListByUserId,
-  useQuerySmPayAdminAdvertiserList,
-} from "@/hooks/queries/advertiser";
 
 const SmPayAdminAdversiterStatusView = () => {
   const [tableParams, setTableParams] =
