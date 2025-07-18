@@ -148,3 +148,31 @@ export type AdvertiserDetailDto = {
   advertiserFormId: number;
   description: AdvertiserDescriptionDto;
 };
+
+export type SmPayChargeRecoveryDto = {
+  chargeRecoveryHistoryId: number;
+  agencyCode: string;
+  agencyName: string;
+  customerId: number;
+  advertiserCode: string;
+  orderDate: string;
+  orderNumber: string;
+  orderType: string;
+  bankName: string;
+  accountNumber: string;
+  accountHolderName: string;
+  paymentAmount: number;
+  recoveryAmount: number;
+  previousBalance: number;
+  changeRate: number;
+  isIncreased: boolean;
+  transactionType: string; // CHARGE, RECOVERY
+  parentChargeId: number;
+  status: string; // SUCCESS, FAILED, PENDING
+  processedDate: string;
+  isRepaid: boolean;
+  recoveryProcessedDate: string;
+  failureReason: string;
+  failureCategory: string;
+  failureCode: string;
+};

@@ -19,6 +19,8 @@ import type {
   ResponseSmPayAdminAudit,
   ResponseOverviewForm,
   ResponseSMPayDetail,
+  ResponseSmPayChargeRecovery,
+  ChargeRecoveryParams,
 } from "@/types/api/smpay";
 
 import { useAuthQuery } from "../useAuthQuery";
@@ -56,6 +58,7 @@ import {
   getSmPayDetailApprovalMemo,
   getSmPayAdminOverviewStatusList,
   getSmPayAdminOverviewStatusCount,
+  getSmPayAdminChargeRecoveryList,
 } from "@/services/smpay";
 import type {
   SmPayStatIndicator,
@@ -478,5 +481,15 @@ export const useSmPayAdminOverviewStatusCount = () => {
   return useAuthQuery<ResponseSmPayStatusCount>({
     queryKey: ["/smpay/admin-overview-status-count"],
     queryFn: () => getSmPayAdminOverviewStatusCount(),
+  });
+};
+
+// 충전/회수 이력 리스트 조회(AAG034) query
+export const useSmPayAdminChargeRecoveryList = (
+  params: ChargeRecoveryParams
+) => {
+  return useQuery<ResponseSmPayChargeRecovery>({
+    queryKey: ["/smpay/admin-charge-recovery-list", params],
+    queryFn: () => getSmPayAdminChargeRecoveryList(params),
   });
 };

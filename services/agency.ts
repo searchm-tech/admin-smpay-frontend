@@ -189,3 +189,41 @@ export const putAgencyDetail = async (
     throw error;
   }
 };
+
+/**
+ * 신청 이력 있는 대행사 리스트 조회(AAG029)
+ * - 화면 : [시스템 관리자] 충전 회수 관리 > 대행사 세부 선택 [대행사 선택 리스트 부분]
+ */
+export const getSmPayAdminAgencyList = async (): Promise<TAgency[]> => {
+  try {
+    const response: TAgency[] = await get(
+      "/admin/api/v1/agents/review-requested"
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
+
+/**
+ * 충전/회수 이력 있는 대행사 리스트 조회(AAG032)
+ * - 화면 : [시스템 관리자] 충전 회수 관리 > 대행사 세부 선택 [대행사 선택 리스트 부분]
+ */
+export const getSmPayAdminChargeRecoveryAgencyList = async (): Promise<
+  TAgency[]
+> => {
+  try {
+    const response: TAgency[] = await get(
+      "/admin/api/v1/agents/has-charge-history"
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof ApiError) {
+      throw error;
+    }
+    throw error;
+  }
+};
