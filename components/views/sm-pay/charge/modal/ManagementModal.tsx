@@ -107,8 +107,6 @@ const ManagementModal: React.FC<Props> = ({
 
   const loadingDepartments = loadingDepartmentsQuery;
 
-  console.log("selectedAdvertiserId", selectedAdvertiserId);
-
   return (
     <Modal
       open={open}

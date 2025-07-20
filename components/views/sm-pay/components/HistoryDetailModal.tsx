@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Modal } from "@/components/composite/modal-components";
 import LoadingUI from "@/components/common/Loading";
@@ -15,6 +15,7 @@ import OperationMemoSection from "./OperationMemoSection";
 import { RejectDialog } from "../manangement/dialog";
 
 import { useSmPayFormDetail } from "@/hooks/queries/sm-pay";
+import { ChargeRule } from "@/types/smpay";
 
 type Props = {
   onClose: () => void;
@@ -25,36 +26,66 @@ type Props = {
 const HistoryDetailModal = ({ onClose, advertiserId, formId }: Props) => {
   const [isReject, setIsReject] = useState(false);
 
-  const { data: smpayInfo, isPending: loading } = useSmPayFormDetail(
-    Number(advertiserId),
-    Number(formId)
-  );
-  const prePaymentSchedule = {
-    initialAmount: smpayInfo?.initialAmount || 0,
-    maxChargeLimit: smpayInfo?.maxChargeLimit || 0,
-    minChargeLimit: smpayInfo?.minChargeLimit || 0,
-  };
-
-  const statIndicator = {
-    operationPeriod: smpayInfo?.advertiserOperationPeriod || 0,
-    dailyAverageRoas: smpayInfo?.advertiserDailyAverageRoas || 0,
-    monthlyConvAmt: smpayInfo?.advertiserMonthlyConvAmt || 0,
-    dailySalesAmt: smpayInfo?.advertiserDailySalesAmt || 0,
-    recommendRoas: smpayInfo?.advertiserRecommendRoasPercent || 0,
-  };
-
-  const upChargeRule = {
-    standardRoasPercent: smpayInfo?.advertiserStandardRoasPercent || 0,
+  const [upChargeRule, setUpChargeRule] = useState<ChargeRule>({
+    standardRoasPercent: 0,
     rangeType: "UP",
     boundType: "FIXED_AMOUNT",
     changePercentOrValue: 0,
-  };
-  const downChargeRule = {
-    standardRoasPercent: smpayInfo?.advertiserStandardRoasPercent || 0,
+  });
+
+  const [downChargeRule, setDownChargeRule] = useState<ChargeRule>({
+    standardRoasPercent: 0,
     rangeType: "DOWN",
     boundType: "FIXED_AMOUNT",
     changePercentOrValue: 0,
+  });
+
+  const { data: formInfo, isPending: loading } = useSmPayFormDetail(
+    Number(advertiserId),
+    Number(formId)
+  );
+
+  const prePaymentSchedule = {
+    initialAmount: formInfo?.initialAmount || 0,
+    maxChargeLimit: formInfo?.maxChargeLimit || 0,
+    minChargeLimit: formInfo?.minChargeLimit || 0,
   };
+
+  const statIndicator = {
+    operationPeriod: formInfo?.advertiserOperationPeriod || 0,
+    dailyAverageRoas: formInfo?.advertiserDailyAverageRoas || 0,
+    monthlyConvAmt: formInfo?.advertiserMonthlyConvAmt || 0,
+    dailySalesAmt: formInfo?.advertiserDailySalesAmt || 0,
+    recommendRoas: formInfo?.advertiserRecommendRoasPercent || 0,
+  };
+
+  useEffect(() => {
+    if (formInfo) {
+      const upChargeRuleData = formInfo.chargeRules.find(
+        (rule) => rule.rangeType === "UP"
+      );
+      const downChargeRuleData = formInfo.chargeRules.find(
+        (rule) => rule.rangeType === "DOWN"
+      );
+
+      if (upChargeRuleData) {
+        setUpChargeRule({
+          standardRoasPercent: formInfo?.advertiserStandardRoasPercent || 0,
+          rangeType: upChargeRuleData.rangeType,
+          boundType: upChargeRuleData.boundType,
+          changePercentOrValue: upChargeRuleData.changePercentOrValue,
+        });
+      }
+      if (downChargeRuleData) {
+        setDownChargeRule({
+          standardRoasPercent: formInfo?.advertiserStandardRoasPercent || 0,
+          rangeType: downChargeRuleData.rangeType,
+          boundType: downChargeRuleData.boundType,
+          changePercentOrValue: downChargeRuleData.changePercentOrValue,
+        });
+      }
+    }
+  }, [formInfo]);
 
   return (
     <Modal
@@ -91,14 +122,8 @@ const HistoryDetailModal = ({ onClose, advertiserId, formId }: Props) => {
           downChargeRule={downChargeRule}
         />
         <ScheduleSectionShow prePaymentSchedule={prePaymentSchedule} />
-        <JudgementMemoSection
-          type="show"
-          text={smpayInfo?.reviewerMemo || ""}
-        />
-        <OperationMemoSection
-          type="show"
-          text={smpayInfo?.approvalMemo || ""}
-        />
+        <JudgementMemoSection type="show" text={formInfo?.reviewerMemo || ""} />
+        <OperationMemoSection type="show" text={formInfo?.approvalMemo || ""} />
       </div>
     </Modal>
   );

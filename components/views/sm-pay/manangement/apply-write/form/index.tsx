@@ -90,16 +90,16 @@ const SMPayMasterApplyWriteForm = ({ id }: Props) => {
 
     const chargeRules: ChargeRule[] = [
       {
-        standardRoasPercent: downChargeRule.standardRoasPercent,
-        rangeType: "DOWN",
-        boundType: downChargeRule.boundType,
-        changePercentOrValue: upChargeRule.changePercentOrValue,
-      },
-      {
         standardRoasPercent: upChargeRule.standardRoasPercent,
         rangeType: "UP",
         boundType: upChargeRule.boundType,
         changePercentOrValue: upChargeRule.changePercentOrValue,
+      },
+      {
+        standardRoasPercent: downChargeRule.standardRoasPercent,
+        rangeType: "DOWN",
+        boundType: downChargeRule.boundType,
+        changePercentOrValue: downChargeRule.changePercentOrValue,
       },
     ];
 
