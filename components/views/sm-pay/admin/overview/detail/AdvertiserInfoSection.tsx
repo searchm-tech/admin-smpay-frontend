@@ -25,8 +25,8 @@ import { useQueryAgencyDetail } from "@/hooks/queries/agency";
 
 import type { TableProps } from "@/types/table";
 import type { SmPayAdvertiserStatus } from "@/types/smpay";
-import type { ResponseAgencyBills } from "@/types/api/agency";
 import type { SMPayFormHistory, AdvertiserDetailDto } from "@/types/dto/smpay";
+import { useQueryAdminUserInfo } from "@/hooks/queries/user";
 
 type Props = {
   advertiserData?: AdvertiserDetailDto;
@@ -51,8 +51,9 @@ const AdvertiserInfoSection = ({
     advertiserData?.agentId || 0
   );
 
-  const agencyInfo: ResponseAgencyBills | null =
-    agencyData?.agentBills[0] || null;
+  const { data: userInfo } = useQueryAdminUserInfo({
+    userId: Number(advertiserData?.userId),
+  });
 
   return (
     <div>
@@ -105,15 +106,13 @@ const AdvertiserInfoSection = ({
                 <Label>{agencyData?.agent.representativeName}</Label>
               </DescriptionItem>
               <DescriptionItem label="담당자 명">
-                <Label>{agencyInfo?.name}</Label>
+                <Label>{userInfo?.name}</Label>
               </DescriptionItem>
               <DescriptionItem label="담당자 이메일 주소">
-                <Label>{agencyInfo?.emailAddress}</Label>
+                <Label>{userInfo?.id}</Label>
               </DescriptionItem>
               <DescriptionItem label="담당자 연락처">
-                <Label>
-                  {formatPhoneNumber(agencyInfo?.phoneNumber || "")}
-                </Label>
+                <Label>{formatPhoneNumber(userInfo?.phoneNumber || "")}</Label>
               </DescriptionItem>
             </Descriptions>
           </div>
