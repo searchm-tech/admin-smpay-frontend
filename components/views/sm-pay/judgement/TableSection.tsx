@@ -80,9 +80,9 @@ const TableSection = ({
 
           <LinkTextButton
             onClick={() => {
-              const { advertiserId, isApprovalRead } = record;
-              const baseUrl = `/sm-pay/judgement/${advertiserId}`;
-              const url = isApprovalRead ? baseUrl : `${baseUrl}?read=unread`;
+              const { advertiserId, isApprovalRead, advertiserFormId } = record;
+              const baseUrl = `/sm-pay/judgement/${advertiserId}?formId=${advertiserFormId}`;
+              const url = isApprovalRead ? baseUrl : `${baseUrl}&read=unread`;
               router.push(url);
             }}
           >

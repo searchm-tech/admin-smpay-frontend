@@ -52,14 +52,14 @@ export const RuleSectionShow = ({
             <div>
               기준 ROAS가{" "}
               <span className="font-bold">
-                {upChargeRule.standardRoasPercent}% 미만
+                {downChargeRule.standardRoasPercent}% 미만
               </span>
               이면 충전 금액을{" "}
               <span className="text-red-600">
                 {downChargeRule.boundType === "FIXED_AMOUNT"
                   ? "정액으로"
                   : "정률로"}{" "}
-                {upChargeRule.changePercentOrValue}
+                {downChargeRule.changePercentOrValue}
                 {downChargeRule.boundType === "FIXED_AMOUNT" ? "원" : "%"} 씩
                 감액
               </span>

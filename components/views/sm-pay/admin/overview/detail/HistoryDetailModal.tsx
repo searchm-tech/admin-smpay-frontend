@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Modal } from "@/components/composite/modal-components";
 import LoadingUI from "@/components/common/Loading";
@@ -29,6 +29,8 @@ import { SmPayAdvertiserStatusLabel } from "@/constants/status";
 import { useQueryAgencyDetail } from "@/hooks/queries/agency";
 import { ResponseAgencyBills } from "@/types/api/agency";
 import { formatBusinessNumber, formatPhoneNumber } from "@/utils/format";
+import { ChargeRule } from "@/types/smpay";
+import { useQueryAdminUserInfo } from "@/hooks/queries/user";
 
 type Props = {
   onClose: () => void;
@@ -37,13 +39,29 @@ type Props = {
 };
 
 const HistoryDetailModal = ({ onClose, advertiserId, formId }: Props) => {
-  const [isReject, setIsReject] = useState(false);
-
   const searchParams = useSearchParams();
   const agentId = searchParams.get("agentId");
   const userId = searchParams.get("userId");
 
-  const { data: smpayInfo, isPending: loading } =
+  const [isReject, setIsReject] = useState(false);
+  const [upChargeRule, setUpChargeRule] = useState<ChargeRule>({
+    standardRoasPercent: 0,
+    rangeType: "UP",
+    boundType: "FIXED_AMOUNT",
+    changePercentOrValue: 0,
+  });
+  const [downChargeRule, setDownChargeRule] = useState<ChargeRule>({
+    standardRoasPercent: 0,
+    rangeType: "DOWN",
+    boundType: "FIXED_AMOUNT",
+    changePercentOrValue: 0,
+  });
+
+  const { data: userInfo } = useQueryAdminUserInfo({
+    userId: Number(userId),
+  });
+
+  const { data: formInfo, isPending: loading } =
     useSmPayAdminOverviewApplyFormDetail(
       Number(advertiserId),
       Number(formId),
@@ -53,56 +71,69 @@ const HistoryDetailModal = ({ onClose, advertiserId, formId }: Props) => {
 
   const { data: agencyData } = useQueryAgencyDetail(Number(agentId) || 0);
 
-  const agencyInfo: ResponseAgencyBills | null =
-    agencyData?.agentBills[0] || null;
-
   const prePaymentSchedule = {
-    initialAmount: smpayInfo?.initialAmount || 0,
-    maxChargeLimit: smpayInfo?.maxChargeLimit || 0,
-    minChargeLimit: smpayInfo?.minChargeLimit || 0,
+    initialAmount: formInfo?.initialAmount || 0,
+    maxChargeLimit: formInfo?.maxChargeLimit || 0,
+    minChargeLimit: formInfo?.minChargeLimit || 0,
   };
 
   const statIndicator = {
-    operationPeriod: smpayInfo?.advertiserOperationPeriod || 0,
-    dailyAverageRoas: smpayInfo?.advertiserDailyAverageRoas || 0,
-    monthlyConvAmt: smpayInfo?.advertiserMonthlyConvAmt || 0,
-    dailySalesAmt: smpayInfo?.advertiserDailySalesAmt || 0,
-    recommendRoas: smpayInfo?.advertiserRecommendRoasPercent || 0,
+    operationPeriod: formInfo?.advertiserOperationPeriod || 0,
+    dailyAverageRoas: formInfo?.advertiserDailyAverageRoas || 0,
+    monthlyConvAmt: formInfo?.advertiserMonthlyConvAmt || 0,
+    dailySalesAmt: formInfo?.advertiserDailySalesAmt || 0,
+    recommendRoas: formInfo?.advertiserRecommendRoasPercent || 0,
   };
 
-  const upChargeRule = {
-    standardRoasPercent: smpayInfo?.advertiserStandardRoasPercent || 0,
-    rangeType: "UP",
-    boundType: "FIXED_AMOUNT",
-    changePercentOrValue: smpayInfo?.advertiserStandardRoasPercent || 0,
-  };
-  const downChargeRule = {
-    standardRoasPercent: smpayInfo?.advertiserStandardRoasPercent || 0,
-    rangeType: "DOWN",
-    boundType: "FIXED_AMOUNT",
-    changePercentOrValue: smpayInfo?.advertiserStandardRoasPercent || 0,
-  };
   const advertiserData: AdvertiserDetailDto = {
-    advertiserId: smpayInfo?.advertiserId || 0,
+    advertiserId: formInfo?.advertiserId || 0,
     userId: Number(userId),
-    customerId: smpayInfo?.advertiserCustomerId || 0,
+    customerId: formInfo?.advertiserCustomerId || 0,
     agentId: Number(agentId),
-    id: smpayInfo?.advertiserId.toString() || "",
-    nickName: smpayInfo?.advertiserNickname || "",
-    name: smpayInfo?.advertiserName || "",
-    representativeName: smpayInfo?.advertiserRepresentativeName || "",
+    id: formInfo?.advertiserId.toString() || "",
+    nickName: formInfo?.advertiserNickname || "",
+    name: formInfo?.advertiserName || "",
+    representativeName: formInfo?.advertiserRepresentativeName || "",
     businessRegistrationNumber: "",
-    phoneNumber: smpayInfo?.advertiserPhoneNumber || "",
-    emailAddress: smpayInfo?.advertiserEmailAddress || "",
-    status: smpayInfo?.advertiserStatus || "UNSYNC_ADVERTISER",
+    phoneNumber: formInfo?.advertiserPhoneNumber || "",
+    emailAddress: formInfo?.advertiserEmailAddress || "",
+    status: formInfo?.advertiserStatus || "UNSYNC_ADVERTISER",
     roleId: 0,
     isLossPrivileges: false,
-    advertiserFormId: smpayInfo?.advertiserFormId || 0,
+    advertiserFormId: formInfo?.advertiserFormId || 0,
     description: {
       description: "",
       descriptionType: "REJECT",
     } as unknown as AdvertiserDescriptionDto,
   };
+
+  useEffect(() => {
+    if (formInfo) {
+      const upChargeRuleData = formInfo.chargeRules.find(
+        (rule) => rule.rangeType === "UP"
+      );
+      const downChargeRuleData = formInfo.chargeRules.find(
+        (rule) => rule.rangeType === "DOWN"
+      );
+
+      if (upChargeRuleData) {
+        setUpChargeRule({
+          standardRoasPercent: formInfo?.advertiserStandardRoasPercent || 0,
+          rangeType: upChargeRuleData.rangeType,
+          boundType: upChargeRuleData.boundType,
+          changePercentOrValue: upChargeRuleData.changePercentOrValue,
+        });
+      }
+      if (downChargeRuleData) {
+        setDownChargeRule({
+          standardRoasPercent: formInfo?.advertiserStandardRoasPercent || 0,
+          rangeType: downChargeRuleData.rangeType,
+          boundType: downChargeRuleData.boundType,
+          changePercentOrValue: downChargeRuleData.changePercentOrValue,
+        });
+      }
+    }
+  }, [formInfo]);
 
   return (
     <Modal
@@ -157,14 +188,14 @@ const HistoryDetailModal = ({ onClose, advertiserId, formId }: Props) => {
                   <Label>{agencyData?.agent.representativeName}</Label>
                 </DescriptionItem>
                 <DescriptionItem label="담당자 명">
-                  <Label>{agencyInfo?.name}</Label>
+                  <Label>{userInfo?.name}</Label>
                 </DescriptionItem>
                 <DescriptionItem label="담당자 이메일 주소">
-                  <Label>{agencyInfo?.emailAddress}</Label>
+                  <Label>{userInfo?.id}</Label>
                 </DescriptionItem>
                 <DescriptionItem label="담당자 연락처">
                   <Label>
-                    {formatPhoneNumber(agencyInfo?.phoneNumber || "")}
+                    {formatPhoneNumber(userInfo?.phoneNumber || "")}
                   </Label>
                 </DescriptionItem>
               </Descriptions>
@@ -213,14 +244,8 @@ const HistoryDetailModal = ({ onClose, advertiserId, formId }: Props) => {
           downChargeRule={downChargeRule}
         />
         <ScheduleSectionShow prePaymentSchedule={prePaymentSchedule} />
-        <JudgementMemoSection
-          type="show"
-          text={smpayInfo?.reviewerMemo || ""}
-        />
-        <OperationMemoSection
-          type="show"
-          text={smpayInfo?.approvalMemo || ""}
-        />
+        <JudgementMemoSection type="show" text={formInfo?.reviewerMemo || ""} />
+        <OperationMemoSection type="show" text={formInfo?.approvalMemo || ""} />
       </div>
     </Modal>
   );

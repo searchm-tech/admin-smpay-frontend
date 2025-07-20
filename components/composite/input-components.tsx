@@ -55,11 +55,7 @@ function InputForm<T extends FieldValues>({
             <div className="relative">
               <Input
                 type={type}
-                className={`h-12 text-base ${
-                  fieldState.error
-                    ? "border-red-500 focus-visible:ring-red-500"
-                    : ""
-                } ${suffix ? "pr-32" : ""}`}
+                className={`h-12 text-base ${suffix ? "pr-32" : ""}`}
                 placeholder={placeholder}
                 {...field}
                 onChange={

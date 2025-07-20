@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 // import LoadingUI from "@/components/common/Loading";
@@ -16,7 +16,6 @@ import {
   useSmPayAdminDetail,
   useSmPayAdminOverviewApplyFormDetail,
   useSmPayAdminOverviewApprovalMemo,
-  useSmPayAdminOverviewChargeRule,
   useSmPayAdminOverviewPrePaymentSchedule,
   useSmPayAdminOverviewReviewerMemo,
 } from "@/hooks/queries/sm-pay";
@@ -24,6 +23,7 @@ import {
 import AdvertiserInfoSection from "../../overview/detail/AdvertiserInfoSection";
 import AccountSection from "../../../components/AccountSection";
 import LoadingUI from "@/components/common/Loading";
+import type { ChargeRule } from "@/types/smpay";
 
 type Props = {
   id: string;
@@ -31,25 +31,32 @@ type Props = {
 
 const SmPayAdminAdversiterStatusDetailView = ({ id }: Props) => {
   const router = useRouter();
-  const [rejectModalOpen, setRejectModalOpen] = useState(false);
-
   const searchParams = useSearchParams();
   const agentId = searchParams.get("agentId");
   const userId = searchParams.get("userId");
   const formId = searchParams.get("formId");
 
-  const { data: advertiserData } = useSmPayAdminOverviewApplyFormDetail(
+  const [rejectModalOpen, setRejectModalOpen] = useState(false);
+
+  const [upChargeRule, setUpChargeRule] = useState<ChargeRule>({
+    standardRoasPercent: 0,
+    rangeType: "UP",
+    boundType: "FIXED_AMOUNT",
+    changePercentOrValue: 0,
+  });
+  const [downChargeRule, setDownChargeRule] = useState<ChargeRule>({
+    standardRoasPercent: 0,
+    rangeType: "DOWN",
+    boundType: "FIXED_AMOUNT",
+    changePercentOrValue: 0,
+  });
+
+  const { data: formInfo } = useSmPayAdminOverviewApplyFormDetail(
     Number(id),
     Number(formId),
     Number(agentId),
     Number(userId)
   );
-  console.log(advertiserData);
-
-  const { data: chargeRule, isPending: loadingChargeRule } =
-    useSmPayAdminOverviewChargeRule(Number(id));
-
-  console.log(chargeRule);
 
   const { data: prePaymentScheduleData, isPending: loadingPrePaymentSchedule } =
     useSmPayAdminOverviewPrePaymentSchedule(Number(id));
@@ -72,33 +79,39 @@ const SmPayAdminAdversiterStatusDetailView = ({ id }: Props) => {
     minChargeLimit: prePaymentScheduleData?.minChargeLimit || 0,
   };
 
-  const upChargeRule = {
-    standardRoasPercent:
-      chargeRule?.find((rule) => rule.rangeType === "UP")
-        ?.standardRoasPercent || 0,
-    rangeType: "UP",
-    boundType: "FIXED_AMOUNT",
-    changePercentOrValue:
-      chargeRule?.find((rule) => rule.rangeType === "UP")
-        ?.changePercentOrValue || 0,
-  };
-  const downChargeRule = {
-    standardRoasPercent:
-      chargeRule?.find((rule) => rule.rangeType === "DOWN")
-        ?.standardRoasPercent || 0,
-    rangeType: "DOWN",
-    boundType: "FIXED_AMOUNT",
-    changePercentOrValue:
-      chargeRule?.find((rule) => rule.rangeType === "DOWN")
-        ?.changePercentOrValue || 0,
-  };
-
   const isLoading =
-    loadingChargeRule ||
     loadingSmpayInfo ||
     loadingApprovalMemo ||
     loadingPrePaymentSchedule ||
     loadingReviewerMemo;
+
+  useEffect(() => {
+    if (formInfo) {
+      const upChargeRuleData = formInfo.chargeRules.find(
+        (rule) => rule.rangeType === "UP"
+      );
+      const downChargeRuleData = formInfo.chargeRules.find(
+        (rule) => rule.rangeType === "DOWN"
+      );
+
+      if (upChargeRuleData) {
+        setUpChargeRule({
+          standardRoasPercent: formInfo?.advertiserStandardRoasPercent || 0,
+          rangeType: upChargeRuleData.rangeType,
+          boundType: upChargeRuleData.boundType,
+          changePercentOrValue: upChargeRuleData.changePercentOrValue,
+        });
+      }
+      if (downChargeRuleData) {
+        setDownChargeRule({
+          standardRoasPercent: formInfo?.advertiserStandardRoasPercent || 0,
+          rangeType: downChargeRuleData.rangeType,
+          boundType: downChargeRuleData.boundType,
+          changePercentOrValue: downChargeRuleData.changePercentOrValue,
+        });
+      }
+    }
+  }, [formInfo]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -116,7 +129,7 @@ const SmPayAdminAdversiterStatusDetailView = ({ id }: Props) => {
         isShowAgentInfo={false}
       />
 
-      <AccountSection accounList={advertiserData?.accounts || []} />
+      <AccountSection accounList={formInfo?.accounts || []} />
 
       <RuleSectionShow
         upChargeRule={upChargeRule}

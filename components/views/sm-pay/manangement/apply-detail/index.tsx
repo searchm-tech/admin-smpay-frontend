@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
@@ -13,6 +14,8 @@ import AdvertiserInfoSection from "@/components/views/sm-pay/components/Advertis
 
 import { useSmPayFormDetail } from "@/hooks/queries/sm-pay";
 
+import type { ChargeRule } from "@/types/smpay";
+
 interface Props {
   id: string;
 }
@@ -21,6 +24,20 @@ const SmPayApplyDetailView = ({ id }: Props) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const formId = searchParams.get("formId");
+
+  const [upChargeRule, setUpChargeRule] = useState<ChargeRule>({
+    standardRoasPercent: 0,
+    rangeType: "UP",
+    boundType: "FIXED_AMOUNT",
+    changePercentOrValue: 0,
+  });
+
+  const [downChargeRule, setDownChargeRule] = useState<ChargeRule>({
+    standardRoasPercent: 0,
+    rangeType: "DOWN",
+    boundType: "FIXED_AMOUNT",
+    changePercentOrValue: 0,
+  });
 
   const { data: formInfo, isPending: loading } = useSmPayFormDetail(
     Number(id),
@@ -41,32 +58,33 @@ const SmPayApplyDetailView = ({ id }: Props) => {
     recommendRoas: formInfo?.advertiserRecommendRoasPercent || 0,
   };
 
-  console.log("formInfo", formInfo);
+  useEffect(() => {
+    if (formInfo) {
+      const upChargeRuleData = formInfo.chargeRules.find(
+        (rule) => rule.rangeType === "UP"
+      );
+      const downChargeRuleData = formInfo.chargeRules.find(
+        (rule) => rule.rangeType === "DOWN"
+      );
 
-  const upChargeRule = formInfo?.chargeRules.find(
-    (rule) => rule.rangeType === "UP"
-  ) || {
-    standardRoasPercent: 0,
-    rangeType: "UP",
-    boundType:
-      formInfo?.chargeRules.find((rule) => rule.rangeType === "UP")
-        ?.boundType || "FIXED_AMOUNT",
-    changePercentOrValue:
-      formInfo?.chargeRules.find((rule) => rule.rangeType === "UP")
-        ?.changePercentOrValue || 0,
-  };
-  const downChargeRule = formInfo?.chargeRules.find(
-    (rule) => rule.rangeType === "DOWN"
-  ) || {
-    standardRoasPercent: 0,
-    rangeType: "DOWN",
-    boundType:
-      formInfo?.chargeRules.find((rule) => rule.rangeType === "DOWN")
-        ?.boundType || "FIXED_AMOUNT",
-    changePercentOrValue:
-      formInfo?.chargeRules.find((rule) => rule.rangeType === "DOWN")
-        ?.changePercentOrValue || 0,
-  };
+      if (upChargeRuleData) {
+        setUpChargeRule({
+          standardRoasPercent: formInfo?.advertiserStandardRoasPercent || 0,
+          rangeType: upChargeRuleData.rangeType,
+          boundType: upChargeRuleData.boundType,
+          changePercentOrValue: upChargeRuleData.changePercentOrValue,
+        });
+      }
+      if (downChargeRuleData) {
+        setDownChargeRule({
+          standardRoasPercent: formInfo?.advertiserStandardRoasPercent || 0,
+          rangeType: downChargeRuleData.rangeType,
+          boundType: downChargeRuleData.boundType,
+          changePercentOrValue: downChargeRuleData.changePercentOrValue,
+        });
+      }
+    }
+  }, [formInfo]);
 
   return (
     <div>

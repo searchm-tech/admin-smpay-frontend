@@ -110,6 +110,7 @@ export const useQueryAgencyDetail = (
   return useQuery<ResponseAgencyDetail | null>({
     queryKey: ["agencyDetail", agentId],
     queryFn: () => getAgencyDetail(agentId),
+    enabled: !!agentId,
     ...options,
   });
 };

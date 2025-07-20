@@ -21,7 +21,6 @@ type Props = {
 
 const MobilewView = ({ advertiserId }: Props) => {
   const [withdrawAccountId, setWithdrawAccountId] = useState<number>(0);
-  console.log("withdrawAccountId", withdrawAccountId);
 
   const { mutate: advertiserBankAccount, isPending: isSubmittingBankAccount } =
     useAdvertiserBankAccount({

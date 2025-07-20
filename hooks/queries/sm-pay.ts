@@ -336,6 +336,7 @@ export const useSmPayAdminOverviewPrePaymentSchedule = (
     queryKey: ["/smpay/admin-overview-pre-payment-schedule", advertiserId],
     queryFn: (user: RequestAgentUser) =>
       getSmPayAdminOverviewPrePaymentSchedule({ user, advertiserId }),
+    enabled: !!advertiserId,
   });
 };
 // useSmPayWrite 훅에 전달될 variables 타입 정의
@@ -373,6 +374,7 @@ export const useSmPayAdminDetail = (
         agentId,
         userId,
       }),
+    enabled: !!advertiserId && !!agentId && !!userId,
   });
 };
 
@@ -420,6 +422,7 @@ export const useSmPayAdminOverviewApplyFormDetail = (
         agentId,
         userId,
       }),
+    enabled: !!advertiserId && !!formId && !!agentId && !!userId,
   });
 };
 
