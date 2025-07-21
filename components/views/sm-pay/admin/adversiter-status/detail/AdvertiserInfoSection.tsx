@@ -12,7 +12,6 @@ import { Modal } from "@/components/composite/modal-components";
 import Table from "@/components/composite/table";
 import { LinkTextButton } from "@/components/composite/button-components";
 
-import HistoryDetailModal from "../../../components/HistoryDetailModal";
 import GuidSection, {
   RejectDescription,
   RejectOperationDescription,
@@ -29,6 +28,7 @@ import { useSmPayAdminOverviewApplyFormList } from "@/hooks/queries/sm-pay";
 import type { TableProps } from "@/types/table";
 import type { SmPayAdvertiserStatus } from "@/types/smpay";
 import type { SMPayFormHistory, AdvertiserDetailDto } from "@/types/dto/smpay";
+import HistoryDetailModal from "../../overview/detail/HistoryDetailModal";
 
 type Props = {
   advertiserData?: AdvertiserDetailDto;
