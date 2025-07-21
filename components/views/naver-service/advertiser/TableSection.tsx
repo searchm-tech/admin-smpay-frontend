@@ -171,6 +171,9 @@ const TableSection = ({
       title: "광고주명",
       dataIndex: "name",
       align: "center",
+      render: (value: string) => {
+        return <p>{value || "광고주 미등록"}</p>;
+      },
     },
     // {
     //   title: "광고주 등록 여부",

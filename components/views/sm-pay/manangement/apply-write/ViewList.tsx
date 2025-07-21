@@ -265,6 +265,13 @@ const ViewList = () => {
           }}
           loading={isPending}
           onChange={handleTableChange}
+          onRow={(record) => ({
+            onClick: () => {
+              if (!isRowDisabled(record)) {
+                setSelected(record.advertiserId);
+              }
+            },
+          })}
           rowSelection={{
             type: "radio",
             columnWidth: 50,
@@ -285,7 +292,11 @@ const ViewList = () => {
             },
           }}
           rowClassName={(record) =>
-            cn(isRowDisabled(record) && "opacity-50 cursor-not-allowed")
+            cn(
+              isRowDisabled(record)
+                ? "opacity-50 cursor-not-allowed"
+                : "cursor-pointer"
+            )
           }
         />
       </div>
