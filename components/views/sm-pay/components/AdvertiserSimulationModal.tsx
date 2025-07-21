@@ -163,6 +163,7 @@ const AdvertiserSimulationModal = ({
       const rate =
         (afterData[0].conversionRevenue / beforeData[0].conversionRevenue) *
         100;
+
       improvementRate = isFinite(rate) ? rate.toFixed(1) : "0";
     }
   }
@@ -213,8 +214,8 @@ const AdvertiserSimulationModal = ({
                 <strong className="text-lg">
                   평균 {parseFloat(improvementRate) > 0 ? "+" : ""}
                   {improvementRate}%{" "}
-                  {parseFloat(improvementRate) > 0 ? "상승" : "하락"}할 것으로
-                  예상
+                  {parseFloat(improvementRate) * 0.01 > 0 ? "상승" : "하락"}할
+                  것으로 예상
                 </strong>
                 됩니다.
               </p>
