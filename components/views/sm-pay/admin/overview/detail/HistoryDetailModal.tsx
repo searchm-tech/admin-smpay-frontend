@@ -27,7 +27,6 @@ import {
 import { Label } from "@/components/ui/label";
 import { SmPayAdvertiserStatusLabel } from "@/constants/status";
 import { useQueryAgencyDetail } from "@/hooks/queries/agency";
-import { ResponseAgencyBills } from "@/types/api/agency";
 import { formatBusinessNumber, formatPhoneNumber } from "@/utils/format";
 import { ChargeRule } from "@/types/smpay";
 import { useQueryAdminUserInfo } from "@/hooks/queries/user";
@@ -149,7 +148,8 @@ const HistoryDetailModal = ({ onClose, advertiserId, formId }: Props) => {
 
         {isReject && (
           <RejectDialog
-            id={advertiserId.toString()}
+            description={formInfo?.advertiserRejectDescription || ""}
+            date={formInfo?.updateDt || ""}
             onClose={() => setIsReject(false)}
             onConfirm={() => setIsReject(false)}
           />

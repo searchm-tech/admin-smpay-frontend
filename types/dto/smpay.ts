@@ -74,6 +74,7 @@ export type SmPayAdminAuditDto = {
   advertiserNickname: string;
   advertiserName: string;
   advertiserType: SmPayAdvertiserStatus;
+  advertiserFormId: number;
   registerOrUpdateDt: string;
   isOperatorRead: boolean;
 };

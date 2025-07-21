@@ -23,9 +23,11 @@ import {
   useSmPayAdminOverviewPrePaymentSchedule,
   useSmPayAdminOverviewReviewerMemo,
   useSmPayAdminOverviewApprovalMemo,
+  useSmPayAdminOverviewApplyFormDetail,
 } from "@/hooks/queries/sm-pay";
 
 import type { ParamsSmPayAdminOverviewOperatorDecision } from "@/types/api/smpay";
+import type { ChargeRule } from "@/types/smpay";
 
 type Props = {
   id: string;
@@ -34,10 +36,23 @@ type Props = {
 const SmPayAdminOverviewDetailView = ({ id }: Props) => {
   const agentId = useSearchParams().get("agentId");
   const userId = useSearchParams().get("userId");
+  const formId = useSearchParams().get("formId");
   const read = useSearchParams().get("read");
 
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
   const [completeModalOpen, setCompleteModalOpen] = useState(false);
+  const [upChargeRule, setUpChargeRule] = useState<ChargeRule>({
+    standardRoasPercent: 0,
+    rangeType: "UP",
+    boundType: "FIXED_AMOUNT",
+    changePercentOrValue: 0,
+  });
+  const [downChargeRule, setDownChargeRule] = useState<ChargeRule>({
+    standardRoasPercent: 0,
+    rangeType: "DOWN",
+    boundType: "FIXED_AMOUNT",
+    changePercentOrValue: 0,
+  });
 
   const { mutate: patchRead, isPending: loadingPatchRead } =
     useSmPayAdminOverviewAlarm();
@@ -50,6 +65,12 @@ const SmPayAdminOverviewDetailView = ({ id }: Props) => {
 
   const { data: smpayInfo, isPending: loadingSmpayInfo } = useSmPayAdminDetail(
     Number(id),
+    Number(agentId),
+    Number(userId)
+  );
+  const { data: formInfo } = useSmPayAdminOverviewApplyFormDetail(
+    Number(id),
+    Number(formId),
     Number(agentId),
     Number(userId)
   );
@@ -70,23 +91,6 @@ const SmPayAdminOverviewDetailView = ({ id }: Props) => {
     initialAmount: prePaymentScheduleData?.initialAmount || 0,
     maxChargeLimit: prePaymentScheduleData?.maxChargeLimit || 0,
     minChargeLimit: prePaymentScheduleData?.minChargeLimit || 0,
-  };
-
-  const upChargeRule = {
-    standardRoasPercent:
-      chargeRule?.find((rule) => rule.rangeType === "UP")
-        ?.standardRoasPercent || 0,
-    rangeType: "UP",
-    boundType: "FIXED_AMOUNT",
-    changePercentOrValue: 0,
-  };
-  const downChargeRule = {
-    standardRoasPercent:
-      chargeRule?.find((rule) => rule.rangeType === "DOWN")
-        ?.standardRoasPercent || 0,
-    rangeType: "DOWN",
-    boundType: "FIXED_AMOUNT",
-    changePercentOrValue: 0,
   };
 
   const approveParams: ParamsSmPayAdminOverviewOperatorDecision = {
@@ -114,6 +118,34 @@ const SmPayAdminOverviewDetailView = ({ id }: Props) => {
     loadingApprovalMemo ||
     loadingPrePaymentSchedule ||
     loadingReviewerMemo;
+
+  useEffect(() => {
+    if (formInfo) {
+      const upChargeRuleData = formInfo.chargeRules.find(
+        (rule) => rule.rangeType === "UP"
+      );
+      const downChargeRuleData = formInfo.chargeRules.find(
+        (rule) => rule.rangeType === "DOWN"
+      );
+
+      if (upChargeRuleData) {
+        setUpChargeRule({
+          standardRoasPercent: formInfo?.advertiserStandardRoasPercent || 0,
+          rangeType: upChargeRuleData.rangeType,
+          boundType: upChargeRuleData.boundType,
+          changePercentOrValue: upChargeRuleData.changePercentOrValue,
+        });
+      }
+      if (downChargeRuleData) {
+        setDownChargeRule({
+          standardRoasPercent: formInfo?.advertiserStandardRoasPercent || 0,
+          rangeType: downChargeRuleData.rangeType,
+          boundType: downChargeRuleData.boundType,
+          changePercentOrValue: downChargeRuleData.changePercentOrValue,
+        });
+      }
+    }
+  }, [formInfo]);
 
   return (
     <div>

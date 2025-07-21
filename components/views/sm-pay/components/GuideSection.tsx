@@ -205,7 +205,6 @@ export const RejectDescription = ({
       <div className="w-full flex items-center justify-between">
         {isOpen && (
           <RejectModal
-            open={isOpen}
             onClose={() => setIsOpen(false)}
             onConfirm={() => setIsOpen(false)}
             description={description}

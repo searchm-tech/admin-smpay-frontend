@@ -12,7 +12,6 @@ import {
   STATUS_ACTION_BUTTONS,
 } from "@/constants/status";
 import { ColumnTooltip } from "@/constants/table";
-import { advertiser, optionAgency } from "./constants";
 
 import type { TableParams } from "@/types/table";
 import type {
@@ -22,10 +21,17 @@ import type {
 } from "@/types/smpay";
 import type { TableProps } from "antd";
 import type { FilterValue } from "antd/es/table/interface";
-import { SmPayAdvertiserStatusDto } from "@/types/dto/smpay";
-import { AdvertiserAgreementSendDialog } from "../../manangement/dialog";
+import type { SmPayAdvertiserStatusDto } from "@/types/dto/smpay";
+import {
+  AdvertiserAgreementSendDialog,
+  PauseModal,
+  RejectDialog,
+  RejectOperationModal,
+} from "../../manangement/dialog";
+
 import { useQuerySmPayAdminAgencyList } from "@/hooks/queries/agency";
 import { useQuerySmPayAdminAdvertiserList } from "@/hooks/queries/advertiser";
+import { LinkTextButton } from "@/components/composite/button-components";
 
 interface TableSectionProps {
   selectedAgency: string;
@@ -63,13 +69,16 @@ const TableSection = ({
     number | null
   >(null);
   const [applySubmitId, setApplySubmitId] = useState<number | null>(null);
+
   const [applySubmitData, setApplySubmitData] =
     useState<SmPayAdvertiserStatusDto | null>(null);
-  const [rejectModalId, setRejectModalId] = useState<number | null>(null);
-  const [rejectOperationModalId, setRejectOperationModalId] = useState<
-    number | null
-  >(null);
-  const [stopModalId, setStopModalId] = useState<number | null>(null);
+  const [rejectModal, setRejectModal] =
+    useState<SmPayAdvertiserStatusDto | null>(null);
+  const [rejectOperationModal, setRejectOperationModal] =
+    useState<SmPayAdvertiserStatusDto | null>(null);
+  const [pauseModal, setPauseModal] = useState<SmPayAdvertiserStatusDto | null>(
+    null
+  );
 
   const handleTableChange: TableProps<SmPayAdvertiserStatusDto>["onChange"] = (
     pagination,
@@ -109,16 +118,16 @@ const TableSection = ({
       orderType: orderType,
     });
   };
-  const handleMoveDetailPage = (
-    advertiserId: number,
-    advertiserFormId: number,
-    advertiserCustomerId: number,
-    agentId: number,
-    userId: number
-  ) => {
-    router.push(
-      `/sm-pay/admin/adversiter-status/${advertiserId}?formId=${advertiserFormId}&advertiserCustomerId=${advertiserCustomerId}&agentId=${agentId}&userId=${userId}`
-    );
+  const handleMoveDetailPage = (record: SmPayAdvertiserStatusDto) => {
+    const {
+      advertiserId,
+      advertiserFormId,
+      advertiserCustomerId,
+      agentId,
+      userId,
+    } = record;
+    const url = `/sm-pay/admin/adversiter-status/${advertiserId}?formId=${advertiserFormId}&advertiserCustomerId=${advertiserCustomerId}&agentId=${agentId}&userId=${userId}`;
+    router.push(url);
   };
 
   const columns: TableProps<SmPayAdvertiserStatusDto>["columns"] = [
@@ -171,9 +180,34 @@ const TableSection = ({
       dataIndex: "advertiserType",
       align: "center",
       sorter: true,
-      render: (value: SmPayAdvertiserStatus) => (
-        <span>{SmPayAdvertiserStatusLabel[value]}</span>
-      ),
+      render: (
+        value: SmPayAdvertiserStatus,
+        record: SmPayAdvertiserStatusDto
+      ) => {
+        const text = SmPayAdvertiserStatusLabel[value];
+        if (value === "REJECT") {
+          return (
+            <LinkTextButton onClick={() => setRejectModal(record)}>
+              {text}
+            </LinkTextButton>
+          );
+        }
+        if (value === "OPERATION_REJECT") {
+          return (
+            <LinkTextButton onClick={() => setRejectOperationModal(record)}>
+              {text}
+            </LinkTextButton>
+          );
+        }
+        if (value === "PAUSE") {
+          return (
+            <LinkTextButton onClick={() => setPauseModal(record)}>
+              {text}
+            </LinkTextButton>
+          );
+        }
+        return <span>{text}</span>;
+      },
     },
     {
       title: "기능",
@@ -187,20 +221,7 @@ const TableSection = ({
               <Button
                 variant="greenOutline"
                 onClick={() => {
-                  const {
-                    advertiserId,
-                    advertiserFormId,
-                    advertiserCustomerId,
-                    agentId,
-                    userId,
-                  } = record;
-                  handleMoveDetailPage(
-                    advertiserId,
-                    advertiserFormId,
-                    advertiserCustomerId,
-                    agentId,
-                    userId
-                  );
+                  handleMoveDetailPage(record);
                 }}
               >
                 조회
@@ -288,6 +309,30 @@ const TableSection = ({
 
   return (
     <section className="pt-4">
+      {rejectModal && (
+        <RejectDialog
+          onClose={() => setRejectModal(null)}
+          description={rejectModal.description}
+          date={rejectModal.descriptionRegisterDt}
+          onConfirm={() => handleMoveDetailPage(rejectModal)}
+        />
+      )}
+      {rejectOperationModal && (
+        <RejectOperationModal
+          onClose={() => setRejectOperationModal(null)}
+          onConfirm={() => handleMoveDetailPage(rejectOperationModal)}
+          description={rejectOperationModal.description}
+          date={rejectOperationModal.descriptionRegisterDt}
+        />
+      )}
+      {pauseModal && (
+        <PauseModal
+          onClose={() => setPauseModal(null)}
+          onConfirm={() => handleMoveDetailPage(pauseModal)}
+          description={pauseModal.description}
+          date={pauseModal.descriptionRegisterDt}
+        />
+      )}
       <div className="flex gap-2 border-1 border-b border-dashed border-gray-300 pb-4">
         <SelectSearch
           options={agencyList?.map((agency) => ({

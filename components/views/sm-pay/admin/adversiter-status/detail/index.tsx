@@ -11,7 +11,6 @@ import { ScheduleSectionShow } from "../../../components/ScheduleSection";
 import JudgementMemoSection from "../../../components/JudgementMemoSection";
 import OperationMemoSection from "../../../components/OperationMemoSection";
 
-import RejectModal from "./RejectModal";
 import {
   useSmPayAdminDetail,
   useSmPayAdminOverviewApplyFormDetail,
@@ -24,6 +23,7 @@ import AdvertiserInfoSection from "../../overview/detail/AdvertiserInfoSection";
 import AccountSection from "../../../components/AccountSection";
 import LoadingUI from "@/components/common/Loading";
 import type { ChargeRule } from "@/types/smpay";
+import RejectModal from "../../../components/RejectModal";
 
 type Props = {
   id: string;
@@ -118,7 +118,6 @@ const SmPayAdminAdversiterStatusDetailView = ({ id }: Props) => {
       {isLoading && <LoadingUI title="SM Pay 정보 조회 중..." />}
       {rejectModalOpen && (
         <RejectModal
-          open={rejectModalOpen}
           onClose={() => setRejectModalOpen(false)}
           onConfirm={() => setRejectModalOpen(false)}
         />

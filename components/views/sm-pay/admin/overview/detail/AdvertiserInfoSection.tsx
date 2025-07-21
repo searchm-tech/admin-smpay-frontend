@@ -27,6 +27,10 @@ import type { TableProps } from "@/types/table";
 import type { SmPayAdvertiserStatus } from "@/types/smpay";
 import type { SMPayFormHistory, AdvertiserDetailDto } from "@/types/dto/smpay";
 import { useQueryAdminUserInfo } from "@/hooks/queries/user";
+import GuidSection, {
+  RejectDescription,
+  RejectOperationDescription,
+} from "../../../components/GuideSection";
 
 type Props = {
   advertiserData?: AdvertiserDetailDto;
@@ -57,6 +61,24 @@ const AdvertiserInfoSection = ({
 
   return (
     <div>
+      {!["REJECT", "OPERATION_REJECT"].includes(
+        advertiserData?.status || ""
+      ) && <GuidSection viewType="master-judgement" />}
+
+      {advertiserData?.status === "REJECT" && (
+        <RejectDescription
+          description={advertiserData?.description.description || ""}
+          date={""}
+        />
+      )}
+
+      {advertiserData?.status === "OPERATION_REJECT" && (
+        <RejectOperationDescription
+          description={advertiserData?.description.description || ""}
+          date={""}
+        />
+      )}
+
       <section>
         {isHistoryModal && dataSource && advertiserData && (
           <HistoryModal
