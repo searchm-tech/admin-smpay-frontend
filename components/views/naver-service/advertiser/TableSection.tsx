@@ -172,15 +172,15 @@ const TableSection = ({
       dataIndex: "name",
       align: "center",
     },
-    {
-      title: "광고주 등록 여부",
-      dataIndex: "isAdvertiserRegister",
-      sorter: true,
-      align: "center",
-      render: (value: boolean) => {
-        return value ? "등록" : "미등록";
-      },
-    },
+    // {
+    //   title: "광고주 등록 여부",
+    //   dataIndex: "isAdvertiserRegister",
+    //   sorter: true,
+    //   align: "center",
+    //   render: (value: boolean) => {
+    //     return value ? "등록" : "미등록";
+    //   },
+    // },
     {
       title: "광고 데이터 동기화 여부",
       dataIndex: "syncType",
@@ -389,9 +389,9 @@ const TableSection = ({
       />
 
       <div className="flex justify-center mt-4 gap-2">
-        <Button className="w-[150px]" onClick={handleSyncAllAdvertiser}>
+        {/* <Button className="w-[150px]" onClick={handleSyncAllAdvertiser}>
           전체 등록
-        </Button>
+        </Button> */}
         <Button
           className="w-[150px]"
           variant="outline"

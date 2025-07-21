@@ -1,4 +1,7 @@
 import { useMemo } from "react";
+import dayjs from "dayjs";
+import "dayjs/locale/ko"; // 한글 로케일 불러오기
+
 import { Label } from "@/components/ui/label";
 import {
   DescriptionItem,
@@ -18,6 +21,7 @@ type Props = {
   advertiserId: number;
   initialAmount: number;
 };
+const yesterday = dayjs().subtract(1, "day").format("YYYY년 MM월 DD일");
 
 // SM Pay 계좌 계산 함수
 interface SmPayAccountCalculation {
@@ -104,7 +108,7 @@ const OperationAccountStatusSection = ({
               {calculatedData.currentBalance.toLocaleString()}원
             </Label>
             <SubDescItem>
-              SM Pay 총 운영 가능 잔액 (2025년 5월 28일 AM06:00시 기준)
+              SM Pay 총 운영 가능 잔액 ({yesterday} AM06:00시 기준)
             </SubDescItem>
           </div>
         </DescriptionItem>

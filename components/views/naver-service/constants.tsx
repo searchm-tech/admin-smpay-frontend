@@ -53,7 +53,7 @@ export const dialogContent = {
 };
 
 export const syncTypeMap = {
-  SYNC: "동기화",
+  SYNC: "동기화 완료",
   UNSYNC: "비동기화",
   FAIL: "동기화 실패",
 };
