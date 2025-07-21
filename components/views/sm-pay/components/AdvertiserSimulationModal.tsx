@@ -28,10 +28,11 @@ const generateSimulationData = (
   statIndicator?: SmPayStatIndicator
 ) => {
   const currentRoas = statIndicator?.dailyAverageRoas || 0;
+  const monthlyConvAmt = statIndicator?.monthlyConvAmt || 0;
+  const dailyConvAmt = monthlyConvAmt / 28; // 28일 평균
 
   // 적용 전 기본값 설정
-  const PRE_BASE_CHARGE =
-    statIndicator?.dailyAverageRoas || prePaymentSchedule?.initialAmount || 0;
+  const PRE_BASE_CHARGE = prePaymentSchedule?.initialAmount || 0;
 
   const DAYS = 28;
 
@@ -42,7 +43,7 @@ const generateSimulationData = (
 
   for (let i = 1; i <= DAYS; i++) {
     const adCost = PRE_BASE_CHARGE; // 매일 동일한 금액
-    const revenue = adCost * (currentRoas / 100);
+    const revenue = dailyConvAmt; // 28일 평균 전환매출액
 
     beforeTotalAdCost += adCost;
     beforeTotalRevenue += revenue;
@@ -149,17 +150,12 @@ const AdvertiserSimulationModal = ({
     prePaymentSchedule?.initialAmount >= 10000;
 
   const { beforeData, afterData } = hasValidInput
-    ? generateSimulationData(upChargeRule, prePaymentSchedule)
+    ? generateSimulationData(upChargeRule, prePaymentSchedule, statIndicator)
     : { beforeData: [], afterData: [] };
-
-  // 성과 향상률 계산
-  const improvementRateNum =
-    hasValidInput && beforeData.length > 0 && afterData.length > 0
-      ? (afterData[0].conversionRevenue / beforeData[0].conversionRevenue) * 100
-      : 0;
 
   // 0으로 나누거나 NaN, Infinity가 나오지 않게 처리
   let improvementRate = statIndicator?.dailyAverageRoas.toString() || "0";
+
   if (hasValidInput && beforeData.length > 0 && afterData.length > 0) {
     if (beforeData[0].conversionRevenue === 0) {
       improvementRate = "0";
