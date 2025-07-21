@@ -140,7 +140,7 @@ const FormSection = ({
 
   return (
     <section>
-      {isPending && <LoadingUI title="라이선스 등록 중..." />}
+      {isPending && <LoadingUI />}
 
       {isSuccessCreate && (
         <SuccessCreateLicenseDialog

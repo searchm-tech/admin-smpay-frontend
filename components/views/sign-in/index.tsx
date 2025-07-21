@@ -203,7 +203,7 @@ const SignInView = ({ code }: SignInViewProps) => {
 
   // 토큰 검사 중이면 로딩 표시
   if (isCheckingToken) {
-    return <LoadingUI title="인증 정보 확인 중..." />;
+    return <LoadingUI />;
   }
 
   if (device === "mobile") {
@@ -212,7 +212,7 @@ const SignInView = ({ code }: SignInViewProps) => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      {loading && <LoadingUI title="로그인 중..." />}
+      {loading && <LoadingUI />}
 
       {pwdModal && <ModalPwdSetting onClose={() => setPwdModal(false)} />}
 

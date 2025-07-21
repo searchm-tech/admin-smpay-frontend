@@ -144,7 +144,7 @@ const SmPayAdminOverviewDetailView = ({ id }: Props) => {
 
   return (
     <div>
-      {isLoading && <LoadingUI title="SM Pay 정보 조회 중..." />}
+      {isLoading && <LoadingUI />}
       {rejectModalOpen && (
         <RejectSendModal
           open={rejectModalOpen}

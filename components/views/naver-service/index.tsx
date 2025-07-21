@@ -78,7 +78,7 @@ const NaverServiceView = () => {
         title={isAdvertiserStep ? "네이버 광고주 등록" : "API 라이선스 등록"}
         items={[]}
       />
-      {isLoading && <LoadingUI title="라이선스 정보 로딩 중..." />}
+      {isLoading && <LoadingUI />}
       {isNoLicenseDialogOpen && (
         <ConfirmDialog
           open

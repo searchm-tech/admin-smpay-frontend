@@ -88,7 +88,7 @@ const SmPayApplyDetailView = ({ id }: Props) => {
 
   return (
     <div>
-      {loading && <LoadingUI title="SM Pay 정보 조회 중..." />}
+      {loading && <LoadingUI />}
 
       <AdvertiserInfoSection
         advertiserId={Number(id)}

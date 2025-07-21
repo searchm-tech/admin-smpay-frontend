@@ -49,7 +49,7 @@ const ApproveModal = ({
   };
 
   if (isApproving) {
-    return <LoadingUI title="광고주 심사 승인중" />;
+    return <LoadingUI />;
   }
 
   if (!isConfirm) {

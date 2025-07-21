@@ -134,7 +134,7 @@ const SMPayMasterApplyWriteForm = ({ id }: Props) => {
 
   return (
     <section className="mt-4">
-      {loadingSend && <LoadingUI title="동의 요청 중..." />}
+      {loadingSend && <LoadingUI />}
 
       {errorMessage && (
         <ConfirmDialog

@@ -144,7 +144,7 @@ const HistoryDetailModal = ({ onClose, advertiserId, formId }: Props) => {
       confirmText="뒤로"
     >
       <div className="w-[85vw] h-[80vh] overflow-y-auto">
-        {loading && <LoadingUI title="SM Pay 정보 조회 중..." />}
+        {loading && <LoadingUI />}
 
         {isReject && (
           <RejectDialog

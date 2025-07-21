@@ -333,7 +333,7 @@ const TableSection = ({
 
   return (
     <section className="mt-4">
-      {isPending && <LoadingUI title="광고주 상태 작업 중으로 변경 중..." />}
+      {isPending && <LoadingUI />}
       {requestCancel && (
         <ConfirmDialog
           open

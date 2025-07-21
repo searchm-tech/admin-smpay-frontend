@@ -56,7 +56,7 @@ const AdvertiserInfoSection = ({
 
   return (
     <div>
-      {isLoading && <LoadingUI title="광고주 정보 조회 중..." />}
+      {isLoading && <LoadingUI />}
 
       {!["REJECT", "OPERATION_REJECT"].includes(detailInfo?.status || "") && (
         <GuidSection viewType="master-judgement" />

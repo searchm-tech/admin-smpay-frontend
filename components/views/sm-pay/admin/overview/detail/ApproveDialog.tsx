@@ -39,7 +39,7 @@ const ApproveDialog = ({ open, onClose, params }: Props) => {
   };
 
   if (loadingOperatorDecision) {
-    return <LoadingUI title="운영 검토 중..." />;
+    return <LoadingUI />;
   }
 
   return (

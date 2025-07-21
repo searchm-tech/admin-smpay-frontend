@@ -114,7 +114,7 @@ const SmPayAdminAdversiterStatusDetailView = ({ id }: Props) => {
 
   return (
     <div className="flex flex-col gap-4">
-      {isLoading && <LoadingUI title="SM Pay 정보 조회 중..." />}
+      {isLoading && <LoadingUI />}
 
       <AdvertiserInfoSection
         advertiserData={smpayInfo}

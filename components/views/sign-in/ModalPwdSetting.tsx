@@ -104,7 +104,7 @@ const ModalPwdSetting = ({ onClose }: Props) => {
         </Modal>
       )}
 
-      {isPending && <LoadingUI title="비밀번호 재설정 링크 전달 중..." />}
+      {isPending && <LoadingUI />}
     </Fragment>
   );
 };

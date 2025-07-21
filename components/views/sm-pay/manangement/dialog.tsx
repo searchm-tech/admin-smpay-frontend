@@ -121,7 +121,7 @@ const AdvertiserAgreementSendDialog = ({
   };
 
   if (isPending) {
-    return <LoadingUI title="전송 중..." />;
+    return <LoadingUI />;
   }
 
   if (isSuccess) {
