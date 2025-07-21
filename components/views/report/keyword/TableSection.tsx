@@ -115,6 +115,7 @@ const TableSection = ({
             ...tableParams.pagination,
             showSizeChanger: true,
             pageSizeOptions: ["10", "20", "50", "100"],
+            total: result?.keywordData.totalCount,
             onChange: (page: number, pageSize?: number) => {
               setTableParams({
                 ...tableParams,

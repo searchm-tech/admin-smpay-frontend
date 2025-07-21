@@ -165,6 +165,13 @@ apiClient.interceptors.response.use(
       }
     }
 
+    // if (error.response?.data?.code === "60") {
+    //   const { clearSession } = useSessionStore.getState();
+    //   await signOut({ callbackUrl: "/sign-in" });
+    //   clearSession();
+    //   return Promise.reject(error);
+    // }
+
     if (error.response && error.response.data) {
       const { code, message, result } = error.response.data;
       throw new ApiError(code, message, result);
