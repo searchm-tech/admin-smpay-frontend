@@ -6,7 +6,7 @@ import { TriangleAlert } from "lucide-react";
 import { GuideBox } from "@/components/common/Box";
 import { IconBadge } from "@/components/composite/icon-components";
 import { GuideButton } from "@/components/composite/button-components";
-import RejectModal from "./RejectModal";
+
 import RejectOperationModal from "./RejectOperationModal";
 
 import { useGuideModalStore } from "@/store/useGuideModalStore";
@@ -203,14 +203,6 @@ export const RejectDescription = ({
   return (
     <GuideBox className="bg-[#FFD6D6]">
       <div className="w-full flex items-center justify-between">
-        {isOpen && (
-          <RejectModal
-            onClose={() => setIsOpen(false)}
-            onConfirm={() => setIsOpen(false)}
-            description={description}
-            date={date}
-          />
-        )}
         <div className="flex items-center gap-2">
           <TriangleAlert color="#FF0000" size={18} />
           <span className="text-[#FF0000]">
