@@ -43,7 +43,7 @@ const generateSimulationData = (
 
   for (let i = 1; i <= DAYS; i++) {
     const adCost = PRE_BASE_CHARGE; // 매일 동일한 금액
-    const revenue = dailyConvAmt; // 28일 평균 전환매출액
+    const revenue = Math.ceil(adCost * (currentRoas / 100)); // 광고비 * ROAS, 소수점 올림
 
     beforeTotalAdCost += adCost;
     beforeTotalRevenue += revenue;
@@ -62,7 +62,7 @@ const generateSimulationData = (
     id: 0,
     date: "합계",
     adCost: beforeTotalAdCost,
-    conversionRevenue: Math.round(beforeTotalRevenue),
+    conversionRevenue: beforeTotalRevenue,
     roas: currentRoas,
   });
 
@@ -153,18 +153,17 @@ const AdvertiserSimulationModal = ({
     ? generateSimulationData(upChargeRule, prePaymentSchedule, statIndicator)
     : { beforeData: [], afterData: [] };
 
-  // 0으로 나누거나 NaN, Infinity가 나오지 않게 처리
-  let improvementRate = statIndicator?.dailyAverageRoas.toString() || "0";
+  // 전환매출액 합계 비교로 개선률 계산
+  let improvementRate = "0";
 
   if (hasValidInput && beforeData.length > 0 && afterData.length > 0) {
-    if (beforeData[0].conversionRevenue === 0) {
-      improvementRate = "0";
-    } else {
-      const rate =
-        (afterData[0].conversionRevenue / beforeData[0].conversionRevenue) *
-        100;
+    // 합계 데이터 찾기 (id가 0인 행)
+    const beforeTotal = beforeData.find((item) => item.id === 0);
+    const afterTotal = afterData.find((item) => item.id === 0);
 
-      improvementRate = isFinite(rate) ? Number(rate * 0.01).toFixed(1) : "0";
+    if (beforeTotal && afterTotal && beforeTotal.conversionRevenue > 0) {
+      const rate = afterTotal.conversionRevenue / beforeTotal.conversionRevenue;
+      improvementRate = isFinite(rate) ? rate.toFixed(2) : "0";
     }
   }
 
@@ -212,9 +211,8 @@ const AdvertiserSimulationModal = ({
               <p>
                 이 전략으로 28일간 운용 시 전환매출액이{" "}
                 <strong className="text-lg">
-                  평균 {parseFloat(improvementRate) > 0 ? "+" : ""}
                   {improvementRate}%{" "}
-                  {parseFloat(improvementRate) > 0 ? "상승" : "하락"}할 것으로
+                  {parseFloat(improvementRate) > 1 ? "상승" : "하락"}할 것으로
                   예상
                 </strong>
                 됩니다.
