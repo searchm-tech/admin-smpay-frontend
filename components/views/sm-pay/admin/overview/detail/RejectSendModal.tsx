@@ -47,7 +47,7 @@ const RejectSendModal = ({ open, onClose, params }: RejectSendModalProps) => {
   };
 
   if (loadingOperatorDecision) {
-    return <LoadingUI title="운영 검토 중..." />;
+    return <LoadingUI />;
   }
 
   return (

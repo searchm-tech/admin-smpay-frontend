@@ -28,7 +28,7 @@ const SmPayView = () => {
       }
     }
   }, [session]);
-  return <LoadingUI title="페이지 로딩 중..." />;
+  return <LoadingUI />;
 };
 
 export default SmPayView;

@@ -160,7 +160,7 @@ const SmPayJudgementDetailView = ({ id }: Props) => {
 
   return (
     <div>
-      {isLoading && <LoadingUI title="심사 정보 조회중" />}
+      {isLoading && <LoadingUI />}
 
       {isApproved && (
         <ApproveModal

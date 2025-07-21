@@ -62,7 +62,7 @@ const RejectSendModal = ({
   };
 
   if (isRejecting) {
-    return <LoadingUI title="광고주 심사 반려중" />;
+    return <LoadingUI />;
   }
 
   if (isError) {

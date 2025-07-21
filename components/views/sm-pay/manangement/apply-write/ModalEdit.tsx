@@ -87,11 +87,11 @@ const ModalEdit = ({
   }, [detailData]);
 
   if (loadingUpdate) {
-    return <LoadingUI title="광고주 정보 등록 중..." />;
+    return <LoadingUI />;
   }
 
   if (loadingDetail) {
-    return <LoadingUI title="광고주 정보 조회중..." />;
+    return <LoadingUI />;
   }
 
   if (isSuccess) {

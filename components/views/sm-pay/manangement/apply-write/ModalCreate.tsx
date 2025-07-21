@@ -64,7 +64,7 @@ const ModalCreate = ({
   };
 
   if (isPending) {
-    return <LoadingUI title="광고주 정보 등록 중..." />;
+    return <LoadingUI />;
   }
 
   if (isSuccess) {
