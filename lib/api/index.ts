@@ -180,14 +180,14 @@ apiClient.interceptors.response.use(
       }
     }
 
-    if (error.response?.data?.code === "60" && error.response?.status === 401) {
-      const { accessToken } = useSessionStore.getState();
+    // if (error.response?.data?.code === "60" && error.response?.status === 401) {
+    //   const { accessToken } = useSessionStore.getState();
 
-      if (!accessToken) {
-        await signOut({ callbackUrl: "/sign-in" });
-        return Promise.reject(error);
-      }
-    }
+    //   if (!accessToken) {
+    //     await signOut({ callbackUrl: "/sign-in" });
+    //     return Promise.reject(error);
+    //   }
+    // }
 
     if (error.response && error.response.data) {
       const { code, message, result } = error.response.data;

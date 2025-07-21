@@ -187,7 +187,7 @@ const ManagementModal: React.FC<Props> = ({
         const allFolderNames = getAllFolderNames(newData);
 
         // "새 부서"로 시작하는 폴더들의 번호 추출
-        const baseName = "새 부서";
+        const baseName = "기본 부서";
         const existingNumbers: number[] = [];
 
         allFolderNames.forEach((name) => {
@@ -295,7 +295,7 @@ const ManagementModal: React.FC<Props> = ({
           userIds: [session?.user.userId || 0],
           children: [
             {
-              departmentName: "새 부서",
+              departmentName: "기본 부서",
               displayOrder: 1,
               userIds: [],
               children: [],

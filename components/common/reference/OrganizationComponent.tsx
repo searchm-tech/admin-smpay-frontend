@@ -495,7 +495,7 @@ const OrganizationSection: React.FC = () => {
 
           const newFolder: TreeNode = {
             id: `folder-${Date.now()}`,
-            name: "새 부서",
+            name: "기본 부서",
             type: "folder",
             children: [],
           };
