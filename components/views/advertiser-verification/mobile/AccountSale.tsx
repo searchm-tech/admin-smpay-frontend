@@ -88,12 +88,13 @@ const AccountSale = ({
 
         <div className="flex flex-col gap-2">
           <Label className="text-sm font-medium">매출 계좌 번호 *</Label>
-          <NumberInput
+          <Input
             className="max-w-[500px]"
             value={salesBank.accountNumber}
-            onChange={(value) =>
-              setSalesBank({ ...salesBank, accountNumber: value })
-            }
+            onChange={(e) => {
+              const filteredValue = e.target.value.replace(/[^0-9-]/g, "");
+              setSalesBank({ ...salesBank, accountNumber: filteredValue });
+            }}
           />
         </div>
 

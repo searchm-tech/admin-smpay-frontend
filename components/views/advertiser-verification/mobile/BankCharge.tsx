@@ -81,12 +81,13 @@ const BankCharge = ({
 
         <div className="flex flex-col gap-2">
           <Label className="text-sm font-medium">충전 계좌 은행 *</Label>
-          <NumberInput
+          <Input
             className="max-w-[500px]"
             value={chargeBank.accountNumber}
-            onChange={(value) =>
-              setChargeAccount({ ...chargeBank, accountNumber: value })
-            }
+            onChange={(e) => {
+              const filteredValue = e.target.value.replace(/[^0-9-]/g, "");
+              setChargeAccount({ ...chargeBank, accountNumber: filteredValue });
+            }}
           />
         </div>
 

@@ -116,7 +116,11 @@ const SmPayAdminAdversiterStatusDetailView = ({ id }: Props) => {
     <div className="flex flex-col gap-4">
       {isLoading && <LoadingUI title="SM Pay 정보 조회 중..." />}
 
-      <AdvertiserInfoSection advertiserData={smpayInfo} />
+      <AdvertiserInfoSection
+        advertiserData={smpayInfo}
+        description={formInfo?.advertiserRejectDescription || ""}
+        date={formInfo?.registerDt || ""}
+      />
 
       <AccountSection accounList={formInfo?.accounts || []} />
 

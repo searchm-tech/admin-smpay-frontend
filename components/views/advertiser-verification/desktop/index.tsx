@@ -92,14 +92,14 @@ const DesktopView = ({ advertiserId }: DesktopViewProps) => {
         {
           bankCode: chargeAccount.bank,
           bankCodeName: chargeAccount.bankName,
-          bankNumber: chargeAccount.accountNumber,
+          bankNumber: chargeAccount.accountNumber.replace(/-/g, ""),
           name: chargeAccount.accountHolder,
           type: "DEPOSIT",
         },
         {
           bankCode: salesAccount.bank,
           bankCodeName: salesAccount.bankName,
-          bankNumber: salesAccount.accountNumber,
+          bankNumber: salesAccount.accountNumber.replace(/-/g, ""),
           name: salesAccount.accountHolder,
           type: "WITHDRAW",
         },
