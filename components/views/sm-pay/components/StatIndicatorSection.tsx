@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CircleCheckBig, X } from "lucide-react";
+import { CircleAlert, CircleCheckBig } from "lucide-react";
 
 import LoadingUI from "@/components/common/Loading";
 
@@ -93,7 +93,7 @@ const StatIndicatorSection = ({ advertiserId, statIndicator }: Props) => {
           {operationPeriod >= 3 ? (
             <CircleCheckBig color="#34C759" />
           ) : (
-            <X color="#FF3B30" />
+            <CircleAlert color="#FF3B30" />
           )}
         </DescriptionItem>
         <DescriptionItem
@@ -110,7 +110,7 @@ const StatIndicatorSection = ({ advertiserId, statIndicator }: Props) => {
           {dailyAverageRoas >= 400 ? (
             <CircleCheckBig color="#34C759" />
           ) : (
-            <X color="#FF3B30" />
+            <CircleAlert color="#FF3B30" />
           )}
         </DescriptionItem>
 
@@ -134,7 +134,7 @@ const StatIndicatorSection = ({ advertiserId, statIndicator }: Props) => {
           {monthlyConvAmt >= 3000000 ? (
             <CircleCheckBig color="#34C759" />
           ) : (
-            <X color="#FF3B30" />
+            <CircleAlert color="#FF3B30" />
           )}
         </DescriptionItem>
 
@@ -155,7 +155,7 @@ const StatIndicatorSection = ({ advertiserId, statIndicator }: Props) => {
           {dailySalesAmt >= 100000 ? (
             <CircleCheckBig color="#34C759" />
           ) : (
-            <X color="#FF3B30" />
+            <CircleAlert color="#FF3B30" />
           )}
         </DescriptionItem>
       </Descriptions>
