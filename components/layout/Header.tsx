@@ -73,7 +73,7 @@ const Header = () => {
           <UserMenu user={session.user} />
         ) : (
           <>
-            <Link href="/sign-in">로그인</Link>
+            <Link href="/sign-out">로그인</Link>
             <Separator
               orientation="vertical"
               className="bg-[#e5e7eb] w-[1px] h-3"
