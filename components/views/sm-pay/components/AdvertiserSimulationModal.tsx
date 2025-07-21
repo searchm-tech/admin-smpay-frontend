@@ -137,6 +137,7 @@ const AdvertiserSimulationModal = ({
   upChargeRule,
   downChargeRule,
   prePaymentSchedule,
+  statIndicator,
 }: Props) => {
   // 필수 값들이 입력되었는지 확인
   const hasValidInput =
@@ -158,7 +159,7 @@ const AdvertiserSimulationModal = ({
       : 0;
 
   // 0으로 나누거나 NaN, Infinity가 나오지 않게 처리
-  let improvementRate = "0";
+  let improvementRate = statIndicator?.dailyAverageRoas.toString() || "0";
   if (hasValidInput && beforeData.length > 0 && afterData.length > 0) {
     if (beforeData[0].conversionRevenue === 0) {
       improvementRate = "0";

@@ -195,6 +195,7 @@ const SmPayJudgementDetailView = ({ id }: Props) => {
 
       {isSimulation && (
         <AdvertiserSimulationModal
+          statIndicator={statIndicator}
           open={isSimulation}
           upChargeRule={upChargeRule}
           downChargeRule={downChargeRule}
