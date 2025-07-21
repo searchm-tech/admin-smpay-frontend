@@ -69,7 +69,7 @@ const AccountSale = ({
 
   return (
     <section className="mt-4 w-full px-4">
-      {isCertifyingSales && <LoadingUI title="계좌 인증 중..." />}
+      {isCertifyingSales && <LoadingUI />}
       <div className="flex flex-col gap-4">
         <Label className="text-base font-bold">매출 계좌 정보</Label>
 

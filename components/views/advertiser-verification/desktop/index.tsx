@@ -109,7 +109,7 @@ const DesktopView = ({ advertiserId }: DesktopViewProps) => {
 
   return (
     <div className="max-w-[750px] mt-10 h-[1105px] text-center flex flex-col items-center mx-auto">
-      {isSubmittingBankAccount && <LoadingUI title="제출 중..." />}
+      {isSubmittingBankAccount && <LoadingUI />}
       <HeaderSection />
 
       <AgreemenSection agreement={agreement} setAgreement={setAgreement} />

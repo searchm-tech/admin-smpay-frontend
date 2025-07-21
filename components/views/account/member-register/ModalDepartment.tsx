@@ -71,7 +71,7 @@ const ModalDepartment = ({ setIsOpen, onSelect }: ModalDepartmentProps) => {
         </div>
         <div className="flex flex-col gap-2 h-[60vh] overflow-y-auto  border-2 border-[#e0e0e0] p-2 rounded-md">
           {isSubDepartmentsLoading ? (
-            <LoadingUI title="부서 정보를 불러오는 중..." />
+            <LoadingUI />
           ) : (
             <DepartmentTree
               data={filteredData}

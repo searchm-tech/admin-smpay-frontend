@@ -230,11 +230,9 @@ const MailSendSection = ({ user }: TViewProps) => {
 
   return (
     <section className="py-4">
-      {(loadingGrpSendMail || loadingUserSendMail) && (
-        <LoadingUI title="초대 메일 전송 중..." />
-      )}
+      {(loadingGrpSendMail || loadingUserSendMail) && <LoadingUI />}
 
-      {checkNameLoading && <LoadingUI title="중복 체크 중..." />}
+      {checkNameLoading && <LoadingUI />}
 
       {isOpenDepartmentModal && (
         <ModalDepartment

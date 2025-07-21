@@ -105,8 +105,8 @@ const AdminView = ({ userId }: Props) => {
 
   return (
     <div className="my-5">
-      {isLoading && <LoadingUI title="회원 정보 조회 중..." />}
-      {isPending && <LoadingUI title="회원 정보 수정 중..." />}
+      {isLoading && <LoadingUI />}
+      {isPending && <LoadingUI />}
 
       <div className="space-y-1">
         <LabelBullet labelClassName="text-base font-bold">
