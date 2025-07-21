@@ -162,8 +162,9 @@ const AdvertiserSimulationModal = ({
     const afterTotal = afterData.find((item) => item.id === 0);
 
     if (beforeTotal && afterTotal && beforeTotal.conversionRevenue > 0) {
-      const rate = afterTotal.conversionRevenue / beforeTotal.conversionRevenue;
-      improvementRate = isFinite(rate) ? rate.toFixed(2) : "0";
+      const rate =
+        (afterTotal.conversionRevenue / beforeTotal.conversionRevenue) * 100;
+      improvementRate = isFinite(rate) ? rate.toFixed(1) : "0";
     }
   }
 
@@ -212,7 +213,7 @@ const AdvertiserSimulationModal = ({
                 이 전략으로 28일간 운용 시 전환매출액이{" "}
                 <strong className="text-lg">
                   {improvementRate}%{" "}
-                  {parseFloat(improvementRate) > 1 ? "상승" : "하락"}할 것으로
+                  {parseFloat(improvementRate) > 0 ? "상승" : "하락"}할 것으로
                   예상
                 </strong>
                 됩니다.
