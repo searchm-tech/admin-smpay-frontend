@@ -1,4 +1,4 @@
-import { AlertCircleIcon, CirclePause } from "lucide-react";
+import { CirclePause, Hourglass } from "lucide-react";
 import { TooltipHover } from "@/components/composite/tooltip-components";
 import type { TableParamsBizMoney } from "../../adveriser-biz";
 
@@ -18,7 +18,7 @@ export const InProgressFlag = () => {
   return (
     <TooltipHover
       triggerContent={
-        <AlertCircleIcon className="w-4 h-4 text-red-500 cursor-pointer" />
+        <Hourglass className="w-4 h-4 text-red-500 cursor-pointer" />
       }
       content={<p className="text-sm">동기화 혹은 재동기화 중입니다...</p>}
     />
