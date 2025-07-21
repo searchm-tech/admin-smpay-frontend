@@ -10,7 +10,7 @@ export const dialogContent = {
   "success-create": (
     <div className="text-center">
       <p>API 등록이 완료되었습니다.</p>
-      <p>API 동기화에는 최대한 30분이 소요될 수 있습니다.</p>
+      <p>API 동기화에는 최대 30분이 소요될 수 있습니다.</p>
       <p>잠시 후 광고주 등록을 진행해주세요.</p>
     </div>
   ),
