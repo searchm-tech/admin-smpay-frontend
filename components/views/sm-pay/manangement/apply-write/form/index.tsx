@@ -162,6 +162,7 @@ const SMPayMasterApplyWriteForm = ({ id }: Props) => {
           upChargeRule={upChargeRule}
           downChargeRule={downChargeRule}
           prePaymentSchedule={prePaymentSchedule}
+          statIndicator={statIndicator}
         />
       )}
 

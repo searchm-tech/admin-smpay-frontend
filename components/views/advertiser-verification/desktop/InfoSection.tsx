@@ -215,13 +215,19 @@ const InfoSection = ({
           <DescriptionItem
             label={<span className="w-[200px]">충전 계좌 번호 *</span>}
           >
-            <NumberInput
+            <Input
               className="max-w-[500px]"
-              placeholder="숫자만 연속 입력"
+              placeholder="계좌번호 입력"
               value={chargeAccount.accountNumber}
-              onChange={(value) =>
-                setChargeAccount({ ...chargeAccount, accountNumber: value })
-              }
+              onChange={(e) => {
+                const value = e.target.value;
+                // 숫자와 하이픈만 허용
+                const filteredValue = value.replace(/[^0-9-]/g, "");
+                setChargeAccount({
+                  ...chargeAccount,
+                  accountNumber: filteredValue,
+                });
+              }}
             />
           </DescriptionItem>
           <DescriptionItem
@@ -283,13 +289,17 @@ const InfoSection = ({
           <DescriptionItem
             label={<span className="w-[200px]">매출 계좌 번호 *</span>}
           >
-            <NumberInput
+            <Input
               className="max-w-[500px]"
-              placeholder="숫자만 연속 입력"
+              placeholder="계좌번호 입력"
               value={salesAccount.accountNumber}
-              onChange={(value) =>
-                setSalesAccount({ ...salesAccount, accountNumber: value })
-              }
+              onChange={(e) => {
+                const filteredValue = e.target.value.replace(/[^0-9-]/g, "");
+                setSalesAccount({
+                  ...salesAccount,
+                  accountNumber: filteredValue,
+                });
+              }}
             />
           </DescriptionItem>
           <DescriptionItem

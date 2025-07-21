@@ -1,4 +1,5 @@
 import type { TAgencyStatus } from "./agency";
+import type { TDepartment } from "./department";
 import type { TSMPayUser } from "./user";
 
 export type SignInRequest = {
@@ -8,6 +9,7 @@ export type SignInRequest = {
 
 export type SignInResponse = {
   agent: SignInAgent;
+  department: TDepartment;
   userWithToken: {
     user: TSMPayUser;
     accessToken: Token;

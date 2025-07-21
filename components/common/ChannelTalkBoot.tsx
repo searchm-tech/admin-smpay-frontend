@@ -11,7 +11,7 @@ export default function ChannelTalkBoot() {
     if (!user || typeof window === "undefined" || !window.ChannelIO) return;
 
     window.ChannelIO("boot", {
-      pluginKey: "e78f8144-7d50-428a-817e-b197f4667be0",
+      pluginKey: "f7046eb3-532c-4ae2-898b-966ed2558859",
       memberId: user.id,
       profile: {
         name: user.name,

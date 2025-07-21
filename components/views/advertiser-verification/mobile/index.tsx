@@ -108,14 +108,14 @@ const MobilewView = ({ advertiserId }: Props) => {
         {
           bankCode: chargeBank.bank,
           bankCodeName: chargeBank.bankName,
-          bankNumber: chargeBank.accountNumber,
+          bankNumber: chargeBank.accountNumber.replace(/-/g, ""),
           name: chargeBank.accountHolder,
           type: "DEPOSIT",
         },
         {
           bankCode: salesBank.bank,
           bankCodeName: salesBank.bankName,
-          bankNumber: salesBank.accountNumber,
+          bankNumber: salesBank.accountNumber.replace(/-/g, ""),
           name: salesBank.accountHolder,
           type: "WITHDRAW",
         },
@@ -141,7 +141,7 @@ const MobilewView = ({ advertiserId }: Props) => {
     arsCertification({
       advertiserId: Number(advertiserId),
       bankCode: salesBank.bank,
-      accountNumber: salesBank.accountNumber,
+      accountNumber: salesBank.accountNumber.replace(/-/g, ""),
     });
   };
 

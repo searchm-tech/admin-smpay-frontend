@@ -10,6 +10,7 @@ import { GuideButton } from "@/components/composite/button-components";
 import RejectOperationModal from "./RejectOperationModal";
 
 import { useGuideModalStore } from "@/store/useGuideModalStore";
+import { RejectDialog } from "../manangement/dialog";
 
 export type ViewType =
   | "guide"
@@ -200,8 +201,17 @@ export const RejectDescription = ({
   date: string;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+
   return (
     <GuideBox className="bg-[#FFD6D6]">
+      {isOpen && (
+        <RejectDialog
+          description={description}
+          date={date}
+          onClose={() => setIsOpen(false)}
+          onConfirm={() => setIsOpen(false)}
+        />
+      )}
       <div className="w-full flex items-center justify-between">
         <div className="flex items-center gap-2">
           <TriangleAlert color="#FF0000" size={18} />

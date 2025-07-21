@@ -33,10 +33,14 @@ import HistoryDetailModal from "../../overview/detail/HistoryDetailModal";
 type Props = {
   advertiserData?: AdvertiserDetailDto;
   isShowHistory?: boolean;
+  description?: string;
+  date?: string;
 };
 
 const AdvertiserInfoSection = ({
   advertiserData,
+  description,
+  date,
   isShowHistory = true,
 }: Props) => {
   const [isHistoryModal, setIsHistoryModal] = useState(false);
@@ -54,16 +58,13 @@ const AdvertiserInfoSection = ({
       ) && <GuidSection viewType="master-judgement" />}
 
       {advertiserData?.status === "REJECT" && (
-        <RejectDescription
-          description={advertiserData?.description.description || ""}
-          date={""}
-        />
+        <RejectDescription description={description || ""} date={date || ""} />
       )}
 
       {advertiserData?.status === "OPERATION_REJECT" && (
         <RejectOperationDescription
-          description={advertiserData?.description.description || ""}
-          date={""}
+          description={description || ""}
+          date={date || ""}
         />
       )}
 

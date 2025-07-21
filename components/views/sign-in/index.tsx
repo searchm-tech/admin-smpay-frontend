@@ -118,6 +118,8 @@ const SignInView = ({ code }: SignInViewProps) => {
         password: values.password,
       });
 
+      console.log("response", response);
+
       if (response?.userWithToken) {
         const {
           user: userData,
@@ -137,9 +139,12 @@ const SignInView = ({ code }: SignInViewProps) => {
           loginId: userData.loginId,
           uniqueCode: uniqueCode,
         };
-
-        // 권한에 맞는 리다이렉트 경로 설정
-        const redirectPath = getRedirectPath(user.type);
+        let redirectPath = getRedirectPath(user.type);
+        if (user.type === "AGENCY_GROUP_MASTER" && !response.department) {
+          redirectPath = "/account/department";
+        } else {
+          redirectPath = getRedirectPath(user.type);
+        }
 
         // TODO : next-auth 토큰 갱신 관련하여 학습 후, 토큰 관리를 어떻게 할지 확인 할 것.
         await signIn("credentials", {
