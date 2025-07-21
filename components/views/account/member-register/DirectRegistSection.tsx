@@ -266,10 +266,10 @@ const DirectRegistSection = ({ user }: TViewProps) => {
   return (
     <section className="py-4">
       {(isPendingAddGroupMasterDirect || isPendingAddUserDirect) && (
-        <LoadingUI title="회원 등록 중..." />
+        <LoadingUI />
       )}
 
-      {checkNameLoading && <LoadingUI title="중복 체크 중..." />}
+      {checkNameLoading && <LoadingUI />}
 
       {isOpenDepartmentModal && (
         <ModalDepartment

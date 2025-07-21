@@ -220,8 +220,8 @@ const AgencyRegisterView = () => {
 
   return (
     <div className="py-4">
-      {loading && <LoadingUI title={loading} />}
-      {loadingAgencyRegister && <LoadingUI title="대행사 등록 중..." />}
+      {loading && <LoadingUI />}
+      {loadingAgencyRegister && <LoadingUI />}
 
       {modalInfo && (
         <ConfirmDialog

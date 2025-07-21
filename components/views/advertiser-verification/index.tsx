@@ -38,7 +38,7 @@ const AdvertiserVerificationView = ({ authCode, advertiserId }: Props) => {
   }, []);
 
   if (isPending) {
-    return <LoadingUI title="인증 중..." />;
+    return <LoadingUI />;
   }
 
   if (!isMailVerified) {

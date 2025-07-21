@@ -52,7 +52,7 @@ export const CheckUpdateLicenseDialog = ({
   });
 
   if (isPending) {
-    return <LoadingUI title="라이선스 수정 중..." />;
+    return <LoadingUI />;
   }
 
   if (errMessage) {
@@ -112,7 +112,7 @@ export const DeleteLicenseDialog = ({
   };
 
   if (isPending) {
-    return <LoadingUI title="라이선스 삭제 중..." />;
+    return <LoadingUI />;
   }
 
   if (isSuccess) {

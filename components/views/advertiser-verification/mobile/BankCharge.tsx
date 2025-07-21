@@ -60,7 +60,7 @@ const BankCharge = ({
 
   return (
     <section className="mt-8 w-full px-4">
-      {isCertifyingCharge && <LoadingUI title="계좌 인증 중..." />}
+      {isCertifyingCharge && <LoadingUI />}
       <div className="flex flex-col gap-4">
         <Label className="text-base font-bold">충전 계좌 정보 입력</Label>
 

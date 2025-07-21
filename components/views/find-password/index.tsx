@@ -131,9 +131,7 @@ const FindPasswordView = ({ agentCode, userCode }: FindPasswordViewProps) => {
         />
       )}
 
-      {isAgentsUsersPwLoading && (
-        <LoadingUI title="회원가입 중입니다. 잠시만 기다려주세요." />
-      )}
+      {isAgentsUsersPwLoading && <LoadingUI />}
 
       <Title />
       <div className="mx-auto text-center text-[#545F71] font-extrabold flex flex-col gap-2">

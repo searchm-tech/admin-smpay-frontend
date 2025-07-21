@@ -146,11 +146,11 @@ const MobilewView = ({ advertiserId }: Props) => {
   };
 
   if (isCertifyingARS) {
-    return <LoadingUI title="ARS 인증 중..." />;
+    return <LoadingUI />;
   }
 
   if (isSubmittingBankAccount) {
-    return <LoadingUI title="제출 중..." />;
+    return <LoadingUI />;
   }
 
   return (
