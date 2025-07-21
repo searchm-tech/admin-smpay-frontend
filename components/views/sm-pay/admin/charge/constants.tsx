@@ -102,14 +102,14 @@ export const columns: ColumnsType<SmPayChargeRecoveryDto> = [
   },
   {
     key: "processedDate",
-    title: "상황",
+    title: "상환일",
     dataIndex: "processedDate",
     align: "center",
     render: (value) => format(value, "yyyy-MM-dd"),
   },
   {
     key: "status",
-    title: "상황",
+    title: "상환 여부",
     dataIndex: "status",
     align: "center",
     fixed: "right",
