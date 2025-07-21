@@ -21,7 +21,7 @@ export default function ChannelTalkBoot() {
         CUSTOM_VALUE_2: user?.agentId || "비회원",
       },
     });
-  }, [user]);
+  }, []);
 
   return null;
 }
