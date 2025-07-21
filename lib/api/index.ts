@@ -87,6 +87,8 @@ apiClient.interceptors.request.use(
 // 토큰 갱신 중복 방지를 위한 변수들
 let isRefreshing = false;
 let refreshTokenPromise: Promise<any> | null = null;
+let retryCount = 0;
+const MAX_RETRY_COUNT = 1;
 
 // 응답 인터셉터 (토큰 만료 시 재발급 및 세션 동기화)
 apiClient.interceptors.response.use(
@@ -118,6 +120,15 @@ apiClient.interceptors.response.use(
   },
   async (error) => {
     if (error.response?.data?.code === "70") {
+      // 재시도 횟수 제한
+      if (retryCount >= MAX_RETRY_COUNT) {
+        retryCount = 0;
+        const { clearSession } = useSessionStore.getState();
+        await signOut({ callbackUrl: "/sign-in" });
+        clearSession();
+        return Promise.reject(error);
+      }
+
       const { refreshToken, setTokens } = useSessionStore.getState();
 
       if (!refreshToken) {
@@ -158,19 +169,25 @@ apiClient.interceptors.response.use(
 
       try {
         await refreshTokenPromise;
+        retryCount++;
         // 토큰 갱신 성공 시 원래 요청 재시도
         return apiClient.request(error.config);
       } catch (refreshError) {
+        isRefreshing = false;
+        refreshTokenPromise = null;
+        retryCount = 0;
         return Promise.reject(refreshError);
       }
     }
 
-    // if (error.response?.data?.code === "60") {
-    //   const { clearSession } = useSessionStore.getState();
-    //   await signOut({ callbackUrl: "/sign-in" });
-    //   clearSession();
-    //   return Promise.reject(error);
-    // }
+    if (error.response?.data?.code === "60" && error.response?.status === 401) {
+      const { accessToken } = useSessionStore.getState();
+
+      if (!accessToken) {
+        await signOut({ callbackUrl: "/sign-in" });
+        return Promise.reject(error);
+      }
+    }
 
     if (error.response && error.response.data) {
       const { code, message, result } = error.response.data;
