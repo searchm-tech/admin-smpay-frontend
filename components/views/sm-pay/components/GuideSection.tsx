@@ -42,7 +42,7 @@ const GuidSection = ({ viewType, className, onClick }: GuidSectionProps) => {
             </span>
             <span>
               SM Pay 신청시 작성하신 기준 ROAS에 도달하면 광고비를 증액하고,
-              기준 ROAS에서 떨어지면 감액하여 효율적인 예산 운영이 가능합니다.
+              기준 ROAS에서 떨어지면 감색하여 효율적인 예산 운영이 가능합니다.
             </span>
           </div>
 
