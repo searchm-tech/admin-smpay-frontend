@@ -5,8 +5,8 @@ import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 
 import { Button } from "@/components/ui/button";
-
 import Table from "@/components/composite/table";
+import { LinkTextButton } from "@/components/composite/button-components";
 
 import {
   STATUS_ACTION_BUTTONS,
@@ -14,7 +14,13 @@ import {
 } from "@/constants/status";
 
 import { ColumnTooltip } from "@/constants/table";
-import { AdvertiserAgreementSendDialog } from "./dialog";
+import {
+  AdvertiserAgreementSendDialog,
+  PauseModal,
+  RejectDialog,
+  RejectOperationModal,
+} from "./dialog";
+
 import type { TableProps, FilterValue, TableParams } from "@/types/table";
 import type { ActionButton } from "@/types/smpay";
 
@@ -49,11 +55,14 @@ const TableSection = ({
   const [applySubmitId, setApplySubmitId] = useState<number | null>(null);
   const [applySubmitData, setApplySubmitData] =
     useState<SmPayAdvertiserStatusDto | null>(null);
-  const [rejectModalId, setRejectModalId] = useState<number | null>(null);
-  const [rejectOperationModalId, setRejectOperationModalId] = useState<
-    number | null
-  >(null);
+  const [rejectModal, setRejectModal] =
+    useState<SmPayAdvertiserStatusDto | null>(null);
+  const [rejectOperationModal, setRejectOperationModal] =
+    useState<SmPayAdvertiserStatusDto | null>(null);
   const [stopModalId, setStopModalId] = useState<number | null>(null);
+  const [pauseModal, setPauseModal] = useState<SmPayAdvertiserStatusDto | null>(
+    null
+  );
 
   const handleMoveDetailPage = (
     advertiserId: number,
@@ -134,9 +143,35 @@ const TableSection = ({
       dataIndex: "advertiserType",
       align: "center",
       sorter: true,
-      render: (value: SmPayAdvertiserStatus) => (
-        <span>{SmPayAdvertiserStatusLabel[value]}</span>
-      ),
+      render: (
+        value: SmPayAdvertiserStatus,
+        record: SmPayAdvertiserStatusDto
+      ) => {
+        const text = SmPayAdvertiserStatusLabel[value];
+        if (value === "PAUSE") {
+          return (
+            <LinkTextButton onClick={() => setPauseModal(record)}>
+              {text}
+            </LinkTextButton>
+          );
+        }
+        if (value === "OPERATION_REJECT") {
+          return (
+            <LinkTextButton onClick={() => setRejectOperationModal(record)}>
+              {text}
+            </LinkTextButton>
+          );
+        }
+
+        if (value === "REJECT") {
+          return (
+            <LinkTextButton onClick={() => setRejectModal(record)}>
+              {text}
+            </LinkTextButton>
+          );
+        }
+        return <span>{text}</span>;
+      },
     },
     {
       title: "기능",
@@ -246,6 +281,41 @@ const TableSection = ({
 
   return (
     <section>
+      {pauseModal && (
+        <PauseModal
+          description={pauseModal.description}
+          date={pauseModal.registerOrUpdateDt}
+          onClose={() => setPauseModal(null)}
+          onConfirm={() => {
+            const { advertiserId, advertiserFormId } = pauseModal;
+            handleMoveDetailPage(advertiserId, advertiserFormId);
+          }}
+        />
+      )}
+
+      {rejectOperationModal && (
+        <RejectOperationModal
+          description={rejectOperationModal.description}
+          date={rejectOperationModal.registerOrUpdateDt}
+          onClose={() => setPauseModal(null)}
+          onConfirm={() => {
+            const { advertiserId, advertiserFormId } = rejectOperationModal;
+            handleMoveDetailPage(advertiserId, advertiserFormId);
+          }}
+        />
+      )}
+
+      {rejectModal && (
+        <RejectDialog
+          description={rejectModal.description}
+          date={rejectModal.registerOrUpdateDt}
+          onClose={() => setRejectModal(null)}
+          onConfirm={() => {
+            const { advertiserId, advertiserFormId } = rejectModal;
+            handleMoveDetailPage(advertiserId, advertiserFormId);
+          }}
+        />
+      )}
       {applySubmitData && (
         <AdvertiserAgreementSendDialog
           onClose={() => setApplySubmitData(null)}

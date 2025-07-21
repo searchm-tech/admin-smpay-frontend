@@ -137,8 +137,14 @@ const TableSection = ({
         const isLink = LINK_LIST.includes(record.advertiserType);
 
         if (isLink) {
-          const { advertiserId, isOperatorRead, agentId, userId } = record;
-          const baseUrl = `/sm-pay/admin/overview/${advertiserId}?agentId=${agentId}&userId=${userId}`;
+          const {
+            advertiserId,
+            isOperatorRead,
+            agentId,
+            userId,
+            advertiserFormId,
+          } = record;
+          const baseUrl = `/sm-pay/admin/overview/${advertiserId}?agentId=${agentId}&userId=${userId}&formId=${advertiserFormId}`;
           const url = isOperatorRead ? baseUrl : `${baseUrl}&read=unread`;
 
           return (

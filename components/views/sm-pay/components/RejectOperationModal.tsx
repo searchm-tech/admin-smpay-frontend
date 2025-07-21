@@ -21,7 +21,7 @@ const RejectOperationModal = ({
   return (
     <Modal
       open={open}
-      title="심사 반려"
+      title="운영 검토 거절"
       onClose={onClose}
       onConfirm={onConfirm}
       confirmText="확인"
@@ -34,7 +34,6 @@ const RejectOperationModal = ({
             <DescriptionItem label="운영 검토 거절 일시">
               {formatDate(date || "")}
             </DescriptionItem>
-            {/* <DescriptionItem label="심사자">최상위 그룹장명</DescriptionItem> */}
             <DescriptionItem label="거절 사유">
               <div>{description}</div>
             </DescriptionItem>

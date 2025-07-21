@@ -99,13 +99,12 @@ const HistoryDetailModal = ({ onClose, advertiserId, formId }: Props) => {
       <div className="w-[85vw] h-[80vh] overflow-y-auto">
         {loading && <LoadingUI title="SM Pay 정보 조회 중..." />}
 
-        {isReject && (
+        {/* {isReject && (
           <RejectDialog
-            id={advertiserId.toString()}
-            onClose={() => setIsReject(false)}
-            onConfirm={() => setIsReject(false)}
+            description={formInfo?. || ""}
+            date={formInfo?.description.registerOrUpdateDt || ""}
           />
-        )}
+        )} */}
 
         <AdvertiserInfoSection
           advertiserId={advertiserId}

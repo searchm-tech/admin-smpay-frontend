@@ -1,4 +1,3 @@
-import dayjs from "dayjs";
 import { useState } from "react";
 
 import LoadingUI from "@/components/common/Loading";
@@ -8,30 +7,25 @@ import {
   Descriptions,
 } from "@/components/composite/description-components";
 
+import { formatDate } from "@/utils/format";
+
 import { useSmPayAdvertiserAgreeNotification } from "@/hooks/queries/sm-pay";
 import type { SmPayAdvertiserStatusDto } from "@/types/dto/smpay";
 
 // reject
 type PropsRejectDialog = {
-  id: string;
+  description: string;
+  date: string;
   onClose: () => void;
   onConfirm: () => void;
 };
 
-const RejectDialog = ({ onClose, onConfirm, id }: PropsRejectDialog) => {
-  const data = {
-    date: dayjs(new Date().toISOString().slice(0, 10)).format("YYYY-MM-DD"),
-    reason: (
-      <div>
-        <p>ROAS 평균값은 심사 기준치를 충족하지만</p>
-        <p>
-          ROAS의 변동폭이 너무 커서 선충전으로 결제를 해도 제대로 된 효율을 내기
-          힘들 것 같습니다.
-        </p>
-      </div>
-    ),
-  };
-
+const RejectDialog = ({
+  onClose,
+  onConfirm,
+  description,
+  date,
+}: PropsRejectDialog) => {
   return (
     <Modal
       open
@@ -45,11 +39,12 @@ const RejectDialog = ({ onClose, onConfirm, id }: PropsRejectDialog) => {
         <p>다음과 같은 사유로 SM Pay 서비스 심사를 반려되었습니다.</p>
         <div className="mt-4 rounded-md bg-white">
           <Descriptions columns={1}>
-            <DescriptionItem label="심사 변리 일시">
-              {data.date}
+            <DescriptionItem label="심사 반려 일시">
+              {formatDate(date)}
             </DescriptionItem>
-            <DescriptionItem label="심사자">최상위 그룹장</DescriptionItem>
-            <DescriptionItem label="반려 사유">{""}</DescriptionItem>
+            <DescriptionItem label="반려 사유">
+              <div>{description}</div>
+            </DescriptionItem>
           </Descriptions>
         </div>
       </div>
@@ -85,7 +80,6 @@ type PropsReapplyDialog = {
 
 const ReapplyDialog = ({ onClose, onConfirm }: PropsReapplyDialog) => {
   const handleConfirm = () => {
-    console.log("reapply");
     onConfirm();
   };
   return (
@@ -299,6 +293,84 @@ const ResendDialog = ({ onClose, onConfirm }: PropsResendDialog) => {
   );
 };
 
+type PropsPauseModal = {
+  onClose: () => void;
+  onConfirm: () => void;
+  description: string;
+  date: string;
+};
+
+const PauseModal = ({
+  onClose,
+  onConfirm,
+  description,
+  date,
+}: PropsPauseModal) => {
+  return (
+    <Modal
+      open
+      title="광고주 상태 일시 중지"
+      onClose={onClose}
+      onConfirm={onConfirm}
+      confirmText="상세보기"
+      cancelText="닫기"
+    >
+      <div className="w-[60vw]">
+        <p>다음과 같은 사유로 일시중지되었습니다.</p>
+        <div className="mt-4 rounded-md bg-white">
+          <Descriptions columns={1}>
+            <DescriptionItem label="일시중지 일시">
+              {formatDate(date)}
+            </DescriptionItem>
+            <DescriptionItem label="일시중지 사유">
+              <div>{description}</div>
+            </DescriptionItem>
+          </Descriptions>
+        </div>
+      </div>
+    </Modal>
+  );
+};
+
+type PropsRejectOperationModal = {
+  onClose: () => void;
+  onConfirm: () => void;
+  description: string;
+  date: string;
+};
+
+const RejectOperationModal = ({
+  onClose,
+  onConfirm,
+  description,
+  date,
+}: PropsRejectOperationModal) => {
+  return (
+    <Modal
+      open
+      title="광고주 상태 운영 검토 거절"
+      onClose={onClose}
+      onConfirm={onConfirm}
+      confirmText="상세보기"
+      cancelText="닫기"
+    >
+      <div className="w-[60vw]">
+        <p>다음과 같은 사유로 운영 검토를 거절하였습니다.</p>
+        <div className="mt-4 rounded-md bg-white">
+          <Descriptions columns={1}>
+            <DescriptionItem label="운영 검토 거절 일시">
+              {formatDate(date)}
+            </DescriptionItem>
+            <DescriptionItem label="거절 사유">
+              <div>{description}</div>
+            </DescriptionItem>
+          </Descriptions>
+        </div>
+      </div>
+    </Modal>
+  );
+};
+
 export {
   RejectDialog,
   ApplyCancelDialog,
@@ -308,4 +380,6 @@ export {
   ResumeDialog,
   TerminationRequestDialog,
   ResendDialog,
+  PauseModal,
+  RejectOperationModal,
 };

@@ -185,13 +185,13 @@ const SmPayJudgementDetailView = ({ id }: Props) => {
         />
       )}
 
-      {isReject && (
+      {/* {isReject && (
         <RejectDialog
           id={id}
           onClose={() => setIsReject(false)}
           onConfirm={() => setIsReject(false)}
         />
-      )}
+      )} */}
 
       {isSimulation && (
         <AdvertiserSimulationModal

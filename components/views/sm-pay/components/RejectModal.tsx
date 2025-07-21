@@ -3,28 +3,22 @@ import { Descriptions } from "@/components/composite/description-components";
 import { Modal } from "@/components/composite/modal-components";
 import { formatDate } from "@/utils/format";
 
+// TODO : 삭제
 type Props = {
-  open: boolean;
   onClose: () => void;
   onConfirm: () => void;
   description?: string;
   date?: string;
 };
 
-const RejectModal = ({
-  open,
-  onClose,
-  onConfirm,
-  description,
-  date,
-}: Props) => {
+const RejectModal = ({ onClose, onConfirm, description, date }: Props) => {
   return (
     <Modal
-      open={open}
+      open
       title="심사 반려"
       onClose={onClose}
       onConfirm={onConfirm}
-      confirmText="확인"
+      confirmText="상세 보기"
       cancelText="닫기"
     >
       <div className="w-[60vw]">
@@ -34,7 +28,6 @@ const RejectModal = ({
             <DescriptionItem label="심사 반려 일시">
               {formatDate(date || "")}
             </DescriptionItem>
-            {/* <DescriptionItem label="심사자">최상위 그룹장명</DescriptionItem> */}
             <DescriptionItem label="반려 사유">
               <div>{description}</div>
             </DescriptionItem>
