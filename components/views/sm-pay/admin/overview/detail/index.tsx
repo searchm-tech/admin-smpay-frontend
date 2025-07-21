@@ -18,7 +18,6 @@ import CompleteModal from "./ApproveDialog";
 
 import {
   useSmPayAdminOverviewAlarm,
-  useSmPayAdminOverviewChargeRule,
   useSmPayAdminDetail,
   useSmPayAdminOverviewPrePaymentSchedule,
   useSmPayAdminOverviewReviewerMemo,
@@ -56,9 +55,6 @@ const SmPayAdminOverviewDetailView = ({ id }: Props) => {
 
   const { mutate: patchRead, isPending: loadingPatchRead } =
     useSmPayAdminOverviewAlarm();
-
-  const { data: chargeRule, isPending: loadingChargeRule } =
-    useSmPayAdminOverviewChargeRule(Number(id));
 
   const { data: prePaymentScheduleData, isPending: loadingPrePaymentSchedule } =
     useSmPayAdminOverviewPrePaymentSchedule(Number(id));
@@ -113,7 +109,6 @@ const SmPayAdminOverviewDetailView = ({ id }: Props) => {
 
   const isLoading =
     loadingPatchRead ||
-    loadingChargeRule ||
     loadingSmpayInfo ||
     loadingApprovalMemo ||
     loadingPrePaymentSchedule ||

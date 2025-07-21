@@ -17,13 +17,13 @@ export const CreateGuideSection = () => {
       <div className="flex items-center justify-around">
         <div className="flex flex-col items-center h-[250px] w-[280px] lg:w-[320px]">
           <div className="relative mb-6">
-            <div className="w-24 h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 rounded-full bg-gray-100 flex items-center justify-center">
+            <div className="w-[180px] h-[180px]  rounded-full bg-gray-100 flex items-center justify-center">
               <Image
-                src="/images/customer-id.svg"
+                src="/images/naver-customer-id.png"
                 alt="고객 ID 등록"
-                width={40}
-                height={40}
-                className="w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12"
+                width={100}
+                height={100}
+                className="w-[100px] h-[100px]"
               />
             </div>
           </div>
@@ -45,13 +45,13 @@ export const CreateGuideSection = () => {
 
         <div className="flex flex-col items-center h-[250px] w-[280px]  lg:w-[335px]">
           <div className="relative mb-6">
-            <div className="w-24 h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 rounded-full bg-gray-100 flex items-center justify-center">
+            <div className="w-[180px] h-[180px]  rounded-full bg-gray-100 flex items-center justify-center">
               <Image
-                src="/images/customer-id.svg"
+                src="/images/naver-license.png"
                 alt="고객 ID 등록"
-                width={40}
-                height={40}
-                className="w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12"
+                width={100}
+                height={100}
+                className="w-[100px] h-[100px]"
               />
             </div>
           </div>
@@ -76,13 +76,13 @@ export const CreateGuideSection = () => {
 
         <div className="flex flex-col items-center h-[250px] w-[280px] lg:w-[320px]">
           <div className="mb-6">
-            <div className="w-24 h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 rounded-full bg-gray-100 flex items-center justify-center">
+            <div className="w-[180px] h-[180px]  rounded-full bg-gray-100 flex items-center justify-center">
               <Image
-                src="/images/registration.svg"
+                src="/images/naver-registration.png"
                 alt="광고주 등록"
-                width={40}
-                height={40}
-                className="w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12"
+                width={100}
+                height={100}
+                className="w-[100px] h-[100px]"
               />
             </div>
           </div>
@@ -114,13 +114,13 @@ export const AdvertiserGuideSection = () => {
       <div className="flex items-center justify-center gap-4 md:gap-8 lg:gap-16">
         <div className="flex flex-col items-center h-[250px] w-[280px] lg:w-[320px]">
           <div className="relative mb-6">
-            <div className="w-24 h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 rounded-full bg-gray-100 flex items-center justify-center">
+            <div className="w-[180px] h-[180px]  rounded-full bg-gray-100 flex items-center justify-center">
               <Image
-                src="/images/customer-id.svg"
+                src="/images/customer-id.png"
                 alt="고객 ID 등록"
-                width={40}
-                height={40}
-                className="w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12"
+                width={150}
+                height={150}
+                className="w-[100px] h-[100px]"
               />
             </div>
           </div>
@@ -147,13 +147,13 @@ export const AdvertiserGuideSection = () => {
 
         <div className="flex flex-col items-center h-[250px]">
           <div className="mb-6">
-            <div className="w-24 h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 rounded-full bg-gray-100 flex items-center justify-center">
+            <div className="w-[180px] h-[180px]  rounded-full bg-gray-100 flex items-center justify-center">
               <Image
-                src="/images/registration.svg"
+                src="/images/registration.png"
                 alt="광고주 등록"
-                width={40}
-                height={40}
-                className="w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12"
+                width={100}
+                height={100}
+                className="w-[100px] h-[100px]"
               />
             </div>
           </div>

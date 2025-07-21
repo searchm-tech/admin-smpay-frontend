@@ -102,7 +102,7 @@ const MemberView = ({ userId, agentId }: Props) => {
           cancelDisabled
           onConfirm={() => {
             setEnableInfo(false);
-            router.push("/sm-pay");
+            router.push("/sign-out");
           }}
         />
       )}
@@ -112,10 +112,7 @@ const MemberView = ({ userId, agentId }: Props) => {
           open
           content="비밀번호가 변경되었습니다."
           cancelDisabled
-          onConfirm={() => {
-            const redirectPath = getRedirectPath(session?.user.type);
-            router.push(redirectPath);
-          }}
+          onConfirm={() => router.push("/sign-out")}
         />
       )}
 

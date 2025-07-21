@@ -100,10 +100,7 @@ const AdminView = ({ userId }: Props) => {
           open
           content="비밀번호가 변경되었습니다."
           cancelDisabled
-          onConfirm={() => {
-            const redirectPath = getRedirectPath(session?.user.type);
-            router.push(redirectPath);
-          }}
+          onConfirm={() => router.push("/sign-out")}
         />
       )}
 
