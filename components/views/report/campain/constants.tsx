@@ -24,7 +24,7 @@ export const columns: ColumnsType<ReportDto> = [
   },
   {
     key: "customerId",
-    title: "고객ID",
+    title: "CUSTOMER ID",
     dataIndex: "customerId",
     align: "center",
     render: (value) => (value ? value : ""),
