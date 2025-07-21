@@ -1,27 +1,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import dayjs from "dayjs";
-
 import { SelectSearch } from "@/components/composite/select-search";
 import { Button } from "@/components/ui/button";
 import Table from "@/components/composite/table";
+import { LinkTextButton } from "@/components/composite/button-components";
 
-import {
-  SmPayAdvertiserStatusLabel,
-  STATUS_ACTION_BUTTONS,
-} from "@/constants/status";
-import { ColumnTooltip } from "@/constants/table";
-
-import type { TableParams } from "@/types/table";
-import type {
-  ActionButton,
-  SmPayAdvertiserStatus,
-  SmPayAdvertiserStautsOrderType,
-} from "@/types/smpay";
-import type { TableProps } from "antd";
-import type { FilterValue } from "antd/es/table/interface";
-import type { SmPayAdvertiserStatusDto } from "@/types/dto/smpay";
 import {
   AdvertiserAgreementSendDialog,
   PauseModal,
@@ -29,9 +13,23 @@ import {
   RejectOperationModal,
 } from "../../manangement/dialog";
 
+import {
+  SmPayAdvertiserStatusLabel,
+  STATUS_ACTION_BUTTONS,
+} from "@/constants/status";
+import { ColumnTooltip } from "@/constants/table";
+import { formatDate } from "@/utils/format";
+
 import { useQuerySmPayAdminAgencyList } from "@/hooks/queries/agency";
 import { useQuerySmPayAdminAdvertiserList } from "@/hooks/queries/advertiser";
-import { LinkTextButton } from "@/components/composite/button-components";
+
+import type { FilterValue, TableParams, TableProps } from "@/types/table";
+import type {
+  ActionButton,
+  SmPayAdvertiserStatus,
+  SmPayAdvertiserStautsOrderType,
+} from "@/types/smpay";
+import type { SmPayAdvertiserStatusDto } from "@/types/dto/smpay";
 
 interface TableSectionProps {
   selectedAgency: string;
@@ -302,8 +300,7 @@ const TableSection = ({
       width: 200,
       align: "center",
       sorter: true,
-      render: (date: string) =>
-        date ? dayjs(date).format("YYYY-MM-DD HH:mm") : "-",
+      render: (date: string) => (date ? formatDate(date) : "-"),
     },
   ];
 

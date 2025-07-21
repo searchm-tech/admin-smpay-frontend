@@ -19,11 +19,10 @@ import {
   useSmPayAdminOverviewReviewerMemo,
 } from "@/hooks/queries/sm-pay";
 
-import AdvertiserInfoSection from "../../overview/detail/AdvertiserInfoSection";
 import AccountSection from "../../../components/AccountSection";
 import LoadingUI from "@/components/common/Loading";
 import type { ChargeRule } from "@/types/smpay";
-import RejectModal from "../../../components/RejectModal";
+import AdvertiserInfoSection from "./AdvertiserInfoSection";
 
 type Props = {
   id: string;
@@ -116,17 +115,8 @@ const SmPayAdminAdversiterStatusDetailView = ({ id }: Props) => {
   return (
     <div className="flex flex-col gap-4">
       {isLoading && <LoadingUI title="SM Pay 정보 조회 중..." />}
-      {rejectModalOpen && (
-        <RejectModal
-          onClose={() => setRejectModalOpen(false)}
-          onConfirm={() => setRejectModalOpen(false)}
-        />
-      )}
 
-      <AdvertiserInfoSection
-        advertiserData={smpayInfo}
-        isShowAgentInfo={false}
-      />
+      <AdvertiserInfoSection advertiserData={smpayInfo} />
 
       <AccountSection accounList={formInfo?.accounts || []} />
 
