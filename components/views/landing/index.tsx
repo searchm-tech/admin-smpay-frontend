@@ -273,7 +273,7 @@ export default function Component() {
                   <Users className="size-10 text-gray-700" />
                 </div>
                 <p className="text-base font-medium">
-                  조직 단위 심화 관리 지원
+                  조직 단위 성과 관리 지원
                 </p>
               </div>
               <div className="flex flex-col items-center space-y-3 transition-all duration-300 hover:scale-105">
