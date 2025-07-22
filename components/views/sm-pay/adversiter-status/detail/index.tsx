@@ -6,10 +6,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 // import LoadingUI from "@/components/common/Loading";
 import { Button } from "@/components/ui/button";
 
-import { RuleSectionShow } from "../../../components/RuleSection";
-import { ScheduleSectionShow } from "../../../components/ScheduleSection";
-import JudgementMemoSection from "../../../components/JudgementMemoSection";
-import OperationMemoSection from "../../../components/OperationMemoSection";
+import { ScheduleSectionShow } from "../../components/ScheduleSection";
+import { RuleSectionShow } from "../../components/RuleSection";
+import JudgementMemoSection from "../../components/JudgementMemoSection";
+import OperationMemoSection from "../../components/OperationMemoSection";
 
 import {
   useSmPayAdminDetail,
@@ -19,7 +19,7 @@ import {
   useSmPayAdminOverviewReviewerMemo,
 } from "@/hooks/queries/sm-pay";
 
-import AccountSection from "../../../components/AccountSection";
+import AccountSection from "../../components/AccountSection";
 import LoadingUI from "@/components/common/Loading";
 import type { ChargeRule } from "@/types/smpay";
 import AdvertiserInfoSection from "./AdvertiserInfoSection";

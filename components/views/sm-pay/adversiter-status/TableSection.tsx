@@ -1,44 +1,54 @@
-"use client";
-
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import dayjs from "dayjs";
 
+import { SelectSearch } from "@/components/composite/select-search";
 import { Button } from "@/components/ui/button";
 import Table from "@/components/composite/table";
 import { LinkTextButton } from "@/components/composite/button-components";
 
 import {
-  STATUS_ACTION_BUTTONS,
-  SmPayAdvertiserStatusLabel,
-} from "@/constants/status";
-
-import { ColumnTooltip } from "@/constants/table";
-import {
   AdvertiserAgreementSendDialog,
   PauseModal,
   RejectDialog,
   RejectOperationModal,
-} from "./dialog";
+} from "../dialog";
 
-import type { TableProps, FilterValue, TableParams } from "@/types/table";
-import type { ActionButton } from "@/types/smpay";
+import {
+  SmPayAdvertiserStatusLabel,
+  STATUS_ACTION_BUTTONS,
+} from "@/constants/status";
+import { ColumnTooltip } from "@/constants/table";
+import { formatDate } from "@/utils/format";
 
+import { useQuerySmPayAdminAgencyList } from "@/hooks/queries/agency";
+import { useQuerySmPayAdminAdvertiserList } from "@/hooks/queries/advertiser";
+
+import type { FilterValue, TableParams, TableProps } from "@/types/table";
 import type {
+  ActionButton,
   SmPayAdvertiserStatus,
   SmPayAdvertiserStautsOrderType,
 } from "@/types/smpay";
 import type { SmPayAdvertiserStatusDto } from "@/types/dto/smpay";
 
 interface TableSectionProps {
+  selectedAgency: string;
+  selectedAdvertiser: string;
   tableParams: TableParams;
   setTableParams: (params: TableParams) => void;
   total: number;
   loadingData: boolean;
   dataSource: SmPayAdvertiserStatusDto[];
+  handleSelectAgency: (value: string) => void;
+  handleSelectAdvertiser: (value: string) => void;
+  handleReset: () => void;
 }
-
 const TableSection = ({
+  selectedAgency,
+  selectedAdvertiser,
+  handleSelectAgency,
+  handleSelectAdvertiser,
+  handleReset,
   tableParams,
   setTableParams,
   total,
@@ -47,31 +57,26 @@ const TableSection = ({
 }: TableSectionProps) => {
   const router = useRouter();
 
+  const { data: agencyList = [] } = useQuerySmPayAdminAgencyList();
+
+  const { data: advertiserList = [] } = useQuerySmPayAdminAdvertiserList();
+
   const [openDialog, setOpenDialog] = useState<ActionButton | null>(null);
   const [resumeId, setResumeId] = useState<number | null>(null);
   const [terminationRequestId, setTerminationRequestId] = useState<
     number | null
   >(null);
   const [applySubmitId, setApplySubmitId] = useState<number | null>(null);
+
   const [applySubmitData, setApplySubmitData] =
     useState<SmPayAdvertiserStatusDto | null>(null);
   const [rejectModal, setRejectModal] =
     useState<SmPayAdvertiserStatusDto | null>(null);
   const [rejectOperationModal, setRejectOperationModal] =
     useState<SmPayAdvertiserStatusDto | null>(null);
-  const [stopModalId, setStopModalId] = useState<number | null>(null);
   const [pauseModal, setPauseModal] = useState<SmPayAdvertiserStatusDto | null>(
     null
   );
-
-  const handleMoveDetailPage = (
-    advertiserId: number,
-    advertiserFormId: number
-  ) => {
-    router.push(
-      `/sm-pay/management/apply-detail/${advertiserId}?formId=${advertiserFormId}`
-    );
-  };
 
   const handleTableChange: TableProps<SmPayAdvertiserStatusDto>["onChange"] = (
     pagination,
@@ -111,6 +116,17 @@ const TableSection = ({
       orderType: orderType,
     });
   };
+  const handleMoveDetailPage = (record: SmPayAdvertiserStatusDto) => {
+    const {
+      advertiserId,
+      advertiserFormId,
+      advertiserCustomerId,
+      agentId,
+      userId,
+    } = record;
+    const url = `/sm-pay/admin/adversiter-status/${advertiserId}?formId=${advertiserFormId}&advertiserCustomerId=${advertiserCustomerId}&agentId=${agentId}&userId=${userId}`;
+    router.push(url);
+  };
 
   const columns: TableProps<SmPayAdvertiserStatusDto>["columns"] = [
     {
@@ -120,8 +136,15 @@ const TableSection = ({
       sorter: true,
     },
     {
-      title: "광고주(ID)",
-      dataIndex: "advertiserName",
+      title: "대행사",
+      dataIndex: "agentName",
+      align: "center",
+      sorter: true,
+      render: (value) => value || "-",
+    },
+    {
+      title: "담당자",
+      dataIndex: "userName",
       align: "center",
       sorter: true,
       render: (value) => value || "-",
@@ -138,6 +161,18 @@ const TableSection = ({
       align: "center",
       sorter: true,
     },
+    // {
+    //   title: "광고주 닉네임",  TODO : 확인 필요
+    //   dataIndex: "advertiserNickname",
+    //   align: "center",
+    //   sorter: true,
+    // },
+    {
+      title: ColumnTooltip.advertiserName,
+      dataIndex: "advertiserName",
+      align: "center",
+      sorter: true,
+    },
     {
       title: ColumnTooltip.status,
       dataIndex: "advertiserType",
@@ -148,9 +183,9 @@ const TableSection = ({
         record: SmPayAdvertiserStatusDto
       ) => {
         const text = SmPayAdvertiserStatusLabel[value];
-        if (value === "PAUSE") {
+        if (value === "REJECT") {
           return (
-            <LinkTextButton onClick={() => setPauseModal(record)}>
+            <LinkTextButton onClick={() => setRejectModal(record)}>
               {text}
             </LinkTextButton>
           );
@@ -162,10 +197,9 @@ const TableSection = ({
             </LinkTextButton>
           );
         }
-
-        if (value === "REJECT") {
+        if (value === "PAUSE") {
           return (
-            <LinkTextButton onClick={() => setRejectModal(record)}>
+            <LinkTextButton onClick={() => setPauseModal(record)}>
               {text}
             </LinkTextButton>
           );
@@ -185,8 +219,7 @@ const TableSection = ({
               <Button
                 variant="greenOutline"
                 onClick={() => {
-                  const { advertiserId, advertiserFormId } = record;
-                  handleMoveDetailPage(advertiserId, advertiserFormId);
+                  handleMoveDetailPage(record);
                 }}
               >
                 조회
@@ -267,75 +300,84 @@ const TableSection = ({
       width: 200,
       align: "center",
       sorter: true,
-      render: (date: string) =>
-        date ? dayjs(date).format("YYYY-MM-DD HH:mm") : "-",
+      render: (date: string) => (date ? formatDate(date) : "-"),
     },
   ];
 
-  useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  }, [tableParams.pagination?.current]);
-
   return (
-    <section>
-      {pauseModal && (
-        <PauseModal
-          description={pauseModal.description}
-          date={pauseModal.registerOrUpdateDt}
-          onClose={() => setPauseModal(null)}
-          onConfirm={() => {
-            const { advertiserId, advertiserFormId } = pauseModal;
-            handleMoveDetailPage(advertiserId, advertiserFormId);
-          }}
-        />
-      )}
-
-      {rejectOperationModal && (
-        <RejectOperationModal
-          description={rejectOperationModal.description}
-          date={rejectOperationModal.registerOrUpdateDt}
-          onClose={() => setPauseModal(null)}
-          onConfirm={() => {
-            const { advertiserId, advertiserFormId } = rejectOperationModal;
-            handleMoveDetailPage(advertiserId, advertiserFormId);
-          }}
-        />
-      )}
-
+    <section className="pt-4">
       {rejectModal && (
         <RejectDialog
-          description={rejectModal.description}
-          date={rejectModal.registerOrUpdateDt}
           onClose={() => setRejectModal(null)}
-          onConfirm={() => {
-            const { advertiserId, advertiserFormId } = rejectModal;
-            handleMoveDetailPage(advertiserId, advertiserFormId);
+          description={rejectModal.description}
+          date={rejectModal.descriptionRegisterDt}
+          onConfirm={() => handleMoveDetailPage(rejectModal)}
+        />
+      )}
+      {rejectOperationModal && (
+        <RejectOperationModal
+          onClose={() => setRejectOperationModal(null)}
+          onConfirm={() => handleMoveDetailPage(rejectOperationModal)}
+          description={rejectOperationModal.description}
+          date={rejectOperationModal.descriptionRegisterDt}
+        />
+      )}
+      {pauseModal && (
+        <PauseModal
+          onClose={() => setPauseModal(null)}
+          onConfirm={() => handleMoveDetailPage(pauseModal)}
+          description={pauseModal.description}
+          date={pauseModal.descriptionRegisterDt}
+        />
+      )}
+      <div className="flex gap-2 border-1 border-b border-dashed border-gray-300 pb-4">
+        <SelectSearch
+          options={agencyList?.map((agency) => ({
+            label: `${agency.name} | ${agency.representativeName}`,
+            value: agency.agentId.toString(),
+          }))}
+          value={selectedAgency}
+          onValueChange={handleSelectAgency}
+          placeholder="대행사를 선택하세요."
+        />
+
+        <SelectSearch
+          options={advertiserList?.map((advertiser) => ({
+            label: `${advertiser.id} | ${advertiser.name}`,
+            value: advertiser.advertiserId.toString(),
+          }))}
+          value={selectedAdvertiser}
+          onValueChange={handleSelectAdvertiser}
+          placeholder="광고주를 선택하세요."
+        />
+
+        <Button variant="outline" onClick={handleReset}>
+          초기화
+        </Button>
+      </div>
+
+      <div className="overflow-x-auto">
+        {applySubmitData && (
+          <AdvertiserAgreementSendDialog
+            onClose={() => setApplySubmitData(null)}
+            onConfirm={() => setApplySubmitData(null)}
+            data={applySubmitData}
+          />
+        )}
+        <Table<SmPayAdvertiserStatusDto>
+          columns={columns}
+          rowKey="no"
+          dataSource={dataSource}
+          pagination={{
+            ...tableParams.pagination,
+            total,
+            position: ["bottomCenter"],
+            showSizeChanger: true,
           }}
+          loading={loadingData}
+          onChange={handleTableChange}
         />
-      )}
-      {applySubmitData && (
-        <AdvertiserAgreementSendDialog
-          onClose={() => setApplySubmitData(null)}
-          onConfirm={() => setApplySubmitData(null)}
-          data={applySubmitData}
-        />
-      )}
-      <Table<SmPayAdvertiserStatusDto>
-        columns={columns}
-        rowKey="no"
-        dataSource={dataSource}
-        pagination={{
-          ...tableParams.pagination,
-          total,
-          position: ["bottomCenter"],
-          showSizeChanger: true,
-        }}
-        loading={loadingData}
-        onChange={handleTableChange}
-      />
+      </div>
     </section>
   );
 };

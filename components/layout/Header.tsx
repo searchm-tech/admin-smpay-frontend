@@ -10,11 +10,8 @@ import { Separator } from "@/components/ui/separator";
 import { useSidebar } from "@/components/ui/sidebar";
 import { Badge } from "@/components/ui/badge";
 import UserMenu from "@/components/common/UserMenu";
-import ShortcutButton from "@/components/common/DownloadShortCut";
 
 import { getUserAuthTypeLabel } from "@/utils/status";
-
-import { getRedirectPath } from "@/lib/utils";
 
 const Header = () => {
   const router = useRouter();
@@ -22,8 +19,7 @@ const Header = () => {
   const { data: session } = useSession();
 
   const moveHome = () => {
-    const redirectPath = getRedirectPath(session?.user.type);
-    router.push(redirectPath);
+    router.push("/sm-pay/charge");
   };
 
   const labelType =
@@ -48,9 +44,6 @@ const Header = () => {
       </div>
 
       <div className="flex items-center gap-4 h-full">
-        {session?.user.uniqueCode && (
-          <ShortcutButton code={session.user.uniqueCode} />
-        )}
         {labelType && (
           <Badge
             label={labelType}
@@ -58,16 +51,6 @@ const Header = () => {
             className="text-xs px-2 py-1"
           />
         )}
-        <Link href="/support">고객센터</Link>
-        <Separator
-          orientation="vertical"
-          className="bg-[#e5e7eb] w-[1px] h-3"
-        />
-        <Link href="/notice">공지사항</Link>
-        <Separator
-          orientation="vertical"
-          className="bg-[#e5e7eb] w-[1px] h-3"
-        />
 
         {session ? (
           <UserMenu user={session.user} />

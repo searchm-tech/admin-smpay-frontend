@@ -1,5 +1,5 @@
 import ContentHeader from "@/components/common/ContentHeader";
-import SmPayAdminAdversiterStatusView from "@/components/views/sm-pay/admin/adversiter-status";
+import SmPayAdminAdversiterStatusView from "@/components/views/sm-pay/adversiter-status";
 import type { DashboardSubItem } from "@/types/menu";
 
 export default function Page() {

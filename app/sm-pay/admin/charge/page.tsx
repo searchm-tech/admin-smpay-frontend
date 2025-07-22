@@ -1,5 +1,6 @@
 import ContentHeader from "@/components/common/ContentHeader";
-import SmPayAdminChargeView from "@/components/views/sm-pay/admin/charge";
+import SmPayAdminChargeView from "@/components/views/sm-pay/charge";
+
 import type { DashboardSubItem } from "@/types/menu";
 
 export default function SmPayAdminChargePage() {

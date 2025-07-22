@@ -5,13 +5,12 @@ import { useEffect, useState } from "react";
 import { Modal } from "@/components/composite/modal-components";
 import LoadingUI from "@/components/common/Loading";
 
-import StatIndicatorSection from "../../../components/StatIndicatorSection";
-import { RuleSectionShow } from "../../../components/RuleSection";
-import { ScheduleSectionShow } from "../../../components/ScheduleSection";
-import JudgementMemoSection from "../../../components/JudgementMemoSection";
-import OperationMemoSection from "../../../components/OperationMemoSection";
-
-import { RejectDialog } from "../../../manangement/dialog";
+import StatIndicatorSection from "../../components/StatIndicatorSection";
+import { RuleSectionShow } from "../../components/RuleSection";
+import { ScheduleSectionShow } from "../../components/ScheduleSection";
+import JudgementMemoSection from "../../components/JudgementMemoSection";
+import OperationMemoSection from "../../components/OperationMemoSection";
+import { RejectDialog } from "../../dialog";
 
 import { useSmPayAdminOverviewApplyFormDetail } from "@/hooks/queries/sm-pay";
 import { useSearchParams } from "next/navigation";

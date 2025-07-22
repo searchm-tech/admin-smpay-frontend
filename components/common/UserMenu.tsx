@@ -1,34 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { Fragment, useState } from "react";
-import {
-  ChevronDown,
-  User,
-  Lock,
-  Flag,
-  HelpCircle,
-  Info,
-  LogOut,
-  CircleDollarSign,
-  Rocket,
-} from "lucide-react";
+import { useState } from "react";
+import { ChevronDown, User, Lock, LogOut } from "lucide-react";
 
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import DocumentComponent from "./Document";
 
 import { Button } from "@/components/ui/button";
 
-import { getIsAdmin } from "@/lib/utils";
-
 import type { TSMPayUser } from "@/types/user";
-import DocumentComponent from "./Document";
 
 export function UserMenu({ user }: { user: TSMPayUser }) {
   const [open, setOpen] = useState(false);
@@ -36,8 +23,6 @@ export function UserMenu({ user }: { user: TSMPayUser }) {
   const [documentType, setDocumentType] = useState<
     "personalInfo" | "termsOfService" | null
   >(null);
-
-  const isAdmin = getIsAdmin(user.type);
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -74,51 +59,6 @@ export function UserMenu({ user }: { user: TSMPayUser }) {
               <span>비밀번호 변경</span>
             </Link>
           </DropdownMenuItem>
-          {!isAdmin && (
-            <Fragment>
-              <DropdownMenuItem className="cursor-pointer">
-                <Link
-                  href="/naver-service"
-                  className="flex items-center space-x-2 w-full"
-                >
-                  <Rocket size={16} />
-                  <span>네이버 서비스 설정</span>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer">
-                <Link
-                  href="/advertiser-biz"
-                  className="flex items-center space-x-2 w-full"
-                >
-                  <CircleDollarSign size={16} />
-                  <span>광고주별 비즈머니 조회</span>
-                </Link>
-              </DropdownMenuItem>
-            </Fragment>
-          )}
-        </DropdownMenuGroup>
-
-        <DropdownMenuSeparator className="bg-gray-300" />
-
-        <DropdownMenuGroup>
-          <DropdownMenuItem className="cursor-pointer">
-            <div className="flex items-center space-x-2 w-full">
-              <Flag size={16} />
-              <span className="text-gray-500">공지사항</span>
-            </div>
-          </DropdownMenuItem>
-          <DropdownMenuItem className="cursor-pointer">
-            <div className="flex items-center space-x-2 w-full">
-              <HelpCircle size={16} />
-              <span className="text-gray-500">FAQ</span>
-            </div>
-          </DropdownMenuItem>
-          <DropdownMenuItem className="cursor-pointer">
-            <div className="flex items-center space-x-2 w-full">
-              <Info size={16} />
-              <span>고객센터</span>
-            </div>
-          </DropdownMenuItem>
         </DropdownMenuGroup>
 
         <div className="flex justify-center mt-3">
@@ -128,24 +68,6 @@ export function UserMenu({ user }: { user: TSMPayUser }) {
               <span>로그아웃</span>
             </Link>
           </Button>
-        </div>
-
-        <div className="flex justify-center space-x-2 mt-3 text-xs text-gray-500">
-          <Link
-            href="#"
-            className="hover:underline"
-            onClick={() => setDocumentType("termsOfService")}
-          >
-            이용약관
-          </Link>
-          <span>|</span>
-          <Link
-            href="#"
-            className="hover:underline"
-            onClick={() => setDocumentType("personalInfo")}
-          >
-            개인정보처리방침
-          </Link>
         </div>
       </DropdownMenuContent>
     </DropdownMenu>

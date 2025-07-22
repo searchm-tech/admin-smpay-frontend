@@ -1,7 +1,8 @@
-import { useState } from "react";
-
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+
+import { CalendarRangeComponent } from "@/components/composite/calendar-component";
+import { SelectSearch } from "@/components/composite/select-search";
 
 import {
   getLastMonth,
@@ -12,56 +13,67 @@ import {
   getYesterday,
   formatOnlyDate,
 } from "@/utils/format";
-import { CalendarRangeComponent } from "@/components/composite/calendar-component";
-import ManagementModal from "./modal/ManagementModal";
 
+import { useQuerySmPayAdminChargeRecoveryAdvertiserList as useGetAdvertiserList } from "@/hooks/queries/advertiser";
+import { useQuerySmPayAdminChargeRecoveryAgencyList as useGetAgencyList } from "@/hooks/queries/agency";
 import type { DateRange } from "react-day-picker";
 
 type Props = {
+  selectedAgency: string;
+  selectedAdvertiser: string;
+  handleSelectAgency: (value: string) => void;
+  handleSelectAdvertiser: (value: string) => void;
   startDate: Date | undefined;
   endDate: Date | undefined;
   handleDate: (date: DateRange | undefined) => void;
   handleReset: () => void;
   isNotRecovery: boolean;
   handleRecovery: () => void;
-  advertiserId: number;
-  handleAdvertiserId: (advertiserId: number) => void;
 };
 const FilterSection = ({
+  selectedAgency,
+  selectedAdvertiser,
+  handleSelectAgency,
+  handleSelectAdvertiser,
   startDate,
   endDate,
   handleDate,
   handleReset,
   isNotRecovery,
   handleRecovery,
-  advertiserId,
-  handleAdvertiserId,
 }: Props) => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleConfirm = (advertiserIdValue: number) => {
-    handleAdvertiserId(advertiserIdValue);
-    setIsOpen(false);
-  };
+  const { data: advertiserList = [] } = useGetAdvertiserList();
+  const { data: agencyList = [] } = useGetAgencyList();
 
   return (
     <section className="pt-2 pb-5 border-b border-[#656565]">
-      {isOpen && (
-        <ManagementModal
-          onClose={() => setIsOpen(false)}
-          onConfirm={(advertiserIdValue) => handleConfirm(advertiserIdValue)}
-          open={isOpen}
-          advertiserId={advertiserId}
-        />
-      )}
-
       <div className="flex gap-2">
+        <SelectSearch
+          className="w-[200px]"
+          options={agencyList?.map((agency) => ({
+            label: `${agency.name} | ${agency.representativeName}`,
+            value: agency.uniqueCode,
+          }))}
+          value={selectedAgency}
+          onValueChange={handleSelectAgency}
+          placeholder="대행사를 선택하세요"
+          searchPlaceholder="대행사명, 대표자명을 입력하세요"
+        />
+
+        <SelectSearch
+          className="w-[200px]"
+          options={advertiserList?.map((advertiser) => ({
+            label: `${advertiser.id} | ${advertiser.name}`,
+            value: advertiser.advertiserId.toString(),
+          }))}
+          value={selectedAdvertiser}
+          onValueChange={handleSelectAdvertiser}
+          placeholder="광고주를 선택하세요"
+          searchPlaceholder="광고 ID, 광고 계정을 입력하세요"
+        />
+
         <Button variant="cancel" onClick={handleReset}>
           초기화
-        </Button>
-
-        <Button variant="gray" onClick={() => setIsOpen(true)}>
-          광고주 세부 검색
         </Button>
         <Button
           variant={isNotRecovery ? "gray" : "green"}

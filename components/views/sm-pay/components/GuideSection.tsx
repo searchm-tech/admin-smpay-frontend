@@ -10,7 +10,7 @@ import { GuideButton } from "@/components/composite/button-components";
 import RejectOperationModal from "./RejectOperationModal";
 
 import { useGuideModalStore } from "@/store/useGuideModalStore";
-import { RejectDialog } from "../manangement/dialog";
+import { RejectDialog } from "../dialog";
 
 export type ViewType =
   | "guide"

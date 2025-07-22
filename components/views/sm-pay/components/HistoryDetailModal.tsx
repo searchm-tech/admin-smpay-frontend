@@ -12,7 +12,7 @@ import { ScheduleSectionShow } from "./ScheduleSection";
 import JudgementMemoSection from "./JudgementMemoSection";
 import OperationMemoSection from "./OperationMemoSection";
 
-import { RejectDialog } from "../manangement/dialog";
+import { RejectDialog } from "../dialog";
 
 import { useSmPayFormDetail } from "@/hooks/queries/sm-pay";
 import { ChargeRule } from "@/types/smpay";

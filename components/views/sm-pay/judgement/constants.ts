@@ -1,9 +1,0 @@
-export const defaultParams = {
-  pagination: {
-    current: 1,
-    pageSize: 10,
-    total: 0,
-  },
-  filters: {},
-  sortField: "ADVERTISER_REGISTER_DESC",
-};

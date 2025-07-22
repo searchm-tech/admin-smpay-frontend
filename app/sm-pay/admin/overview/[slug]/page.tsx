@@ -1,5 +1,5 @@
 import ContentHeader from "@/components/common/ContentHeader";
-import SmPayAdminOverviewDetailView from "@/components/views/sm-pay/admin/overview/detail";
+import SmPayAdminOverviewDetailView from "@/components/views/sm-pay/overview/detail";
 
 import type { Metadata } from "next";
 import type { DashboardSubItem } from "@/types/menu";

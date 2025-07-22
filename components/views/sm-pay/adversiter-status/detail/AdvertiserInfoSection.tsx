@@ -12,7 +12,10 @@ import { Modal } from "@/components/composite/modal-components";
 import Table from "@/components/composite/table";
 import { LinkTextButton } from "@/components/composite/button-components";
 
-import HistoryDetailModal from "./HistoryDetailModal";
+import GuidSection, {
+  RejectDescription,
+  RejectOperationDescription,
+} from "../../components/GuideSection";
 
 import {
   formatBusinessNumber,
@@ -21,27 +24,24 @@ import {
 } from "@/utils/format";
 import { SmPayAdvertiserStatusLabel } from "@/constants/status";
 import { useSmPayAdminOverviewApplyFormList } from "@/hooks/queries/sm-pay";
-import { useQueryAgencyDetail } from "@/hooks/queries/agency";
 
 import type { TableProps } from "@/types/table";
 import type { SmPayAdvertiserStatus } from "@/types/smpay";
 import type { SMPayFormHistory, AdvertiserDetailDto } from "@/types/dto/smpay";
-import { useQueryAdminUserInfo } from "@/hooks/queries/user";
-import GuidSection, {
-  RejectDescription,
-  RejectOperationDescription,
-} from "../../../components/GuideSection";
+import HistoryDetailModal from "../../overview/detail/HistoryDetailModal";
 
 type Props = {
   advertiserData?: AdvertiserDetailDto;
   isShowHistory?: boolean;
-  isShowAgentInfo?: boolean;
+  description?: string;
+  date?: string;
 };
 
 const AdvertiserInfoSection = ({
   advertiserData,
+  description,
+  date,
   isShowHistory = true,
-  isShowAgentInfo = true,
 }: Props) => {
   const [isHistoryModal, setIsHistoryModal] = useState(false);
 
@@ -51,14 +51,6 @@ const AdvertiserInfoSection = ({
     advertiserData?.userId || 0
   );
 
-  const { data: agencyData } = useQueryAgencyDetail(
-    advertiserData?.agentId || 0
-  );
-
-  const { data: userInfo } = useQueryAdminUserInfo({
-    userId: Number(advertiserData?.userId),
-  });
-
   return (
     <div>
       {!["REJECT", "OPERATION_REJECT"].includes(
@@ -66,16 +58,13 @@ const AdvertiserInfoSection = ({
       ) && <GuidSection viewType="master-judgement" />}
 
       {advertiserData?.status === "REJECT" && (
-        <RejectDescription
-          description={advertiserData?.description.description || ""}
-          date={""}
-        />
+        <RejectDescription description={description || ""} date={date || ""} />
       )}
 
       {advertiserData?.status === "OPERATION_REJECT" && (
         <RejectOperationDescription
-          description={advertiserData?.description.description || ""}
-          date={""}
+          description={description || ""}
+          date={date || ""}
         />
       )}
 
@@ -113,33 +102,6 @@ const AdvertiserInfoSection = ({
       </section>
 
       <section className="w-full flex gap-4">
-        {isShowAgentInfo && (
-          <div className="flex-1">
-            <div className="flex items-center gap-4 py-4">
-              <LabelBullet labelClassName="text-base font-bold">
-                대행사 및 대행사 담당자 기본 정보
-              </LabelBullet>
-            </div>
-            <Descriptions columns={1}>
-              <DescriptionItem label="대행사명">
-                <Label>{agencyData?.agent.name}</Label>
-              </DescriptionItem>
-              <DescriptionItem label="대표자 명">
-                <Label>{agencyData?.agent.representativeName}</Label>
-              </DescriptionItem>
-              <DescriptionItem label="담당자 명">
-                <Label>{userInfo?.name}</Label>
-              </DescriptionItem>
-              <DescriptionItem label="담당자 이메일 주소">
-                <Label>{userInfo?.id}</Label>
-              </DescriptionItem>
-              <DescriptionItem label="담당자 연락처">
-                <Label>{formatPhoneNumber(userInfo?.phoneNumber || "")}</Label>
-              </DescriptionItem>
-            </Descriptions>
-          </div>
-        )}
-
         <div className="flex-1">
           <div className="flex items-center gap-4 py-4">
             <LabelBullet labelClassName="text-base font-bold">
