@@ -45,8 +45,6 @@ const MemberView = ({ userId, agentId }: Props) => {
     agentId,
   });
 
-  console.log("error", error);
-
   const { mutate: patchUserInfo, isPending: isPatchUserInfoPending } =
     useMutationUserInfo({
       onSuccess: () => setSuccessDialog(true),

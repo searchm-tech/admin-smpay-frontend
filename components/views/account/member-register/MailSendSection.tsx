@@ -10,7 +10,6 @@ import {
   Descriptions,
 } from "@/components/composite/description-components";
 import { LabelBullet } from "@/components/composite/label-bullet";
-import { RadioGroup } from "@/components/composite/radio-component";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 import Select from "@/components/composite/select-components";
 import { InputWithSuffix } from "@/components/composite/input-components";
@@ -25,10 +24,9 @@ import {
   useQueryAgencyAll,
   useQueryAgencyDomainName,
 } from "@/hooks/queries/agency";
-import { useMutationAgencyUserEmailSend } from "@/hooks/queries/user";
+
 import { getUsersNameCheckApi } from "@/services/user";
 
-import { MEMBER_TYPE_OPTS } from "@/constants/status";
 import { EMAIL_REGEX } from "@/constants/reg";
 import {
   DialogContent,
@@ -36,24 +34,17 @@ import {
   DialogContentTypeEmail,
   type DialogContentType,
 } from "./constant";
-import { getIsAdmin } from "@/lib/utils";
 
 import type { DepartmentTreeNode } from "@/types/tree";
-import type { TAuthType } from "@/types/user";
 import type { TAgency } from "@/types/agency";
 import type { TViewProps } from ".";
-import type {
-  RequestGroupMasterInvite,
-  RequestSignupEmail,
-} from "@/types/api/user";
-import { CircleAlert } from "lucide-react";
+import type { RequestGroupMasterInvite } from "@/types/api/user";
 
 const MailSendSection = ({ user }: TViewProps) => {
   const router = useRouter();
-  const isAdmin = getIsAdmin(user.type);
   const { data: session } = useSession();
 
-  const { data: agencyAllDto = [] } = useQueryAgencyAll({ enabled: isAdmin });
+  const { data: agencyAllDto = [] } = useQueryAgencyAll();
 
   // TODO : 수정 필요
   const { data: agencyInfo } = useQueryAgencyDomainName(
@@ -62,12 +53,6 @@ const MailSendSection = ({ user }: TViewProps) => {
 
   const { mutate: mutateGroupMasterSendMail, isPending: loadingGrpSendMail } =
     useMutationAgencySendMail({
-      onSuccess: () => resetSuccess(),
-      onError: (error) => setFailDialog(error.message),
-    });
-
-  const { mutate: mutateUserSendMail, isPending: loadingUserSendMail } =
-    useMutationAgencyUserEmailSend({
       onSuccess: () => resetSuccess(),
       onError: (error) => setFailDialog(error.message),
     });
@@ -114,27 +99,18 @@ const MailSendSection = ({ user }: TViewProps) => {
       return;
     }
 
-    if (isAdmin) {
-      if (!selectedAgency) {
-        setDialog("agency-select");
-        return;
-      }
+    if (!selectedAgency) {
+      setDialog("agency-select");
+      return;
+    }
 
-      if (!EMAIL_REGEX.test(`${emailId}@${selectedAgency?.domainName}`)) {
-        setDialog("check-email-regex");
-        return;
-      }
-    } else {
-      if (!EMAIL_REGEX.test(`${emailId}@${agencyInfo?.domainName}`)) {
-        setDialog("check-email-regex");
-        return;
-      }
+    if (!EMAIL_REGEX.test(`${emailId}@${selectedAgency?.domainName}`)) {
+      setDialog("check-email-regex");
+      return;
     }
 
     try {
-      const emailAddress = isAdmin
-        ? `${emailId}@${selectedAgency?.domainName}`
-        : `${emailId}@${agencyInfo?.domainName}`;
+      const emailAddress = `${emailId}@${selectedAgency?.domainName}`;
 
       setCheckNameLoading(true);
       const response = await getUsersNameCheckApi(emailAddress);
@@ -170,52 +146,24 @@ const MailSendSection = ({ user }: TViewProps) => {
       return;
     }
 
-    if (!isAdmin) {
-      /**
-       * 관리자가 아닌 경우
-       * - 부서 선택 필수
-       * - 회원 구분 선택 필수
-       * - 회원 초대 메일 발송
-       */
-
-      if (!departmentNode) {
-        setDialog("department");
-        return;
-      }
-
-      if (!memberType) {
-        setDialog("member-type");
-        return;
-      }
-
-      const params: RequestSignupEmail = {
-        type: memberType as TAuthType,
-        name,
-        emailAddress: `${emailId}@${agencyInfo?.domainName}`,
-        agentId: user.agentId,
-        departmentId: Number(departmentNode?.id),
-      };
-      mutateUserSendMail(params);
-    } else {
-      /**
-       * 시스템 관리자
-       * - 대행사 선택 필수
-       * - 대행사 최상위 그룹장 회원 초대 메일 발송
-       */
-      if (!selectedAgency) {
-        setDialog("agency-select");
-        return;
-      }
-
-      const params: RequestGroupMasterInvite = {
-        userType: "AGENCY_GROUP_MASTER", // user.type,
-        agentId: Number(selectedAgency.agentId),
-        name,
-        emailAddress: `${emailId}@${selectedAgency.domainName}`,
-      };
-
-      mutateGroupMasterSendMail(params);
+    /**
+     * 시스템 관리자
+     * - 대행사 선택 필수
+     * - 대행사 최상위 그룹장 회원 초대 메일 발송
+     */
+    if (!selectedAgency) {
+      setDialog("agency-select");
+      return;
     }
+
+    const params: RequestGroupMasterInvite = {
+      userType: "AGENCY_GROUP_MASTER", // user.type,
+      agentId: Number(selectedAgency.agentId),
+      name,
+      emailAddress: `${emailId}@${selectedAgency.domainName}`,
+    };
+
+    mutateGroupMasterSendMail(params);
   };
 
   const handleAgencySelect = (value: string) => {
@@ -230,9 +178,7 @@ const MailSendSection = ({ user }: TViewProps) => {
 
   return (
     <section className="py-4">
-      {(loadingGrpSendMail || loadingUserSendMail) && <LoadingUI />}
-
-      {checkNameLoading && <LoadingUI />}
+      {(loadingGrpSendMail || checkNameLoading) && <LoadingUI />}
 
       {isOpenDepartmentModal && (
         <ModalDepartment
@@ -274,41 +220,19 @@ const MailSendSection = ({ user }: TViewProps) => {
         회원 정보
       </LabelBullet>
       <Descriptions columns={1} bordered>
-        <DescriptionItem label={`${isAdmin ? "대행사 선택 *" : "부서 선택 *"}`}>
-          {isAdmin ? (
-            <Select
-              className="max-w-[500px]"
-              value={selectedAgency?.agentId.toString()}
-              onChange={handleAgencySelect}
-              options={agencyAllDto.map((agentDto) => ({
-                label: `${agentDto.agent.name} | ${agentDto.agent.representativeName}`,
-                value: agentDto.agent.agentId.toString(),
-                disabled: agentDto.isMasterAccount,
-              }))}
-            />
-          ) : (
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                onClick={() => setIsOpenDepartmentModal(true)}
-              >
-                부서 선택
-              </Button>
-              <span>{departmentNode?.name || ""}</span>
-            </div>
-          )}
+        <DescriptionItem label="대행사 선택 *">
+          <Select
+            className="max-w-[500px]"
+            value={selectedAgency?.agentId.toString()}
+            onChange={handleAgencySelect}
+            options={agencyAllDto.map((agentDto) => ({
+              label: `${agentDto.agent.name} | ${agentDto.agent.representativeName}`,
+              value: agentDto.agent.agentId.toString(),
+              disabled: agentDto.isMasterAccount,
+            }))}
+          />
         </DescriptionItem>
-        <DescriptionItem label="회원 구분 *">
-          {isAdmin ? (
-            "최상위 그룹장"
-          ) : (
-            <RadioGroup
-              options={MEMBER_TYPE_OPTS}
-              value={memberType}
-              onChange={setMemberType}
-            />
-          )}
-        </DescriptionItem>
+        <DescriptionItem label="회원 구분 *">최상위 그룹장</DescriptionItem>
         <DescriptionItem label="성명 *">
           <Input
             className="max-w-[500px]"
@@ -320,36 +244,19 @@ const MailSendSection = ({ user }: TViewProps) => {
 
         <DescriptionItem label="발송될 이메일 주소 *">
           <div className="flex items-center gap-2">
-            {isAdmin && (
-              <InputWithSuffix
-                className="max-w-[500px]"
-                placeholder={
-                  selectedAgency
-                    ? "이메일 주소를 입력해주세요."
-                    : "대행사를 선택해주세요."
-                }
-                value={emailId}
-                onChange={handleEmailIdChange}
-                disabled={!selectedAgency || enableEmailId}
-                suffix={selectedAgency ? `@${selectedAgency.domainName}` : ""}
-                preventSpaces
-              />
-            )}
-
-            {!isAdmin && (
-              <InputWithSuffix
-                className="max-w-[500px]"
-                placeholder="이메일 주소를 입력해주세요."
-                value={emailId}
-                onChange={handleEmailIdChange}
-                disabled={enableEmailId}
-                suffix={
-                  agencyInfo
-                    ? `@${agencyInfo?.domainName}`
-                    : "현재 도메인이 없습니다."
-                }
-              />
-            )}
+            <InputWithSuffix
+              className="max-w-[500px]"
+              placeholder={
+                selectedAgency
+                  ? "이메일 주소를 입력해주세요."
+                  : "대행사를 선택해주세요."
+              }
+              value={emailId}
+              onChange={handleEmailIdChange}
+              disabled={!selectedAgency || enableEmailId}
+              suffix={selectedAgency ? `@${selectedAgency.domainName}` : ""}
+              preventSpaces
+            />
 
             <Button
               variant="outline"

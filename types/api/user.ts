@@ -85,26 +85,6 @@ export type RequestAgencyGroupMasterDirect = {
   agentId: number;
 };
 
-// 회원 직접 등록 API (SAG007) request type
-export type RequestMemberDirect = {
-  type: TAuthType;
-  name: string;
-  emailAddress: string;
-  password: string;
-  phoneNumber: string;
-  agentId: number;
-  departmentId: number;
-};
-
-// 회원 가입 메일 발송 API (SAG006) request type
-export type RequestSignupEmail = {
-  type: TAuthType;
-  name: string;
-  emailAddress: string;
-  agentId: number;
-  departmentId: number;
-};
-
 // 대행사 회원 페이지네이션 조회 (AAG006) response type
 export interface ResponseAgencyUsers extends ResponseWithPagination {
   content: AgencyUserDto[];
