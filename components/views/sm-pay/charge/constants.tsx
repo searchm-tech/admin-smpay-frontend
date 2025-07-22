@@ -109,7 +109,7 @@ export const columns: ColumnsType<SmPayChargeRecoveryDto> = [
   },
   {
     key: "status",
-    title: "상환일",
+    title: "상환 여부",
     dataIndex: "status",
     align: "center",
     fixed: "right",

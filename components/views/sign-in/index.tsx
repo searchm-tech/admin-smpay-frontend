@@ -12,14 +12,12 @@ import { Form } from "@/components/ui/form";
 import { InputForm } from "@/components/composite/input-components";
 import CheckboxLabel from "@/components/composite/checkbox-label";
 
-import Title from "@/components/common/Title";
 import LoadingUI from "@/components/common/Loading";
 
 import ModalPwdSetting from "./ModalPwdSetting";
 
 import { useSessionStore } from "@/store/useSessionStore";
 import { signInApi } from "@/services/auth";
-import { getAgencyDomainNameApi } from "@/services/agency";
 import { useWindowSize } from "@/hooks/useWindowSize";
 
 import { ApiError } from "@/lib/api";
@@ -29,11 +27,7 @@ import { STORAGE_KEYS, createFormSchema, defaultValues } from "./constants";
 
 import type { TSMPayUser } from "@/types/user";
 
-interface SignInViewProps {
-  code?: string;
-}
-
-const SignInView = ({ code }: SignInViewProps) => {
+const SignInView = () => {
   const router = useRouter();
   const { data: session, status } = useSession();
   const { setAccessToken, setRefreshToken } = useSessionStore();
@@ -46,9 +40,8 @@ const SignInView = ({ code }: SignInViewProps) => {
   const [isCheckingToken, setIsCheckingToken] = useState(true);
 
   const [errMessage, setErrMessage] = useState("");
-  const [domainName, setDomainName] = useState("");
 
-  const formSchema = createFormSchema(!!domainName);
+  const formSchema = createFormSchema();
   type FormValues = z.infer<typeof formSchema>;
 
   const form = useForm<FormValues>({
@@ -105,20 +98,17 @@ const SignInView = ({ code }: SignInViewProps) => {
 
     try {
       setLoading(true);
-      const email = !!domainName
-        ? `${values.email}@${domainName}`
-        : values.email;
+
+      const email = `${values.id}@smpay.co.kr`;
 
       if (isRememberUsername) {
-        localStorage.setItem(STORAGE_KEYS.SAVED_EMAIL, values.email);
+        localStorage.setItem(STORAGE_KEYS.SAVED_EMAIL, values.id);
       }
 
       const response = await signInApi({
         id: email,
         password: values.password,
       });
-
-      console.log("response", response);
 
       if (response?.userWithToken) {
         const {
@@ -139,27 +129,18 @@ const SignInView = ({ code }: SignInViewProps) => {
           loginId: userData.loginId,
           uniqueCode: uniqueCode,
         };
-        let redirectPath = getRedirectPath(user.type);
-        if (user.type === "AGENCY_GROUP_MASTER" && !response.department) {
-          redirectPath = "/account/department";
-        } else {
-          redirectPath = getRedirectPath(user.type);
-        }
 
-        // TODO : next-auth 토큰 갱신 관련하여 학습 후, 토큰 관리를 어떻게 할지 확인 할 것.
         await signIn("credentials", {
           ...user,
-          callbackUrl: redirectPath,
+          callbackUrl: "/sm-pay/charge",
         });
 
         setAccessToken(accessToken.token);
         setRefreshToken(refreshToken.token);
       }
     } catch (error) {
-      console.error("onSubmit error", error);
       let message = "로그인 실패";
       if (error instanceof ApiError) {
-        console.error("error", error);
         message = error.message;
 
         if (error.code === "103") {
@@ -187,19 +168,11 @@ const SignInView = ({ code }: SignInViewProps) => {
       if (remembered) {
         const savedEmail = localStorage.getItem(STORAGE_KEYS.SAVED_EMAIL);
         if (savedEmail) {
-          form.setValue("email", savedEmail);
+          form.setValue("id", savedEmail);
         }
       }
     }
   }, [form]);
-
-  useEffect(() => {
-    if (!code) return;
-
-    getAgencyDomainNameApi(code).then((res) => {
-      setDomainName(res.domainName);
-    });
-  }, [code]);
 
   // 토큰 검사 중이면 로딩 표시
   if (isCheckingToken) {
@@ -224,9 +197,7 @@ const SignInView = ({ code }: SignInViewProps) => {
             width={214}
             height={83}
           />
-          <p className="text-base font-medium">
-            온라인 광고 후불 자동 결제 솔루션
-          </p>
+          <p className="text-base font-medium">관리자 모드</p>
         </div>
 
         <Form {...form}>
@@ -236,12 +207,10 @@ const SignInView = ({ code }: SignInViewProps) => {
           >
             <InputForm<FormValues>
               control={form.control}
-              name="email"
-              label={!!domainName ? "아이디" : "이메일"}
-              placeholder={
-                !!domainName ? "아이디를 입력해주세요" : "이메일을 입력해주세요"
-              }
-              suffix={domainName ? `@${domainName}` : undefined}
+              name="id"
+              label="아이디"
+              placeholder="아이디를 입력해주세요"
+              suffix="@smpay.co.kr"
               preventSpaces
             />
 

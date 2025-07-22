@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { MoveRight, TriangleAlert } from "lucide-react";
+import { TriangleAlert } from "lucide-react";
 
 import { GuideBox } from "@/components/common/Box";
 import { IconBadge } from "@/components/composite/icon-components";
@@ -10,7 +10,7 @@ import { GuideButton } from "@/components/composite/button-components";
 import RejectOperationModal from "./RejectOperationModal";
 
 import { useGuideModalStore } from "@/store/useGuideModalStore";
-import { RejectDialog } from "../manangement/dialog";
+import { RejectDialog } from "../dialog";
 
 export type ViewType =
   | "guide"
@@ -157,15 +157,11 @@ const GuidSection = ({ viewType, className, onClick }: GuidSectionProps) => {
               각 단계별로 필요한 작업과 담당자가 구분되어 있으니 참고해주세요.
             </span>
 
-            <div className="flex items-center gap-2 mt-2">
+            <div className="flex gap-2 mt-2">
               <GuideCard title="서비스 신청" description="(대행사 담당자)" />
-              <MoveRight size={14} className="text-[#007AFF]" />
               <GuideCard title="심사" description="(최상위 그룹장)" />
-              <MoveRight size={14} className="text-[#007AFF]" />
               <GuideCard title="운영 검토" description="(SM Pay)" />
-              <MoveRight size={14} className="text-[#007AFF]" />
               <GuideCard title="광고주 동의" description="(광고주)" />
-              <MoveRight size={14} className="text-[#007AFF]" />
               <GuideCard title="운영" description="" />
             </div>
           </div>

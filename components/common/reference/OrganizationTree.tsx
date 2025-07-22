@@ -38,7 +38,7 @@ const findNode = (
 ): [
   OrganizationTreeNode | null,
   OrganizationTreeNode[] | null,
-  OrganizationTreeNode | null,
+  OrganizationTreeNode | null
 ] => {
   for (const node of nodes) {
     if (node.id === id) {
@@ -430,7 +430,7 @@ const OrganizationTree: React.FC = () => {
 
           const newFolder: OrganizationTreeNode = {
             id: `folder-${Date.now()}`,
-            name: "기본 부서",
+            name: "새 부서",
             type: "folder",
             children: [],
           };

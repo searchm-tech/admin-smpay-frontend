@@ -2,7 +2,7 @@ import ContentHeader from "@/components/common/ContentHeader";
 
 import type { Metadata } from "next";
 import type { DashboardSubItem } from "@/types/menu";
-import SmPayAdminAdversiterStatusDetailView from "@/components/views/sm-pay/admin/adversiter-status/detail";
+import SmPayAdminAdversiterStatusDetailView from "@/components/views/sm-pay/adversiter-status/detail";
 
 type PageParams = Promise<{ slug: string }>;
 

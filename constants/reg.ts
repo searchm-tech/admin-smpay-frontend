@@ -9,6 +9,10 @@ export const PHONE_REGEX = /^\d{3}-\d{4}-\d{4}$/; // 전화번호 정규식
 export const PASSWORD_REGEX =
   /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])[a-zA-Z\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]{8,16}$/;
 
+// 비밀번호 정규식 추가
+export const PASSWORD_REGEX_ADD =
+  /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+
 // 대행사 고유코드 정규식 4~16자의 영문으로 이루어진 식별 가능한 값
 export const UNIQUE_CODE_REGEX = /^[a-zA-Z]{4,16}$/;
 

@@ -2,42 +2,35 @@ import { useMemo, useState } from "react";
 
 import Table from "@/components/composite/table";
 import CheckboxLabel from "@/components/composite/checkbox-label";
-
 import { columns } from "./constants";
+import { SmPayChargeRecoveryDto } from "@/types/dto/smpay";
+import { TableParams } from "@/types/table";
 import { calcRowSpan } from "@/utils/format";
-import type { SmPayChargeRecoveryDto } from "@/types/dto/smpay";
-import type { TableParams } from "@/types/table";
+import { useSidebar } from "@/components/ui/sidebar";
+import { useWindowSize } from "@/hooks/useWindowSize";
+import { cn } from "@/lib/utils";
 
 const defaultCheckedList = columns.map((item) => item.key);
 
 type Props = {
   dataSource: SmPayChargeRecoveryDto[];
-  total: number;
   tableParams: TableParams;
   setTableParams: (params: TableParams) => void;
-  isLoading: boolean;
 };
-const TableSection = ({
-  dataSource,
-  total,
-  tableParams,
-  setTableParams,
-  isLoading,
-}: Props) => {
+const TableSection = ({ dataSource }: Props) => {
   const [checkedList, setCheckedList] = useState(defaultCheckedList || []);
 
-  const rowSpanArr = useMemo(
-    () =>
-      dataSource.length > 0
-        ? calcRowSpan<SmPayChargeRecoveryDto>(dataSource, "agencyName")
-        : [],
-    [dataSource]
-  );
+  const { state } = useSidebar();
+  const { width } = useWindowSize();
 
+  const rowSpanArr = useMemo(
+    () => calcRowSpan<SmPayChargeRecoveryDto>([], "agencyName"),
+    []
+  );
   const newColumns = useMemo(
     () =>
       columns.map((item) => {
-        if (item.key === "agencyName") {
+        if (item.key === "userName") {
           return {
             ...item,
             hidden: !checkedList.includes(item.key as string),
@@ -53,6 +46,30 @@ const TableSection = ({
       }),
     [checkedList, rowSpanArr]
   );
+
+  const widthClass = useMemo(() => {
+    // 매우 큰 모니터 (1920px 초과)
+    if (width > 1920) {
+      return state === "expanded" ? "max-w-[95vw]" : "max-w-[99vw]";
+    }
+
+    // 큰 모니터 (1440px 초과)
+    if (width > 1440) {
+      return state === "expanded" ? "max-w-[92vw]" : "max-w-[98vw]";
+    }
+
+    // 중간 모니터 (1024px 초과)
+    if (width > 1024) {
+      return state === "expanded" ? "max-w-[82vw]" : "max-w-[97vw]";
+    }
+
+    // 작은 모니터 (1024px 이하)
+    if (width <= 1024) {
+      return state === "expanded" ? "max-w-[82vw]" : "max-w-[96vw]";
+    }
+
+    return "max-w-[98vw]";
+  }, [width, state]);
 
   return (
     <section>
@@ -75,28 +92,12 @@ const TableSection = ({
           ))}
       </div>
 
-      <div className="overflow-x-auto">
+      <div className={cn("w-full", widthClass)}>
         <Table<SmPayChargeRecoveryDto>
           columns={newColumns}
           dataSource={dataSource}
-          total={total}
-          pagination={{
-            ...tableParams.pagination,
-            showSizeChanger: true,
-            pageSizeOptions: ["10", "20", "50", "100"],
-            onChange: (page: number, pageSize?: number) => {
-              setTableParams({
-                ...tableParams,
-                pagination: {
-                  ...tableParams.pagination,
-                  current: page,
-                  pageSize: pageSize ?? tableParams.pagination?.pageSize ?? 10,
-                },
-              });
-            },
-          }}
+          total={dataSource.length}
           scroll={{ x: 2000 }}
-          loading={isLoading}
         />
       </div>
     </section>
