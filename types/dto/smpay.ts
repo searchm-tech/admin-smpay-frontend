@@ -79,39 +79,6 @@ export type SmPayAdminAuditDto = {
   isOperatorRead: boolean;
 };
 
-// SMPay 심사 > 요청 목록 DTO
-export type SmPayAuditDto = {
-  advertiserId: number;
-  userId: number;
-  userName: string;
-  advertiserCustomerId: number;
-  advertiserLoginId: string;
-  advertiserName: string;
-  advertiserType: SmPayAdvertiserStatus;
-  registerOrUpdateDt: string;
-  isApprovalRead: boolean;
-  isReviewerRead: boolean;
-  advertiserFormId: number;
-};
-
-// SM-Pay 심사 > 요청 목록 리스트 DTO
-export type SmPayAuditListDto = ResponseWithPagination & {
-  content: (SmPayAuditDto & {
-    no: number;
-  })[];
-};
-
-// SMPay 신청 > 광고주 목록 광고주 데이터 DTO
-export type SmPayAdvertiserApplyDto = {
-  advertiserId: number;
-  advertiserCustomerId: number;
-  advertiserLoginId: string;
-  advertiserNickName: number;
-  advertiserName: string;
-  advertiserType: SmPayAdvertiserStatus;
-  registerOrUpdateDt: string;
-};
-
 // 광고주 심사자 참고용 메모 조회 DTO
 export type ReviewerMemoDto = {
   advertiserReviewerMemosId: number;
@@ -128,6 +95,12 @@ export type AdvertiserDescriptionDto = {
   description: string;
   advertiserId: number;
   advertiserStatusMemosId: string;
+};
+
+// 광고주 detail 조회(SAG024) response type
+export type ResponseAdvertiserDetail = {
+  advertiser: AdvertiserDetailDto;
+  description: AdvertiserDescriptionDto;
 };
 
 // 광고주 detail 조회 DTO

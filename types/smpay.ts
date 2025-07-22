@@ -58,14 +58,3 @@ export type SmPayStatIndicator = {
   dailySalesAmt: number; // 일별 매출액 100.0,
   recommendRoas: number; // 권장 ROAS  0.8,
 };
-
-// 심사 상세 > 최상위 그룹장 전용 심사 지표 조회 DTO
-export type SmPayScreeningIndicator = {
-  advertiserScreeningIndicatorId: number;
-  advertiserId: number;
-  advertiserOperationPeriod: number;
-  advertiserDailyAverageRoas: number;
-  advertiserMonthlyConvAmt: number;
-  advertiserDailySalesAmt: number;
-  advertiserRecommendRoasPercent: number;
-};

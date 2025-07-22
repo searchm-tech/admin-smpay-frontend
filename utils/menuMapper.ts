@@ -1,7 +1,6 @@
 import { AppWindow, ChartSpline, Smile } from "lucide-react";
-import { getIsAdmin, getIsGroupMaster, getIsAgency } from "@/lib/utils";
+
 import type { TResponseMenu } from "@/types/api/menu";
-import type { TAuthType } from "@/types/user";
 
 // 메뉴 이름과 아이콘/URL 매핑
 const MENU_CONFIG = {
@@ -9,15 +8,9 @@ const MENU_CONFIG = {
     icon: AppWindow,
     baseUrl: "/sm-pay",
     subMenus: {
-      "SM Pay 관리": "/sm-pay/management",
-      "SM Pay 심사": "/sm-pay/judgement",
       "SM Pay 운영 검토": "/sm-pay/admin/overview",
       "광고주 운영 현황": "/sm-pay/admin/adversiter-status",
-      "충전 회수 현황": {
-        ADMIN: "/sm-pay/admin/charge",
-        AGENCY: "/sm-pay/charge",
-        MEMBER: "/sm-pay/charge",
-      },
+      "충전 회수 현황": "/sm-pay/admin/charge",
     },
   },
   "광고 성과 리포트": {
@@ -79,43 +72,21 @@ export interface FrontendMenuItem {
 }
 
 // URL 매핑 헬퍼 함수
-function getMenuUrl(
-  config: any,
-  menuName: string,
-  userType: TAuthType | null
-): string {
+function getMenuUrl(config: any): string {
   if (typeof config === "string") {
     return config;
   }
 
   if (typeof config === "object" && config !== null) {
-    // 권한별 URL이 정의된 경우
-    if (getIsAdmin(userType)) {
-      const url = config.ADMIN || config.MASTER || Object.values(config)[0];
-      console.log("Admin URL:", url);
-      return url;
-    } else if (getIsGroupMaster(userType)) {
-      const url = config.MASTER || config.AGENCY || Object.values(config)[0];
-      console.log("Master URL:", url);
-      return url;
-    } else if (getIsAgency(userType)) {
-      const url = config.AGENCY || config.MEMBER || Object.values(config)[0];
-      console.log("Agency URL:", url);
-      return url;
-    } else {
-      const url = config.AGENCY || config.MEMBER || Object.values(config)[0];
-      console.log("Default URL:", url);
-      return url;
-    }
+    const url = config.ADMIN || config.MASTER || Object.values(config)[0];
+    console.log("Admin URL:", url);
+    return url;
   }
 
   return "";
 }
 
-function processMenuItems(
-  menus: TResponseMenu[],
-  userType: TAuthType | null
-): FrontendMenuItem[] {
+function processMenuItems(menus: TResponseMenu[]): FrontendMenuItem[] {
   return menus
     .sort((a, b) => a.displayOrder - b.displayOrder)
     .map((menu) => {
@@ -143,7 +114,7 @@ function processMenuItems(
             return {
               title: child.name,
               url: subMenuConfig
-                ? getMenuUrl(subMenuConfig, child.name, userType)
+                ? getMenuUrl(subMenuConfig)
                 : `${config.baseUrl}/${child.menuId}`,
             };
           });
@@ -169,8 +140,7 @@ function flattenMenus(menus: TResponseMenu[]): TResponseMenu[] {
 }
 
 export function mapBackendMenuToFrontend(
-  backendMenu: TResponseMenu | TResponseMenu[],
-  userType: TAuthType | null
+  backendMenu: TResponseMenu | TResponseMenu[]
 ): FrontendMenuItem[] {
   // null이나 undefined 체크
   if (!backendMenu) {
@@ -188,25 +158,13 @@ export function mapBackendMenuToFrontend(
     (menu) => menu.parentId === null || menu.parentId === 0
   );
 
-  return processMenuItems(topLevelMenus, userType);
+  return processMenuItems(topLevelMenus);
 }
 
 // 사용자 타입별 메뉴 필터링
 export function filterMenuByUserType(
-  menus: FrontendMenuItem[],
-  userType: TAuthType | null
+  menus: FrontendMenuItem[]
 ): FrontendMenuItem[] {
-  // 관리자는 모든 메뉴 접근 가능
-  if (getIsAdmin(userType)) {
-    return menus;
-  }
-
-  // 대행사는 특정 메뉴만 접근 가능
-  const allowedMenus = [
-    "SM Pay 관리",
-    "광고 성과 리포트",
-    "자동 입찰",
-    "계정 관리",
-  ];
-  return menus.filter((menu) => allowedMenus.includes(menu.title));
+  // 관리자용만 사용하므로 모든 메뉴 반환
+  return menus;
 }

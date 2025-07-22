@@ -34,7 +34,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     pathname === "/example" ||
     pathname === "/error" ||
     pathname === "/" ||
-    pathname === "/landing/agency-login" ||
     pathname === "/deactivate" ||
     pathname === "/delete-account";
 
