@@ -12,6 +12,7 @@ export function SessionProvider({ children }: SessionProviderProps) {
     <NextAuthSessionProvider
       refetchOnWindowFocus={false} // ✅ 탭 복귀 시 refetch 끄기
       refetchInterval={0} // ✅ polling 주기 끄기
+      refetchWhenOffline={false} // ✅ 오프라인 시 refetch 끄기
     >
       {children}
     </NextAuthSessionProvider>

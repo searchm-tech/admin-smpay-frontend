@@ -13,8 +13,6 @@ import {
   getAdminUserInfoApi,
   patchUserInfoApi,
   postAgencyGroupMasterApi,
-  postAgencyUserDirectApi,
-  postAgencyUserEmailSendApi,
   getAdminAgencyUsersListApi,
   getGroupUserListApi,
   patchAgencyUserStatusApi,
@@ -27,8 +25,6 @@ import type { TSMPayUser, TUserInfoResponse } from "@/types/user";
 import type {
   RequestAgencyGroupMasterDirect,
   RequestAgencyUserDelete,
-  RequestMemberDirect,
-  RequestSignupEmail,
   RequestAgencyUsers,
   RequestGroupUser,
   ResponseAgencyUsersWithNo,
@@ -121,28 +117,6 @@ export const useMutationAgencyGroupMaster = (
   return useMutation({
     mutationFn: (params: RequestAgencyGroupMasterDirect) =>
       postAgencyGroupMasterApi(params),
-    ...options,
-  });
-};
-
-// 회원 직접 등록 mutation
-export const useMutationAgencyUserDirect = (
-  options?: UseMutationOptions<TSMPayUser, Error, RequestMemberDirect>
-) => {
-  return useMutation({
-    mutationFn: (params: RequestMemberDirect) =>
-      postAgencyUserDirectApi(params),
-    ...options,
-  });
-};
-
-// 회원 가입 메일 발송 mutation
-export const useMutationAgencyUserEmailSend = (
-  options?: UseMutationOptions<null, Error, RequestSignupEmail>
-) => {
-  return useMutation({
-    mutationFn: (params: RequestSignupEmail) =>
-      postAgencyUserEmailSendApi(params),
     ...options,
   });
 };

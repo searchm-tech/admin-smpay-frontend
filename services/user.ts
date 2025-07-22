@@ -5,9 +5,7 @@ import type { TSMPayUser, TUserInfoResponse } from "@/types/user";
 
 import type {
   RequestAgencyGroupMasterDirect,
-  RequestMemberDirect,
   RequestGroupMasterInvite,
-  RequestSignupEmail,
   RequestAgencyUsers,
   RequestGroupUser,
   ResponseAgencyUsers,
@@ -178,51 +176,6 @@ export const postAgencyGroupMasterApi = async (
   try {
     const response = await post<TSMPayUser>(
       `/admin/api/v1/agents/${params.agentId}/users`,
-      params
-    );
-    return response;
-  } catch (error) {
-    if (error instanceof ApiError) {
-      throw error;
-    }
-    throw error;
-  }
-};
-
-// 회원 직접 등록 API (SAG007)
-
-export const postAgencyUserDirectApi = async (
-  params: RequestMemberDirect
-): Promise<TSMPayUser> => {
-  const paramsData = {
-    departmentId: params.departmentId,
-    emailAddress: params.emailAddress,
-    name: params.name,
-    password: params.password,
-    phoneNumber: params.phoneNumber,
-    type: params.type,
-  };
-  try {
-    const response = await post<TSMPayUser>(
-      `/service/api/v1/agents/${params.agentId}/users`,
-      paramsData
-    );
-    return response;
-  } catch (error) {
-    if (error instanceof ApiError) {
-      throw error;
-    }
-    throw error;
-  }
-};
-
-// 회원 가입 메일 발송 API (SAG006)
-export const postAgencyUserEmailSendApi = async (
-  params: RequestSignupEmail
-): Promise<null> => {
-  try {
-    const response = await post<null>(
-      `/service/api/v1/agents/${params.agentId}/users/email`,
       params
     );
     return response;

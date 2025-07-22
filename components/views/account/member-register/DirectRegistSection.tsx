@@ -15,7 +15,6 @@ import {
   Descriptions,
 } from "@/components/composite/description-components";
 import Select from "@/components/composite/select-components";
-import { RadioGroup } from "@/components/composite/radio-component";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 
 import LoadingUI from "@/components/common/Loading";
@@ -27,37 +26,27 @@ import {
   useQueryAgencyAll,
   useQueryAgencyDomainName,
 } from "@/hooks/queries/agency";
-import {
-  useMutationAgencyGroupMaster,
-  useMutationAgencyUserDirect,
-} from "@/hooks/queries/user";
+import { useMutationAgencyGroupMaster } from "@/hooks/queries/user";
 import { getUsersNameCheckApi } from "@/services/user";
 
-import { MEMBER_TYPE_OPTS } from "@/constants/status";
 import { EMAIL_REGEX, PASSWORD_REGEX } from "@/constants/reg";
-import { getIsAdmin } from "@/lib/utils";
 
 import { DialogContent, type DialogContentType } from "./constant";
 
 import type { DepartmentTreeNode } from "@/types/tree";
-import type { TAuthType } from "@/types/user";
 import type { TViewProps } from ".";
 import type { TAgency } from "@/types/agency";
-import type {
-  RequestAgencyGroupMasterDirect,
-  RequestMemberDirect,
-} from "@/types/api/user";
+import type { RequestAgencyGroupMasterDirect } from "@/types/api/user";
 
 const DirectRegistSection = ({ user }: TViewProps) => {
   const router = useRouter();
-  const isAdmin = getIsAdmin(user.type);
   const { data: session } = useSession();
   // TODO : 수정 필요
   const { data: agencyInfo } = useQueryAgencyDomainName(
     session?.user.uniqueCode || ""
   );
 
-  const { data: agencyAllDto = [] } = useQueryAgencyAll({ enabled: isAdmin });
+  const { data: agencyAllDto = [] } = useQueryAgencyAll();
   const {
     mutate: mutateAddGroupMasterDirect,
     isPending: isPendingAddGroupMasterDirect,
@@ -65,12 +54,6 @@ const DirectRegistSection = ({ user }: TViewProps) => {
     onSuccess: () => resetSuccess(),
     onError: (error) => setFailDialog(error.message),
   });
-
-  const { mutate: mutateAddUserDirect, isPending: isPendingAddUserDirect } =
-    useMutationAgencyUserDirect({
-      onSuccess: () => resetSuccess(),
-      onError: (error) => setFailDialog(error.message),
-    });
 
   const [departmentNode, setDepartmentNode] =
     useState<DepartmentTreeNode | null>(null);
@@ -116,36 +99,23 @@ const DirectRegistSection = ({ user }: TViewProps) => {
       setDialog("check-email-empty");
       return;
     }
-    if (isAdmin) {
-      if (!selectedAgency) {
-        setDialog("agency-select");
-        return;
-      }
 
-      if (!EMAIL_REGEX.test(`${emailId}@${selectedAgency?.domainName}`)) {
-        setDialog("check-email-regex");
-        return;
-      }
-    } else {
-      if (!EMAIL_REGEX.test(`${emailId}@${agencyInfo?.domainName}`)) {
-        setDialog("check-email-regex");
-        return;
-      }
+    if (!selectedAgency) {
+      setDialog("agency-select");
+      return;
+    }
+
+    if (!EMAIL_REGEX.test(`${emailId}@${selectedAgency?.domainName}`)) {
+      setDialog("check-email-regex");
+      return;
     }
 
     try {
       setCheckNameLoading(true);
-      if (isAdmin) {
-        const response = await getUsersNameCheckApi(
-          `${emailId}@${selectedAgency?.domainName}`
-        );
-        setNameCheckResult(response ? "duplicate" : "available");
-      } else {
-        const response = await getUsersNameCheckApi(
-          `${emailId}@${agencyInfo?.domainName}`
-        );
-        setNameCheckResult(response ? "duplicate" : "available");
-      }
+      const response = await getUsersNameCheckApi(
+        `${emailId}@${selectedAgency?.domainName}`
+      );
+      setNameCheckResult(response ? "duplicate" : "available");
     } catch (error) {
     } finally {
       setCheckNameLoading(false);
@@ -206,51 +176,21 @@ const DirectRegistSection = ({ user }: TViewProps) => {
       return;
     }
 
-    if (!isAdmin) {
-      if (!memberType) {
-        setDialog("member-type");
-        return;
-      }
-
-      if (!departmentNode) {
-        setDialog("department-select");
-        return;
-      }
-
-      if (!agencyInfo) {
-        setDialog("agency-select");
-        return;
-      }
-
-      // 관리자가 아닌 경우, 회원 직접 등록
-      // 일반 회원 직접 등록
-      const data: RequestMemberDirect = {
-        type: memberType as TAuthType,
-        name,
-        emailAddress: `${emailId}@${agencyInfo?.domainName}`,
-        password,
-        phoneNumber: phone,
-        agentId: user.agentId,
-        departmentId: Number(departmentNode?.id),
-      };
-      mutateAddUserDirect(data);
-    } else {
-      if (!selectedAgency) {
-        setDialog("agency-select");
-        return;
-      }
-
-      // 시스템 관리자 일 경우, 최상위 그룹장 직접 등록
-      const data: RequestAgencyGroupMasterDirect = {
-        userType: "AGENCY_GROUP_MASTER",
-        agentId: Number(selectedAgency.agentId),
-        name,
-        emailAddress: `${emailId}@${selectedAgency.domainName}`,
-        password,
-        phoneNumber: phone,
-      };
-      mutateAddGroupMasterDirect(data);
+    if (!selectedAgency) {
+      setDialog("agency-select");
+      return;
     }
+
+    // 시스템 관리자 일 경우, 최상위 그룹장 직접 등록
+    const data: RequestAgencyGroupMasterDirect = {
+      userType: "AGENCY_GROUP_MASTER",
+      agentId: Number(selectedAgency.agentId),
+      name,
+      emailAddress: `${emailId}@${selectedAgency.domainName}`,
+      password,
+      phoneNumber: phone,
+    };
+    mutateAddGroupMasterDirect(data);
   };
 
   const handleAgencySelect = (value: string) => {
@@ -265,11 +205,7 @@ const DirectRegistSection = ({ user }: TViewProps) => {
 
   return (
     <section className="py-4">
-      {(isPendingAddGroupMasterDirect || isPendingAddUserDirect) && (
-        <LoadingUI />
-      )}
-
-      {checkNameLoading && <LoadingUI />}
+      {(isPendingAddGroupMasterDirect || checkNameLoading) && <LoadingUI />}
 
       {isOpenDepartmentModal && (
         <ModalDepartment
@@ -334,41 +270,19 @@ const DirectRegistSection = ({ user }: TViewProps) => {
         회원 정보
       </LabelBullet>
       <Descriptions columns={1} bordered>
-        <DescriptionItem label={`${isAdmin ? "대행사 선택 *" : "부서 선택 *"}`}>
-          {isAdmin ? (
-            <Select
-              className="max-w-[500px]"
-              value={selectedAgency?.agentId.toString()}
-              onChange={handleAgencySelect}
-              options={agencyAllDto.map((agentDto) => ({
-                label: `${agentDto.agent.name} | ${agentDto.agent.representativeName}`,
-                value: agentDto.agent.agentId.toString(),
-                disabled: agentDto.isMasterAccount,
-              }))}
-            />
-          ) : (
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                onClick={() => setIsOpenDepartmentModal(true)}
-              >
-                부서 선택
-              </Button>
-              <span>{departmentNode?.name || ""}</span>
-            </div>
-          )}
+        <DescriptionItem label="대행사 선택 *">
+          <Select
+            className="max-w-[500px]"
+            value={selectedAgency?.agentId.toString()}
+            onChange={handleAgencySelect}
+            options={agencyAllDto.map((agentDto) => ({
+              label: `${agentDto.agent.name} | ${agentDto.agent.representativeName}`,
+              value: agentDto.agent.agentId.toString(),
+              disabled: agentDto.isMasterAccount,
+            }))}
+          />
         </DescriptionItem>
-        <DescriptionItem label="회원 구분 *">
-          {isAdmin ? (
-            "최상위 그룹장"
-          ) : (
-            <RadioGroup
-              options={MEMBER_TYPE_OPTS}
-              value={memberType}
-              onChange={setMemberType}
-            />
-          )}
-        </DescriptionItem>
+        <DescriptionItem label="회원 구분 *">최상위 그룹장</DescriptionItem>
         <DescriptionItem label="성명 *">
           <Input
             className="max-w-[500px]"
@@ -379,37 +293,19 @@ const DirectRegistSection = ({ user }: TViewProps) => {
         </DescriptionItem>
         <DescriptionItem label="이메일 주소 *">
           <div className="flex items-center gap-2">
-            {isAdmin && (
-              <InputWithSuffix
-                className="max-w-[500px]"
-                placeholder={
-                  selectedAgency
-                    ? "이메일 주소를 입력해주세요."
-                    : "대행사를 선택해주세요."
-                }
-                value={emailId}
-                onChange={handleEmailIdChange}
-                disabled={!selectedAgency || enableEmailId}
-                suffix={selectedAgency ? `@${selectedAgency.domainName}` : ""}
-                preventSpaces
-              />
-            )}
-
-            {!isAdmin && (
-              <InputWithSuffix
-                className="max-w-[500px]"
-                placeholder="이메일 주소를 입력해주세요."
-                value={emailId}
-                onChange={handleEmailIdChange}
-                disabled={enableEmailId}
-                preventSpaces
-                suffix={
-                  agencyInfo
-                    ? `@${agencyInfo?.domainName}`
-                    : "현재 도메인이 없습니다."
-                }
-              />
-            )}
+            <InputWithSuffix
+              className="max-w-[500px]"
+              placeholder={
+                selectedAgency
+                  ? "이메일 주소를 입력해주세요."
+                  : "대행사를 선택해주세요."
+              }
+              value={emailId}
+              onChange={handleEmailIdChange}
+              disabled={!selectedAgency || enableEmailId}
+              suffix={selectedAgency ? `@${selectedAgency.domainName}` : ""}
+              preventSpaces
+            />
             <Button variant="outline" onClick={handleEmailCheck}>
               {enableEmailId ? "중복 체크 완료" : "중복 체크"}
             </Button>

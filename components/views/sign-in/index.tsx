@@ -143,13 +143,13 @@ const SignInView = () => {
           uniqueCode: uniqueCode,
         };
 
+        setAccessToken(accessToken.token);
+        setRefreshToken(refreshToken.token);
+
         await signIn("credentials", {
           ...user,
           callbackUrl: "/sm-pay/charge",
         });
-
-        setAccessToken(accessToken.token);
-        setRefreshToken(refreshToken.token);
       }
     } catch (error) {
       let message = "로그인 실패";
