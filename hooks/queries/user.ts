@@ -14,7 +14,6 @@ import {
   patchUserInfoApi,
   postAgencyGroupMasterApi,
   getAdminAgencyUsersListApi,
-  getGroupUserListApi,
   patchAgencyUserStatusApi,
   delAgencyUserApi,
   putAdminAgencyUserStatusApi,
@@ -26,7 +25,6 @@ import type {
   RequestAgencyGroupMasterDirect,
   RequestAgencyUserDelete,
   RequestAgencyUsers,
-  RequestGroupUser,
   ResponseAgencyUsersWithNo,
   RequestAgencyUserStatus,
   RequestUserPwd,
@@ -34,7 +32,6 @@ import type {
   ResponseMailVerify,
   RequestUserInfo,
   RequestPatchUserInfo,
-  ResponseGroupUser,
 } from "@/types/api/user";
 
 // 비밀번호 재설정 API - 링크 전달 mutation
@@ -161,19 +158,6 @@ export const useQueryAdminAgencyUsersList = (
   return useQuery({
     queryKey: ["agencyUsersList", params],
     queryFn: () => getAdminAgencyUsersListApi(params),
-    ...options,
-  });
-};
-
-// 그룹장 회원 목록 조회 query
-export const useQueryGroupUserList = (
-  params: RequestGroupUser & { agentId: number; userId: number },
-  options?: UseQueryOptions<ResponseGroupUser, Error>
-) => {
-  return useQuery({
-    queryKey: ["groupUserList", params],
-    queryFn: () => getGroupUserListApi(params),
-    enabled: !!params.agentId && !!params.userId,
     ...options,
   });
 };

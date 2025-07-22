@@ -118,11 +118,6 @@ export type RequestAgencyUsers = RequestWithPagination & {
   orderType: AgencyUsersOrder;
 };
 
-// 그룹장 회원 목록 조회 API params type
-export type RequestGroupUser = RequestWithPagination & {
-  orderType: AgencyUsersOrder;
-};
-
 // 시스템 관리자 - 대행사 회원 목록 조회 API 정렬 타입
 export type AgencyUsersOrder =
   | "NO_ASC" // 불필요 - 그냥 프론트에서 필요함

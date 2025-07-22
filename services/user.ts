@@ -7,7 +7,6 @@ import type {
   RequestAgencyGroupMasterDirect,
   RequestGroupMasterInvite,
   RequestAgencyUsers,
-  RequestGroupUser,
   ResponseAgencyUsers,
   ResponseAgencyUsersWithNo,
   RequestAgencyUserStatus,
@@ -16,7 +15,6 @@ import type {
   ResponseMailVerify,
   RequestUserInfo,
   RequestPatchUserInfo,
-  ResponseGroupUser,
   UserResponseDto,
 } from "@/types/api/user";
 import { applyNoAscOrder } from "@/utils/sort";
@@ -224,44 +222,6 @@ export const getAdminAgencyUsersListApi = async (
     };
 
     return result;
-  } catch (error) {
-    if (error instanceof ApiError) {
-      throw error;
-    }
-    throw error;
-  }
-};
-
-// 그룹장 회원 목록 조회 API (AAG007)
-export const getGroupUserListApi = async (
-  params: RequestGroupUser & { agentId: number; userId: number }
-): Promise<ResponseGroupUser> => {
-  try {
-    const { agentId, userId } = params;
-
-    const apiOrderType = convertNoOrderType(params.orderType, "REGISTER_DT");
-
-    const queryParams = buildQueryParams({
-      page: params.page,
-      size: params.size,
-      keyword: params.keyword,
-      orderType: apiOrderType,
-    });
-
-    const response = await get<ResponseGroupUser>(
-      `/service/api/v1/agents/${agentId}/users/${userId}/subordinate-departments-users?${queryParams}`
-    );
-    let content = response.content.map((item, index) => ({
-      ...item,
-      no: (params.page - 1) * params.size + index + 1,
-    }));
-
-    content = applyNoAscOrder(content, params.orderType);
-
-    return {
-      ...response,
-      content,
-    };
   } catch (error) {
     if (error instanceof ApiError) {
       throw error;
