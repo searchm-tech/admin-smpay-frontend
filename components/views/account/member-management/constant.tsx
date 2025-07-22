@@ -1,4 +1,5 @@
-import { TableParamsMember } from "./admin";
+import type { TableParams } from "@/types/table";
+import type { AgencyUsersOrder } from "@/types/api/user";
 
 export const dialogContent = {
   "update-status": "회원 상태가 변경되었습니다.",
@@ -34,3 +35,8 @@ export const defaultTableParams: TableParamsMember = {
   sortOrder: "ascend",
   keyword: "",
 };
+
+export interface TableParamsMember extends TableParams {
+  keyword: string;
+  sortField?: AgencyUsersOrder;
+}
