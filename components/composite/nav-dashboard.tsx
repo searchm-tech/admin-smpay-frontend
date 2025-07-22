@@ -57,14 +57,8 @@ export function NavDashboard() {
   const menuItems = useMemo(() => {
     if (!session?.user) return [];
     if (backendMenu && session?.user) {
-      const mappedMenus = mapBackendMenuToFrontend(
-        backendMenu,
-        session.user.type
-      );
-      const filteredMenus = filterMenuByUserType(
-        mappedMenus,
-        session.user.type
-      );
+      const mappedMenus = mapBackendMenuToFrontend(backendMenu);
+      const filteredMenus = filterMenuByUserType(mappedMenus);
       return filteredMenus;
     }
 

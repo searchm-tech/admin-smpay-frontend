@@ -21,7 +21,7 @@ import { signInApi } from "@/services/auth";
 import { useWindowSize } from "@/hooks/useWindowSize";
 
 import { ApiError } from "@/lib/api";
-import { getRedirectPath } from "@/lib/utils";
+import { getIsAdmin, getRedirectPath } from "@/lib/utils";
 
 import { STORAGE_KEYS, createFormSchema, defaultValues } from "./constants";
 
@@ -58,14 +58,27 @@ const SignInView = () => {
         return;
       }
 
+      // 인증되지 않은 상태면 로그인 페이지에 머물기
+      if (status === "unauthenticated") {
+        setIsCheckingToken(false);
+        setLoading(false);
+        return;
+      }
+
       try {
         setLoading(true);
         // localStorage에서도 토큰 확인
         const storedAccessToken = localStorage.getItem("accessToken");
         const storedRefreshToken = localStorage.getItem("refreshToken");
 
-        if (storedAccessToken && storedRefreshToken) {
-          const redirectPath = getRedirectPath(session?.user?.type);
+        // 세션이 있고 관리자가 아닌 경우에만 sign-out으로 리다이렉트
+        if (session?.user?.type && !getIsAdmin(session.user.type)) {
+          router.push("/sign-out");
+          return;
+        }
+
+        if (storedAccessToken && storedRefreshToken && session?.user?.type) {
+          const redirectPath = getRedirectPath(session.user.type);
           router.replace(redirectPath);
           return;
         }

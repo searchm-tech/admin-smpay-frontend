@@ -17,13 +17,10 @@ import type {
   SmPayAdvertiserStatusDto,
   OverviewApplyAccountDto,
   SmPayAdminAuditDto,
-  SmPayAdvertiserApplyDto,
-  AdvertiserDetailDto,
-  AdvertiserDescriptionDto,
   SmPayChargeRecoveryDto,
 } from "../dto/smpay";
 
-// 광고주 상태 갯수 조회(SAG020) response type
+// 광고주 상태 갯수 조회(AAG028) response type
 export interface ResponseSmPayStatusCount {
   totalCount: number;
   waitReviewCount: number;
@@ -65,89 +62,13 @@ export type SmPayAdvertiserApplyQuery = RequestWithPagination & {
   orderType: SmPayAdvertiserStatus;
 };
 
-// 광고주 smPay 신청 관리 리스트 조회(SAG022) request type
-export type RequestSmPayAdvertiserApply = {
-  user: RequestAgentUser;
-  queryParams: SmPayAdvertiserApplyQuery;
-};
-
-// 광고주 smPay 신청 관리 리스트 조회(SAG022) response type
-export interface ResponseSmPayAdvertiserApply extends ResponseWithPagination {
-  content: SmPayAdvertiserApplyDto[];
-}
-
 export interface RequestFormId extends WithAdvertiserId {
   formId: number | string;
-}
-
-// 광고주 detail 조회(SAG024) response type
-export type ResponseAdvertiserDetail = {
-  advertiser: AdvertiserDetailDto;
-  description: AdvertiserDescriptionDto;
-};
-
-// 광고주 detail 등록 및 수정(SAG023) request type
-export interface RequestSmPayAdvertiserDetailPut extends WithAdvertiserId {
-  params: PutSmPayAdvertiserDetail;
-}
-
-export type PutSmPayAdvertiserDetail = {
-  name: string;
-  representativeName: string;
-  representativeNumber: string;
-  phoneNumber: string;
-  email: string;
-};
-
-// 광고주 성과 기반 참고용 심사 지표 조회(28일)(SAG028) response type
-// TODO : 제거 예정
-export type ResponseSmPayAdvertiserStatIndicator = {
-  operationPeriod: number; // 운영 기간
-  dailyAverageRoas: number; // 일별 평균 ROAS 1.0,
-  monthlyConvAmt: number; // 월별 전환액 1000.0,
-  dailySalesAmt: number; // 일별 매출액 100.0,
-  recommendRoas: number; // 권장 ROAS  0.8,
-};
-
-// 광고주 smPay 등록(SAG029) request type
-export type StatIndicatorParams = {
-  operationPeriod: number; //  1;
-  dailyAverageRoas: number; //1.0;
-  monthlyConvAmt: number; //1.0;
-  dailySalesAmt: number; //1.0;
-  recommendRoasPercent: number; // 1.0;
-};
-
-export type SmPayWriteParams = {
-  statIndicator: StatIndicatorParams;
-  chargeRule: ChargeRule[];
-  prePaymentSchedule: PrePaymentSchedule;
-  reviewerMemo: string;
-};
-
-// 광고주 smPay 등록(SAG029) request type
-export interface RequestSmPayWrite extends WithAdvertiserId {
-  params: SmPayWriteParams;
-}
-
-export interface RequestSmPayRead extends WithAdvertiserId {
-  isApprovalRead: boolean;
 }
 
 export interface RequestSmPayAdminRead extends WithAdvertiserId {
   isOperatorRead: boolean;
 }
-
-// 광고주 심상 승인 /거절 (최상위 그룹장 전용)(SAG036) params type
-export type ParamsSmPayApproval = {
-  decisionType: "APPROVE" | "REJECT" | "";
-  chargeRule: ChargeRule[];
-  statIndicator: StatIndicatorParams;
-  prePaymentSchedule: PrePaymentSchedule;
-  reviewerMemo: string;
-  approvalMemo: string;
-  rejectStatusMemo: string;
-};
 
 // 광고주 운영 심사 승인/반려 (운영 관리자 전용) (AAG026)
 export type ParamsSmPayAdminOverviewOperatorDecision = {
@@ -261,16 +182,6 @@ export type ResponseDailyStat = {
   cpConv: number; // 전환당 비용
   ror: number; // roas
   date: string; // 날짜
-};
-
-// 충전 규칙 response type
-export type ResponseChargeRule = {
-  advertiserChargeRuleId: number;
-  advertiserId: number;
-  standardRoasPercent: number;
-  changePercentOrValue: number;
-  rangeType: "UP" | "DOWN";
-  boundType: "FIXED_AMOUNT" | "PERCENT";
 };
 
 // 충전/회수 이력 리스트 조회(AAG034) response type
