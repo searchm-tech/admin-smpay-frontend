@@ -8,7 +8,7 @@ import {
   convertNoOrderType,
   transformTableResponse,
 } from "@/lib/utils";
-import type { RequestARSBankAccount } from "@/types/api/bank";
+
 import type {
   RequestAgentUser,
   UserAgentAdvertiserId,
@@ -169,34 +169,6 @@ export const postSmPayAdvertiserAgreeNotification = async ({
   try {
     const response = await post<null>(
       `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/send-agree-notification`
-    );
-    return response;
-  } catch (error) {
-    if (error instanceof ApiError) {
-      throw error;
-    }
-    throw error;
-  }
-};
-
-/**
- * 광고주 은행 계좌 등록 및 운영 제출(AD002)
- * - 화면 : 광고주 동의 > ARS 인증 버튼
- */
-export type ResponseSmPayAdvertiserBankAccount = {
-  withdrawAccountId: number;
-  result: boolean;
-};
-
-export const postSmPayAdvertiserBankAccount = async ({
-  advertiserId,
-  withdrawAccountId,
-  accounts,
-}: RequestARSBankAccount): Promise<ResponseSmPayAdvertiserBankAccount> => {
-  try {
-    const response = await post<ResponseSmPayAdvertiserBankAccount>(
-      `/api/v1/advertisers/${advertiserId}/register-account`,
-      { accounts: [...accounts], withdrawAccountId }
     );
     return response;
   } catch (error) {
