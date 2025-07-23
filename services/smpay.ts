@@ -40,31 +40,6 @@ import type { SmPayAdvertiserStautsOrderType } from "@/types/smpay";
 import { applyNoAscOrder } from "@/utils/sort";
 
 /**
- * 광고주 동의 이메일, 문자발송(SAG037)
- * - 화면 : [대행사] SM Pay 관리 > 목록 리스트 > 광고주 동의 전송 버튼
- */
-export const postSmPayAdvertiserAgreeNotification = async ({
-  user,
-  advertiserId,
-}: WithAdvertiserId): Promise<null> => {
-  const { agentId, userId } = user;
-
-  try {
-    const response = await post<null>(
-      `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/send-agree-notification`
-    );
-    return response;
-  } catch (error) {
-    if (error instanceof ApiError) {
-      throw error;
-    }
-    throw error;
-  }
-};
-
-// ------------- admin
-
-/**
  * 광고주 최상위 그룹장 참고용 메모 조회(AAG025)
  * - 화면 : SM Pay 관리 > 조회 > 참고용 메모 영역
  */

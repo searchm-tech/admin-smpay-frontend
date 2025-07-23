@@ -31,7 +31,6 @@ import {
   getSmPayAdminOverviewApprovalMemo,
   postSmPayAdminOverviewOperatorDecision,
   getSmPayAdminOverviewAccountBalance,
-  postSmPayAdvertiserAgreeNotification,
   getSmPayDetailApprovalMemo,
   getSmPayAdminOverviewStatusList,
   getSmPayAdminOverviewStatusCount,
@@ -46,20 +45,6 @@ import type {
   ReviewerMemoDto,
   AdvertiserDetailDto,
 } from "@/types/dto/smpay";
-
-// 광고주 동의 이메일, 문자발송 (SAG037)
-export const useSmPayAdvertiserAgreeNotification = (
-  options?: UseMutationOptions<null, Error, number>
-) => {
-  return useAuthMutation<null, Error, number>({
-    mutationFn: (variables, user) =>
-      postSmPayAdvertiserAgreeNotification({
-        user,
-        advertiserId: variables,
-      }),
-    ...options,
-  });
-};
 
 // ---- admin ----
 

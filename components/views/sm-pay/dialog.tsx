@@ -9,7 +9,6 @@ import {
 
 import { formatDate } from "@/utils/format";
 
-import { useSmPayAdvertiserAgreeNotification } from "@/hooks/queries/sm-pay";
 import type { SmPayAdvertiserStatusDto } from "@/types/dto/smpay";
 
 // reject
@@ -91,62 +90,6 @@ const ReapplyDialog = ({ onClose, onConfirm }: PropsReapplyDialog) => {
         <div className="flex flex-col items-center pb-4 font-medium">
           <span>기존 신청내역은 수정할 수 없습니다.</span>
           <span>새로 작성하여 다시 신청하시겠습니까?</span>
-        </div>
-      }
-    />
-  );
-};
-
-type PropsAdvertiserAgreementSendDialog = {
-  onClose: () => void;
-  onConfirm: () => void;
-  data: SmPayAdvertiserStatusDto;
-};
-
-const AdvertiserAgreementSendDialog = ({
-  onClose,
-  onConfirm,
-  data,
-}: PropsAdvertiserAgreementSendDialog) => {
-  const [isSuccess, setIsSuccess] = useState(false);
-  const { mutate: sendAgreeNotification, isPending } =
-    useSmPayAdvertiserAgreeNotification({
-      onSuccess: () => {
-        setIsSuccess(true);
-      },
-    });
-
-  const handleConfirm = () => {
-    sendAgreeNotification(data.advertiserId);
-  };
-
-  if (isPending) {
-    return <LoadingUI />;
-  }
-
-  if (isSuccess) {
-    return (
-      <ConfirmDialog
-        open
-        onConfirm={onConfirm}
-        cancelDisabled
-        content={
-          <div className="flex flex-col items-center pb-4 font-medium">
-            <span>광고주에게 SM Pay 동의 요청을 전송하였습니다.</span>
-          </div>
-        }
-      />
-    );
-  }
-
-  return (
-    <ConfirmDialog
-      open
-      onClose={onClose}
-      onConfirm={handleConfirm}
-      content={
-        <div className="flex flex-col items-center pb-4 font-medium">
-          <span>광고주에게 SM Pay 동의 요청을 전송하시겠습니까?</span>
         </div>
       }
     />
@@ -375,7 +318,6 @@ export {
   RejectDialog,
   ApplyCancelDialog,
   ReapplyDialog,
-  AdvertiserAgreementSendDialog,
   SuspendDialog,
   ResumeDialog,
   TerminationRequestDialog,
