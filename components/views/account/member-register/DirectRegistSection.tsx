@@ -1,5 +1,4 @@
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { type ChangeEvent, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -20,12 +19,7 @@ import { ConfirmDialog } from "@/components/composite/modal-components";
 import LoadingUI from "@/components/common/Loading";
 import { DescriptionPwd } from "@/components/common/Box";
 
-import ModalDepartment from "./ModalDepartment";
-
-import {
-  useQueryAgencyAll,
-  useQueryAgencyDomainName,
-} from "@/hooks/queries/agency";
+import { useQueryAgencyAll } from "@/hooks/queries/agency";
 import { useMutationAgencyGroupMaster } from "@/hooks/queries/user";
 import { getUsersNameCheckApi } from "@/services/user";
 
@@ -33,18 +27,11 @@ import { EMAIL_REGEX, PASSWORD_REGEX } from "@/constants/reg";
 
 import { DialogContent, type DialogContentType } from "./constant";
 
-import type { DepartmentTreeNode } from "@/types/tree";
-import type { TViewProps } from ".";
 import type { TAgency } from "@/types/agency";
 import type { RequestAgencyGroupMasterDirect } from "@/types/api/user";
 
-const DirectRegistSection = ({ user }: TViewProps) => {
+const DirectRegistSection = () => {
   const router = useRouter();
-  const { data: session } = useSession();
-  // TODO : 수정 필요
-  const { data: agencyInfo } = useQueryAgencyDomainName(
-    session?.user.uniqueCode || ""
-  );
 
   const { data: agencyAllDto = [] } = useQueryAgencyAll();
   const {
@@ -55,8 +42,6 @@ const DirectRegistSection = ({ user }: TViewProps) => {
     onError: (error) => setFailDialog(error.message),
   });
 
-  const [departmentNode, setDepartmentNode] =
-    useState<DepartmentTreeNode | null>(null);
   const [selectedAgency, setSelectedAgency] = useState<TAgency | null>(null);
   const [name, setName] = useState("");
   const [emailId, setEmailId] = useState("");
@@ -64,9 +49,7 @@ const DirectRegistSection = ({ user }: TViewProps) => {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
-  const [memberType, setMemberType] = useState("");
 
-  const [isOpenDepartmentModal, setIsOpenDepartmentModal] = useState(false);
   const [failDialog, setFailDialog] = useState("");
   const [dialog, setDialog] = useState<DialogContentType | null>(null);
   const [enableEmailId, setEnableEmailId] = useState(false);
@@ -77,9 +60,7 @@ const DirectRegistSection = ({ user }: TViewProps) => {
 
   const resetSuccess = () => {
     setDialog("success-direct");
-    setDepartmentNode(null);
     setSelectedAgency(null);
-    setMemberType("");
     setEmailId("");
     setName("");
     setPhone("");
@@ -131,10 +112,6 @@ const DirectRegistSection = ({ user }: TViewProps) => {
     } else {
       setPasswordConfirm(e.target.value);
     }
-  };
-
-  const handleDepartmentSelect = (node: DepartmentTreeNode) => {
-    setDepartmentNode(node);
   };
 
   const handleSubmit = () => {
@@ -206,13 +183,6 @@ const DirectRegistSection = ({ user }: TViewProps) => {
   return (
     <section className="py-4">
       {(isPendingAddGroupMasterDirect || checkNameLoading) && <LoadingUI />}
-
-      {isOpenDepartmentModal && (
-        <ModalDepartment
-          setIsOpen={setIsOpenDepartmentModal}
-          onSelect={handleDepartmentSelect}
-        />
-      )}
 
       {dialog && (
         <ConfirmDialog
