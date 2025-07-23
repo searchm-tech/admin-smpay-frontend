@@ -1,17 +1,34 @@
 "use client";
 
-import { getIsAdmin } from "@/lib/utils";
-import { useSession } from "next-auth/react";
-import DepartmentMemberView from "./member";
-import DepartmentAdminView from "./admin";
+import { useState } from "react";
 
-// 폴더 이동 가능
-// 인원은 이동 만
+import DepartmentSection from "./DepartmentSection";
+import SearchSection from "./SearchSection";
+
+import { LabelBullet } from "@/components/composite/label-bullet";
+
 const DepartmentView = () => {
-  const { data: session } = useSession();
-  const isAdmin = getIsAdmin(session?.user?.type);
+  const [selectedAgentId, setSelectedAgentId] = useState<number | null>(null);
+  const [agentName, setAgentName] = useState<string | null>(null);
 
-  return isAdmin ? <DepartmentAdminView /> : <DepartmentMemberView />;
+  const handleSelectAgent = (agentId: number, agentName: string) => {
+    setSelectedAgentId(agentId);
+    setAgentName(agentName);
+  };
+
+  return (
+    <div>
+      <LabelBullet labelClassName="text-lg font-bold">
+        부서 및 회원 관리
+      </LabelBullet>
+
+      <SearchSection
+        handleSelectAgent={handleSelectAgent}
+        selectedAgentId={selectedAgentId}
+      />
+      <DepartmentSection agentId={selectedAgentId} agentName={agentName} />
+    </div>
+  );
 };
 
 export default DepartmentView;

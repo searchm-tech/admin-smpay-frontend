@@ -13,6 +13,7 @@ import {
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 
 import LoadingUI from "@/components/common/Loading";
+import { Button } from "@/components/ui/button";
 import { ConfirmDialog, Modal } from "@/components/composite/modal-components";
 
 import {
@@ -27,36 +28,11 @@ import {
   findNode,
   removeNode,
   TreeNodeComponent,
+  getAllFolderNames,
 } from "./constants";
 
 import type { OrganizationTreeNode } from "@/types/tree";
 import type { TDepartmentsPutParams } from "@/services/departments";
-import { Button } from "@/components/ui/button";
-
-export interface TreeNodeProps {
-  node: OrganizationTreeNode;
-  level: number;
-  onAddFolder: (parentId: string) => void;
-  onUpdateName: (nodeId: string, newName: string) => Promise<boolean>;
-  onDeleteFolder: (nodeId: string) => void;
-}
-
-// Helper function to collect all folder names from the tree
-const getAllFolderNames = (nodes: OrganizationTreeNode[]): string[] => {
-  const names: string[] = [];
-  const traverse = (nodeList: OrganizationTreeNode[]) => {
-    nodeList.forEach((node) => {
-      if (node.type === "folder") {
-        names.push(node.name);
-        if (node.children) {
-          traverse(node.children);
-        }
-      }
-    });
-  };
-  traverse(nodes);
-  return names;
-};
 
 type Props = {
   agentId: number | null;
@@ -104,10 +80,6 @@ const ManagementModal: React.FC<Props> = ({
       },
     })
   );
-
-  const handleDragStart = (event: any) => {
-    const { active } = event;
-  };
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -396,7 +368,6 @@ const ManagementModal: React.FC<Props> = ({
           },
         }}
         modifiers={[restrictToWindowEdges]}
-        onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
         <div className="flex flex-col h-[80vh] w-[80vw] ">

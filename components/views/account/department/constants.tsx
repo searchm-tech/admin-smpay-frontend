@@ -512,6 +512,23 @@ export const EditTreeNodeComponent: React.FC<EditTreeNodeProps> = ({
   );
 };
 
+// Helper function to collect all folder names from the tree
+export const getAllFolderNames = (nodes: OrganizationTreeNode[]): string[] => {
+  const names: string[] = [];
+  const traverse = (nodeList: OrganizationTreeNode[]) => {
+    nodeList.forEach((node) => {
+      if (node.type === "folder") {
+        names.push(node.name);
+        if (node.children) {
+          traverse(node.children);
+        }
+      }
+    });
+  };
+  traverse(nodes);
+  return names;
+};
+
 const classNameObject =
   "h-4 w-4 text-blue-500 hover:text-blue-700 cursor-pointer";
 const classNameLeft = "w-5 h-5 text-gray-400 cursor-pointer";
