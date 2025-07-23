@@ -1,7 +1,7 @@
 import { ApiError, del, get, patch, post, put } from "@/lib/api";
-import { buildQueryParams, convertNoOrderType } from "@/lib/utils";
+import { buildQueryParams } from "@/lib/utils";
 import type { ApiResponseData } from "./types";
-import type { TSMPayUser, TUserInfoResponse } from "@/types/user";
+import type { TSMPayUser } from "@/types/user";
 
 import type {
   RequestAgencyGroupMasterDirect,
@@ -13,11 +13,9 @@ import type {
   RequestUserPwd,
   RequestMailVerify,
   ResponseMailVerify,
-  RequestUserInfo,
   RequestPatchUserInfo,
   UserResponseDto,
 } from "@/types/api/user";
-import { applyNoAscOrder } from "@/utils/sort";
 
 // 비밀번호 재설정 API
 export const postUsersPasswordResetApi = async (
@@ -66,24 +64,6 @@ export const postAgentsUsersPwApi = async (
     const response = await post<null>(
       `/api/v1/agents/${agentId}/users/${userId}/password`,
       { password, phoneNumber: phone, type }
-    );
-    return response;
-  } catch (error) {
-    if (error instanceof ApiError) {
-      throw error;
-    }
-    throw error;
-  }
-};
-
-// 회원 정보 조회 (SAG001)
-export const getUserInfoApi = async (
-  params: RequestUserInfo
-): Promise<TUserInfoResponse> => {
-  try {
-    const { agentId, userId } = params;
-    const response = await get<TUserInfoResponse>(
-      `/service/api/v1/agents/${agentId}/users/${userId}`
     );
     return response;
   } catch (error) {
@@ -238,24 +218,6 @@ export const putAdminAgencyUserStatusApi = async (
     const { userId, agentId, status } = params;
     const response = await put<null>(
       `/admin/api/v1/agents/${agentId}/users/${userId}/status?status=${status}`
-    );
-    return response;
-  } catch (error) {
-    if (error instanceof ApiError) {
-      throw error;
-    }
-    throw error;
-  }
-};
-
-// [최상위 그룹장, 그룹장] 회원 정보 상태 변경(SAG004) API
-export const patchAgencyUserStatusApi = async (
-  params: RequestAgencyUserStatus
-): Promise<null> => {
-  try {
-    const { userId, agentId, status } = params;
-    const response = await patch<null>(
-      `/service/api/v1/agents/${agentId}/users/${userId}/status?status=${status}`
     );
     return response;
   } catch (error) {

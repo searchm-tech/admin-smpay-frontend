@@ -1,6 +1,3 @@
-import { TAgency } from "./agency";
-import { TDepartment } from "./department";
-
 /**
  * 권한
  * - 시스템 관리자 : OPERATIONS_MANAGER(운영관리자), SYSTEM_ADMINISTRATOR(시스템 관리자)
@@ -38,12 +35,3 @@ export type TSignUpMailVerifyResponse = {
 };
 
 export type TResetPwdType = "REGISTER" | "RESET"; // REGISTER : 등록 RESET : 재설정
-
-// 회원 정보 조회 API response type
-export type TUserInfoResponse = {
-  agent: TAgency;
-  user: {
-    user: TSMPayUser & { isDelete: boolean };
-    department: TDepartment;
-  };
-};
