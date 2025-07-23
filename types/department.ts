@@ -44,13 +44,3 @@ export type TDepartmentUser = {
   name: string;
   phoneNumber: string;
 };
-
-// type - 회원 등록 > 회원의 하위 부서 조회 response
-export type TSubDepartmentsResponse = {
-  departmentId: number;
-  agentId: number;
-  parentId: number | null;
-  name: string;
-  displayOrder: number;
-  children: TSubDepartmentsResponse[];
-};

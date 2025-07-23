@@ -9,8 +9,6 @@ import { LabelBullet } from "@/components/composite/label-bullet";
 import { TabSwitch } from "@/components/composite/tab-switch";
 import { Skeleton } from "@/components/ui/skeleton";
 
-import type { TSMPayUser } from "@/types/user";
-
 const MemberRegisterView = () => {
   const { data: session } = useSession();
   const [isDirectRegist, setIsDirectRegist] = useState(false);
@@ -31,14 +29,10 @@ const MemberRegisterView = () => {
         leftLabel="초대 메일 발송"
         rightLabel="직접 등록"
       />
-      {!isDirectRegist && <MailSendSection user={session.user} />}
-      {isDirectRegist && <DirectRegistSection user={session.user} />}
+      {!isDirectRegist && <MailSendSection />}
+      {isDirectRegist && <DirectRegistSection />}
     </div>
   );
 };
 
 export default MemberRegisterView;
-
-export type TViewProps = {
-  user: TSMPayUser;
-};

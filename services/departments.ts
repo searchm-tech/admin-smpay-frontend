@@ -3,7 +3,6 @@ import type {
   TDepartmentFolder,
   TDepartmentResponse,
   TParamsDepartments,
-  TSubDepartmentsResponse,
 } from "@/types/department";
 
 // 대행사 등록 및 수정(명칭 잘못 됨) API - ADG002
@@ -45,15 +44,4 @@ export const getDepartmentsApi = async (
     }
     throw error;
   }
-};
-
-// 하위 부서 조회 API - SAG005
-export const getSubDepartmentsApi = async (
-  agentId: number,
-  userId: number
-): Promise<TSubDepartmentsResponse> => {
-  const response: TSubDepartmentsResponse = await get(
-    `/service/api/v1/agents/${agentId}/users/${userId}/subordinate-departments`
-  );
-  return response;
 };

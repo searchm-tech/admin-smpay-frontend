@@ -3,7 +3,6 @@ import { type ChangeEvent, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useSession } from "next-auth/react";
 
 import {
   DescriptionItem,
@@ -17,12 +16,9 @@ import { InputWithSuffix } from "@/components/composite/input-components";
 import LoadingUI from "@/components/common/Loading";
 import { DescriptionPwd } from "@/components/common/Box";
 
-import ModalDepartment from "./ModalDepartment";
-
 import {
   useMutationAgencySendMail,
   useQueryAgencyAll,
-  useQueryAgencyDomainName,
 } from "@/hooks/queries/agency";
 
 import { getUsersNameCheckApi } from "@/services/user";
@@ -35,21 +31,13 @@ import {
   type DialogContentType,
 } from "./constant";
 
-import type { DepartmentTreeNode } from "@/types/tree";
 import type { TAgency } from "@/types/agency";
-import type { TViewProps } from ".";
 import type { RequestGroupMasterInvite } from "@/types/api/user";
 
-const MailSendSection = ({ user }: TViewProps) => {
+const MailSendSection = () => {
   const router = useRouter();
-  const { data: session } = useSession();
 
   const { data: agencyAllDto = [] } = useQueryAgencyAll();
-
-  // TODO : 수정 필요
-  const { data: agencyInfo } = useQueryAgencyDomainName(
-    session?.user.uniqueCode || ""
-  );
 
   const { mutate: mutateGroupMasterSendMail, isPending: loadingGrpSendMail } =
     useMutationAgencySendMail({
@@ -57,10 +45,7 @@ const MailSendSection = ({ user }: TViewProps) => {
       onError: (error) => setFailDialog(error.message),
     });
 
-  const [departmentNode, setDepartmentNode] =
-    useState<DepartmentTreeNode | null>(null);
   const [selectedAgency, setSelectedAgency] = useState<TAgency | null>(null);
-  const [memberType, setMemberType] = useState("");
   const [emailId, setEmailId] = useState("");
   const [name, setName] = useState("");
   const [enableEmailId, setEnableEmailId] = useState(false);
@@ -71,13 +56,11 @@ const MailSendSection = ({ user }: TViewProps) => {
     null
   );
   const [checkNameLoading, setCheckNameLoading] = useState(false);
-  const [isOpenDepartmentModal, setIsOpenDepartmentModal] = useState(false);
 
   const resetSuccess = () => {
     setDialog("success");
-    setDepartmentNode(null);
+
     setSelectedAgency(null);
-    setMemberType("");
     setEmailId("");
     setName("");
     setEnableEmailId(false);
@@ -85,10 +68,6 @@ const MailSendSection = ({ user }: TViewProps) => {
 
   const handleEmailIdChange = (e: ChangeEvent<HTMLInputElement>) => {
     setEmailId(e.target.value);
-  };
-
-  const handleDepartmentSelect = (node: DepartmentTreeNode) => {
-    setDepartmentNode(node);
   };
 
   const handleEmailCheck = async () => {
@@ -179,13 +158,6 @@ const MailSendSection = ({ user }: TViewProps) => {
   return (
     <section className="py-4">
       {(loadingGrpSendMail || checkNameLoading) && <LoadingUI />}
-
-      {isOpenDepartmentModal && (
-        <ModalDepartment
-          setIsOpen={setIsOpenDepartmentModal}
-          onSelect={handleDepartmentSelect}
-        />
-      )}
 
       {dialog && (
         <ConfirmDialog
