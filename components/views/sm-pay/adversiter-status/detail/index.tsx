@@ -140,7 +140,7 @@ const SmPayAdminAdversiterStatusDetailView = ({ id }: Props) => {
       <div className="flex justify-center gap-4 py-5">
         <Button
           className="w-[150px]"
-          onClick={() => router.push("/sm-pay/admin/adversiter-status")}
+          onClick={() => router.push("/sm-pay/adversiter-status")}
         >
           뒤로
         </Button>

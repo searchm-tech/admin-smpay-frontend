@@ -30,7 +30,7 @@ const RejectSendModal = ({ open, onClose, params }: RejectSendModalProps) => {
     useSmPayAdminOverviewOperatorDecision({
       onSuccess: () => {
         onClose();
-        router.push(`/sm-pay/admin/overview`);
+        router.push(`/sm-pay/overview`);
       },
       onError: (error) => {
         console.error(error);
