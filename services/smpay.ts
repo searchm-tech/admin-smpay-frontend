@@ -22,13 +22,11 @@ import {
   RequestSmPayAdminRead,
   ResponseOverviewForm,
   PrePaymentScheduleDto,
-  ResponseDailyStat,
   ResponseSmPayChargeRecovery,
   ChargeRecoveryParams,
 } from "@/types/api/smpay";
 import type {
   ChargeRuleDto,
-  DailyStatDto,
   SmPayAdvertiserStatusDto,
   SMPayFormHistory,
   OverviewAccountBalanceDto,
@@ -40,32 +38,6 @@ import type {
 import type { SmPayAdvertiserStautsOrderType } from "@/types/smpay";
 
 import { applyNoAscOrder } from "@/utils/sort";
-
-/**
- * 광고주 일 별 성과 조회(28일)(SAG027)
- * - 화면 : IndicatorModal
- */
-export const getSmPayAdvertiserDailyStat = async ({
-  user,
-  advertiserId,
-}: WithAdvertiserId): Promise<DailyStatDto[]> => {
-  const { agentId, userId } = user;
-
-  try {
-    const response = await get<ResponseDailyStat[]>(
-      `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/daily-stat`
-    );
-    return response?.map((item, index) => ({
-      ...item,
-      no: index + 1,
-    }));
-  } catch (error) {
-    if (error instanceof ApiError) {
-      throw error;
-    }
-    throw error;
-  }
-};
 
 /**
  * 광고주 동의 이메일, 문자발송(SAG037)

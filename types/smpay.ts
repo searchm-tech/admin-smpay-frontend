@@ -50,11 +50,3 @@ export type PrePaymentSchedule = {
   maxChargeLimit: number; //  1;
   minChargeLimit: number; // 1; -> 일 최소 충전 한도 값은 없으므로 0으로 해도 되는지
 };
-
-export type SmPayStatIndicator = {
-  operationPeriod: number; // 운영 기간
-  dailyAverageRoas: number; // 일별 평균 ROAS 1.0,
-  monthlyConvAmt: number; // 월별 전환액 1000.0,
-  dailySalesAmt: number; // 일별 매출액 100.0,
-  recommendRoas: number; // 권장 ROAS  0.8,
-};

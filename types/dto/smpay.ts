@@ -1,5 +1,3 @@
-import { ResponseWithPagination } from "../api/common";
-import type { ResponseDailyStat } from "../api/smpay";
 import type { SmPayAdvertiserStatus } from "../smpay";
 
 // SM Pay > 이력 리스트 모달
@@ -14,10 +12,6 @@ export type SMPayFormHistory = {
   advertiserFormId: number;
   advertiserId: number;
 };
-
-export interface DailyStatDto extends ResponseDailyStat {
-  no: number;
-}
 
 export type ChargeRuleDto = {
   standardRoasPercent: number;
