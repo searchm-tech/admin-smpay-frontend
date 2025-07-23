@@ -144,7 +144,7 @@ const TableSection = ({
             userId,
             advertiserFormId,
           } = record;
-          const baseUrl = `/sm-pay/admin/overview/${advertiserId}?agentId=${agentId}&userId=${userId}&formId=${advertiserFormId}`;
+          const baseUrl = `/sm-pay/overview/${advertiserId}?agentId=${agentId}&userId=${userId}&formId=${advertiserFormId}`;
           const url = isOperatorRead ? baseUrl : `${baseUrl}&read=unread`;
 
           return (

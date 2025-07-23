@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { Modal } from "@/components/composite/modal-components";
 import LoadingUI from "@/components/common/Loading";
 
-import StatIndicatorSection from "../../components/StatIndicatorSection";
 import { RuleSectionShow } from "../../components/RuleSection";
 import { ScheduleSectionShow } from "../../components/ScheduleSection";
 import JudgementMemoSection from "../../components/JudgementMemoSection";
@@ -73,14 +72,6 @@ const HistoryDetailModal = ({ onClose, advertiserId, formId }: Props) => {
     initialAmount: formInfo?.initialAmount || 0,
     maxChargeLimit: formInfo?.maxChargeLimit || 0,
     minChargeLimit: formInfo?.minChargeLimit || 0,
-  };
-
-  const statIndicator = {
-    operationPeriod: formInfo?.advertiserOperationPeriod || 0,
-    dailyAverageRoas: formInfo?.advertiserDailyAverageRoas || 0,
-    monthlyConvAmt: formInfo?.advertiserMonthlyConvAmt || 0,
-    dailySalesAmt: formInfo?.advertiserDailySalesAmt || 0,
-    recommendRoas: formInfo?.advertiserRecommendRoasPercent || 0,
   };
 
   const advertiserData: AdvertiserDetailDto = {
@@ -232,11 +223,6 @@ const HistoryDetailModal = ({ onClose, advertiserId, formId }: Props) => {
             </div>
           </section>
         </div>
-
-        <StatIndicatorSection
-          advertiserId={advertiserId}
-          statIndicator={statIndicator}
-        />
 
         <RuleSectionShow
           upChargeRule={upChargeRule}

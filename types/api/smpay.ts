@@ -62,10 +62,6 @@ export type SmPayAdvertiserApplyQuery = RequestWithPagination & {
   orderType: SmPayAdvertiserStatus;
 };
 
-export interface RequestFormId extends WithAdvertiserId {
-  formId: number | string;
-}
-
 export interface RequestSmPayAdminRead extends WithAdvertiserId {
   isOperatorRead: boolean;
 }
@@ -133,55 +129,6 @@ export type ResponseOverviewForm = {
   approvalMemo: string;
   registerDt: string;
   updateDt: string;
-};
-
-/**
- * SM Pay 상세 내용
- * - API : 광고주 smPay 신청 이력 상세 조회(SAG026) response type
- * - API : 광고주 smPay 신청 이력 리스트 조회(SAG025)
- */
-export type ResponseSMPayDetail = {
-  chargeRules: ChargeRule[];
-  advertiserFormId: number;
-  advertiserId: number;
-  advertiserStatus: SmPayAdvertiserStatus;
-  advertiserName: string;
-  advertiserNickname: string;
-  advertiserLoginId: string;
-  advertiserCustomerId: number;
-  advertiserRepresentativeName: string;
-  advertiserPhoneNumber: string;
-  advertiserEmailAddress: string;
-  advertiserOperationPeriod: number;
-  advertiserDailyAverageRoas: number;
-  advertiserMonthlyConvAmt: number;
-  advertiserDailySalesAmt: number;
-  advertiserRecommendRoasPercent: number;
-  advertiserStandardRoasPercent: number;
-  advertiserRejectDescription: string;
-  initialAmount: number;
-  maxChargeLimit: number;
-  minChargeLimit: number;
-  reviewerMemo: string;
-  approvalMemo: string;
-  registerDt: string;
-  updateDt: string;
-};
-
-// 광고주 일별 통계
-export type ResponseDailyStat = {
-  advertiserId: number; // 광고주 UID
-  impCnt: number; // 노출 수
-  clkCnt: number; // 클릭 수
-  salesAmt: number; // 광고비
-  avgRnk: number; // 평균 노출 순위
-  convAmt: number; // 전환 매출
-  cpc: number; // 클릭 단가
-  ccnt: number; // 전환 수
-  crto: number; // 전환율
-  cpConv: number; // 전환당 비용
-  ror: number; // roas
-  date: string; // 날짜
 };
 
 // 충전/회수 이력 리스트 조회(AAG034) response type

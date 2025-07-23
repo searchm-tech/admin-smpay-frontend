@@ -6,12 +6,7 @@ import { Button } from "@/components/ui/button";
 import Table from "@/components/composite/table";
 import { LinkTextButton } from "@/components/composite/button-components";
 
-import {
-  AdvertiserAgreementSendDialog,
-  PauseModal,
-  RejectDialog,
-  RejectOperationModal,
-} from "../dialog";
+import { PauseModal, RejectDialog, RejectOperationModal } from "../dialog";
 
 import {
   SmPayAdvertiserStatusLabel,
@@ -124,7 +119,7 @@ const TableSection = ({
       agentId,
       userId,
     } = record;
-    const url = `/sm-pay/admin/adversiter-status/${advertiserId}?formId=${advertiserFormId}&advertiserCustomerId=${advertiserCustomerId}&agentId=${agentId}&userId=${userId}`;
+    const url = `/sm-pay/adversiter-status/${advertiserId}?formId=${advertiserFormId}&advertiserCustomerId=${advertiserCustomerId}&agentId=${agentId}&userId=${userId}`;
     router.push(url);
   };
 
@@ -357,13 +352,6 @@ const TableSection = ({
       </div>
 
       <div className="overflow-x-auto">
-        {applySubmitData && (
-          <AdvertiserAgreementSendDialog
-            onClose={() => setApplySubmitData(null)}
-            onConfirm={() => setApplySubmitData(null)}
-            data={applySubmitData}
-          />
-        )}
         <Table<SmPayAdvertiserStatusDto>
           columns={columns}
           rowKey="no"

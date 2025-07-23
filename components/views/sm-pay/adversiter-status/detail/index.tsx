@@ -35,8 +35,6 @@ const SmPayAdminAdversiterStatusDetailView = ({ id }: Props) => {
   const userId = searchParams.get("userId");
   const formId = searchParams.get("formId");
 
-  const [rejectModalOpen, setRejectModalOpen] = useState(false);
-
   const [upChargeRule, setUpChargeRule] = useState<ChargeRule>({
     standardRoasPercent: 0,
     rangeType: "UP",
