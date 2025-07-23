@@ -8,7 +8,6 @@ import {
   getAgencyAllApi,
   getAgencyApi,
   getAgencyDetail,
-  getAgencyDomainNameApi,
   getSmPayAdminAgencyList,
   getSmPayAdminChargeRecoveryAgencyList,
   patchAgencyStatus,
@@ -85,19 +84,6 @@ export const useMutationAgencyStatus = (
 ) => {
   return useMutation<null, Error, RequestAgencyStatus>({
     mutationFn: (params: RequestAgencyStatus) => patchAgencyStatus(params),
-    ...options,
-  });
-};
-
-// 대행사 도메인 이름 조회 query
-export const useQueryAgencyDomainName = (
-  code: string,
-  options?: UseQueryOptions<TAgency, Error>
-) => {
-  return useQuery<TAgency>({
-    queryKey: ["agencyDomainName", code],
-    queryFn: () => getAgencyDomainNameApi(code),
-    enabled: !!code,
     ...options,
   });
 };

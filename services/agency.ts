@@ -27,21 +27,6 @@ export async function getAgencyAllApi(): Promise<ResponseAgencyAll[]> {
   }
 }
 
-// 대행사ㅣ 도메인 이름 조회 (AAG005)
-export const getAgencyDomainNameApi = async (
-  code: string
-): Promise<TAgency> => {
-  try {
-    const response: TAgency = await get(`/api/v1/agents?agentCode=${code}`);
-    return response;
-  } catch (error) {
-    if (error instanceof ApiError) {
-      throw error;
-    }
-    throw error;
-  }
-};
-
 // 대행사 페이지네이션 리스트 조회 (AAG003)
 export async function getAgencyApi(
   params: RequestAgencys
