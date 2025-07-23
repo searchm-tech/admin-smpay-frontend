@@ -124,7 +124,7 @@ const TableSection = ({
       agentId,
       userId,
     } = record;
-    const url = `/sm-pay/admin/adversiter-status/${advertiserId}?formId=${advertiserFormId}&advertiserCustomerId=${advertiserCustomerId}&agentId=${agentId}&userId=${userId}`;
+    const url = `/sm-pay/adversiter-status/${advertiserId}?formId=${advertiserFormId}&advertiserCustomerId=${advertiserCustomerId}&agentId=${agentId}&userId=${userId}`;
     router.push(url);
   };
 

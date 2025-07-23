@@ -12,7 +12,6 @@ import type {
   ResponseSmPayStatusCount,
   ResponseSmPayAdminAudit,
   ResponseOverviewForm,
-  ResponseSMPayDetail,
   ResponseSmPayChargeRecovery,
   ChargeRecoveryParams,
   PrePaymentScheduleDto,
@@ -22,8 +21,6 @@ import { useAuthQuery } from "../useAuthQuery";
 import { useAuthMutation } from "../useAuthMutation";
 import {
   getSmPayAdvertiserDailyStat,
-  getSmPayFormDetail,
-  getSmPayApplyList,
   getSmPayAdminAuditList,
   getSmPayAdminOverviewChargeRule,
   patchSmPayAdminOverviewAlarm,
@@ -40,7 +37,6 @@ import {
   getSmPayAdminOverviewStatusList,
   getSmPayAdminOverviewStatusCount,
   getSmPayAdminChargeRecoveryList,
-  getSmPayAdvertiserDetail,
 } from "@/services/smpay";
 
 import type {
@@ -53,40 +49,12 @@ import type {
   AdvertiserDetailDto,
 } from "@/types/dto/smpay";
 
-// 광고주 detail 조회(SAG024) query
-export const useSmPayAdvertiserDetail = (advertiserId: number) => {
-  return useAuthQuery<AdvertiserDetailDto>({
-    queryKey: ["/smpay/advertiser-detail", advertiserId],
-    queryFn: (user: RequestAgentUser) =>
-      getSmPayAdvertiserDetail({ user, advertiserId }),
-  });
-};
-
 // 광고주 일 별 성과 조회(28일)(SAG027) query
 export const useSmPayAdvertiserDailyStat = (advertiserId: number) => {
   return useAuthQuery<DailyStatDto[]>({
     queryKey: ["/smpay/advertiser-daily-stat", advertiserId],
     queryFn: (user: RequestAgentUser) =>
       getSmPayAdvertiserDailyStat({ user, advertiserId }),
-  });
-};
-
-// 광고주 smPay 신청 이력 상세 조회(SAG026) query
-export const useSmPayFormDetail = (advertiserId: number, formId: number) => {
-  return useAuthQuery<ResponseSMPayDetail>({
-    queryKey: ["/smpay/detail", advertiserId, formId],
-    queryFn: (user: RequestAgentUser) =>
-      getSmPayFormDetail({ user, advertiserId, formId }),
-    enabled: !!advertiserId && !!formId && !isNaN(formId),
-  });
-};
-
-// 광고주 smPay 신청 이력 리스트 조회(SAG025) query
-export const useSmPayApplyList = (advertiserId: number) => {
-  return useAuthQuery<SMPayFormHistory[]>({
-    queryKey: ["/smpay/apply-list", advertiserId],
-    queryFn: (user: RequestAgentUser) =>
-      getSmPayApplyList({ user, advertiserId }),
   });
 };
 

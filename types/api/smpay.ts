@@ -62,10 +62,6 @@ export type SmPayAdvertiserApplyQuery = RequestWithPagination & {
   orderType: SmPayAdvertiserStatus;
 };
 
-export interface RequestFormId extends WithAdvertiserId {
-  formId: number | string;
-}
-
 export interface RequestSmPayAdminRead extends WithAdvertiserId {
   isOperatorRead: boolean;
 }
@@ -116,39 +112,6 @@ export type ResponseOverviewForm = {
   advertiserStatus: SmPayAdvertiserStatus;
   advertiserName: string;
   advertiserNickname: string;
-  advertiserRepresentativeName: string;
-  advertiserPhoneNumber: string;
-  advertiserEmailAddress: string;
-  advertiserOperationPeriod: number;
-  advertiserDailyAverageRoas: number;
-  advertiserMonthlyConvAmt: number;
-  advertiserDailySalesAmt: number;
-  advertiserRecommendRoasPercent: number;
-  advertiserStandardRoasPercent: number;
-  advertiserRejectDescription: string;
-  initialAmount: number;
-  maxChargeLimit: number;
-  minChargeLimit: number;
-  reviewerMemo: string;
-  approvalMemo: string;
-  registerDt: string;
-  updateDt: string;
-};
-
-/**
- * SM Pay 상세 내용
- * - API : 광고주 smPay 신청 이력 상세 조회(SAG026) response type
- * - API : 광고주 smPay 신청 이력 리스트 조회(SAG025)
- */
-export type ResponseSMPayDetail = {
-  chargeRules: ChargeRule[];
-  advertiserFormId: number;
-  advertiserId: number;
-  advertiserStatus: SmPayAdvertiserStatus;
-  advertiserName: string;
-  advertiserNickname: string;
-  advertiserLoginId: string;
-  advertiserCustomerId: number;
   advertiserRepresentativeName: string;
   advertiserPhoneNumber: string;
   advertiserEmailAddress: string;

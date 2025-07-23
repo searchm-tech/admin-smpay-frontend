@@ -16,13 +16,11 @@ import type {
 } from "@/types/api/common";
 import {
   RequestSmPayAdvertiserStatus,
-  RequestFormId,
   ResponseSmPayAdvertiserStatus,
   ResponseSmPayStatusCount,
   ResponseSmPayAdminAudit,
   RequestSmPayAdminRead,
   ResponseOverviewForm,
-  ResponseSMPayDetail,
   PrePaymentScheduleDto,
   ResponseDailyStat,
   ResponseSmPayChargeRecovery,
@@ -37,38 +35,11 @@ import type {
   ApprovalMemoDto,
   ReviewerMemoDto,
   AdvertiserDetailDto,
-  ResponseAdvertiserDetail,
 } from "@/types/dto/smpay";
 
 import type { SmPayAdvertiserStautsOrderType } from "@/types/smpay";
 
 import { applyNoAscOrder } from "@/utils/sort";
-
-/**
- * 광고주 detail 조회(SAG024)
- * - 화면 : [대행사] SM Pay 관리 > 목록 리스트 > 정보 변경 모달
- */
-export const getSmPayAdvertiserDetail = async ({
-  user,
-  advertiserId,
-}: WithAdvertiserId): Promise<AdvertiserDetailDto> => {
-  const { agentId, userId } = user;
-
-  try {
-    const response = await get<ResponseAdvertiserDetail>(
-      `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/details`
-    );
-    return {
-      ...response.advertiser,
-      description: response.description,
-    };
-  } catch (error) {
-    if (error instanceof ApiError) {
-      throw error;
-    }
-    throw error;
-  }
-};
 
 /**
  * 광고주 일 별 성과 조회(28일)(SAG027)
@@ -88,66 +59,6 @@ export const getSmPayAdvertiserDailyStat = async ({
       ...item,
       no: index + 1,
     }));
-  } catch (error) {
-    if (error instanceof ApiError) {
-      throw error;
-    }
-    throw error;
-  }
-};
-
-/**
- * 광고주 smPay 신청 이력 상세 조회(SAG026) api
- * 화면 > SM Pay 신청 상세
- */
-
-export const getSmPayFormDetail = async ({
-  user,
-  advertiserId,
-  formId,
-}: RequestFormId): Promise<ResponseSMPayDetail> => {
-  const { agentId, userId } = user;
-
-  try {
-    const response = await get<ResponseSMPayDetail>(
-      `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/form/${formId}`
-    );
-    return response;
-  } catch (error) {
-    if (error instanceof ApiError) {
-      throw error;
-    }
-    throw error;
-  }
-};
-
-/**
- * 광고주 smPay 신청 이력 리스트 조회(SAG025)
- */
-export const getSmPayApplyList = async ({
-  user,
-  advertiserId,
-}: WithAdvertiserId): Promise<SMPayFormHistory[]> => {
-  const { agentId, userId } = user;
-
-  try {
-    const response = await get<ResponseSMPayDetail[]>(
-      `/service/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/apply-form-list?`
-    );
-
-    const content: SMPayFormHistory[] = response.map((item, index) => ({
-      no: index + 1,
-      advertiserCustomerId: item.advertiserCustomerId.toString(),
-      advertiserLoginId: item.advertiserLoginId,
-      advertiserNickname: item.advertiserNickname,
-      advertiserName: item.advertiserName,
-      advertiserStatus: item.advertiserStatus,
-      registerOrUpdateDt: item.registerDt || "",
-      advertiserFormId: item.advertiserFormId,
-      advertiserId: item.advertiserId,
-    }));
-
-    return content;
   } catch (error) {
     if (error instanceof ApiError) {
       throw error;

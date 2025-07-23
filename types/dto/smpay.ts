@@ -97,12 +97,6 @@ export type AdvertiserDescriptionDto = {
   advertiserStatusMemosId: string;
 };
 
-// 광고주 detail 조회(SAG024) response type
-export type ResponseAdvertiserDetail = {
-  advertiser: AdvertiserDetailDto;
-  description: AdvertiserDescriptionDto;
-};
-
 // 광고주 detail 조회 DTO
 export type AdvertiserDetailDto = {
   advertiserId: number;
