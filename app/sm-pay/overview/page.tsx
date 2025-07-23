@@ -14,14 +14,14 @@ export default function SmPayAdminOverviewPage() {
 const breadcrumbItems: DashboardSubItem[] = [
   {
     title: "SM Pay 관리",
-    url: "/sm-pay/admin",
+    url: "/sm-pay",
   },
   {
     title: "운영 검토 요청",
-    url: "/sm-pay/admin/overview",
+    url: "/sm-pay/overview",
   },
   {
     title: "운영 검토 요청 목록",
-    url: "/sm-pay/admin/overview",
+    url: "/sm-pay/overview",
   },
 ];

@@ -22,7 +22,7 @@ const ApproveDialog = ({ open, onClose, params }: Props) => {
     useSmPayAdminOverviewOperatorDecision({
       onSuccess: () => {
         onClose();
-        router.push(`/sm-pay/admin/overview`);
+        router.push(`/sm-pay/overview`);
       },
       onError: (error) => {
         console.error(error);

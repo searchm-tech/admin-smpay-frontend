@@ -34,14 +34,14 @@ export default function SmPayAdminAdversiterStatusPage({
 const breadcrumbItems: DashboardSubItem[] = [
   {
     title: "SM Pay 관리",
-    url: "/sm-pay/admin",
+    url: "/sm-pay",
   },
   {
     title: "광고주 운영 현황",
-    url: "/sm-pay/admin/adversiter-status",
+    url: "/sm-pay/adversiter-status",
   },
   {
     title: "광고주 운영 현황 상세",
-    url: "/sm-pay/admin/adversiter-status/[slug]",
+    url: "/sm-pay/adversiter-status/[slug]",
   },
 ];

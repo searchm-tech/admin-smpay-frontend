@@ -36,14 +36,14 @@ export default async function SmPayAdminOverviewDetailPage({
 const breadcrumbItems: DashboardSubItem[] = [
   {
     title: "SM Pay 관리",
-    url: "/sm-pay/admin",
+    url: "/sm-pay",
   },
   {
     title: "운영 검토 요청",
-    url: "/sm-pay/admin/overview",
+    url: "/sm-pay/overview",
   },
   {
     title: "운영 검토 요청 상세",
-    url: "/sm-pay/admin/overview/[slug]",
+    url: "/sm-pay/overview/[slug]",
   },
 ];

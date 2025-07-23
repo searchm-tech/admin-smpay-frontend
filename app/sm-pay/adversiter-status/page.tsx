@@ -14,10 +14,10 @@ export default function Page() {
 const breadcrumbItems: DashboardSubItem[] = [
   {
     title: "SM Pay 관리",
-    url: "/sm-pay/admin",
+    url: "/sm-pay",
   },
   {
     title: "광고주 운영 현황",
-    url: "/sm-pay/admin/adversiter-status",
+    url: "/sm-pay/adversiter-status",
   },
 ];
