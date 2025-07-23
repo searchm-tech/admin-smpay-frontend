@@ -148,8 +148,8 @@ const TableSection = ({
       dataIndex: "registerDt",
       sorter: true,
       align: "center",
-      render: (value, record) => {
-        return <span>{formatDate(record.registerDt, "yyyy-MM-dd")}</span>;
+      render: (value) => {
+        return <span>{formatDate(value, "yyyy-MM-dd")}</span>;
       },
     },
   ];

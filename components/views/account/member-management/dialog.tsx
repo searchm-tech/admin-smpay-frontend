@@ -3,7 +3,6 @@ import LoadingUI from "@/components/common/Loading";
 import { ConfirmDialog } from "@/components/composite/modal-components";
 import {
   useMutationAgencyUserDelete,
-  useMutationAgencyUserStatus,
   useMutationAdminAgencyUserStatus,
 } from "@/hooks/queries/user";
 
@@ -72,33 +71,6 @@ interface StatusDialogProps extends DialogProps {
   params: RequestAgencyUserStatus;
 }
 
-const StatusDialog = ({ params, onClose, onConfirm }: StatusDialogProps) => {
-  const { mutate: updateUserStatus, isPending } = useMutationAgencyUserStatus({
-    onSuccess: () => {
-      onConfirm();
-      onClose();
-    },
-  });
-
-  const handleSubmit = () => updateUserStatus(params);
-
-  return (
-    <Fragment>
-      {isPending && <LoadingUI />}
-      <ConfirmDialog
-        open
-        onClose={onClose}
-        onConfirm={handleSubmit}
-        content={
-          <div className="text-center">
-            {statusDialogContent[params.status]}
-          </div>
-        }
-      />
-    </Fragment>
-  );
-};
-
 const StatusAdminDialog = ({
   params,
   onClose,
@@ -131,4 +103,4 @@ const StatusAdminDialog = ({
   );
 };
 
-export { DeleteDialog, StatusDialog, StatusAdminDialog };
+export { DeleteDialog, StatusAdminDialog };

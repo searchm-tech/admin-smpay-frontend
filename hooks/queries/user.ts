@@ -9,17 +9,15 @@ import {
   getUsersMailVerifyApi,
   postAgentsUsersPwApi,
   postUsersPasswordResetApi,
-  getUserInfoApi,
   getAdminUserInfoApi,
   patchUserInfoApi,
   postAgencyGroupMasterApi,
   getAdminAgencyUsersListApi,
-  patchAgencyUserStatusApi,
   delAgencyUserApi,
   putAdminAgencyUserStatusApi,
 } from "@/services/user";
 import type { ApiResponseData } from "@/services/types";
-import type { TSMPayUser, TUserInfoResponse } from "@/types/user";
+import type { TSMPayUser } from "@/types/user";
 
 import type {
   RequestAgencyGroupMasterDirect,
@@ -30,7 +28,6 @@ import type {
   RequestUserPwd,
   RequestMailVerify,
   ResponseMailVerify,
-  RequestUserInfo,
   RequestPatchUserInfo,
 } from "@/types/api/user";
 
@@ -63,19 +60,6 @@ export const useMutationAgentsUsersPw = (
 ) => {
   return useMutation({
     mutationFn: (params: RequestUserPwd) => postAgentsUsersPwApi(params),
-    ...options,
-  });
-};
-
-// 회원 정보 조회 (SAG001) query
-export const useQueryUserInfo = (
-  params: RequestUserInfo,
-  options?: UseQueryOptions<TUserInfoResponse, Error>
-) => {
-  return useQuery({
-    queryKey: ["userInfo", params],
-    queryFn: () => getUserInfoApi(params),
-    enabled: !!params.agentId && !!params.userId,
     ...options,
   });
 };
@@ -114,17 +98,6 @@ export const useMutationAgencyGroupMaster = (
   return useMutation({
     mutationFn: (params: RequestAgencyGroupMasterDirect) =>
       postAgencyGroupMasterApi(params),
-    ...options,
-  });
-};
-
-// [최상위 그룹장, 그룹장] 회원 정보 상태 변경(SAG004) mutation
-export const useMutationAgencyUserStatus = (
-  options?: UseMutationOptions<null, Error, RequestAgencyUserStatus>
-) => {
-  return useMutation({
-    mutationFn: (params: RequestAgencyUserStatus) =>
-      patchAgencyUserStatusApi(params),
     ...options,
   });
 };

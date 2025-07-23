@@ -15,7 +15,6 @@ type DialogProps = {
 /**
  * 회원 상태 변경 모달
  */
-
 interface StatusDialogProps extends DialogProps {
   params: RequestAgencyStatus;
 }

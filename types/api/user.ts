@@ -53,12 +53,6 @@ export type RequestUserPwd = {
   type: TResetPwdType;
 };
 
-// 대행사 회원 정보 조회 request type
-export type RequestUserInfo = {
-  agentId: number;
-  userId: number;
-};
-
 // 기본 정보 변경 (U004) request type
 export type RequestPatchUserInfo = {
   userId: number;
