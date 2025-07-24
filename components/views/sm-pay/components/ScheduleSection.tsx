@@ -1,4 +1,3 @@
-import { NumberInput } from "@/components/composite/input-components";
 import {
   Descriptions,
   DescriptionItem,
@@ -47,63 +46,6 @@ export const ScheduleSectionShow = ({ prePaymentSchedule }: ShowProps) => {
           <span className="text-blue-600">
             {prePaymentSchedule?.maxChargeLimit.toLocaleString()}원
           </span>
-        </DescriptionItem>
-      </Descriptions>
-    </section>
-  );
-};
-
-type WriteProps = {
-  prePaymentSchedule: PrePaymentSchedule;
-  handleScheduleChange: (value: PrePaymentSchedule) => void;
-};
-
-export const ScheduleSectionWrite = ({
-  prePaymentSchedule,
-  handleScheduleChange,
-}: WriteProps) => {
-  return (
-    <section>
-      <Header />
-
-      <Descriptions columns={1}>
-        <DescriptionItem label="충전 스케쥴">
-          <span>1일 1회 AM 04:00</span>
-        </DescriptionItem>
-        <DescriptionItem label="최초 충전 금액 설정">
-          <div className="flex items-center gap-2">
-            <NumberInput
-              className="max-w-[500px]"
-              value={prePaymentSchedule?.initialAmount || undefined}
-              placeholder="10,000원 이상 입력해주세요."
-              onChange={(e) =>
-                handleScheduleChange &&
-                handleScheduleChange({
-                  ...(prePaymentSchedule || {}),
-                  initialAmount: Number(e) || 0,
-                } as PrePaymentSchedule)
-              }
-            />
-            원
-          </div>
-        </DescriptionItem>
-
-        <DescriptionItem label="일 최대 충전 한도">
-          <div className="flex items-center gap-2">
-            <NumberInput
-              className="max-w-[500px]"
-              placeholder="최초 충전금액 이상으로 입력해주세요."
-              value={prePaymentSchedule?.maxChargeLimit || undefined}
-              onChange={(e) =>
-                handleScheduleChange &&
-                handleScheduleChange({
-                  ...(prePaymentSchedule || {}),
-                  maxChargeLimit: Number(e) || 0,
-                } as PrePaymentSchedule)
-              }
-            />
-            원
-          </div>
         </DescriptionItem>
       </Descriptions>
     </section>

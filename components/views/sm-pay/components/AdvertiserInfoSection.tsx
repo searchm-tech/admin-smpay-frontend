@@ -12,7 +12,10 @@ import { Modal } from "@/components/composite/modal-components";
 import Table from "@/components/composite/table";
 import { LinkTextButton } from "@/components/composite/button-components";
 
-import HistoryDetailModal from "./HistoryDetailModal";
+import GuidSection, {
+  RejectDescription,
+  RejectOperationDescription,
+} from "../components/GuideSection";
 
 import {
   formatBusinessNumber,
@@ -22,60 +25,60 @@ import {
 import { SmPayAdvertiserStatusLabel } from "@/constants/status";
 import { useSmPayAdminOverviewApplyFormList } from "@/hooks/queries/sm-pay";
 import { useQueryAgencyDetail } from "@/hooks/queries/agency";
+import { useQueryAdminUserInfo } from "@/hooks/queries/user";
 
 import type { TableProps } from "@/types/table";
 import type { SmPayAdvertiserStatus } from "@/types/smpay";
-import type { SMPayFormHistory, AdvertiserDetailDto } from "@/types/dto/smpay";
-import { useQueryAdminUserInfo } from "@/hooks/queries/user";
-import GuidSection, {
-  RejectDescription,
-  RejectOperationDescription,
-} from "../../components/GuideSection";
+import type { SMPayFormHistory } from "@/types/dto/smpay";
+import type { ResponseOverviewForm } from "@/types/api/smpay";
+import HistoryDetailModal from "./HistoryDetailModal";
 
 type Props = {
-  advertiserData?: AdvertiserDetailDto;
+  advertiserData?: ResponseOverviewForm;
   isShowHistory?: boolean;
   isShowAgentInfo?: boolean;
+  agentId: number;
+  userId: number;
 };
 
 const AdvertiserInfoSection = ({
   advertiserData,
   isShowHistory = true,
   isShowAgentInfo = true,
+  agentId,
+  userId,
 }: Props) => {
   const [isHistoryModal, setIsHistoryModal] = useState(false);
 
   const { data: dataSource } = useSmPayAdminOverviewApplyFormList(
     advertiserData?.advertiserId || 0,
-    advertiserData?.agentId || 0,
-    advertiserData?.userId || 0
+    agentId,
+    userId
   );
 
-  const { data: agencyData } = useQueryAgencyDetail(
-    advertiserData?.agentId || 0
-  );
+  const { data: agencyData } = useQueryAgencyDetail(agentId);
 
   const { data: userInfo } = useQueryAdminUserInfo({
-    userId: Number(advertiserData?.userId),
+    userId: Number(userId),
   });
 
   return (
     <div>
       {!["REJECT", "OPERATION_REJECT"].includes(
-        advertiserData?.status || ""
+        advertiserData?.advertiserStatus || ""
       ) && <GuidSection viewType="master-judgement" />}
 
-      {advertiserData?.status === "REJECT" && (
+      {advertiserData?.advertiserStatus === "REJECT" && (
         <RejectDescription
-          description={advertiserData?.description.description || ""}
-          date={""}
+          description={advertiserData?.advertiserRejectDescription || ""}
+          date={advertiserData?.updateDt || ""}
         />
       )}
 
-      {advertiserData?.status === "OPERATION_REJECT" && (
+      {advertiserData?.advertiserStatus === "OPERATION_REJECT" && (
         <RejectOperationDescription
-          description={advertiserData?.description.description || ""}
-          date={""}
+          description={advertiserData?.advertiserRejectDescription || ""}
+          date={advertiserData?.updateDt || ""}
         />
       )}
 
@@ -106,7 +109,7 @@ const AdvertiserInfoSection = ({
           <DescriptionItem label="광고주 상태">
             <Label>
               {advertiserData &&
-                SmPayAdvertiserStatusLabel[advertiserData.status]}
+                SmPayAdvertiserStatusLabel[advertiserData.advertiserStatus]}
             </Label>
           </DescriptionItem>
         </Descriptions>
@@ -148,25 +151,26 @@ const AdvertiserInfoSection = ({
           </div>
           <Descriptions columns={1}>
             <DescriptionItem label="광고주명">
-              <Label>{advertiserData?.name}</Label>
+              <Label>{advertiserData?.advertiserName}</Label>
             </DescriptionItem>
             <DescriptionItem label="대표자명">
-              <Label>{advertiserData?.representativeName}</Label>
+              <Label>{advertiserData?.advertiserRepresentativeName}</Label>
             </DescriptionItem>
             <DescriptionItem label="사업자 등록번호">
               <Label>
-                {formatBusinessNumber(
+                {/* TODO : 나중에 서버에게 요청 */}
+                {/* {formatBusinessNumber(
                   advertiserData?.businessRegistrationNumber || ""
-                )}
+                )} */}
               </Label>
             </DescriptionItem>
             <DescriptionItem label="광고주 휴대폰 번호">
               <Label>
-                {formatPhoneNumber(advertiserData?.phoneNumber || "")}
+                {formatPhoneNumber(advertiserData?.advertiserPhoneNumber || "")}
               </Label>
             </DescriptionItem>
             <DescriptionItem label="광고주 이메일 주소">
-              <Label>{advertiserData?.emailAddress}</Label>
+              <Label>{advertiserData?.advertiserEmailAddress}</Label>
             </DescriptionItem>
           </Descriptions>
         </div>
@@ -179,7 +183,7 @@ export default AdvertiserInfoSection;
 
 type HistoryModalProps = {
   onClose: () => void;
-  advertiserData?: AdvertiserDetailDto;
+  advertiserData?: ResponseOverviewForm;
   dataSource: SMPayFormHistory[];
 };
 

@@ -188,6 +188,7 @@ export const patchSmPayAdminOverviewAlarm = async ({
 /**
  * 광고주 detail 조회 (AAG020)
  * - 화면 : [시스템 관리자] SM Pay 관리 > 운영 검토 요청 상세
+ * - TODO : 불필요한 API
  */
 export const getSmPayAdminOverviewDetail = async (
   params: UserAgentAdvertiserId
