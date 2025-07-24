@@ -1,5 +1,3 @@
-import { Textarea } from "@/components/ui/textarea";
-
 import MemoBox from "@/components/common/MemoBox";
 
 import { HelpIcon } from "@/components/composite/icon-components";
@@ -9,12 +7,10 @@ import { TooltipHover } from "@/components/composite/tooltip-components";
 import { TOOLTIP_CONTENT } from "@/constants/hover";
 
 type Props = {
-  type?: "show" | "write";
   text?: string;
-  handleText?: (value: string) => void;
 };
 
-const JudgementMemoSection = ({ type, text, handleText }: Props) => {
+const JudgementMemoSection = ({ text }: Props) => {
   return (
     <section>
       <div className="flex items-center gap-2 py-4">
@@ -28,16 +24,7 @@ const JudgementMemoSection = ({ type, text, handleText }: Props) => {
         />
       </div>
 
-      {type === "write" && (
-        <Textarea
-          value={text}
-          size={10}
-          onChange={(e) => handleText && handleText(e.target.value)}
-          placeholder="선결제 필요 사유 등 광고주와 논의된 조건이나 특이사항을 500자 이내로 입력해주세요."
-        />
-      )}
-
-      {type === "show" && <MemoBox text={text || ""} />}
+      <MemoBox text={text || ""} />
     </section>
   );
 };

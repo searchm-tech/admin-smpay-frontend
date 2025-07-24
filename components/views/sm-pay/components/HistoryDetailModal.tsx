@@ -5,11 +5,11 @@ import { useEffect, useState } from "react";
 import { Modal } from "@/components/composite/modal-components";
 import LoadingUI from "@/components/common/Loading";
 
-import { RuleSectionShow } from "../../components/RuleSection";
-import { ScheduleSectionShow } from "../../components/ScheduleSection";
-import JudgementMemoSection from "../../components/JudgementMemoSection";
-import OperationMemoSection from "../../components/OperationMemoSection";
-import { RejectDialog } from "../../dialog";
+import { RuleSectionShow } from "./RuleSection";
+import { ScheduleSectionShow } from "./ScheduleSection";
+import JudgementMemoSection from "./JudgementMemoSection";
+import OperationMemoSection from "./OperationMemoSection";
+import { RejectDialog } from "../dialog";
 
 import { useSmPayAdminOverviewApplyFormDetail } from "@/hooks/queries/sm-pay";
 import { useSearchParams } from "next/navigation";
@@ -229,8 +229,8 @@ const HistoryDetailModal = ({ onClose, advertiserId, formId }: Props) => {
           downChargeRule={downChargeRule}
         />
         <ScheduleSectionShow prePaymentSchedule={prePaymentSchedule} />
-        <JudgementMemoSection type="show" text={formInfo?.reviewerMemo || ""} />
-        <OperationMemoSection type="show" text={formInfo?.approvalMemo || ""} />
+        <JudgementMemoSection text={formInfo?.reviewerMemo || ""} />
+        <OperationMemoSection text={formInfo?.approvalMemo || ""} />
       </div>
     </Modal>
   );

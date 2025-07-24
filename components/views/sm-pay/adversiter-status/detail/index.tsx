@@ -22,7 +22,7 @@ import {
 import AccountSection from "../../components/AccountSection";
 import LoadingUI from "@/components/common/Loading";
 import type { ChargeRule } from "@/types/smpay";
-import AdvertiserInfoSection from "./AdvertiserInfoSection";
+import AdvertiserInfoSection from "../../components/AdvertiserInfoSection";
 
 type Props = {
   id: string;
@@ -58,12 +58,6 @@ const SmPayAdminAdversiterStatusDetailView = ({ id }: Props) => {
   const { data: prePaymentScheduleData, isPending: loadingPrePaymentSchedule } =
     useSmPayAdminOverviewPrePaymentSchedule(Number(id));
 
-  const { data: smpayInfo, isPending: loadingSmpayInfo } = useSmPayAdminDetail(
-    Number(id),
-    Number(agentId),
-    Number(userId)
-  );
-
   const { data: reviewerMemo, isPending: loadingReviewerMemo } =
     useSmPayAdminOverviewReviewerMemo(Number(id));
 
@@ -77,10 +71,7 @@ const SmPayAdminAdversiterStatusDetailView = ({ id }: Props) => {
   };
 
   const isLoading =
-    loadingSmpayInfo ||
-    loadingApprovalMemo ||
-    loadingPrePaymentSchedule ||
-    loadingReviewerMemo;
+    loadingApprovalMemo || loadingPrePaymentSchedule || loadingReviewerMemo;
 
   useEffect(() => {
     if (formInfo) {
@@ -115,9 +106,9 @@ const SmPayAdminAdversiterStatusDetailView = ({ id }: Props) => {
       {isLoading && <LoadingUI />}
 
       <AdvertiserInfoSection
-        advertiserData={smpayInfo}
-        description={formInfo?.advertiserRejectDescription || ""}
-        date={formInfo?.registerDt || ""}
+        advertiserData={formInfo}
+        agentId={Number(agentId)}
+        userId={Number(userId)}
       />
 
       <AccountSection accounList={formInfo?.accounts || []} />
@@ -127,14 +118,8 @@ const SmPayAdminAdversiterStatusDetailView = ({ id }: Props) => {
         downChargeRule={downChargeRule}
       />
       <ScheduleSectionShow prePaymentSchedule={prePaymentSchedule} />
-      <JudgementMemoSection
-        type="show"
-        text={reviewerMemo?.description || ""}
-      />
-      <OperationMemoSection
-        type="show"
-        text={approvalMemo?.description || ""}
-      />
+      <JudgementMemoSection text={reviewerMemo?.description || ""} />
+      <OperationMemoSection text={approvalMemo?.description || ""} />
       <div className="flex justify-center gap-4 py-5">
         <Button
           className="w-[150px]"

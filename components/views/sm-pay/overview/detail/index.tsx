@@ -11,7 +11,7 @@ import JudgementMemoSection from "@/components/views/sm-pay/components/Judgement
 import OperationAccountStatusSection from "@/components/views/sm-pay/components/OperationAccountStatusSection";
 import { RuleSectionShow } from "@/components/views/sm-pay/components/RuleSection";
 import { ScheduleSectionShow } from "@/components/views/sm-pay/components/ScheduleSection";
-import AdvertiserInfoSection from "./AdvertiserInfoSection";
+import AdvertiserInfoSection from "../../components/AdvertiserInfoSection";
 
 import RejectSendModal from "./RejectSendModal";
 import CompleteModal from "./ApproveDialog";
@@ -59,11 +59,6 @@ const SmPayAdminOverviewDetailView = ({ id }: Props) => {
   const { data: prePaymentScheduleData, isPending: loadingPrePaymentSchedule } =
     useSmPayAdminOverviewPrePaymentSchedule(Number(id));
 
-  const { data: smpayInfo, isPending: loadingSmpayInfo } = useSmPayAdminDetail(
-    Number(id),
-    Number(agentId),
-    Number(userId)
-  );
   const { data: formInfo } = useSmPayAdminOverviewApplyFormDetail(
     Number(id),
     Number(formId),
@@ -109,7 +104,6 @@ const SmPayAdminOverviewDetailView = ({ id }: Props) => {
 
   const isLoading =
     loadingPatchRead ||
-    loadingSmpayInfo ||
     loadingApprovalMemo ||
     loadingPrePaymentSchedule ||
     loadingReviewerMemo;
@@ -151,8 +145,8 @@ const SmPayAdminOverviewDetailView = ({ id }: Props) => {
           params={{
             ...rejectParams,
             advertiserId: Number(id),
-            agentId: Number(smpayInfo?.agentId),
-            userId: Number(smpayInfo?.userId),
+            agentId: Number(agentId),
+            userId: Number(userId),
           }}
           onClose={() => setRejectModalOpen(false)}
         />
@@ -163,14 +157,18 @@ const SmPayAdminOverviewDetailView = ({ id }: Props) => {
           params={{
             ...approveParams,
             advertiserId: Number(id),
-            agentId: Number(smpayInfo?.agentId),
-            userId: Number(smpayInfo?.userId),
+            agentId: Number(agentId),
+            userId: Number(userId),
           }}
           onClose={() => setCompleteModalOpen(false)}
         />
       )}
 
-      <AdvertiserInfoSection advertiserData={smpayInfo} />
+      <AdvertiserInfoSection
+        advertiserData={formInfo}
+        agentId={Number(agentId)}
+        userId={Number(userId)}
+      />
 
       <RuleSectionShow
         upChargeRule={upChargeRule}
@@ -183,14 +181,8 @@ const SmPayAdminOverviewDetailView = ({ id }: Props) => {
         initialAmount={prePaymentSchedule.initialAmount}
       />
 
-      <JudgementMemoSection
-        type="show"
-        text={reviewerMemo?.description || ""}
-      />
-      <OperationMemoSection
-        type="show"
-        text={approvalMemo?.description || ""}
-      />
+      <JudgementMemoSection text={reviewerMemo?.description || ""} />
+      <OperationMemoSection text={approvalMemo?.description || ""} />
 
       <div className="flex justify-center gap-4 py-5">
         <Button
