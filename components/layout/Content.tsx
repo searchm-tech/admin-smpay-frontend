@@ -63,12 +63,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }, [pathname, setGuideOpen, isNoNavPage]);
 
   useEffect(() => {
+    // 기존 localStorage에서 토큰을 store로 마이그레이션 (한 번만 실행)
     const accessToken = localStorage.getItem("accessToken");
     const refreshToken = localStorage.getItem("refreshToken");
     if (accessToken && refreshToken) {
       setTokens(accessToken, refreshToken);
+      // 마이그레이션 후 기존 키 삭제
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
     }
-  }, []);
+  }, [setTokens]);
 
   if (isNoNavPage) {
     return <div>{children}</div>;
