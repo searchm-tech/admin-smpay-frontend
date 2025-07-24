@@ -3,26 +3,24 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-// import LoadingUI from "@/components/common/Loading";
+import LoadingUI from "@/components/common/Loading";
 import { Button } from "@/components/ui/button";
 
-import { ScheduleSectionShow } from "../../components/ScheduleSection";
-import { RuleSectionShow } from "../../components/RuleSection";
-import JudgementMemoSection from "../../components/JudgementMemoSection";
-import OperationMemoSection from "../../components/OperationMemoSection";
+import { ScheduleSectionShow } from "@/components/views/sm-pay/components/ScheduleSection";
+import { RuleSectionShow } from "@/components/views/sm-pay/components/RuleSection";
+import JudgementMemoSection from "@/components/views/sm-pay/components/JudgementMemoSection";
+import OperationMemoSection from "@/components/views/sm-pay/components/OperationMemoSection";
+import AdvertiserInfoSection from "@/components/views/sm-pay/components/AdvertiserInfoSection";
+import AccountSection from "@/components/views/sm-pay/components/AccountSection";
 
 import {
-  useSmPayAdminDetail,
   useSmPayAdminOverviewApplyFormDetail,
   useSmPayAdminOverviewApprovalMemo,
   useSmPayAdminOverviewPrePaymentSchedule,
   useSmPayAdminOverviewReviewerMemo,
 } from "@/hooks/queries/sm-pay";
 
-import AccountSection from "../../components/AccountSection";
-import LoadingUI from "@/components/common/Loading";
 import type { ChargeRule } from "@/types/smpay";
-import AdvertiserInfoSection from "../../components/AdvertiserInfoSection";
 
 type Props = {
   id: string;

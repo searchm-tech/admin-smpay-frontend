@@ -18,7 +18,6 @@ import CompleteModal from "./ApproveDialog";
 
 import {
   useSmPayAdminOverviewAlarm,
-  useSmPayAdminDetail,
   useSmPayAdminOverviewPrePaymentSchedule,
   useSmPayAdminOverviewReviewerMemo,
   useSmPayAdminOverviewApprovalMemo,

@@ -32,7 +32,6 @@ import type {
   OverviewAccountBalanceDto,
   ApprovalMemoDto,
   ReviewerMemoDto,
-  AdvertiserDetailDto,
 } from "@/types/dto/smpay";
 
 import type { SmPayAdvertiserStautsOrderType } from "@/types/smpay";
@@ -175,28 +174,6 @@ export const patchSmPayAdminOverviewAlarm = async ({
   try {
     const response = await patch<null>(
       `/admin/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/alarm?isOperatorRead=${isOperatorRead}`
-    );
-    return response;
-  } catch (error) {
-    if (error instanceof ApiError) {
-      throw error;
-    }
-    throw error;
-  }
-};
-
-/**
- * 광고주 detail 조회 (AAG020)
- * - 화면 : [시스템 관리자] SM Pay 관리 > 운영 검토 요청 상세
- * - TODO : 불필요한 API
- */
-export const getSmPayAdminOverviewDetail = async (
-  params: UserAgentAdvertiserId
-): Promise<AdvertiserDetailDto> => {
-  try {
-    const { agentId, userId, advertiserId } = params;
-    const response = await get<AdvertiserDetailDto>(
-      `/admin/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/details`
     );
     return response;
   } catch (error) {
@@ -482,3 +459,25 @@ export const getSmPayAdminChargeRecoveryList = async (
     throw error;
   }
 };
+
+/**
+ * 광고주 detail 조회 (AAG020)
+ * - 화면 : [시스템 관리자] SM Pay 관리 > 운영 검토 요청 상세
+ * - TODO : 불필요한 API
+ */
+// export const getSmPayAdminOverviewDetail = async (
+//   params: UserAgentAdvertiserId
+// ): Promise<AdvertiserDetailDto> => {
+//   try {
+//     const { agentId, userId, advertiserId } = params;
+//     const response = await get<AdvertiserDetailDto>(
+//       `/admin/api/v1/agents/${agentId}/users/${userId}/advertisers/${advertiserId}/details`
+//     );
+//     return response;
+//   } catch (error) {
+//     if (error instanceof ApiError) {
+//       throw error;
+//     }
+//     throw error;
+//   }
+// };
