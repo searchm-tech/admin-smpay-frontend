@@ -6,7 +6,6 @@ import {
 } from "@/services/advertiser";
 
 import type { AdvertiserDetailDto } from "@/types/dto/smpay";
-import { useAuthQuery } from "@/hooks/useAuthQuery";
 
 // 신청 이력 있는 광고주 리스트 조회(AAG030) query
 export const useQuerySmPayAdminAdvertiserList = (

@@ -23,7 +23,6 @@ import {
   getSmPayAdminAuditList,
   getSmPayAdminOverviewChargeRule,
   patchSmPayAdminOverviewAlarm,
-  getSmPayAdminOverviewDetail,
   getSmPayAdminOverviewApplyFormList,
   getSmPayAdminOverviewApplyFormDetail,
   getSmPayAdminOverviewPrePaymentSchedule,
@@ -45,8 +44,6 @@ import type {
   ReviewerMemoDto,
   AdvertiserDetailDto,
 } from "@/types/dto/smpay";
-
-// ---- admin ----
 
 // 광고주 심사 관리 리스트 조회 (운영 관리자 전용) (AAG018)
 export const useSmPayAdminAuditList = (params: QueryParams) => {
@@ -95,24 +92,6 @@ export const useSmPayAdminOverviewAlarm = (
         isOperatorRead: variables.isOperatorRead,
       }),
     ...options,
-  });
-};
-
-// 광고주 detail 조회 (운영 관리자 전용) (AAG020)
-export const useSmPayAdminDetail = (
-  advertiserId: number,
-  agentId: number,
-  userId: number
-) => {
-  return useAuthQuery<AdvertiserDetailDto>({
-    queryKey: ["/smpay/admin-overview-detail", advertiserId, agentId, userId],
-    queryFn: () =>
-      getSmPayAdminOverviewDetail({
-        advertiserId,
-        agentId,
-        userId,
-      }),
-    enabled: !!advertiserId && !!agentId && !!userId,
   });
 };
 
