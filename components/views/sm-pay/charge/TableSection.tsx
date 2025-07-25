@@ -51,7 +51,7 @@ const TableSection = ({ dataSource }: Props) => {
     // 매우 큰 모니터 (1920px 초과)
 
     if (width <= 1920 && width > 1440) {
-      return state === "expanded" ? "max-w-[84vw]" : "max-w-[98vw]";
+      return state === "expanded" ? "max-w-[87vw]" : "max-w-[98vw]";
     }
 
     // 큰 모니터 (1440px 초과)
@@ -71,6 +71,7 @@ const TableSection = ({ dataSource }: Props) => {
 
     return "max-w-[98vw]";
   }, [width, state]);
+  console.log(widthClass, width);
 
   return (
     <section>
