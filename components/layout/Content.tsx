@@ -102,7 +102,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           {!isErrorPage && <AppSidebar />}
 
           <SidebarInset>
-            <main className="flex-1 flex flex-col mt-[74px]">
+            <main className="flex-1 flex flex-col mt-[74px]  overflow-x-hidden">
               <Container>{children}</Container>
               <Footer />
             </main>

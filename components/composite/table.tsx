@@ -45,53 +45,50 @@ function Table<T extends object>({
   }
 
   return (
-    <div className="flex flex-col">
-      <AntdTable<T>
-        loading={loading}
-        className={classNames}
-        columns={columns}
-        dataSource={dataSource}
-        rowKey={(record) => (record as any).id ?? (record as any).key}
-        showSorterTooltip={false}
-        locale={{ emptyText }}
-        pagination={{
-          pageSize,
-          current: currentPage,
-          total,
-          position: ["bottomCenter"],
-          onChange: (page, newPageSize) => {
-            setCurrentPage(page);
-            setPageSize(newPageSize);
-          },
-          showSizeChanger: true,
-          pageSizeOptions: PAGE_SIZE_OPTIONS,
-          itemRender: (page, type) => {
-            if (type === "prev") {
-              return <button className="custom-arrow">&larr;</button>;
-            }
-            if (type === "next") {
-              return <button className="custom-arrow">&rarr;</button>;
-            }
-            return (
-              <button
-                className={cn(
-                  "custom-page",
-                  page === currentPage && "custom-page-active"
-                )}
-              >
-                {page}
-              </button>
-            );
-          },
-        }}
-        {...rest}
-      />
-    </div>
+    <AntdTable<T>
+      loading={loading}
+      className={classNames}
+      columns={columns}
+      dataSource={dataSource}
+      rowKey={(record) => (record as any).id ?? (record as any).key}
+      showSorterTooltip={false}
+      locale={{ emptyText }}
+      pagination={{
+        pageSize,
+        current: currentPage,
+        total,
+        position: ["bottomCenter"],
+        onChange: (page, newPageSize) => {
+          setCurrentPage(page);
+          setPageSize(newPageSize);
+        },
+        showSizeChanger: true,
+        pageSizeOptions: PAGE_SIZE_OPTIONS,
+        itemRender: (page, type) => {
+          if (type === "prev") {
+            return <button className="custom-arrow">&larr;</button>;
+          }
+          if (type === "next") {
+            return <button className="custom-arrow">&rarr;</button>;
+          }
+          return (
+            <button
+              className={cn(
+                "custom-page",
+                page === currentPage && "custom-page-active"
+              )}
+            >
+              {page}
+            </button>
+          );
+        },
+      }}
+      {...rest}
+    />
   );
 }
 
 export default Table;
 
-// [&_.ant-pagination-options]:!right-10  -> 페이지 크기 위치 맨 외른쪽
 const classNames =
   "[&_.ant-pagination-options]:!absolute [&_.ant-pagination-options]:!right-10 [&_.ant-table-pagination]:!flex [&_.ant-table-pagination]:!items-center [&_.ant-table-pagination]:!justify-center [&_.ant-table-pagination]:!relative";
