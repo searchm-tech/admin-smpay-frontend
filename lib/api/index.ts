@@ -72,13 +72,28 @@ apiClient.interceptors.request.use(
     }
 
     const { accessToken } = useSessionStore.getState();
-
-    // TODO : 디버깅용 로그 (필요시 활성화) - sentry 적용
-    // console.log('🔑 Current token:', accessToken?.slice(0, 20) + '...');
+    console.log("🔍 API Request Debug:");
+    console.log("  - URL:", config.url);
+    console.log("  - Method:", config.method);
+    console.log(
+      "  - AccessToken:",
+      accessToken ? `${accessToken.slice(0, 20)}...` : "null"
+    );
+    console.log(
+      "  - Frontend Type:",
+      process.env.NEXT_PUBLIC_FRONTEND_TYPE || "admin"
+    );
 
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
+      console.log(
+        "  - Authorization header set:",
+        `Bearer ${accessToken.slice(0, 20)}...`
+      );
+    } else {
+      console.log("  - No accessToken found, skipping Authorization header");
     }
+
     return config;
   },
   (error) => Promise.reject(error)
@@ -124,7 +139,7 @@ apiClient.interceptors.response.use(
       if (retryCount >= MAX_RETRY_COUNT) {
         retryCount = 0;
         const { clearSession } = useSessionStore.getState();
-        await signOut({ callbackUrl: "/sign-in" });
+        // await signOut({ callbackUrl: "/sign-in" });
         clearSession();
         return Promise.reject(error);
       }
@@ -133,7 +148,7 @@ apiClient.interceptors.response.use(
 
       if (!refreshToken) {
         const { clearSession } = useSessionStore.getState();
-        await signOut({ callbackUrl: "/sign-in" });
+        // await signOut({ callbackUrl: "/sign-in" });
         clearSession();
         return Promise.reject(error);
       }
@@ -158,7 +173,7 @@ apiClient.interceptors.response.use(
         })
         .catch(async (err) => {
           const { clearSession } = useSessionStore.getState();
-          await signOut({ callbackUrl: "/sign-in" });
+          // await signOut({ callbackUrl: "/sign-in" });
           clearSession();
           throw err;
         })
@@ -184,7 +199,7 @@ apiClient.interceptors.response.use(
       const { accessToken } = useSessionStore.getState();
 
       if (!accessToken) {
-        await signOut({ callbackUrl: "/sign-in" });
+        // await signOut({ callbackUrl: "/sign-in" });
         return Promise.reject(error);
       }
     }

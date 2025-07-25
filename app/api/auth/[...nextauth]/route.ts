@@ -1,6 +1,12 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
+// 프론트엔드 타입에 따른 쿠키 이름 설정
+const getCookieName = () => {
+  const frontendType = process.env.NEXT_PUBLIC_FRONTEND_TYPE || "admin";
+  return `${frontendType}-next-auth`;
+};
+
 const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
   debug: true, // ✅ 추가
@@ -29,6 +35,17 @@ const handler = NextAuth({
     }),
   ],
   session: { strategy: "jwt" },
+  cookies: {
+    sessionToken: {
+      name: getCookieName(),
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      },
+    },
+  },
   callbacks: {
     async jwt({ token, user, trigger, session }) {
       if (user) {

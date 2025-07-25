@@ -49,18 +49,19 @@ const TableSection = ({ dataSource }: Props) => {
 
   const widthClass = useMemo(() => {
     // 매우 큰 모니터 (1920px 초과)
-    if (width > 1920) {
-      return state === "expanded" ? "max-w-[95vw]" : "max-w-[99vw]";
+
+    if (width <= 1920 && width > 1440) {
+      return state === "expanded" ? "max-w-[84vw]" : "max-w-[98vw]";
     }
 
     // 큰 모니터 (1440px 초과)
-    if (width > 1440) {
-      return state === "expanded" ? "max-w-[92vw]" : "max-w-[98vw]";
+    if (width <= 1440 && width >= 1024) {
+      return state === "expanded" ? "max-w-[82vw]" : "max-w-[98vw]";
     }
 
     // 중간 모니터 (1024px 초과)
     if (width > 1024) {
-      return state === "expanded" ? "max-w-[82vw]" : "max-w-[97vw]";
+      return state === "expanded" ? "max-w-[80.5vw]" : "max-w-[97vw]";
     }
 
     // 작은 모니터 (1024px 이하)
