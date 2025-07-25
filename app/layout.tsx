@@ -3,7 +3,7 @@ import { Noto_Sans_KR } from "next/font/google";
 
 import QueryProvider from "@/lib/providers/QueryProvider";
 import { SessionProvider } from "@/lib/providers/SessionProvider";
-import Layout from "@/components/layout/Content";
+import Layout from "@/components/layout/Layout";
 import StoreInitializer from "@/components/common/StoreInitializer";
 
 import "./globals.css";
