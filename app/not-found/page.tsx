@@ -12,7 +12,7 @@ export default function NotFoundPage() {
       <p className="my-6 text-[15px] font-medium">
         요청하신 페이지를 찾을 수 없습니다. URL을 다시 확인해주세요.
       </p>
-      <HomeButton href="/">메인 페이지로 이동</HomeButton>
+      <HomeButton href="/sign-out">메인 페이지로 이동</HomeButton>
     </div>
   );
 }

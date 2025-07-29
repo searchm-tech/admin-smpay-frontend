@@ -19,7 +19,7 @@ const ErrorView = () => {
       <p className="my-8 text-[15px] font-medium">
         {errorType[type as keyof typeof errorType].description}
       </p>
-      <HomeButton href="/">메인 페이지로 이동</HomeButton>
+      <HomeButton href="/sign-out">메인 페이지로 이동</HomeButton>
     </div>
   );
 };
