@@ -78,8 +78,7 @@ const SignInView = () => {
         }
 
         if (accessToken && refreshToken && session?.user?.type) {
-          const redirectPath = getRedirectPath(session.user.type);
-          router.replace(redirectPath);
+          router.replace("/sm-pay/charge");
           return;
         }
       } catch (error) {
