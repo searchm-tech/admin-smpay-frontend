@@ -24,16 +24,6 @@ export type DepartmentResponseDto = {
   name: string;
 };
 
-export type AdminAgentResponseDto = {
-  agentId: number;
-  name: string;
-  uniqueCode: string;
-  representativeName: string;
-  businessRegistrationNumber: string;
-  status: string;
-  domainName: string;
-};
-
 export type UserResponseDto = {
   userId: number;
   agentId: number;
@@ -100,11 +90,6 @@ export type AgencyUserDto = {
 // 확장된 응답 타입 (no 속성이 포함된 content)
 export interface ResponseAgencyUsersWithNo extends ResponseWithPagination {
   content: (AgencyUserDto & { id: string })[];
-}
-
-// 그룹장 회원 목록 조회 API (AAG007) response type
-export interface ResponseGroupUser extends ResponseWithPagination {
-  content: AccountDto[];
 }
 
 // 대행사 회원 페이지네이션 조회 (AAG006) params type

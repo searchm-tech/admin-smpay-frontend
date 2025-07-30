@@ -1,6 +1,4 @@
-import { TAuthType, UserStatus } from "@/types/user";
-
-// ---- 실제 util 함수 ----
+import type { TAuthType } from "@/types/user";
 
 // 회원 권한 유형 레이블 맵핑
 export const userAuthTypeMap: Record<TAuthType, string> = {
@@ -16,9 +14,3 @@ export const userAuthTypeMap: Record<TAuthType, string> = {
 export const getUserAuthTypeLabel = (status: TAuthType): string => {
   return userAuthTypeMap[status] || status;
 };
-
-export const userStatusMap: Record<UserStatus, string> = {
-  NORMAL: "활성화",
-  STOP: "비활성화",
-  TEMP: "임시",
-} as const;

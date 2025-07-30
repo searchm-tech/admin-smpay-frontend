@@ -1,5 +1,4 @@
 import {
-  ChargeRule,
   PrePaymentSchedule,
   SmPayAdvertiserStatus,
   SmPayAdvertiserStautsOrderType,
@@ -7,7 +6,6 @@ import {
 
 import type {
   RequestAgentUser,
-  RequestWithPagination,
   ResponseWithPagination,
   WithAdvertiserId,
 } from "./common";
@@ -57,11 +55,6 @@ export type ResponseSmPayAdvertiserStatus = ResponseWithPagination & {
   content: SmPayAdvertiserStatusDto[];
 };
 
-// 광고주 상태 리스트 페이지네이션 조회(SAG019) query params type
-export type SmPayAdvertiserApplyQuery = RequestWithPagination & {
-  orderType: SmPayAdvertiserStatus;
-};
-
 export interface RequestSmPayAdminRead extends WithAdvertiserId {
   isOperatorRead: boolean;
 }
@@ -69,7 +62,7 @@ export interface RequestSmPayAdminRead extends WithAdvertiserId {
 // 광고주 운영 심사 승인/반려 (운영 관리자 전용) (AAG026)
 export type ParamsSmPayAdminOverviewOperatorDecision = {
   decisionType: "APPROVE" | "REJECT";
-  chargeRule: ChargeRule[];
+  chargeRule: ChargeRuleDto[];
   prePaymentSchedule: PrePaymentSchedule;
   reviewerMemo: string;
   approvalMemo: string;
@@ -86,20 +79,6 @@ export type PrePaymentScheduleDto = {
 
 export type ResponseSmPayAdminAudit = ResponseWithPagination & {
   content: SmPayAdminAuditDto[];
-};
-
-// 광고주 smPay 신청 이력 상세 조회 (운영 관리자 전용) (AAG022)
-export type RequestSmPayAdminOverviewApplyFormDetail = {
-  user: RequestAgentUser;
-  advertiserId: number;
-  formId: number;
-};
-
-// 광고주 운영 심사 승인/반려 (운영 관리자 전용) (AAG026)
-export type AdminOverviewOperatorDecision = {
-  user: RequestAgentUser;
-  advertiserId: number;
-  params: ParamsSmPayAdminOverviewOperatorDecision;
 };
 
 export type ResponseOverviewForm = {
