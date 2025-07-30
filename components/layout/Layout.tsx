@@ -8,13 +8,16 @@ import { AppSidebar } from "@/components/composite/app-sidebar";
 import Header from "./Header";
 import Footer from "./Footer";
 import Container from "./Container";
+import FormDetailModal from "../views/sm-pay/components/FormDetailModal";
 
 import ChannelTalkBoot from "../common/ChannelTalkBoot";
 
 import { useSessionStore } from "@/store/useSessionStore";
+import { useHistoryFormStore } from "@/store/useHistoryFormStore";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const { formState, setFormState } = useHistoryFormStore();
 
   const { setTokens } = useSessionStore();
 
@@ -51,6 +54,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-col min-h-screen">
       {!isNoNavPage && <ChannelTalkBoot />}
+
+      {formState && (
+        <FormDetailModal
+          onClose={() => setFormState(null)}
+          advertiserId={formState.advertiserId || 0}
+          formId={formState.formId || 0}
+        />
+      )}
 
       <SidebarProvider className="flex flex-col">
         {!isErrorPage && <Header />}

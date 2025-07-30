@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -23,6 +23,8 @@ import {
   formatPhoneNumber,
 } from "@/utils/format";
 import { SmPayAdvertiserStatusLabel } from "@/constants/status";
+
+import { useHistoryFormStore } from "@/store/useHistoryFormStore";
 import { useSmPayAdminOverviewApplyFormList } from "@/hooks/queries/sm-pay";
 import { useQueryAgencyDetail } from "@/hooks/queries/agency";
 import { useQueryAdminUserInfo } from "@/hooks/queries/user";
@@ -31,7 +33,6 @@ import type { TableProps } from "@/types/table";
 import type { SmPayAdvertiserStatus } from "@/types/smpay";
 import type { SMPayFormHistory } from "@/types/dto/smpay";
 import type { ResponseOverviewForm } from "@/types/api/smpay";
-import HistoryDetailModal from "./HistoryDetailModal";
 
 type Props = {
   advertiserData?: ResponseOverviewForm;
@@ -71,14 +72,14 @@ const AdvertiserInfoSection = ({
       {advertiserData?.advertiserStatus === "REJECT" && (
         <RejectDescription
           description={advertiserData?.advertiserRejectDescription || ""}
-          date={advertiserData?.updateDt || ""}
+          date={advertiserData?.registerDt || ""}
         />
       )}
 
       {advertiserData?.advertiserStatus === "OPERATION_REJECT" && (
         <RejectOperationDescription
           description={advertiserData?.advertiserRejectDescription || ""}
-          date={advertiserData?.updateDt || ""}
+          date={advertiserData?.registerDt || ""}
         />
       )}
 
@@ -183,7 +184,7 @@ export default AdvertiserInfoSection;
 
 type HistoryModalProps = {
   onClose: () => void;
-  advertiserData?: ResponseOverviewForm;
+  advertiserData: ResponseOverviewForm;
   dataSource: SMPayFormHistory[];
 };
 
@@ -192,7 +193,7 @@ const HistoryModal = ({
   advertiserData,
   dataSource,
 }: HistoryModalProps) => {
-  const [formId, setFormId] = useState<number | null>(null);
+  const { setFormState } = useHistoryFormStore();
 
   const columns: TableProps<SMPayFormHistory>["columns"] = [
     {
@@ -225,7 +226,14 @@ const HistoryModal = ({
       key: "advertiserName",
       align: "center",
       render: (text: string, record) => (
-        <LinkTextButton onClick={() => setFormId(record.advertiserFormId)}>
+        <LinkTextButton
+          onClick={() =>
+            setFormState({
+              advertiserId: advertiserData?.advertiserId || 0,
+              formId: record.advertiserFormId,
+            })
+          }
+        >
           {text}
         </LinkTextButton>
       ),
@@ -249,31 +257,21 @@ const HistoryModal = ({
     },
   ];
   return (
-    <Fragment>
-      {formId && (
-        <HistoryDetailModal
-          onClose={() => setFormId(null)}
-          advertiserId={advertiserData?.advertiserId || 0}
-          formId={formId}
+    <Modal
+      open
+      title="SM Pay 지난 이력 보기"
+      onClose={onClose}
+      onConfirm={onClose}
+      cancelDisabled
+    >
+      <div className="w-[85vw] overflow-y-auto">
+        <Table<SMPayFormHistory>
+          dataSource={dataSource}
+          columns={columns}
+          pagination={false}
+          scroll={{ y: 300 }}
         />
-      )}
-
-      <Modal
-        open
-        title="SM Pay 지난 이력 보기"
-        onClose={onClose}
-        onConfirm={onClose}
-        cancelDisabled
-      >
-        <div className="w-[85vw] overflow-y-auto">
-          <Table<SMPayFormHistory>
-            dataSource={dataSource}
-            columns={columns}
-            pagination={false}
-            scroll={{ y: 300 }}
-          />
-        </div>
-      </Modal>
-    </Fragment>
+      </div>
+    </Modal>
   );
 };
