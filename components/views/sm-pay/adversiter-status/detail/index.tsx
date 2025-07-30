@@ -20,7 +20,7 @@ import {
   useSmPayAdminOverviewReviewerMemo,
 } from "@/hooks/queries/sm-pay";
 
-import type { ChargeRule } from "@/types/smpay";
+import type { ChargeRuleDto } from "@/types/dto/smpay";
 
 type Props = {
   id: string;
@@ -33,13 +33,13 @@ const SmPayAdminAdversiterStatusDetailView = ({ id }: Props) => {
   const userId = searchParams.get("userId");
   const formId = searchParams.get("formId");
 
-  const [upChargeRule, setUpChargeRule] = useState<ChargeRule>({
+  const [upChargeRule, setUpChargeRule] = useState<ChargeRuleDto>({
     standardRoasPercent: 0,
     rangeType: "UP",
     boundType: "FIXED_AMOUNT",
     changePercentOrValue: 0,
   });
-  const [downChargeRule, setDownChargeRule] = useState<ChargeRule>({
+  const [downChargeRule, setDownChargeRule] = useState<ChargeRuleDto>({
     standardRoasPercent: 0,
     rangeType: "DOWN",
     boundType: "FIXED_AMOUNT",

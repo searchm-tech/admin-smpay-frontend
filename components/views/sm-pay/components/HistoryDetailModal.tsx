@@ -26,8 +26,9 @@ import { Label } from "@/components/ui/label";
 import { SmPayAdvertiserStatusLabel } from "@/constants/status";
 import { useQueryAgencyDetail } from "@/hooks/queries/agency";
 import { formatBusinessNumber, formatPhoneNumber } from "@/utils/format";
-import { ChargeRule } from "@/types/smpay";
 import { useQueryAdminUserInfo } from "@/hooks/queries/user";
+
+import type { ChargeRuleDto } from "@/types/dto/smpay";
 
 type Props = {
   onClose: () => void;
@@ -41,13 +42,13 @@ const HistoryDetailModal = ({ onClose, advertiserId, formId }: Props) => {
   const userId = searchParams.get("userId");
 
   const [isReject, setIsReject] = useState(false);
-  const [upChargeRule, setUpChargeRule] = useState<ChargeRule>({
+  const [upChargeRule, setUpChargeRule] = useState<ChargeRuleDto>({
     standardRoasPercent: 0,
     rangeType: "UP",
     boundType: "FIXED_AMOUNT",
     changePercentOrValue: 0,
   });
-  const [downChargeRule, setDownChargeRule] = useState<ChargeRule>({
+  const [downChargeRule, setDownChargeRule] = useState<ChargeRuleDto>({
     standardRoasPercent: 0,
     rangeType: "DOWN",
     boundType: "FIXED_AMOUNT",

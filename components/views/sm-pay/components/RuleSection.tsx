@@ -12,11 +12,11 @@ import {
 
 import { TOOLTIP_CONTENT } from "@/constants/hover";
 
-import type { ChargeRule } from "@/types/smpay";
+import type { ChargeRuleDto } from "@/types/dto/smpay";
 
 type ShowProps = {
-  upChargeRule: ChargeRule;
-  downChargeRule: ChargeRule;
+  upChargeRule: ChargeRuleDto;
+  downChargeRule: ChargeRuleDto;
 };
 export const RuleSectionShow = ({
   upChargeRule,
