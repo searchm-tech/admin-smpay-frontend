@@ -1,7 +1,6 @@
 // src/api/axios.ts
 import axios, { AxiosRequestConfig } from "axios";
 import axiosRetry from "axios-retry";
-import { signOut } from "next-auth/react";
 import { postRefreshTokenApi } from "@/services/auth";
 import { useSessionStore } from "@/store/useSessionStore";
 import type { ApiResponse } from "@/types/api";

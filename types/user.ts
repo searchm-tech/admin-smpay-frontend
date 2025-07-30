@@ -24,6 +24,8 @@ export type TSMPayUser = {
   name: string;
   phoneNumber: string;
   loginId: string;
+  accessToken: string;
+  refreshToken: string;
 };
 
 export type UserStatus = "NORMAL" | "STOP" | "TEMP"; // NORMAL : 활성화 STOP : 비활성화 TEMP : 임시
