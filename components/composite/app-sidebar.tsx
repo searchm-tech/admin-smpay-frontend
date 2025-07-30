@@ -8,7 +8,12 @@ import {
 import { NavDashboard } from "@/components/composite/nav-dashboard";
 import Copyright from "@/components/layout/Copyright";
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+import type { FrontendMenuItem } from "@/utils/menuMapper";
+
+export function AppSidebar({
+  menuData,
+  ...props
+}: React.ComponentProps<typeof Sidebar> & { menuData?: FrontendMenuItem[] }) {
   const { state } = useSidebar();
 
   return (
@@ -18,7 +23,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       {...props}
     >
       <SidebarContent>
-        <NavDashboard />
+        <NavDashboard menuData={menuData} />
       </SidebarContent>
 
       {state === "expanded" && (

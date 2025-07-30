@@ -3,7 +3,6 @@ import { Noto_Sans_KR } from "next/font/google";
 
 import QueryProvider from "@/lib/providers/QueryProvider";
 import { SessionProvider } from "@/lib/providers/SessionProvider";
-import Layout from "@/components/layout/Layout";
 import StoreInitializer from "@/components/common/StoreInitializer";
 
 import "./globals.css";
@@ -72,7 +71,7 @@ export default function RootLayout({
         <SessionProvider>
           <QueryProvider>
             <StoreInitializer />
-            <Layout>{children}</Layout>
+            {children}
           </QueryProvider>
         </SessionProvider>
       </body>

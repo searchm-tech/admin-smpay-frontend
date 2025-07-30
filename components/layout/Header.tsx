@@ -3,7 +3,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { Menu } from "lucide-react";
 
 import { Separator } from "@/components/ui/separator";
@@ -12,18 +11,20 @@ import { Badge } from "@/components/ui/badge";
 import UserMenu from "@/components/common/UserMenu";
 
 import { getUserAuthTypeLabel } from "@/utils/status";
+import type { TSMPayUser } from "@/types/user";
 
-const Header = () => {
+type HeaderProps = {
+  user?: TSMPayUser;
+};
+const Header = ({ user }: HeaderProps) => {
   const router = useRouter();
   const { toggleSidebar } = useSidebar();
-  const { data: session } = useSession();
 
   const moveHome = () => {
     router.push("/sm-pay/charge");
   };
 
-  const labelType =
-    session?.user && getUserAuthTypeLabel(session?.user.type || "");
+  const labelType = user && getUserAuthTypeLabel(user.type || "");
 
   return (
     <header className="fixed top-0 left-0 z-10 w-full flex justify-between items-center space-x-4 text-sm pr-4 h-[60px] bg-white text-[#222] border-t border-b border-[#e5e7eb]">
@@ -52,8 +53,8 @@ const Header = () => {
           />
         )}
 
-        {session ? (
-          <UserMenu user={session.user} />
+        {user ? (
+          <UserMenu user={user} />
         ) : (
           <>
             <Link href="/sign-out">로그인</Link>

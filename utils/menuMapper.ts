@@ -160,11 +160,3 @@ export function mapBackendMenuToFrontend(
 
   return processMenuItems(topLevelMenus);
 }
-
-// 사용자 타입별 메뉴 필터링
-export function filterMenuByUserType(
-  menus: FrontendMenuItem[]
-): FrontendMenuItem[] {
-  // 관리자용만 사용하므로 모든 메뉴 반환
-  return menus;
-}
