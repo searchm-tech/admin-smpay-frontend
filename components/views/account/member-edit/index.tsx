@@ -60,13 +60,8 @@ const MemberEditView = ({ userIdData, isMe = false }: Props) => {
   const handleSubmit = () => {
     if (!userInfo) return;
     const { name, id, phoneNumber } = userInfo;
-    if (!name || !id || !phoneNumber) {
+    if (!name || !id) {
       setErrorDialog("모든 필수 항목을 입력해주세요.");
-      return;
-    }
-
-    if (phoneNumber && phoneNumber.length !== 11) {
-      setErrorDialog("연락처 형식이 올바르지 않습니다.");
       return;
     }
 
