@@ -13,7 +13,6 @@ import type { TableParams } from "@/types/table";
 import { useSmPayAdminAuditList } from "@/hooks/queries/sm-pay";
 import type { SmPayAdvertiserStautsOrderType } from "@/types/smpay";
 
-// TODO : 다른 동일하게 tableParam으로 변경 필요
 const SmPayAdminOverviewView = () => {
   const [search, setSearch] = useState<string>("");
   const [tableParams, setTableParams] =

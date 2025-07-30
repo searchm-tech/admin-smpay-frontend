@@ -12,11 +12,11 @@ import {
 
 import { TOOLTIP_CONTENT } from "@/constants/hover";
 
-import type { ChargeRule } from "@/types/smpay";
+import type { ChargeRuleDto } from "@/types/dto/smpay";
 
 type ShowProps = {
-  upChargeRule: ChargeRule;
-  downChargeRule: ChargeRule;
+  upChargeRule: ChargeRuleDto;
+  downChargeRule: ChargeRuleDto;
 };
 export const RuleSectionShow = ({
   upChargeRule,
@@ -39,7 +39,9 @@ export const RuleSectionShow = ({
                 {upChargeRule?.boundType === "FIXED_AMOUNT"
                   ? "정액으로"
                   : "정률로"}{" "}
-                {upChargeRule?.changePercentOrValue}
+                {upChargeRule?.boundType === "FIXED_AMOUNT"
+                  ? upChargeRule?.changePercentOrValue.toLocaleString()
+                  : upChargeRule?.changePercentOrValue}
                 {upChargeRule?.boundType === "FIXED_AMOUNT" ? "원" : "%"} 씩
                 증액
               </span>
@@ -55,7 +57,9 @@ export const RuleSectionShow = ({
                 {downChargeRule.boundType === "FIXED_AMOUNT"
                   ? "정액으로"
                   : "정률로"}{" "}
-                {downChargeRule.changePercentOrValue}
+                {downChargeRule.boundType === "FIXED_AMOUNT"
+                  ? downChargeRule.changePercentOrValue.toLocaleString()
+                  : downChargeRule.changePercentOrValue}
                 {downChargeRule.boundType === "FIXED_AMOUNT" ? "원" : "%"} 씩
                 감액
               </span>

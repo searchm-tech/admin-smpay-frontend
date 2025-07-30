@@ -10,6 +10,7 @@ import { ScheduleSectionShow } from "./ScheduleSection";
 import JudgementMemoSection from "./JudgementMemoSection";
 import OperationMemoSection from "./OperationMemoSection";
 import { RejectDialog } from "../dialog";
+import { RejectDescription, RejectOperationDescription } from "./GuideSection";
 
 import { useSmPayAdminOverviewApplyFormDetail } from "@/hooks/queries/sm-pay";
 import { useSearchParams } from "next/navigation";
@@ -23,11 +24,13 @@ import {
   Descriptions,
 } from "@/components/composite/description-components";
 import { Label } from "@/components/ui/label";
+
 import { SmPayAdvertiserStatusLabel } from "@/constants/status";
 import { useQueryAgencyDetail } from "@/hooks/queries/agency";
 import { formatBusinessNumber, formatPhoneNumber } from "@/utils/format";
-import { ChargeRule } from "@/types/smpay";
 import { useQueryAdminUserInfo } from "@/hooks/queries/user";
+
+import type { ChargeRuleDto } from "@/types/dto/smpay";
 
 type Props = {
   onClose: () => void;
@@ -35,19 +38,19 @@ type Props = {
   formId: number;
 };
 
-const HistoryDetailModal = ({ onClose, advertiserId, formId }: Props) => {
+const FormDetailModal = ({ onClose, advertiserId, formId }: Props) => {
   const searchParams = useSearchParams();
   const agentId = searchParams.get("agentId");
   const userId = searchParams.get("userId");
 
   const [isReject, setIsReject] = useState(false);
-  const [upChargeRule, setUpChargeRule] = useState<ChargeRule>({
+  const [upChargeRule, setUpChargeRule] = useState<ChargeRuleDto>({
     standardRoasPercent: 0,
     rangeType: "UP",
     boundType: "FIXED_AMOUNT",
     changePercentOrValue: 0,
   });
-  const [downChargeRule, setDownChargeRule] = useState<ChargeRule>({
+  const [downChargeRule, setDownChargeRule] = useState<ChargeRuleDto>({
     standardRoasPercent: 0,
     rangeType: "DOWN",
     boundType: "FIXED_AMOUNT",
@@ -91,8 +94,8 @@ const HistoryDetailModal = ({ onClose, advertiserId, formId }: Props) => {
     isLossPrivileges: false,
     advertiserFormId: formInfo?.advertiserFormId || 0,
     description: {
-      description: "",
-      descriptionType: "REJECT",
+      description: formInfo?.advertiserRejectDescription || "",
+      descriptionType: formInfo?.advertiserStatus || "",
     } as unknown as AdvertiserDescriptionDto,
   };
 
@@ -138,10 +141,24 @@ const HistoryDetailModal = ({ onClose, advertiserId, formId }: Props) => {
 
         {isReject && (
           <RejectDialog
-            description={formInfo?.advertiserRejectDescription || ""}
-            date={formInfo?.updateDt || ""}
+            description={advertiserData?.description.description || ""}
+            date={formInfo?.registerDt || ""}
             onClose={() => setIsReject(false)}
             onConfirm={() => setIsReject(false)}
+          />
+        )}
+
+        {advertiserData?.status === "REJECT" && (
+          <RejectDescription
+            description={advertiserData?.description.description || ""}
+            date={formInfo?.registerDt || ""}
+          />
+        )}
+
+        {advertiserData?.status === "OPERATION_REJECT" && (
+          <RejectOperationDescription
+            description={advertiserData?.description.description || ""}
+            date={formInfo?.registerDt || ""}
           />
         )}
 
@@ -236,4 +253,4 @@ const HistoryDetailModal = ({ onClose, advertiserId, formId }: Props) => {
   );
 };
 
-export default HistoryDetailModal;
+export default FormDetailModal;

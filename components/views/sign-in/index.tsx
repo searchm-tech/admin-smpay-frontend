@@ -67,26 +67,25 @@ const SignInView = () => {
 
       try {
         setLoading(true);
-        // localStorage에서도 토큰 확인
-        const storedAccessToken = localStorage.getItem("accessToken");
-        const storedRefreshToken = localStorage.getItem("refreshToken");
+        // useSessionStore에서 토큰 확인 (수정된 부분)
+        const { accessToken, refreshToken } = useSessionStore.getState();
+        console.log("session", session);
 
         // 세션이 있고 관리자가 아닌 경우에만 sign-out으로 리다이렉트
         if (session?.user?.type && !getIsAdmin(session.user.type)) {
-          router.push("/sign-out");
+          // router.push("/sign-out");
           return;
         }
 
-        if (storedAccessToken && storedRefreshToken && session?.user?.type) {
-          const redirectPath = getRedirectPath(session.user.type);
-          router.replace(redirectPath);
+        if (accessToken && refreshToken && session?.user?.type) {
+          router.replace("/sm-pay/charge");
           return;
         }
       } catch (error) {
         console.error("Token validation error:", error);
         // 에러 발생 시 토큰 클리어
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
+        const { clearSession } = useSessionStore.getState();
+        clearSession();
         await signOut();
       } finally {
         setIsCheckingToken(false);

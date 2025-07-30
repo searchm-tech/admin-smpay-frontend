@@ -26,8 +26,9 @@ import type { RequestPatchUserInfo } from "@/types/api/user";
 
 type Props = {
   userIdData?: number;
+  isMe?: boolean;
 };
-const MemberEditView = ({ userIdData }: Props) => {
+const MemberEditView = ({ userIdData, isMe = false }: Props) => {
   const router = useRouter();
 
   const { update: updateSession } = useSession();
@@ -59,13 +60,8 @@ const MemberEditView = ({ userIdData }: Props) => {
   const handleSubmit = () => {
     if (!userInfo) return;
     const { name, id, phoneNumber } = userInfo;
-    if (!name || !id || !phoneNumber) {
+    if (!name || !id) {
       setErrorDialog("모든 필수 항목을 입력해주세요.");
-      return;
-    }
-
-    if (phoneNumber && phoneNumber.length !== 11) {
-      setErrorDialog("연락처 형식이 올바르지 않습니다.");
       return;
     }
 
@@ -85,17 +81,20 @@ const MemberEditView = ({ userIdData }: Props) => {
   };
 
   // session 업데이트
-  const handleRefetch = async () => {
-    const { data } = await refetch();
-    if (data) {
-      await updateSession({
-        user: {
-          name: data.name,
-          id: data.id,
-          phoneNumber: data.phoneNumber,
-        },
-      });
+  const handleSuccess = async () => {
+    if (isMe) {
+      const { data } = await refetch();
+      if (data) {
+        await updateSession({
+          user: {
+            name: data.name,
+            id: data.id,
+            phoneNumber: data.phoneNumber,
+          },
+        });
+      }
     }
+    router.push("/account/member-management");
   };
 
   useEffect(() => {
@@ -160,10 +159,7 @@ const MemberEditView = ({ userIdData }: Props) => {
             </span>
           }
           onClose={() => setSuccessDialog(false)}
-          onConfirm={() => {
-            setSuccessDialog(false);
-            handleRefetch();
-          }}
+          onConfirm={handleSuccess}
           cancelDisabled
         />
       )}

@@ -15,7 +15,7 @@ export default function DeleteAccountPage() {
       <p className="my-6 text-[15px] font-medium">
         SM Pay를 다시 이용하시려면 담당자에게 문의해주세요.
       </p>
-      <HomeButton href="/">메인 페이지로 이동</HomeButton>
+      <HomeButton href="/sign-out">메인 페이지로 이동</HomeButton>
     </div>
   );
 }

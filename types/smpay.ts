@@ -39,12 +39,6 @@ export type ActionButton =
   | "resume" // 재개
   | "resend"; // 재발송
 
-export type ChargeRule = {
-  standardRoasPercent: number; //  1; // 기준 ROAS
-  rangeType: string; // "UP";
-  boundType: string; //  "FIXED_AMOUNT"; // 정액
-  changePercentOrValue: number; // 1;
-};
 export type PrePaymentSchedule = {
   initialAmount: number; // 1;
   maxChargeLimit: number; //  1;

@@ -42,7 +42,6 @@ import type {
   OverviewAccountBalanceDto,
   ApprovalMemoDto,
   ReviewerMemoDto,
-  AdvertiserDetailDto,
 } from "@/types/dto/smpay";
 
 // 광고주 심사 관리 리스트 조회 (운영 관리자 전용) (AAG018)
