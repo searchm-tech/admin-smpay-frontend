@@ -10,6 +10,11 @@ import "antd/dist/reset.css"; // antd 리셋 css
 
 import type { Metadata } from "next";
 
+const url =
+  process.env.NODE_ENV === "production"
+    ? process.env.NEXTAUTH_URL
+    : "http://localhost:8081";
+
 const notoSansKr = Noto_Sans_KR({
   subsets: ["latin"],
   weight: ["400", "500", "700"],
@@ -17,11 +22,7 @@ const notoSansKr = Noto_Sans_KR({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NODE_ENV === "production"
-      ? "https://dev.smpay.co.kr"
-      : "http://localhost:8081"
-  ),
+  metadataBase: new URL(url || "https://smpay.co.kr"),
   title:
     "SM Pay - 광고 효율은 높이고, 결제 부담은 낮춘 새로운 광고비 결제 방식",
   description:
@@ -36,10 +37,10 @@ export const metadata: Metadata = {
     type: "website",
     locale: "ko_KR",
     siteName: "SM Pay",
-    url: "https://dev.smpay.co.kr",
+    url,
     images: [
       {
-        url: "https://dev.smpay.co.kr/images/og-image.png", // 절대 URL로 변경
+        url: `${url}/images/og-image.png`, // 절대 URL로 변경
         width: 1200,
         height: 630,
         alt: "SM Pay - 광고비 결제 솔루션",
@@ -52,7 +53,7 @@ export const metadata: Metadata = {
       "SM Pay - 광고 효율은 높이고, 결제 부담은 낮춘 새로운 광고비 결제 방식",
     description:
       "부담스러운 광고비, SM Pay가 미리 결제해드립니다. 광고비를 선결제해주는 광고비 최적화 솔루션으로, 광고 효율 기반의 자동 상환 시스템을 통해 유연한 광고 운영을 지원합니다.",
-    images: ["https://dev.smpay.co.kr/images/og-image.png"], // 절대 URL로 변경
+    images: [`${url}/images/og-image.png`], // 절대 URL로 변경
   },
   icons: {
     icon: "/favicon.ico",
