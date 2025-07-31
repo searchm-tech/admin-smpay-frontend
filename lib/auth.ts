@@ -22,6 +22,7 @@ export const authOptions: NextAuthOptions = {
         if (!c?.id) return null;
         return {
           id: c.id,
+          email: c.email,
           userId: c.userId,
           agentId: c.agentId,
           loginId: c.loginId,
@@ -55,6 +56,7 @@ export const authOptions: NextAuthOptions = {
         token.id = Number(u.id);
         token.userId = u.userId;
         token.agentId = u.agentId;
+        token.email = u.email;
         token.status = u.status;
         token.type = u.type;
         token.name = u.name;
@@ -80,6 +82,7 @@ export const authOptions: NextAuthOptions = {
         id: token.id,
         agentId: token.agentId,
         userId: token.userId,
+        email: token.email,
         status: token.status,
         type: token.type,
         name: token.name || "",
