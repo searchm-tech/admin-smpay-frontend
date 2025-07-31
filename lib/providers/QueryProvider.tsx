@@ -5,12 +5,15 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import { ConfirmDialog } from "@/components/composite/modal-components";
-import { useSession } from "next-auth/react";
-import { getIsAdmin } from "../utils";
 
 export default function QueryProvider({ children }: { children: ReactNode }) {
   const [roleError, setRoleError] = useState(false);
-  const { data: session } = useSession();
+
+  const handleClick = () => {
+    setRoleError(false);
+    const url = "/sign-out";
+    window.location.href = url;
+  };
 
   useEffect(() => {
     const handleAuthError = (event: any) => {
@@ -44,12 +47,9 @@ export default function QueryProvider({ children }: { children: ReactNode }) {
         <ConfirmDialog
           open
           content="인가권한이 없는 화면입니다."
-          onConfirm={() => {
-            setRoleError(false);
-            const isAdmin = getIsAdmin(session?.user?.type);
-            const url = isAdmin ? "/sm-pay/overview" : "/dashboard";
-            window.location.href = url;
-          }}
+          confirmText="로그아웃"
+          onClose={handleClick}
+          onConfirm={handleClick}
           cancelDisabled
         />
       )}

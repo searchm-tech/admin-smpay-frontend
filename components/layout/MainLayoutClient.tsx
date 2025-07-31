@@ -1,7 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { AppWindow, Smile } from "lucide-react";
 
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
@@ -13,10 +12,9 @@ import Container from "./Container";
 import FormDetailModal from "../views/sm-pay/components/FormDetailModal";
 import ChannelTalkBoot from "../common/ChannelTalkBoot";
 
-import { useSessionStore } from "@/store/useSessionStore";
 import { useHistoryFormStore } from "@/store/useHistoryFormStore";
-import { FrontendMenuItem } from "@/utils/menuMapper";
-import { TSMPayUser } from "@/types/user";
+import type { FrontendMenuItem } from "@/utils/menuMapper";
+import type { TSMPayUser } from "@/types/user";
 
 interface MainLayoutClientProps {
   menuData?: FrontendMenuItem[];
@@ -36,7 +34,6 @@ export function MainLayoutClient({
   children,
 }: MainLayoutClientProps) {
   const { formState, setFormState } = useHistoryFormStore();
-  const { setTokens } = useSessionStore();
 
   // 클라이언트에서 아이콘 복원
   const menuWithIcons = useMemo(() => {
@@ -47,17 +44,7 @@ export function MainLayoutClient({
     }));
   }, [menuData]);
 
-  useEffect(() => {
-    // 기존 localStorage에서 토큰을 store로 마이그레이션 (한 번만 실행)
-    const accessToken = localStorage.getItem("accessToken");
-    const refreshToken = localStorage.getItem("refreshToken");
-    if (accessToken && refreshToken) {
-      setTokens(accessToken, refreshToken);
-      // 마이그레이션 후 기존 키 삭제
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
-    }
-  }, [setTokens]);
+  // persist 미들웨어가 자동으로 토큰을 복원하므로 마이그레이션 로직 제거
 
   return (
     <div className="flex flex-col min-h-screen">
