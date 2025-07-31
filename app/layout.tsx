@@ -17,6 +17,11 @@ const notoSansKr = Noto_Sans_KR({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NODE_ENV === "production"
+      ? "https://dev.smpay.co.kr"
+      : "http://localhost:8081"
+  ),
   title:
     "SM Pay - 광고 효율은 높이고, 결제 부담은 낮춘 새로운 광고비 결제 방식",
   description:
@@ -49,6 +54,13 @@ export const metadata: Metadata = {
       "부담스러운 광고비, SM Pay가 미리 결제해드립니다. 광고비를 선결제해주는 광고비 최적화 솔루션으로, 광고 효율 기반의 자동 상환 시스템을 통해 유연한 광고 운영을 지원합니다.",
     images: ["https://dev.smpay.co.kr/images/og-image.png"], // 절대 URL로 변경
   },
+  icons: {
+    icon: "/favicon.ico",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
@@ -59,13 +71,48 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <head>
-        <link rel="icon" href="/favicon.ico" />
-        <Script id="channel-talk-loader" strategy="afterInteractive">
-          {/* 채널톡 코드 : 임시 주석 처리 */}
-          {`
-            (function(){var w=window;if(w.ChannelIO){return w.console.error("ChannelIO script included twice.");}var ch=function(){ch.c(arguments);};ch.q=[];ch.c=function(args){ch.q.push(args);};w.ChannelIO=ch;function l(){if(w.ChannelIOInitialized){return;}w.ChannelIOInitialized=true;var s=document.createElement("script");s.type="text/javascript";s.async=true;s.src="https://cdn.channel.io/plugin/ch-plugin-web.js";var x=document.getElementsByTagName("script")[0];if(x.parentNode){x.parentNode.insertBefore(s,x);}}if(document.readyState==="complete"){l();}else{w.addEventListener("DOMContentLoaded",l);w.addEventListener("load",l);}})();
-          `}
-        </Script>
+        <Script
+          id="channel-plugin"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+            (function() {
+              var w = window;
+              if (w.ChannelIO) {
+                return w.console && w.console.error && w.console.error('ChannelIO script included twice.');
+              }
+              var ch = function() {
+                ch.c(arguments);
+              };
+              ch.q = [];
+              ch.c = function(args) {
+                ch.q.push(args);
+              };
+              w.ChannelIO = ch;
+              function l() {
+                if (w.ChannelIOInitialized) {
+                  return;
+                }
+                w.ChannelIOInitialized = true;
+                var s = document.createElement('script');
+                s.type = 'text/javascript';
+                s.async = true;
+                s.src = 'https://cdn.channel.io/plugin/ch-plugin-web.js';
+                var x = document.getElementsByTagName('script')[0];
+                if (x.parentNode) {
+                  x.parentNode.insertBefore(s, x);
+                }
+              }
+              if (document.readyState === 'complete') {
+                l();
+              } else {
+                w.addEventListener('DOMContentLoaded', l);
+                w.addEventListener('load', l);
+              }
+            })();
+          `,
+          }}
+        />
       </head>
       <body className={notoSansKr.className}>
         <SessionProvider>
