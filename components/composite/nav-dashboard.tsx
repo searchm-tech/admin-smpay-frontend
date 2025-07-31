@@ -39,24 +39,6 @@ export function NavDashboard({ menuData }: { menuData?: FrontendMenuItem[] }) {
     router.push(url);
   };
 
-  // const menuType = useMemo(() => {
-  //   if (!session) return "agency";
-  //   if (!session.user) return "agency";
-  //   return getAuthType(session.user.type);
-  // }, [session]);
-
-  // const menuItems = useMemo(() => {
-  //   if (!session?.user) return [];
-  //   if (backendMenu && session?.user) {
-  //     const mappedMenus = mapBackendMenuToFrontend(backendMenu);
-  //     const filteredMenus = filterMenuByUserType(mappedMenus);
-  //     return filteredMenus;
-  //   }
-
-  //   // 백엔드 메뉴가 없으면 공통 메뉴
-  //   return [];
-  // }, [backendMenu, session?.user, menuType]);
-
   return (
     <SidebarGroup className="h-full w-full bg-[var(--sidebar)] py-4 relative">
       <SidebarMenu>

@@ -78,12 +78,6 @@ export function transformTableResponse<
   };
 }
 
-// 관리자 확인
-export function getIsAdmin(type?: TAuthType | null) {
-  if (!type) return false;
-  return ["SYSTEM_ADMINISTRATOR", "OPERATIONS_MANAGER"].includes(type || "");
-}
-
 // 최상위 그룹장 확인
 export function getIsGroupMaster(type?: TAuthType | null) {
   if (!type) return false;

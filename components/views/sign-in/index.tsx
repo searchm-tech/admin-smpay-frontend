@@ -21,7 +21,6 @@ import { signInApi } from "@/services/auth";
 import { useWindowSize } from "@/hooks/useWindowSize";
 
 import { ApiError } from "@/lib/api";
-import { getIsAdmin } from "@/lib/utils";
 
 import { STORAGE_KEYS, createFormSchema, defaultValues } from "./constants";
 
@@ -125,6 +124,7 @@ const SignInView = () => {
 
         const user: TSMPayUser & { uniqueCode: string } = {
           id: userData.userId,
+          email: userData.id.toString(),
           userId: userData.userId,
           agentId: userData.agentId,
           status: userData.status,

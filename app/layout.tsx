@@ -3,7 +3,6 @@ import { Noto_Sans_KR } from "next/font/google";
 
 import QueryProvider from "@/lib/providers/QueryProvider";
 import { SessionProvider } from "@/lib/providers/SessionProvider";
-import StoreInitializer from "@/components/common/StoreInitializer";
 
 import "./globals.css";
 import "antd/dist/reset.css"; // antd 리셋 css
@@ -117,10 +116,7 @@ export default function RootLayout({
       </head>
       <body className={notoSansKr.className}>
         <SessionProvider>
-          <QueryProvider>
-            <StoreInitializer />
-            {children}
-          </QueryProvider>
+          <QueryProvider>{children}</QueryProvider>
         </SessionProvider>
       </body>
     </html>

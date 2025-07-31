@@ -1,31 +1,46 @@
 "use client";
 
 import { useEffect } from "react";
-import { signOut, useSession } from "next-auth/react";
+import { signOut, getSession } from "next-auth/react";
 import { signOutApi } from "@/services/auth";
 import { useSessionStore } from "@/store/useSessionStore";
 
 const SignOutView = () => {
-  const { data: session } = useSession();
   const { clearSession } = useSessionStore();
 
   useEffect(() => {
-    if (!session) {
+    const forceLogout = async () => {
       clearSession();
-      signOut({ callbackUrl: "/sign-in" });
-      return;
-    }
 
-    signOutApi()
-      .then()
-      .catch((error) => {
-        console.error("error", error);
-      })
-      .finally(() => {
-        clearSession();
-        signOut({ callbackUrl: "/sign-in" });
+      try {
+        await signOutApi();
+      } catch (error) {
+        console.error("❌ 서버 로그아웃 실패:", error);
+      }
+
+      await signOut({
+        callbackUrl: "/sign-in",
+        redirect: false,
       });
-  }, [session]);
+
+      const sessionAfter = await getSession();
+
+      // 만약 세션이 남아있다면 강제 조치
+      if (sessionAfter && sessionAfter.user) {
+        console.warn("⚠️ 세션이 완전히 클리어되지 않음! 강제 조치 실행");
+        // 쿠키 강제 삭제
+        document.cookie.split(";").forEach((cookie) => {
+          const eqPos = cookie.indexOf("=");
+          const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+          document.cookie = `${name.trim()}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+        });
+      }
+
+      window.location.replace("/sign-in");
+    };
+
+    forceLogout();
+  }, [clearSession]);
 
   return (
     <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50">

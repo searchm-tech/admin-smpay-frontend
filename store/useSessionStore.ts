@@ -1,5 +1,6 @@
 // /store/sessionStore.ts
 import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 
 // 프론트엔드 타입에 따른 키 접두사
 const getStoragePrefix = () => {
@@ -16,71 +17,48 @@ interface SessionState {
   setRefreshToken: (token: string | null) => void;
   clearSession: () => void;
   setTokens: (accessToken: string | null, refreshToken: string | null) => void;
-  initializeFromStorage: () => void;
 }
 
-export const useSessionStore = create<SessionState>((set, get) => {
-  const prefix = getStoragePrefix();
-
-  return {
-    accessToken: null, // 초기값은 null로 설정
-    refreshToken: null, // 초기값은 null로 설정
-    setAccessToken: (token) => {
-      set({ accessToken: token });
-      if (typeof window !== "undefined") {
-        if (token) {
-          localStorage.setItem(`${prefix}accessToken`, token);
-        } else {
-          localStorage.removeItem(`${prefix}accessToken`);
+export const useSessionStore = create<SessionState>()(
+  persist(
+    (set) => ({
+      accessToken: null,
+      refreshToken: null,
+      setAccessToken: (token) => {
+        set({ accessToken: token });
+      },
+      setRefreshToken: (token) => {
+        set({ refreshToken: token });
+      },
+      clearSession: () => {
+        set({ accessToken: null, refreshToken: null });
+      },
+      setTokens: (accessToken, refreshToken) => {
+        set({ accessToken, refreshToken });
+      },
+    }),
+    {
+      name: `${getStoragePrefix()}session-storage`,
+      storage: createJSONStorage(() => {
+        if (typeof window !== "undefined") {
+          return localStorage;
         }
-      }
-    },
-    setRefreshToken: (token) => {
-      set({ refreshToken: token });
-      if (typeof window !== "undefined") {
-        if (token) {
-          localStorage.setItem(`${prefix}refreshToken`, token);
-        } else {
-          localStorage.removeItem(`${prefix}refreshToken`);
-        }
-      }
-    },
-    clearSession: () => {
-      set({ accessToken: null, refreshToken: null });
-      if (typeof window !== "undefined") {
-        localStorage.removeItem(`${prefix}accessToken`);
-        localStorage.removeItem(`${prefix}refreshToken`);
-      }
-    },
-    setTokens: (accessToken, refreshToken) => {
-      set({ accessToken, refreshToken });
-      if (typeof window !== "undefined") {
-        if (accessToken) {
-          localStorage.setItem(`${prefix}accessToken`, accessToken);
-        } else {
-          localStorage.removeItem(`${prefix}accessToken`);
-        }
-        if (refreshToken) {
-          localStorage.setItem(`${prefix}refreshToken`, refreshToken);
-        } else {
-          localStorage.removeItem(`${prefix}refreshToken`);
-        }
-      }
-    },
-    initializeFromStorage: () => {
-      if (typeof window !== "undefined") {
-        const storedAccessToken = localStorage.getItem(`${prefix}accessToken`);
-        const storedRefreshToken = localStorage.getItem(
-          `${prefix}refreshToken`
-        );
-
-        if (storedAccessToken || storedRefreshToken) {
-          set({
-            accessToken: storedAccessToken,
-            refreshToken: storedRefreshToken,
-          });
-        }
-      }
-    },
-  };
-});
+        return {
+          getItem: () => null,
+          setItem: () => {},
+          removeItem: () => {},
+        };
+      }),
+      onRehydrateStorage: () => (state) => {
+        // console.log("🔄 Session Store 복원 완료:", {
+        //   accessToken: state?.accessToken
+        //     ? `${state.accessToken.slice(0, 20)}...`
+        //     : "null",
+        //   refreshToken: state?.refreshToken
+        //     ? `${state.refreshToken.slice(0, 20)}...`
+        //     : "null",
+        // });
+      },
+    }
+  )
+);
