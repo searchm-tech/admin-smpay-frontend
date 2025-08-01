@@ -17,6 +17,7 @@ export type TAuthType =
 
 export type TSMPayUser = {
   id: number | string; // TODO : 다른 API 확인 후 삭제 (다른 곳에서는 email로 사용되고 있음.)
+  email: string;
   agentId: number;
   userId: number;
   status: UserStatus;
@@ -24,6 +25,8 @@ export type TSMPayUser = {
   name: string;
   phoneNumber: string;
   loginId: string;
+  accessToken: string;
+  refreshToken: string;
 };
 
 export type UserStatus = "NORMAL" | "STOP" | "TEMP"; // NORMAL : 활성화 STOP : 비활성화 TEMP : 임시

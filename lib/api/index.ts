@@ -1,10 +1,12 @@
 // src/api/axios.ts
 import axios, { AxiosRequestConfig } from "axios";
 import axiosRetry from "axios-retry";
-import { signOut } from "next-auth/react";
 import { postRefreshTokenApi } from "@/services/auth";
 import { useSessionStore } from "@/store/useSessionStore";
 import type { ApiResponse } from "@/types/api";
+import { sendSlackError } from "../slack";
+
+import { getSession } from "next-auth/react";
 
 // 커스텀 에러 클래스
 export class ApiError extends Error {
@@ -72,26 +74,9 @@ apiClient.interceptors.request.use(
     }
 
     const { accessToken } = useSessionStore.getState();
-    console.log("🔍 API Request Debug:");
-    console.log("  - URL:", config.url);
-    console.log("  - Method:", config.method);
-    console.log(
-      "  - AccessToken:",
-      accessToken ? `${accessToken.slice(0, 20)}...` : "null"
-    );
-    console.log(
-      "  - Frontend Type:",
-      process.env.NEXT_PUBLIC_FRONTEND_TYPE || "admin"
-    );
 
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
-      console.log(
-        "  - Authorization header set:",
-        `Bearer ${accessToken.slice(0, 20)}...`
-      );
-    } else {
-      console.log("  - No accessToken found, skipping Authorization header");
     }
 
     return config;
@@ -107,7 +92,23 @@ const MAX_RETRY_COUNT = 1;
 
 // 응답 인터셉터 (토큰 만료 시 재발급 및 세션 동기화)
 apiClient.interceptors.response.use(
-  (response) => {
+  async (response) => {
+    if (response.data && response.data.code !== "0") {
+      const session = await getSession();
+
+      await sendSlackError({
+        email: session?.user?.email || "",
+        name: session?.user?.name,
+        userId: session?.user?.userId?.toString() || "",
+        agentId: session?.user?.agentId?.toString() || "",
+        url: response.config.url || "",
+        method: response.config.method || "",
+        params: response.config.params || response.config.data || {},
+        errorMessage: response.data.message,
+        currentUrl: window.location.href,
+      });
+    }
+
     // Blob 다운로드 예외처리
     if (response.config.responseType === "blob") {
       return response;
@@ -123,14 +124,6 @@ apiClient.interceptors.response.use(
       throw new ApiError(code, message, result);
     }
 
-    if (response.data && response.data.code !== "0") {
-      const error = new ApiError(
-        response.data.code,
-        response.data.message,
-        response.data.result
-      );
-      return Promise.reject(error);
-    }
     return response.data;
   },
   async (error) => {

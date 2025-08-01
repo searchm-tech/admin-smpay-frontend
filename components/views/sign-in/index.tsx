@@ -21,7 +21,6 @@ import { signInApi } from "@/services/auth";
 import { useWindowSize } from "@/hooks/useWindowSize";
 
 import { ApiError } from "@/lib/api";
-import { getIsAdmin, getRedirectPath } from "@/lib/utils";
 
 import { STORAGE_KEYS, createFormSchema, defaultValues } from "./constants";
 
@@ -69,13 +68,6 @@ const SignInView = () => {
         setLoading(true);
         // useSessionStore에서 토큰 확인 (수정된 부분)
         const { accessToken, refreshToken } = useSessionStore.getState();
-        console.log("session", session);
-
-        // 세션이 있고 관리자가 아닌 경우에만 sign-out으로 리다이렉트
-        if (session?.user?.type && !getIsAdmin(session.user.type)) {
-          // router.push("/sign-out");
-          return;
-        }
 
         if (accessToken && refreshToken && session?.user?.type) {
           router.replace("/sm-pay/charge");
@@ -132,6 +124,7 @@ const SignInView = () => {
 
         const user: TSMPayUser & { uniqueCode: string } = {
           id: userData.userId,
+          email: userData.id.toString(),
           userId: userData.userId,
           agentId: userData.agentId,
           status: userData.status,
@@ -140,6 +133,8 @@ const SignInView = () => {
           phoneNumber: userData.phoneNumber,
           loginId: userData.loginId,
           uniqueCode: uniqueCode,
+          accessToken: accessToken.token,
+          refreshToken: refreshToken.token,
         };
 
         setAccessToken(accessToken.token);
@@ -147,6 +142,8 @@ const SignInView = () => {
 
         await signIn("credentials", {
           ...user,
+          accessToken: accessToken.token,
+          refreshToken: refreshToken.token,
           callbackUrl: "/sm-pay/charge",
         });
       }

@@ -12,12 +12,7 @@ import RejectOperationModal from "./RejectOperationModal";
 import { useGuideModalStore } from "@/store/useGuideModalStore";
 import { RejectDialog } from "../dialog";
 
-export type ViewType =
-  | "guide"
-  | "write"
-  | "submit"
-  | "master-judgement"
-  | "smpay-guide";
+export type ViewType = "master-judgement" | "smpay-guide";
 
 type GuidSectionProps = {
   viewType: ViewType;
@@ -25,100 +20,10 @@ type GuidSectionProps = {
   onClick?: () => void;
 };
 
-// TODO : 없는 애들이 있음. 나중에 삭제
 const GuidSection = ({ viewType, className, onClick }: GuidSectionProps) => {
   const { setIsOpen } = useGuideModalStore();
 
   const GUID_CONTENT: Record<ViewType, React.ReactNode> = {
-    submit: (
-      <div className="w-full flex items-start gap-2 text-[13px]">
-        <IconBadge name="CircleAlert" bgColor="#1062FF" size="sm" />
-
-        <div className="w-full flex items-center justify-between">
-          <div className="text-[#363C45] flex flex-col">
-            <span>
-              광고주의 광고 성과를 분석하여 자동 선결제의 기준 ROAS와 충전
-              금액을 설정할 수 있습니다.
-            </span>
-            <span>
-              SM Pay 신청시 작성하신 기준 ROAS에 도달하면 광고비를 증액하고,
-              기준 ROAS에서 떨어지면 감색하여 효율적인 예산 운영이 가능합니다.
-            </span>
-          </div>
-
-          <GuideButton onClick={() => setIsOpen(true)}>
-            SM Pay 이용 가이드
-          </GuideButton>
-        </div>
-      </div>
-    ),
-
-    // TODO : write, master-judgement랑 동일
-    write: (
-      <section className="w-full flex items-center text-[13px]">
-        <div className="w-full flex flex-col gap-4">
-          <div className="flex items-center gap-2">
-            <IconBadge name="CircleAlert" bgColor="#1062FF" />
-            <span>SM Pay 신청 도움말</span>
-          </div>
-
-          <div className="pl-6 text-[#363C45] space-y-1.5 flex flex-col">
-            <span>
-              • 광고주의 최근 성과와 판단 지표를 참고해 충전 규칙과 스케쥴을
-              설정해 주세요.
-            </span>
-            <span>
-              • 설정한 규칙이 어떻게 적용되는지는 [광고 성과 예측 시뮬레이션]
-              기능을 통해 예측이 가능합니다.
-            </span>
-          </div>
-        </div>
-
-        <GuideButton onClick={() => setIsOpen(true)}>
-          SM Pay 이용 가이드
-        </GuideButton>
-      </section>
-    ),
-
-    guide: (
-      <section className="w-full flex items-center text-[13px]">
-        <div className="w-full flex flex-col gap-4">
-          <div className="flex items-center gap-2">
-            <IconBadge name="CircleAlert" bgColor="#1062FF" />
-            <span>SM Pay 신청 도움말</span>
-          </div>
-
-          <div className="pl-6 text-[#363C45] space-y-1.5 flex flex-col">
-            <span>• 로그인한 마케터에게 연동된 광고주만 조회됩니다.</span>
-            <span>
-              • 광고주 정보가 등록되지 않은 경우 &apos;정보 등록&apos; 버튼이
-              노출되며, 정보를 등록해야 신청이 가능합니다.
-            </span>
-            <span>
-              • 광고주 정보가 등록된 경우에는 &apos;정보 변경&apos; 버튼을 통해
-              수정할 수 있습니다.
-            </span>
-            <span>
-              • 광고주가 동의하지 않아 심사가 진행되지 않은 경우, 광고주에게
-              재등의를 받았다면 신규 신청을 통해 다시 심사를 진행할 수 있습니다.
-            </span>
-            <span>
-              • 광고주의 동의 기한이 만료된 경우에는 &apos;SM Pay 관리&apos;
-              메뉴에서 광고주를 검색하여 등의 요청을 다시 보내주세요.
-            </span>
-            <span>
-              • 신청이 비활성화 되어있는 광고주는 &apos;상태&apos;란을
-              확인해주세요.
-            </span>
-          </div>
-        </div>
-
-        <GuideButton onClick={() => setIsOpen(true)}>
-          SM Pay 이용 가이드
-        </GuideButton>
-      </section>
-    ),
-
     "master-judgement": (
       <section className="w-full flex items-center text-[13px]">
         <div className="w-full flex flex-col gap-4">
